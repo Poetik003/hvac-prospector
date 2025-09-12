@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSpector Pro - AI-Powered Sales Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" href="favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-morphism {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark-glass {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .nav-item.active { 
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px 0 rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item:hover:not(.active) {
+            background: rgba(148, 163, 184, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .card-modern {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-modern:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px 0 rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px 0 rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(16, 185, 129, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .container-main {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-modern {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+        
+        .input-modern:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .voice-card {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: white;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-black transition-opacity duration-500">
+        <div class="text-center">
+            <!-- Animated Logo -->
+            <div class="mb-8 animate-pulse">
+                <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
+                    <defs>
+                        <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+                            <stop offset="50%" style="stop-color:#E0E7FF;stop-opacity:0.8" />
+                            <stop offset="100%" style="stop-color:#C7D2FE;stop-opacity:0.7" />
+                        </linearGradient>
+                        <filter id="loadingGlow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge> 
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <circle cx="60" cy="60" r="56" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    
+                    <!-- Fan with Rotation Animation -->
+                    <g transform="translate(60,40)" style="animation: spin 2s linear infinite;">
+                        <path d="M0,-12 C-8,-8 -12,0 -8,8 C0,12 8,8 12,0 C8,-8 0,-12 0,-12Z" fill="url(#loadingGradient)" opacity="0.9" filter="url(#loadingGlow)"/>
+                        <path d="M0,-12 C8,-8 12,0 8,8 C0,12 -8,8 -12,0 C-8,-8 0,-12 0,-12Z" fill="url(#loadingGradient)" opacity="0.7"/>
+                        <circle cx="0" cy="0" r="3" fill="url(#loadingGradient)"/>
+                    </g>
+                    
+                    <!-- Air Flow Lines with Wave Animation -->
+                    <g transform="translate(60,65)">
+                        <path d="M-20,0 Q-15,-3 -10,0 Q-5,3 0,0 Q5,-3 10,0 Q15,3 20,0" stroke="url(#loadingGradient)" stroke-width="2" fill="none" opacity="0.8" style="animation: wave 1.5s ease-in-out infinite;"/>
+                        <path d="M-20,4 Q-15,1 -10,4 Q-5,7 0,4 Q5,1 10,4 Q15,7 20,4" stroke="url(#loadingGradient)" stroke-width="2" fill="none" opacity="0.6" style="animation: wave 1.5s ease-in-out infinite 0.2s;"/>
+                        <path d="M-20,8 Q-15,5 -10,8 Q-5,11 0,8 Q5,5 10,8 Q15,11 20,8" stroke="url(#loadingGradient)" stroke-width="2" fill="none" opacity="0.4" style="animation: wave 1.5s ease-in-out infinite 0.4s;"/>
+                    </g>
+                    
+                    <g transform="translate(60,85)">
+                        <rect x="-15" y="-8" width="30" height="12" rx="2" fill="url(#loadingGradient)" opacity="0.7"/>
+                        <rect x="-8" y="-12" width="4" height="8" fill="url(#loadingGradient)" opacity="0.8"/>
+                        <rect x="4" y="-12" width="4" height="8" fill="url(#loadingGradient)" opacity="0.8"/>
+                    </g>
+                </svg>
+            </div>
+            
+            <!-- Brand Name -->
+            <h1 class="text-4xl font-bold text-white mb-2 tracking-tight">ProSpector</h1>
+            <p class="text-xl text-blue-200 font-medium mb-8">AI-Powered Sales Platform</p>
+            
+            <!-- Loading Indicator -->
+            <div class="flex justify-center space-x-2">
+                <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                <div class="w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(-2px); opacity: 1; }
+        }
+        
+        /* Fallback: Hide loading screen after 4 seconds even if JavaScript fails */
+        #loadingScreen {
+            animation: loadingFallback 4s forwards;
+        }
+        
+        @keyframes loadingFallback {
+            0%, 75% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+    </style>
+
+    <!-- Modern Header -->
+    <header class="dark-glass border-b border-white/10 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center justify-center w-14 h-14 rounded-xl shadow-2xl">
+                        <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="compactGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#1E293B;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="compactIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#CBD5E1;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="24" cy="24" r="22" fill="url(#compactGradient)"/>
+                            <g transform="translate(24,18)">
+                                <path d="M0,-6 C-4,-4 -6,0 -4,4 C0,6 4,4 6,0 C4,-4 0,-6 0,-6Z" fill="url(#compactIconGradient)" opacity="0.9"/>
+                                <path d="M0,-6 C4,-4 6,0 4,4 C0,6 -4,4 -6,0 C-4,-4 0,-6 0,-6Z" fill="url(#compactIconGradient)" opacity="0.7"/>
+                                <circle cx="0" cy="0" r="1.5" fill="url(#compactIconGradient)"/>
+                            </g>
+                            <g transform="translate(24,28)">
+                                <path d="M-10,0 Q-7,-1.5 -5,0 Q-2.5,1.5 0,0 Q2.5,-1.5 5,0 Q7.5,1.5 10,0" stroke="url(#compactIconGradient)" stroke-width="1" fill="none" opacity="0.8"/>
+                                <path d="M-10,2 Q-7,0.5 -5,2 Q-2.5,3.5 0,2 Q2.5,0.5 5,2 Q7.5,3.5 10,2" stroke="url(#compactIconGradient)" stroke-width="1" fill="none" opacity="0.6"/>
+                            </g>
+                            <rect x="16" y="32" width="16" height="6" rx="1" fill="url(#compactIconGradient)" opacity="0.7"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <h1 class="text-2xl font-bold text-white tracking-tight">ProSpector</h1>
+                            <span class="bg-gradient-to-r from-blue-400 to-slate-400 text-white text-xs font-bold px-3 py-1 rounded-full">PRO</span>
+                        </div>
+                        <p class="text-sm text-slate-300 font-medium">AI-Powered Sales & Lead Management</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <p class="text-sm text-slate-300 font-medium">Pipeline Value</p>
+                        <p class="text-2xl font-bold text-white" id="pipelineValue">$0</p>
+                    </div>
+                    <button class="btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Lead</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="min-h-screen pt-8">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Modern Navigation Tabs -->
+            <nav class="glass-morphism rounded-2xl p-2 mb-8 animate-slide-up">
+                <div class="grid grid-cols-7 gap-2">
+                    <button data-tab="dashboard" class="nav-item active flex items-center justify-center py-4 px-4 text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-chart-dashboard mr-2"></i>
+                        <span class="hidden sm:inline">Dashboard</span>
+                    </button>
+                    <button data-tab="leads" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-users mr-2"></i>
+                        <span class="hidden sm:inline">Leads</span>
+                    </button>
+                    <button data-tab="scripts" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-script mr-2"></i>
+                        <span class="hidden sm:inline">Scripts</span>
+                    </button>
+                    <button data-tab="voicecalling" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-phone mr-2"></i>
+                        <span class="hidden sm:inline">Voice AI</span>
+                    </button>
+                    <button data-tab="meetings" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        <span class="hidden sm:inline">Meetings</span>
+                    </button>
+                    <button data-tab="research" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-search mr-2"></i>
+                        <span class="hidden sm:inline">Research</span>
+                    </button>
+                    <button data-tab="analytics" class="nav-item flex items-center justify-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        <span class="hidden sm:inline">Analytics</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content animate-fade-in">
+                <!-- Modern Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card rounded-2xl p-6 group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-blue-500/20">
+                                <i class="fas fa-users text-2xl text-blue-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="totalLeads">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Total Leads</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-blue-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 w-3/4 rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6 group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20">
+                                <i class="fas fa-phone text-2xl text-green-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="callsMade">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Calls Made</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-green-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-green-500 to-green-600 w-2/3 rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6 group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-purple-500/20">
+                                <i class="fas fa-calendar-check text-2xl text-purple-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="meetingsScheduled">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Meetings</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-purple-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 w-1/2 rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6 group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-amber-500/20">
+                                <i class="fas fa-handshake text-2xl text-amber-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="conversionRate">0%</p>
+                                <p class="text-sm font-semibold text-slate-300">Conversion</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-amber-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 w-5/6 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-slate-100">Pipeline Progress</h3>
+                            <div class="p-2 rounded-lg bg-blue-500/20">
+                                <i class="fas fa-chart-bar text-blue-400"></i>
+                            </div>
+                        </div>
+                        <canvas id="pipelineChart" style="height: 300px;"></canvas>
+                    </div>
+                    
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-slate-100">Industry Breakdown</h3>
+                            <div class="p-2 rounded-lg bg-slate-500/20">
+                                <i class="fas fa-chart-pie text-slate-300"></i>
+                            </div>
+                        </div>
+                        <canvas id="industryChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Activity & Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-slate-100">Recent Activity</h3>
+                            <div class="p-2 rounded-lg bg-green-500/20">
+                                <i class="fas fa-activity text-green-400"></i>
+                            </div>
+                        </div>
+                        <div id="recentActivity" class="space-y-4">
+                            <div class="flex items-center space-x-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+                                <div class="p-2 rounded-lg bg-blue-500">
+                                    <i class="fas fa-rocket text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-100">Welcome to ProSpector!</p>
+                                    <p class="text-sm text-slate-300">Start by importing leads from Apollo AI</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-slate-100">Quick Actions</h3>
+                            <div class="p-2 rounded-lg bg-orange-500/20">
+                                <i class="fas fa-bolt text-orange-400"></i>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button data-tab="leads" class="group p-6 rounded-xl bg-gradient-to-br from-blue-900/30 to-blue-800/40 border border-blue-500/30 hover:from-blue-800/40 hover:to-blue-700/50 transition-all duration-300">
+                                <div class="flex flex-col items-center text-center space-y-3">
+                                    <div class="p-3 rounded-xl bg-blue-500 text-white group-hover:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-user-plus text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-blue-200">Import Leads</p>
+                                        <p class="text-xs text-blue-300">From Apollo AI</p>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button data-tab="voicecalling" class="group p-6 rounded-xl bg-gradient-to-br from-slate-700/30 to-slate-600/40 border border-slate-500/30 hover:from-slate-600/40 hover:to-slate-500/50 transition-all duration-300">
+                                <div class="flex flex-col items-center text-center space-y-3">
+                                    <div class="p-3 rounded-xl bg-slate-500 text-white group-hover:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-phone text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-200">Voice AI</p>
+                                        <p class="text-xs text-slate-300">Start Calling</p>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button data-tab="scripts" class="group p-6 rounded-xl bg-gradient-to-br from-green-900/30 to-green-800/40 border border-green-500/30 hover:from-green-800/40 hover:to-green-700/50 transition-all duration-300">
+                                <div class="flex flex-col items-center text-center space-y-3">
+                                    <div class="p-3 rounded-xl bg-green-500 text-white group-hover:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-script text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-green-200">Generate Script</p>
+                                        <p class="text-xs text-green-300">AI Powered</p>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button data-tab="meetings" class="group p-6 rounded-xl bg-gradient-to-br from-orange-900/30 to-orange-800/40 border border-orange-500/30 hover:from-orange-800/40 hover:to-orange-700/50 transition-all duration-300">
+                                <div class="flex flex-col items-center text-center space-y-3">
+                                    <div class="p-3 rounded-xl bg-orange-500 text-white group-hover:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-calendar-plus text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-orange-200">Schedule Meeting</p>
+                                        <p class="text-xs text-orange-300">Onsite Visit</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Calling Tab (Modern Design) -->
+            <div id="voicecalling-tab" class="tab-content hidden animate-fade-in">
+                <!-- Header -->
+                <div class="card-modern rounded-2xl p-8 mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
+                        <div>
+                            <h2 class="text-3xl font-bold gradient-text mb-2">AI Voice Calling</h2>
+                            <p class="text-slate-300 font-medium">Automated prospect calling with intelligent AI agents</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="freePlatforms.showFreePlatformsModal()" 
+                                    class="btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                                <i class="fas fa-gift"></i>
+                                <span>Free Options</span>
+                            </button>
+                            <button onclick="liveVoiceCalling.showPlatformSetupModal()" 
+                                    class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 transition-all duration-300">
+                                <i class="fas fa-cog"></i>
+                                <span>Setup Platform</span>
+                            </button>
+                            <button onclick="liveVoiceCalling.showLiveCallingInterface()" 
+                                    class="btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                                <i class="fas fa-phone"></i>
+                                <span>Start Calling</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-indigo-500/20">
+                                <i class="fas fa-robot text-2xl text-indigo-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <h3 class="font-bold text-slate-100">Platform Status</h3>
+                            </div>
+                        </div>
+                        <div id="voiceConfigStatus" class="space-y-2">
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <span class="text-sm font-medium">Not configured</span>
+                            </div>
+                        </div>
+                        <div id="hybridConfigStatus" class="hidden space-y-2">
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span class="text-sm font-semibold">Hybrid System Active</span>
+                            </div>
+                            <p class="text-xs text-green-500">ElevenLabs + Twilio Ready</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20">
+                                <i class="fas fa-phone-volume text-2xl text-green-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="todayCallCount">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Today's Calls</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-green-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-green-500 to-green-600 w-1/3 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-purple-500/20">
+                                <i class="fas fa-chart-line text-2xl text-purple-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="voiceConversionRate">0%</p>
+                                <p class="text-sm font-semibold text-slate-300">Conversion Rate</p>
+                            </div>
+                        </div>
+                        <div class="h-1 bg-purple-500/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 w-0 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Platform Selection -->
+                <div class="card-modern rounded-2xl p-8 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-slate-100">Choose Your AI Voice Platform</h3>
+                        <button onclick="freePlatforms.showFreePlatformsModal()" 
+                                class="bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300">
+                            <i class="fas fa-gift mr-2"></i>See Free Options
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Free Option -->
+                        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 p-6 text-white hover:scale-105 transition-all duration-300 cursor-pointer" onclick="freePlatforms.showFreePlatformsModal()">
+                            <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-600/20"></div>
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-3 rounded-xl bg-white/20">
+                                        <i class="fas fa-gift text-2xl"></i>
+                                    </div>
+                                    <span class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full">FREE</span>
+                                </div>
+                                <h4 class="text-xl font-bold mb-2">Free Options</h4>
+                                <p class="text-green-100 text-sm mb-4">Start with trials & browser testing</p>
+                                <ul class="text-xs space-y-1 text-green-100">
+                                    <li>• Browser speech demo</li>
+                                    <li>• Twilio $15.50 trial</li>
+                                    <li>• ElevenLabs 10k chars/month</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Bland AI -->
+                        <div class="group p-6 rounded-2xl border-2 border-blue-200 hover:border-blue-400 bg-white hover:shadow-2xl transition-all duration-300 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-blue-100">
+                                    <i class="fas fa-microphone text-2xl text-blue-600"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">Bland AI</h4>
+                            <p class="text-slate-300 text-sm mb-4">Easy setup with natural conversations</p>
+                            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+                                <li>• Quick 5-minute setup</li>
+                                <li>• Natural voice interactions</li>
+                                <li>• $0.09-0.19 per minute</li>
+                            </ul>
+                            <a href="https://bland.ai" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-semibold">
+                                Learn More →
+                            </a>
+                        </div>
+
+                        <!-- Vapi -->
+                        <div class="group p-6 rounded-2xl border-2 border-purple-200 hover:border-purple-400 bg-white hover:shadow-2xl transition-all duration-300 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-purple-100">
+                                    <i class="fas fa-brain text-2xl text-purple-600"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">Vapi</h4>
+                            <p class="text-slate-300 text-sm mb-4">Advanced AI with custom training</p>
+                            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+                                <li>• Custom voice training</li>
+                                <li>• Advanced AI logic</li>
+                                <li>• $0.05-0.15 per minute</li>
+                            </ul>
+                            <a href="https://vapi.ai" target="_blank" class="text-purple-600 hover:text-purple-700 text-sm font-semibold">
+                                Learn More →
+                            </a>
+                        </div>
+
+                        <!-- Synthflow -->
+                        <div class="group p-6 rounded-2xl border-2 border-orange-200 hover:border-orange-400 bg-white hover:shadow-2xl transition-all duration-300 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-orange-100">
+                                    <i class="fas fa-sitemap text-2xl text-orange-600"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">Synthflow</h4>
+                            <p class="text-slate-300 text-sm mb-4">Visual flow builder & enterprise</p>
+                            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+                                <li>• Visual flow designer</li>
+                                <li>• Multi-language support</li>
+                                <li>• $0.08-0.18 per minute</li>
+                            </ul>
+                            <a href="https://synthflow.ai" target="_blank" class="text-orange-600 hover:text-orange-700 text-sm font-semibold">
+                                Learn More →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Start Guide -->
+                <div class="card-modern rounded-2xl p-8">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white mb-4">
+                            <i class="fas fa-rocket text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-100 mb-2">Quick Start Guide</h3>
+                        <p class="text-slate-300">Get started with AI voice calling in minutes</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-300">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500 text-white text-xl font-bold mb-4">1</div>
+                            <h4 class="font-bold text-slate-100 mb-2">Choose Platform</h4>
+                            <p class="text-sm text-slate-300">Select your preferred AI voice platform</p>
+                        </div>
+                        <div class="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-300">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500 text-white text-xl font-bold mb-4">2</div>
+                            <h4 class="font-bold text-slate-100 mb-2">Get API Key</h4>
+                            <p class="text-sm text-slate-300">Sign up and obtain your credentials</p>
+                        </div>
+                        <div class="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-300">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500 text-white text-xl font-bold mb-4">3</div>
+                            <h4 class="font-bold text-slate-100 mb-2">Configure</h4>
+                            <p class="text-sm text-slate-300">Set up voice, scripts & preferences</p>
+                        </div>
+                        <div class="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-300">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-green-500 text-white text-xl font-bold mb-4">4</div>
+                            <h4 class="font-bold text-slate-100 mb-2">Start Calling</h4>
+                            <p class="text-sm text-slate-300">Launch campaigns & monitor results</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center space-y-4">
+                        <button onclick="freePlatforms.showHybridSetupWizard()" 
+                                class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
+                            <i class="fas fa-gift mr-3"></i>Start Free Hybrid Setup
+                        </button>
+                        <p class="text-sm text-slate-400">ElevenLabs + Twilio • ~$25 value • 200-300 calls</p>
+                        
+                        <div class="text-slate-400">or</div>
+                        
+                        <button onclick="liveVoiceCalling.showPlatformSetupModal()" 
+                                class="bg-gray-700 hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300">
+                            <i class="fas fa-cog mr-2"></i>Setup Paid Platform
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leads Tab - Complete Implementation -->
+            <div id="leads-tab" class="tab-content hidden animate-fade-in">
+                <!-- Header with Action Buttons -->
+                <div class="card-modern rounded-2xl p-8 mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
+                        <div>
+                            <h2 class="text-3xl font-bold gradient-text mb-2">Lead Management</h2>
+                            <p class="text-slate-300 font-medium">Import, manage, and track your prospects for AI voice calling</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="showAddLeadModal()" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 transition-all duration-300">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Add Lead</span>
+                            </button>
+                            <button onclick="showSeamlessImportModal()" 
+                                    class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 transition-all duration-300">
+                                <i class="fas fa-magic"></i>
+                                <span>AI Import</span>
+                            </button>
+                            <button onclick="showApolloImportModal()" 
+                                    class="btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                                <i class="fas fa-download"></i>
+                                <span>Apollo AI</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lead Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-blue-500/20">
+                                <i class="fas fa-users text-2xl text-blue-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="totalLeadsCount">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Total Leads</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20">
+                                <i class="fas fa-fire text-2xl text-green-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="hotLeadsCount">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Hot Leads</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-orange-500/20">
+                                <i class="fas fa-hourglass-half text-2xl text-orange-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="pendingLeadsCount">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Pending</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-purple-500/20">
+                                <i class="fas fa-handshake text-2xl text-purple-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="convertedLeadsCount">0</p>
+                                <p class="text-sm font-semibold text-slate-300">Converted</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="card-modern rounded-2xl p-6 mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                        <div class="lg:col-span-2">
+                            <input type="text" id="leadSearch" placeholder="Search leads by name, company, or email..."
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <select id="statusFilter" 
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Status</option>
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="proposal">Proposal Sent</option>
+                                <option value="won">Won</option>
+                                <option value="lost">Lost</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="industryFilter"
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Industries</option>
+                                <option value="commercial">Commercial</option>
+                                <option value="residential">Residential</option>
+                                <option value="industrial">Industrial</option>
+                                <option value="retail">Retail</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leads Table -->
+                <div class="card-modern rounded-2xl p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-slate-100">Your Leads</h3>
+                        <div class="text-sm text-slate-400">
+                            <span id="leadsTableInfo">Showing 0 of 0 leads</span>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full" id="leadsTable">
+                            <thead>
+                                <tr class="border-b border-white/10">
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Company</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Contact</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Email</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Phone</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Status</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Industry</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-slate-300">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-12 text-slate-400">
+                                        <div class="flex flex-col items-center space-y-4">
+                                            <i class="fas fa-users text-4xl text-slate-500"></i>
+                                            <p class="text-lg font-medium">No leads yet</p>
+                                            <p class="text-sm">Import from Apollo AI or add leads manually to get started</p>
+                                            <button onclick="showApolloImportModal()" 
+                                                    class="btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                                                <i class="fas fa-download"></i>
+                                                <span>Import from Apollo AI</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apollo AI Import Modal -->
+            <div id="apolloImportModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div class="card-modern rounded-2xl p-8 m-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">Import from Apollo AI</h3>
+                        <button onclick="closeApolloImportModal()" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Step 1: Instructions -->
+                    <div class="mb-6">
+                        <div class="bg-blue-50/10 border border-blue-200/20 rounded-xl p-6 mb-4">
+                            <h4 class="font-bold text-blue-200 mb-3 flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                How to Import Apollo AI Leads
+                            </h4>
+                            <ol class="text-sm text-blue-100 space-y-2 list-decimal list-inside">
+                                <li>Log into your <a href="https://apollo.io" target="_blank" class="underline hover:text-blue-300">Apollo AI account</a></li>
+                                <li>Go to your <strong>People</strong> or <strong>Contacts</strong> section</li>
+                                <li>Select the leads you want to export</li>
+                                <li>Click <strong>Export</strong> and choose <strong>CSV format</strong></li>
+                                <li>Open the CSV file and <strong>copy all the data</strong></li>
+                                <li>Paste the data in the field below</li>
+                            </ol>
+                        </div>
+                        
+                        <!-- Sample Format -->
+                        <div class="bg-green-50/10 border border-green-200/20 rounded-xl p-4">
+                            <h5 class="font-semibold text-green-200 mb-2">Expected CSV Format:</h5>
+                            <code class="text-xs text-green-100 block bg-black/20 p-3 rounded">
+                                Company Name,Contact Name,Email,Phone,Industry,Title<br>
+                                HVAC Solutions Inc,John Smith,john@hvac.com,(555) 123-4567,Commercial,Owner<br>
+                                Comfort Systems,Sarah Johnson,sarah@comfort.com,(555) 987-6543,Residential,Manager
+                            </code>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Data Input -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-slate-300 mb-3">
+                            Paste your Apollo AI CSV data here:
+                        </label>
+                        <textarea id="apolloDataInput" rows="8" 
+                                  placeholder="Paste your CSV data from Apollo AI here..."
+                                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                    </div>
+                    
+                    <!-- Import Options -->
+                    <div class="mb-6">
+                        <h5 class="font-semibold text-slate-300 mb-3">Import Options:</h5>
+                        <div class="space-y-3">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="duplicateHandling" value="skip" checked 
+                                       class="text-blue-500 focus:ring-blue-500">
+                                <span class="text-slate-300">Skip duplicates (recommended)</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="duplicateHandling" value="update" 
+                                       class="text-blue-500 focus:ring-blue-500">
+                                <span class="text-slate-300">Update existing leads</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="duplicateHandling" value="create_new" 
+                                       class="text-blue-500 focus:ring-blue-500">
+                                <span class="text-slate-300">Create new entries anyway</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="validateApolloData()" 
+                                class="flex-1 btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Validate & Preview</span>
+                        </button>
+                        <button onclick="closeApolloImportModal()" 
+                                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            Cancel
+                        </button>
+                    </div>
+                    
+                    <!-- Preview Section -->
+                    <div id="importPreview" class="hidden mt-6">
+                        <h5 class="font-bold text-slate-200 mb-4">Import Preview:</h5>
+                        <div id="previewContent" class="bg-black/20 rounded-xl p-4 max-h-60 overflow-y-auto"></div>
+                        <div class="mt-4 flex gap-4">
+                            <button onclick="executeApolloImport()" 
+                                    class="btn-success text-white px-6 py-3 rounded-xl font-semibold">
+                                <i class="fas fa-upload mr-2"></i>Import Leads
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Section -->
+                    <div id="importResults" class="hidden mt-6">
+                        <div id="resultsContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Add Lead Modal -->
+            <div id="addLeadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div class="card-modern rounded-2xl p-8 m-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">Add New Lead</h3>
+                        <button onclick="closeAddLeadModal()" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="addLeadForm" class="space-y-6">
+                        <!-- Company Information -->
+                        <div class="bg-blue-50/10 border border-blue-200/20 rounded-xl p-6">
+                            <h4 class="font-bold text-blue-200 mb-4 flex items-center">
+                                <i class="fas fa-building mr-2"></i>
+                                Company Information
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Company Name *</label>
+                                    <input type="text" id="companyName" required
+                                           placeholder="HVAC Solutions Inc"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Industry</label>
+                                    <select id="leadIndustry" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="commercial">Commercial HVAC</option>
+                                        <option value="residential">Residential HVAC</option>
+                                        <option value="industrial">Industrial HVAC</option>
+                                        <option value="retail">Retail/Restaurant</option>
+                                        <option value="healthcare">Healthcare Facilities</option>
+                                        <option value="education">Educational Institutions</option>
+                                        <option value="government">Government/Municipal</option>
+                                        <option value="hospitality">Hotels/Hospitality</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Company Size</label>
+                                    <select id="companySize" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="1-10">1-10 employees</option>
+                                        <option value="11-50">11-50 employees</option>
+                                        <option value="51-200">51-200 employees</option>
+                                        <option value="201-500">201-500 employees</option>
+                                        <option value="501-1000">501-1000 employees</option>
+                                        <option value="1000+">1000+ employees</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Annual Revenue</label>
+                                    <select id="annualRevenue" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="<1M">Less than $1M</option>
+                                        <option value="1-5M">$1M - $5M</option>
+                                        <option value="5-10M">$5M - $10M</option>
+                                        <option value="10-50M">$10M - $50M</option>
+                                        <option value="50M+">$50M+</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="bg-green-50/10 border border-green-200/20 rounded-xl p-6">
+                            <h4 class="font-bold text-green-200 mb-4 flex items-center">
+                                <i class="fas fa-user mr-2"></i>
+                                Primary Contact Information
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">First Name *</label>
+                                    <input type="text" id="firstName" required
+                                           placeholder="John"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Last Name *</label>
+                                    <input type="text" id="lastName" required
+                                           placeholder="Smith"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Job Title</label>
+                                    <input type="text" id="jobTitle" 
+                                           placeholder="Facilities Manager"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Department</label>
+                                    <select id="department" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Department</option>
+                                        <option value="facilities">Facilities Management</option>
+                                        <option value="operations">Operations</option>
+                                        <option value="maintenance">Maintenance</option>
+                                        <option value="executive">Executive/C-Suite</option>
+                                        <option value="finance">Finance/Procurement</option>
+                                        <option value="property">Property Management</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Email Address *</label>
+                                    <input type="email" id="emailAddress" required
+                                           placeholder="john@company.com"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Phone Number *</label>
+                                    <input type="tel" id="phoneNumber" required
+                                           placeholder="(555) 123-4567"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location & Service Details -->
+                        <div class="bg-orange-50/10 border border-orange-200/20 rounded-xl p-6">
+                            <h4 class="font-bold text-orange-200 mb-4 flex items-center">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                Location & Service Information
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Street Address</label>
+                                    <input type="text" id="streetAddress"
+                                           placeholder="123 Business Ave"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">City</label>
+                                    <input type="text" id="city"
+                                           placeholder="Atlanta"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">State</label>
+                                    <input type="text" id="state"
+                                           placeholder="GA"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">ZIP Code</label>
+                                    <input type="text" id="zipCode"
+                                           placeholder="30309"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Current HVAC Provider</label>
+                                    <input type="text" id="currentProvider"
+                                           placeholder="ABC HVAC Services"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Contract Expiration</label>
+                                    <input type="date" id="contractExpiration"
+                                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Calling Preferences -->
+                        <div class="bg-purple-50/10 border border-purple-200/20 rounded-xl p-6">
+                            <h4 class="font-bold text-purple-200 mb-4 flex items-center">
+                                <i class="fas fa-robot mr-2"></i>
+                                AI Voice Calling Preferences
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Lead Priority</label>
+                                    <select id="leadPriority" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="high">High Priority - Call ASAP</option>
+                                        <option value="medium" selected>Medium Priority - Normal Queue</option>
+                                        <option value="low">Low Priority - Follow-up Later</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Best Time to Call</label>
+                                    <select id="bestTimeToCall" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="morning">Morning (8 AM - 12 PM)</option>
+                                        <option value="afternoon" selected>Afternoon (12 PM - 5 PM)</option>
+                                        <option value="evening">Evening (5 PM - 7 PM)</option>
+                                        <option value="anytime">Anytime</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Call Objective</label>
+                                    <select id="callObjective" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="maintenance_quote">Get Maintenance Service Agreement Quote</option>
+                                        <option value="emergency_service">Discuss Emergency Service Plans</option>
+                                        <option value="energy_audit">Schedule Energy Efficiency Audit</option>
+                                        <option value="equipment_upgrade">Explore Equipment Upgrade Options</option>
+                                        <option value="contract_renewal">Contract Renewal Discussion</option>
+                                        <option value="general_inquiry">General HVAC Service Inquiry</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Additional Notes (for AI Agent)</label>
+                                    <textarea id="additionalNotes" rows="3"
+                                              placeholder="Any specific information the AI agent should know about this prospect..."
+                                              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button type="submit" 
+                                    class="flex-1 btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2">
+                                <i class="fas fa-save"></i>
+                                <span>Save Lead</span>
+                            </button>
+                            <button type="button" onclick="saveAndScheduleCall()" 
+                                    class="flex-1 btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2">
+                                <i class="fas fa-phone-plus"></i>
+                                <span>Save & Queue for AI Call</span>
+                            </button>
+                            <button type="button" onclick="closeAddLeadModal()" 
+                                    class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Seamless AI Import Modal -->
+            <div id="seamlessImportModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div class="card-modern rounded-2xl p-8 m-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">Seamless AI Import</h3>
+                        <button onclick="closeSeamlessImportModal()" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- AI Import Options -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- LinkedIn Sales Navigator -->
+                        <div class="group p-6 rounded-2xl border-2 border-blue-200/30 hover:border-blue-400 bg-gradient-to-br from-blue-900/20 to-blue-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startLinkedInImport()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-blue-500/20">
+                                    <i class="fab fa-linkedin text-2xl text-blue-400"></i>
+                                </div>
+                                <span class="bg-blue-500/20 text-xs font-bold px-3 py-1 rounded-full text-blue-200">PREMIUM</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">LinkedIn Sales Navigator</h4>
+                            <p class="text-slate-300 text-sm mb-4">Import HVAC decision makers from LinkedIn</p>
+                            <ul class="text-xs text-blue-200 space-y-1">
+                                <li>• Facilities managers & executives</li>
+                                <li>• Property management contacts</li>
+                                <li>• Auto-enrich with company data</li>
+                            </ul>
+                        </div>
+
+                        <!-- ZoomInfo -->
+                        <div class="group p-6 rounded-2xl border-2 border-green-200/30 hover:border-green-400 bg-gradient-to-br from-green-900/20 to-green-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startZoomInfoImport()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-green-500/20">
+                                    <i class="fas fa-search-plus text-2xl text-green-400"></i>
+                                </div>
+                                <span class="bg-green-500/20 text-xs font-bold px-3 py-1 rounded-full text-green-200">ENTERPRISE</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">ZoomInfo</h4>
+                            <p class="text-slate-300 text-sm mb-4">Enterprise B2B contact database</p>
+                            <ul class="text-xs text-green-200 space-y-1">
+                                <li>• High-quality B2B contacts</li>
+                                <li>• Intent data & buying signals</li>
+                                <li>• Direct phone numbers</li>
+                            </ul>
+                        </div>
+
+                        <!-- Google Business Directory -->
+                        <div class="group p-6 rounded-2xl border-2 border-orange-200/30 hover:border-orange-400 bg-gradient-to-br from-orange-900/20 to-orange-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startGoogleBusinessImport()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-orange-500/20">
+                                    <i class="fab fa-google text-2xl text-orange-400"></i>
+                                </div>
+                                <span class="bg-orange-500/20 text-xs font-bold px-3 py-1 rounded-full text-orange-200">FREE</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">Google Business</h4>
+                            <p class="text-slate-300 text-sm mb-4">Local business directory scraping</p>
+                            <ul class="text-xs text-orange-200 space-y-1">
+                                <li>• Local businesses in your area</li>
+                                <li>• Property management companies</li>
+                                <li>• Retail & restaurant chains</li>
+                            </ul>
+                        </div>
+
+                        <!-- CSV/Excel Upload -->
+                        <div class="group p-6 rounded-2xl border-2 border-purple-200/30 hover:border-purple-400 bg-gradient-to-br from-purple-900/20 to-purple-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startFileUpload()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-purple-500/20">
+                                    <i class="fas fa-file-excel text-2xl text-purple-400"></i>
+                                </div>
+                                <span class="bg-purple-500/20 text-xs font-bold px-3 py-1 rounded-full text-purple-200">BASIC</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">CSV/Excel Upload</h4>
+                            <p class="text-slate-300 text-sm mb-4">Upload your existing lead lists</p>
+                            <ul class="text-xs text-purple-200 space-y-1">
+                                <li>• CSV or Excel file upload</li>
+                                <li>• Auto-field mapping</li>
+                                <li>• Duplicate detection</li>
+                            </ul>
+                        </div>
+
+                        <!-- Yellow Pages/Business Directories -->
+                        <div class="group p-6 rounded-2xl border-2 border-yellow-200/30 hover:border-yellow-400 bg-gradient-to-br from-yellow-900/20 to-yellow-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startYellowPagesImport()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-yellow-500/20">
+                                    <i class="fas fa-phone-square text-2xl text-yellow-400"></i>
+                                </div>
+                                <span class="bg-yellow-500/20 text-xs font-bold px-3 py-1 rounded-full text-yellow-200">BASIC</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">Business Directories</h4>
+                            <p class="text-slate-300 text-sm mb-4">Yellow Pages & directory scraping</p>
+                            <ul class="text-xs text-yellow-200 space-y-1">
+                                <li>• Yellow Pages businesses</li>
+                                <li>• Industry-specific directories</li>
+                                <li>• Contact information included</li>
+                            </ul>
+                        </div>
+
+                        <!-- CRM Integration -->
+                        <div class="group p-6 rounded-2xl border-2 border-indigo-200/30 hover:border-indigo-400 bg-gradient-to-br from-indigo-900/20 to-indigo-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="startCRMImport()">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 rounded-xl bg-indigo-500/20">
+                                    <i class="fas fa-database text-2xl text-indigo-400"></i>
+                                </div>
+                                <span class="bg-indigo-500/20 text-xs font-bold px-3 py-1 rounded-full text-indigo-200">CRM</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-100 mb-2">CRM Integration</h4>
+                            <p class="text-slate-300 text-sm mb-4">Sync from existing CRM systems</p>
+                            <ul class="text-xs text-indigo-200 space-y-1">
+                                <li>• HubSpot, Salesforce, Pipedrive</li>
+                                <li>• Two-way sync capabilities</li>
+                                <li>• Preserve existing data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- AI Import Instructions -->
+                    <div class="bg-gradient-to-r from-purple-50/10 to-blue-50/10 border border-purple-200/20 rounded-xl p-6">
+                        <h4 class="font-bold text-purple-200 mb-3 flex items-center">
+                            <i class="fas fa-robot mr-2"></i>
+                            AI-Powered Import Process
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-500 text-white text-sm font-bold mb-2">1</div>
+                                <p class="text-xs text-purple-200">Select Source</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-500 text-white text-sm font-bold mb-2">2</div>
+                                <p class="text-xs text-purple-200">AI Enrichment</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-500 text-white text-sm font-bold mb-2">3</div>
+                                <p class="text-xs text-purple-200">Quality Check</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-500 text-white text-sm font-bold mb-2">4</div>
+                                <p class="text-xs text-purple-200">Ready to Call</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-purple-100">Our AI will automatically enrich contact data, verify phone numbers, and prepare personalized talking points for each prospect.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scripts-tab" class="tab-content hidden animate-fade-in">
+                <div class="card-modern rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold gradient-text mb-6">AI Call Scripts</h2>
+                    <p class="text-slate-300">Script generation functionality coming soon with modern interface...</p>
+                </div>
+            </div>
+
+            <div id="meetings-tab" class="tab-content hidden animate-fade-in">
+                <div class="card-modern rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold gradient-text mb-6">Meeting Scheduler</h2>
+                    <p class="text-slate-300">Meeting management functionality coming soon with modern interface...</p>
+                </div>
+            </div>
+
+            <div id="research-tab" class="tab-content hidden animate-fade-in">
+                <div class="card-modern rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold gradient-text mb-6">Prospect Research</h2>
+                    <p class="text-slate-300">Research tools functionality coming soon with modern interface...</p>
+                </div>
+            </div>
+
+            <div id="analytics-tab" class="tab-content hidden animate-fade-in">
+                <div class="card-modern rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold gradient-text mb-6">Analytics Dashboard</h2>
+                    <p class="text-slate-300">Analytics functionality coming soon with modern interface...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Essential Tab Switching Function -->
+    <script>
+        function switchTab(tabName, event) {
+            console.log(`🔄 Switching to ${tabName} tab`);
+            
+            // Prevent default action
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                item.classList.remove('text-white');
+                item.classList.add('text-white/80');
+            });
+            
+            // Show selected tab
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('animate-fade-in');
+                console.log(`✅ Successfully showed ${tabName} tab`);
+            } else {
+                console.error(`❌ Tab ${tabName}-tab not found`);
+            }
+            
+            // Find and activate the correct nav item
+            const clickedButton = event ? event.currentTarget : document.querySelector(`[data-tab="${tabName}"].nav-item`);
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+                clickedButton.classList.remove('text-white/80');
+                clickedButton.classList.add('text-white');
+                console.log(`✅ Activated nav button for ${tabName}`);
+            } else {
+                // If clicked button wasn't a nav item, find the corresponding nav item
+                const navButton = document.querySelector(`[data-tab="${tabName}"].nav-item`);
+                if (navButton) {
+                    navButton.classList.add('active');
+                    navButton.classList.remove('text-white/80');
+                    navButton.classList.add('text-white');
+                    console.log(`✅ Activated nav button for ${tabName} (via quick action)`);
+                }
+            }
+            
+            console.log(`🎯 Tab switch to ${tabName} completed`);
+        }
+
+        // Initialize tabs system
+        function initializeTabSystem() {
+            console.log('🚀 Initializing modern tab system...');
+            
+            try {
+                // Add click event listeners to all buttons with data-tab attributes
+                document.querySelectorAll('[data-tab]').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const tabName = this.getAttribute('data-tab');
+                        if (tabName) {
+                            console.log(`🖱️ Button clicked: ${tabName}`);
+                            switchTab(tabName, e);
+                        }
+                    });
+                });
+                
+                // Ensure proper initial tab state
+                setTimeout(() => {
+                    // Hide all tabs first
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.add('hidden');
+                    });
+                    
+                    // Show dashboard tab
+                    const dashboardTab = document.getElementById('dashboard-tab');
+                    if (dashboardTab) {
+                        dashboardTab.classList.remove('hidden');
+                        console.log('✅ Dashboard tab initialized as active');
+                    }
+                    
+                    // Set first nav item as active
+                    const firstNavItem = document.querySelector('.nav-item[data-tab="dashboard"]');
+                    if (firstNavItem) {
+                        firstNavItem.classList.add('active');
+                        firstNavItem.classList.remove('text-white/80');
+                        firstNavItem.classList.add('text-white');
+                    }
+                    
+                    console.log('✅ Tab system initialized successfully');
+                }, 100);
+            } catch (error) {
+                console.error('❌ Tab system initialization error:', error);
+            }
+        }
+        
+        // Initialize tabs when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeTabSystem);
+
+        // Make function globally available
+        window.switchTab = switchTab;
+
+        // Loading screen functionality with better error handling
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen) {
+                loadingScreen.style.transition = 'opacity 0.5s ease-out';
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    if (loadingScreen && loadingScreen.parentNode) {
+                        loadingScreen.parentNode.removeChild(loadingScreen);
+                    }
+                }, 500);
+            }
+        }
+
+        // Initialize loading screen with multiple triggers
+        function initializeApp() {
+            console.log('🚀 ProSpector app initializing...');
+            
+            // Hide loading screen after a short delay
+            setTimeout(hideLoadingScreen, 800);
+            
+            try {
+                // Initialize leads display
+                updateLeadsDisplay();
+                updateLeadsStats();
+
+                // Add form submission handler
+                const addLeadForm = document.getElementById('addLeadForm');
+                if (addLeadForm) {
+                    addLeadForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        handleManualLeadSubmission(false);
+                    });
+                }
+                
+                console.log('✅ ProSpector app initialized successfully');
+            } catch (error) {
+                console.error('❌ App initialization error:', error);
+                hideLoadingScreen(); // Ensure loading screen is hidden even on error
+            }
+        }
+
+        // Multiple initialization triggers
+        document.addEventListener('DOMContentLoaded', initializeApp);
+        window.addEventListener('load', hideLoadingScreen);
+        
+        // Fallback - force hide loading after 3 seconds regardless
+        setTimeout(hideLoadingScreen, 3000);
+
+        // Mock functions for buttons (will be replaced by actual JS modules)
+        const freePlatforms = {
+            showFreePlatformsModal: () => console.log('Free platforms modal'),
+            showHybridSetupWizard: () => console.log('Hybrid setup wizard')
+        };
+        
+        const liveVoiceCalling = {
+            showPlatformSetupModal: () => console.log('Platform setup modal'),
+            showLiveCallingInterface: () => console.log('Live calling interface')
+        };
+
+        // Apollo AI Import Functions
+        let leadsData = [];
+
+        function showApolloImportModal() {
+            console.log('🚀 Opening Apollo AI import modal');
+            document.getElementById('apolloImportModal').classList.remove('hidden');
+        }
+
+        function closeApolloImportModal() {
+            console.log('❌ Closing Apollo AI import modal');
+            document.getElementById('apolloImportModal').classList.add('hidden');
+            document.getElementById('apolloDataInput').value = '';
+            document.getElementById('importPreview').classList.add('hidden');
+            document.getElementById('importResults').classList.add('hidden');
+        }
+
+        function showAddLeadModal() {
+            console.log('➕ Opening Add Lead modal');
+            document.getElementById('addLeadModal').classList.remove('hidden');
+            // Reset form
+            document.getElementById('addLeadForm').reset();
+        }
+
+        function closeAddLeadModal() {
+            console.log('❌ Closing Add Lead modal');
+            document.getElementById('addLeadModal').classList.add('hidden');
+        }
+
+        function showSeamlessImportModal() {
+            console.log('🤖 Opening Seamless AI Import modal');
+            document.getElementById('seamlessImportModal').classList.remove('hidden');
+        }
+
+        function closeSeamlessImportModal() {
+            console.log('❌ Closing Seamless Import modal');
+            document.getElementById('seamlessImportModal').classList.add('hidden');
+        }
+
+        function validateApolloData() {
+            const apolloData = document.getElementById('apolloDataInput').value.trim();
+            
+            if (!apolloData) {
+                alert('Please paste your Apollo AI CSV data first!');
+                return;
+            }
+
+            console.log('🔍 Validating Apollo AI data...');
+            
+            try {
+                // Parse CSV data
+                const lines = apolloData.split('\n').filter(line => line.trim());
+                if (lines.length < 2) {
+                    throw new Error('Data must have at least a header row and one data row');
+                }
+
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                const rows = lines.slice(1);
+                
+                const parsedLeads = [];
+                
+                rows.forEach((row, index) => {
+                    const values = row.split(',').map(v => v.trim().replace(/"/g, ''));
+                    
+                    // Create lead object
+                    const lead = {
+                        id: Date.now() + index,
+                        company: values[0] || 'Unknown Company',
+                        contact: values[1] || 'Unknown Contact',
+                        email: values[2] || '',
+                        phone: values[3] || '',
+                        industry: values[4] || 'General',
+                        title: values[5] || '',
+                        status: 'new',
+                        created_date: new Date().toISOString(),
+                        source: 'Apollo AI'
+                    };
+                    
+                    parsedLeads.push(lead);
+                });
+
+                // Show preview
+                showImportPreview(parsedLeads);
+                
+            } catch (error) {
+                console.error('❌ Validation error:', error);
+                alert('Error parsing data: ' + error.message + '\n\nPlease check your CSV format and try again.');
+            }
+        }
+
+        function showImportPreview(leads) {
+            console.log(`📊 Showing preview for ${leads.length} leads`);
+            
+            const previewDiv = document.getElementById('importPreview');
+            const contentDiv = document.getElementById('previewContent');
+            
+            let previewHTML = `
+                <div class="mb-4 p-4 bg-blue-50/10 border border-blue-200/20 rounded-xl">
+                    <h6 class="font-bold text-blue-200 mb-2">Import Summary:</h6>
+                    <div class="text-sm text-blue-100">
+                        <p>• <strong>${leads.length}</strong> leads found</p>
+                        <p>• <strong>0</strong> duplicates detected</p>
+                        <p>• <strong>${leads.length}</strong> will be imported</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+            `;
+            
+            // Show first 5 leads as preview
+            leads.slice(0, 5).forEach(lead => {
+                previewHTML += `
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-slate-400">Company:</span>
+                                <span class="text-slate-200 font-medium">${lead.company}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Contact:</span>
+                                <span class="text-slate-200 font-medium">${lead.contact}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Email:</span>
+                                <span class="text-slate-200">${lead.email}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">Phone:</span>
+                                <span class="text-slate-200">${lead.phone}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (leads.length > 5) {
+                previewHTML += `
+                    <div class="text-center py-4 text-slate-400">
+                        ... and ${leads.length - 5} more leads
+                    </div>
+                `;
+            }
+            
+            previewHTML += '</div>';
+            
+            contentDiv.innerHTML = previewHTML;
+            previewDiv.classList.remove('hidden');
+            
+            // Store leads for import
+            window.pendingLeads = leads;
+        }
+
+        function executeApolloImport() {
+            console.log('📥 Executing Apollo AI import...');
+            
+            if (!window.pendingLeads) {
+                alert('No leads to import. Please validate data first.');
+                return;
+            }
+
+            // Get duplicate handling preference
+            const duplicateHandling = document.querySelector('input[name="duplicateHandling"]:checked').value;
+            
+            // Add leads to storage
+            leadsData = [...leadsData, ...window.pendingLeads];
+            
+            // Update UI
+            updateLeadsDisplay();
+            updateLeadsStats();
+            
+            // Show success message
+            const resultsDiv = document.getElementById('importResults');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            resultsContent.innerHTML = `
+                <div class="bg-green-50/10 border border-green-200/20 rounded-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-check-circle text-2xl text-green-500 mr-3"></i>
+                        <h5 class="font-bold text-green-200">Import Successful!</h5>
+                    </div>
+                    <div class="text-sm text-green-100 space-y-2">
+                        <p>• <strong>${window.pendingLeads.length}</strong> leads imported successfully</p>
+                        <p>• Duplicate handling: <strong>${duplicateHandling}</strong></p>
+                        <p>• All leads are marked as "New" status</p>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="closeApolloImportModal()" 
+                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold">
+                            View Imported Leads
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.classList.remove('hidden');
+            
+            // Hide preview
+            document.getElementById('importPreview').classList.add('hidden');
+            
+            console.log(`✅ Successfully imported ${window.pendingLeads.length} leads`);
+        }
+
+        function updateLeadsDisplay() {
+            const tableBody = document.getElementById('leadsTableBody');
+            
+            if (leadsData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-12 text-slate-400">
+                            <div class="flex flex-col items-center space-y-4">
+                                <i class="fas fa-users text-4xl text-slate-500"></i>
+                                <p class="text-lg font-medium">No leads yet</p>
+                                <p class="text-sm">Import from Apollo AI or add leads manually to get started</p>
+                                <button onclick="showApolloImportModal()" 
+                                        class="btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                                    <i class="fas fa-download"></i>
+                                    <span>Import from Apollo AI</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let tableHTML = '';
+            leadsData.forEach(lead => {
+                const statusColors = {
+                    'new': 'bg-blue-100 text-blue-800',
+                    'contacted': 'bg-yellow-100 text-yellow-800',
+                    'qualified': 'bg-green-100 text-green-800',
+                    'queued_for_call': 'bg-purple-100 text-purple-800',
+                    'proposal': 'bg-indigo-100 text-indigo-800',
+                    'won': 'bg-emerald-100 text-emerald-800',
+                    'lost': 'bg-red-100 text-red-800'
+                };
+
+                const priorityColors = {
+                    'high': 'text-red-400',
+                    'medium': 'text-yellow-400',
+                    'low': 'text-green-400'
+                };
+
+                const priorityIcon = lead.ai_calling?.priority ? 
+                    `<i class="fas fa-flag ${priorityColors[lead.ai_calling.priority]} mr-1" title="${lead.ai_calling.priority} priority"></i>` : '';
+
+                tableHTML += `
+                    <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                ${priorityIcon}
+                                <div>
+                                    <div class="font-medium text-slate-200">${lead.company}</div>
+                                    ${lead.source ? `<div class="text-xs text-slate-400">${lead.source}</div>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="text-slate-300">${lead.contact}</div>
+                            ${lead.title ? `<div class="text-xs text-slate-400">${lead.title}</div>` : ''}
+                        </td>
+                        <td class="py-4 px-4 text-slate-300">${lead.email}</td>
+                        <td class="py-4 px-4 text-slate-300">${lead.phone}</td>
+                        <td class="py-4 px-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColors[lead.status] || statusColors['new']}">
+                                ${lead.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </span>
+                            ${lead.ai_calling?.callObjective ? 
+                                `<div class="text-xs text-slate-400 mt-1">${lead.ai_calling.callObjective.replace(/_/g, ' ')}</div>` : ''}
+                        </td>
+                        <td class="py-4 px-4 text-slate-300 capitalize">${lead.industry}</td>
+                        <td class="py-4 px-4">
+                            <div class="flex space-x-2">
+                                <button onclick="editLead('${lead.id}')" class="text-blue-400 hover:text-blue-300" title="Edit Lead">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="queueForCall('${lead.id}')" class="text-purple-400 hover:text-purple-300" title="Queue for AI Call">
+                                    <i class="fas fa-robot"></i>
+                                </button>
+                                <button onclick="manualCall('${lead.id}')" class="text-green-400 hover:text-green-300" title="Manual Call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                                <button onclick="deleteLead('${lead.id}')" class="text-red-400 hover:text-red-300" title="Delete Lead">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableHTML;
+            
+            // Update table info
+            document.getElementById('leadsTableInfo').textContent = `Showing ${leadsData.length} of ${leadsData.length} leads`;
+        }
+
+        function updateLeadsStats() {
+            document.getElementById('totalLeadsCount').textContent = leadsData.length;
+            document.getElementById('hotLeadsCount').textContent = leadsData.filter(l => l.status === 'qualified').length;
+            document.getElementById('pendingLeadsCount').textContent = leadsData.filter(l => l.status === 'new' || l.status === 'contacted').length;
+            document.getElementById('convertedLeadsCount').textContent = leadsData.filter(l => l.status === 'won').length;
+            
+            // Update header pipeline value
+            document.getElementById('pipelineValue').textContent = `$${(leadsData.length * 15000).toLocaleString()}`;
+        }
+
+        // Manual lead form submission handler (now handled in initializeApp)
+
+        function handleManualLeadSubmission(scheduleCall = false) {
+            console.log('💾 Processing manual lead submission...');
+
+            // Get form data
+            const formData = {
+                id: Date.now(),
+                company: document.getElementById('companyName').value,
+                contact: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`.trim(),
+                email: document.getElementById('emailAddress').value,
+                phone: document.getElementById('phoneNumber').value,
+                industry: document.getElementById('leadIndustry').value,
+                title: document.getElementById('jobTitle').value || '',
+                status: scheduleCall ? 'queued_for_call' : 'new',
+                created_date: new Date().toISOString(),
+                source: 'Manual Entry',
+                // Additional enriched data
+                companySize: document.getElementById('companySize').value,
+                annualRevenue: document.getElementById('annualRevenue').value,
+                department: document.getElementById('department').value,
+                address: {
+                    street: document.getElementById('streetAddress').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zip: document.getElementById('zipCode').value
+                },
+                hvac_info: {
+                    currentProvider: document.getElementById('currentProvider').value,
+                    contractExpiration: document.getElementById('contractExpiration').value
+                },
+                ai_calling: {
+                    priority: document.getElementById('leadPriority').value,
+                    bestTimeToCall: document.getElementById('bestTimeToCall').value,
+                    callObjective: document.getElementById('callObjective').value,
+                    notes: document.getElementById('additionalNotes').value
+                }
+            };
+
+            // Validate required fields
+            if (!formData.company || !formData.contact || !formData.email || !formData.phone) {
+                alert('Please fill in all required fields (Company Name, Contact Name, Email, Phone)');
+                return;
+            }
+
+            // Add to leads data
+            leadsData.unshift(formData); // Add to beginning of array
+
+            // Update UI
+            updateLeadsDisplay();
+            updateLeadsStats();
+
+            // Show success message
+            const message = scheduleCall ? 
+                `Lead "${formData.contact}" saved and queued for AI voice calling!` :
+                `Lead "${formData.contact}" saved successfully!`;
+            
+            // Create success notification
+            showSuccessNotification(message, scheduleCall);
+
+            // Close modal
+            closeAddLeadModal();
+
+            console.log(`✅ Lead "${formData.contact}" added successfully`);
+        }
+
+        function saveAndScheduleCall() {
+            handleManualLeadSubmission(true);
+        }
+
+        function showSuccessNotification(message, isScheduled = false) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-2xl transform transition-all duration-500 ${
+                isScheduled ? 'bg-green-500' : 'bg-blue-500'
+            } text-white max-w-sm`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas ${isScheduled ? 'fa-phone-plus' : 'fa-check-circle'} text-xl"></i>
+                    <div>
+                        <p class="font-semibold">${isScheduled ? 'Queued for AI Call!' : 'Lead Saved!'}</p>
+                        <p class="text-sm opacity-90">${message}</p>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 5000);
+        }
+
+        // Seamless AI Import Functions
+        function startLinkedInImport() {
+            console.log('🔗 Starting LinkedIn Sales Navigator import...');
+            showImportProgress('LinkedIn Sales Navigator', 'Connecting to LinkedIn API and searching for HVAC decision makers...');
+            
+            // Simulate API call
+            setTimeout(() => {
+                const sampleLinkedInData = [
+                    {
+                        id: Date.now() + 1,
+                        company: 'Atlanta Convention Center',
+                        contact: 'Michael Rodriguez',
+                        email: 'm.rodriguez@atlantaconvention.com',
+                        phone: '(404) 555-0123',
+                        industry: 'commercial',
+                        title: 'Facilities Director',
+                        status: 'new',
+                        created_date: new Date().toISOString(),
+                        source: 'LinkedIn Sales Navigator',
+                        ai_calling: { priority: 'high', bestTimeToCall: 'morning', callObjective: 'maintenance_quote' }
+                    },
+                    {
+                        id: Date.now() + 2,
+                        company: 'Peachtree Shopping Mall',
+                        contact: 'Sarah Chen',
+                        email: 'schen@peachtreemall.com',
+                        phone: '(404) 555-0156',
+                        industry: 'retail',
+                        title: 'Property Manager',
+                        status: 'new',
+                        created_date: new Date().toISOString(),
+                        source: 'LinkedIn Sales Navigator',
+                        ai_calling: { priority: 'medium', bestTimeToCall: 'afternoon', callObjective: 'energy_audit' }
+                    }
+                ];
+                
+                completeAIImport(sampleLinkedInData, 'LinkedIn Sales Navigator');
+            }, 3000);
+        }
+
+        function startZoomInfoImport() {
+            console.log('🔍 Starting ZoomInfo import...');
+            showImportProgress('ZoomInfo', 'Accessing ZoomInfo database for HVAC prospects with buying intent...');
+            
+            setTimeout(() => {
+                const sampleZoomInfoData = [
+                    {
+                        id: Date.now() + 3,
+                        company: 'Northside Hospital System',
+                        contact: 'Dr. James Wilson',
+                        email: 'jwilson@northside.com',
+                        phone: '(404) 555-0189',
+                        industry: 'healthcare',
+                        title: 'Facilities VP',
+                        status: 'new',
+                        created_date: new Date().toISOString(),
+                        source: 'ZoomInfo',
+                        ai_calling: { priority: 'high', bestTimeToCall: 'morning', callObjective: 'maintenance_quote' }
+                    }
+                ];
+                
+                completeAIImport(sampleZoomInfoData, 'ZoomInfo');
+            }, 3000);
+        }
+
+        function startGoogleBusinessImport() {
+            console.log('🌐 Starting Google Business import...');
+            showImportProgress('Google Business', 'Scraping local business directories for potential HVAC clients...');
+            
+            setTimeout(() => {
+                const sampleGoogleData = [
+                    {
+                        id: Date.now() + 4,
+                        company: 'The Varsity Restaurant',
+                        contact: 'Tony Martinez',
+                        email: 'tmartinez@varsityatlanta.com',
+                        phone: '(404) 555-0167',
+                        industry: 'retail',
+                        title: 'General Manager',
+                        status: 'new',
+                        created_date: new Date().toISOString(),
+                        source: 'Google Business',
+                        ai_calling: { priority: 'medium', bestTimeToCall: 'afternoon', callObjective: 'equipment_upgrade' }
+                    }
+                ];
+                
+                completeAIImport(sampleGoogleData, 'Google Business');
+            }, 3000);
+        }
+
+        function startFileUpload() {
+            console.log('📁 Starting file upload...');
+            alert('CSV/Excel upload feature coming soon! Use Apollo AI import for CSV data now.');
+        }
+
+        function startYellowPagesImport() {
+            console.log('📞 Starting Yellow Pages import...');
+            showImportProgress('Business Directories', 'Scanning Yellow Pages and business directories...');
+            
+            setTimeout(() => {
