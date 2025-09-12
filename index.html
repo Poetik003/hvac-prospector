@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVAC ProSpector - AI-Powered Maintenance Sales Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; height: 400px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-tools text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">HVAC ProSpector</h1>
+                    <span class="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">AI-Powered</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Quick Add Lead
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto">
+                <button onclick="showPage('dashboard')" class="nav-tab py-4 px-1 border-b-2 border-blue-500 text-blue-600 font-medium whitespace-nowrap">
+                    <i class="fas fa-chart-line mr-2"></i>Dashboard
+                </button>
+                <button onclick="showPage('leads')" class="nav-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-users mr-2"></i>Leads
+                </button>
+                <button onclick="showPage('scripts')" class="nav-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-phone mr-2"></i>Scripts
+                </button>
+                <button onclick="showPage('meetings')" class="nav-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-calendar mr-2"></i>Meetings
+                </button>
+                <button onclick="showPage('research')" class="nav-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-search mr-2"></i>Research
+                </button>
+                <button onclick="showPage('analytics')" class="nav-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-chart-bar mr-2"></i>Analytics
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page">
+            <!-- Welcome Message -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-2">Welcome to HVAC ProSpector</h2>
+                <p class="text-blue-100">Your AI-powered sales dashboard for commercial HVAC maintenance agreements</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-users text-blue-500 text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Leads</dt>
+                                    <dd class="text-lg font-medium text-gray-900">247</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-calendar text-green-500 text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Meetings This Week</dt>
+                                    <dd class="text-lg font-medium text-gray-900">12</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-dollar-sign text-yellow-500 text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Pipeline Value</dt>
+                                    <dd class="text-lg font-medium text-gray-900">$1.2M</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-percentage text-purple-500 text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Conversion Rate</dt>
+                                    <dd class="text-lg font-medium text-gray-900">34%</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Sales Pipeline</h3>
+                    <div class="chart-container">
+                        <canvas id="pipelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Industry Breakdown</h3>
+                    <div class="chart-container">
+                        <canvas id="industryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-calendar text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Meeting scheduled with Acme Manufacturing</p>
+                                    <p class="text-sm text-gray-500">Facility tour on Dec 15, 2024</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-400">2 hours ago</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-user-plus text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">New lead added: TechData Center Solutions</p>
+                                    <p class="text-sm text-gray-500">Data center facility in Austin, TX</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-400">4 hours ago</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-purple-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-file-alt text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Research completed: University Medical Center</p>
+                                    <p class="text-sm text-gray-500">500,000 sq ft healthcare facility assessment</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-400">1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leads Page -->
+        <div id="leads" class="page hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h2 class="text-xl font-semibold text-gray-900">Lead Management</h2>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="showApolloImport()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-upload mr-2"></i>Apollo AI Import
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Lead
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- Search and Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" placeholder="Search leads..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option>All Industries</option>
+                            <option>Manufacturing</option>
+                            <option>Data Centers</option>
+                            <option>Healthcare</option>
+                            <option>Universities</option>
+                            <option>Pharmaceutical</option>
+                        </select>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option>All Statuses</option>
+                            <option>New</option>
+                            <option>Qualified</option>
+                            <option>Meeting Scheduled</option>
+                            <option>Proposal Sent</option>
+                            <option>Closed Won</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Leads Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">Acme Manufacturing Corp</div>
+                                        <div class="text-sm text-gray-500">250,000 sq ft production facility</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">John Smith</div>
+                                        <div class="text-sm text-gray-500">j.smith@acmemfg.com</div>
+                                        <div class="text-sm text-gray-500">(555) 123-4567</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Manufacturing</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Qualified</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$45,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            <button class="text-blue-600 hover:text-blue-900">View</button>
+                                            <button class="text-green-600 hover:text-green-900">Call</button>
+                                            <button class="text-purple-600 hover:text-purple-900">Meet</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">TechData Center Solutions</div>
+                                        <div class="text-sm text-gray-500">100,000 sq ft data center</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">Sarah Johnson</div>
+                                        <div class="text-sm text-gray-500">sarah.j@techdata.com</div>
+                                        <div class="text-sm text-gray-500">(555) 987-6543</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Data Centers</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Meeting Scheduled</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$75,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            <button class="text-blue-600 hover:text-blue-900">View</button>
+                                            <button class="text-green-600 hover:text-green-900">Call</button>
+                                            <button class="text-purple-600 hover:text-purple-900">Meet</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">University Medical Center</div>
+                                        <div class="text-sm text-gray-500">500,000 sq ft hospital complex</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">Dr. Michael Chen</div>
+                                        <div class="text-sm text-gray-500">m.chen@umc.edu</div>
+                                        <div class="text-sm text-gray-500">(555) 555-0123</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Healthcare</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Proposal Sent</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$85,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            <button class="text-blue-600 hover:text-blue-900">View</button>
+                                            <button class="text-green-600 hover:text-green-900">Call</button>
+                                            <button class="text-purple-600 hover:text-purple-900">Meet</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts Page -->
+        <div id="scripts" class="page hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">AI-Powered Call Scripts</h2>
+                </div>
+                <div class="p-6">
+                    <!-- Industry Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Industry</label>
+                        <select class="w-full max-w-md p-3 border border-gray-300 rounded-lg">
+                            <option>Manufacturing Facilities</option>
+                            <option>Data Centers</option>
+                            <option>Healthcare/Hospitals</option>
+                            <option>Universities</option>
+                            <option>Pharmaceutical</option>
+                        </select>
+                    </div>
+
+                    <!-- Script Preview -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Manufacturing Script Preview</h3>
+                            <div class="space-y-4 text-sm">
+                                <div>
+                                    <strong>Opening:</strong>
+                                    <p class="mt-1 text-gray-700">"Hi [CONTACT_NAME], this is [YOUR_NAME] from HVAC ProServices. I specialize in helping manufacturing facilities like [COMPANY_NAME] reduce HVAC maintenance costs while improving system reliability. Do you have a quick moment?"</p>
+                                </div>
+                                <div>
+                                    <strong>Value Proposition:</strong>
+                                    <p class="mt-1 text-gray-700">"We've helped similar manufacturing facilities reduce their HVAC costs by 25% while preventing costly production downtime. Our preventive maintenance programs are specifically designed for industrial environments..."</p>
+                                </div>
+                                <div>
+                                    <strong>Discovery Questions:</strong>
+                                    <ul class="mt-1 text-gray-700 list-disc list-inside space-y-1">
+                                        <li>What type of HVAC systems do you currently have?</li>
+                                        <li>Who handles your current maintenance?</li>
+                                        <li>Have you experienced any unexpected breakdowns recently?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Common Objections & Responses</h3>
+                            <div class="space-y-4 text-sm">
+                                <div>
+                                    <strong class="text-red-700">Objection:</strong> "We're happy with our current provider"
+                                    <p class="mt-1 text-gray-700"><strong>Response:</strong> "That's great to hear! Many of our best clients were happy with their previous provider too. We found we could still help them reduce costs by 20-30% while improving reliability. Would you be interested in a no-obligation assessment?"</p>
+                                </div>
+                                <div>
+                                    <strong class="text-red-700">Objection:</strong> "We don't have budget right now"
+                                    <p class="mt-1 text-gray-700"><strong>Response:</strong> "I understand budget constraints. That's exactly why our program makes sense - it typically pays for itself through energy savings and avoiding emergency repairs. When would be a good time to revisit this?"</p>
+                                </div>
+                                <div>
+                                    <strong class="text-red-700">Objection:</strong> "Send me information"
+                                    <p class="mt-1 text-gray-700"><strong>Response:</strong> "I'd be happy to send information, but what I've found is that every facility is unique. A brief 15-minute facility walkthrough would let me provide recommendations specific to your operation. Are you available Tuesday or Wednesday?"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Generate Full Script
+                        </button>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-microphone mr-2"></i>Practice Mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meetings Page -->
+        <div id="meetings" class="page hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-900">Meeting Management</h2>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>Schedule Meeting
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- Upcoming Meetings -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Upcoming Meetings</h3>
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Facility Tour - Acme Manufacturing</h4>
+                                        <p class="text-sm text-gray-600">John Smith, Facilities Manager</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            <span>December 15, 2024 at 2:00 PM</span>
+                                        </div>
+                                        <div class="flex items-center mt-1 text-sm text-gray-500">
+                                            <i class="fas fa-map-marker-alt mr-2"></i>
+                                            <span>1234 Industrial Blvd, Detroit, MI</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-blue-600 hover:text-blue-900 text-sm">Prep</button>
+                                        <button class="text-green-600 hover:text-green-900 text-sm">Join</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Proposal Presentation - TechData Center</h4>
+                                        <p class="text-sm text-gray-600">Sarah Johnson, Operations Director</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            <span>December 18, 2024 at 10:00 AM</span>
+                                        </div>
+                                        <div class="flex items-center mt-1 text-sm text-gray-500">
+                                            <i class="fas fa-video mr-2"></i>
+                                            <span>Virtual Meeting</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-blue-600 hover:text-blue-900 text-sm">Prep</button>
+                                        <button class="text-green-600 hover:text-green-900 text-sm">Join</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meeting Preparation -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Meeting Preparation Checklist</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-2">Before the Meeting</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Review company research</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Prepare industry-specific talking points</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Review facility specifications</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Prepare maintenance agreement proposal</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-2">Materials to Bring</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Company brochures and case studies</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Tablet/laptop for presentation</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Facility assessment forms</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">Business cards and contact information</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Page -->
+        <div id="research" class="page hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Company Research Tools</h2>
+                </div>
+                <div class="p-6">
+                    <!-- Research Form -->
+                    <div class="mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <input type="text" placeholder="Company name..." class="w-full p-3 border border-gray-300 rounded-lg">
+                            <select class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option>Select Industry</option>
+                                <option>Manufacturing</option>
+                                <option>Data Centers</option>
+                                <option>Healthcare</option>
+                                <option>Universities</option>
+                                <option>Pharmaceutical</option>
+                            </select>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-search mr-2"></i>Generate Research Profile
+                        </button>
+                    </div>
+
+                    <!-- Research Template -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Manufacturing Research Template</h3>
+                            <div class="space-y-4 text-sm">
+                                <div>
+                                    <strong>Facility Assessment:</strong>
+                                    <ul class="mt-1 text-gray-700 list-disc list-inside space-y-1">
+                                        <li>Square footage and layout</li>
+                                        <li>Production schedules and critical areas</li>
+                                        <li>Current HVAC system specifications</li>
+                                        <li>Maintenance history and pain points</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong>Industry Pain Points:</strong>
+                                    <ul class="mt-1 text-gray-700 list-disc list-inside space-y-1">
+                                        <li>Production downtime costs ($5,000-50,000/hour)</li>
+                                        <li>Temperature/humidity control requirements</li>
+                                        <li>Energy efficiency and utility costs</li>
+                                        <li>Regulatory compliance (OSHA, EPA)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong>Value Propositions:</strong>
+                                    <ul class="mt-1 text-gray-700 list-disc list-inside space-y-1">
+                                        <li>Prevent costly production interruptions</li>
+                                        <li>Reduce energy consumption by 15-30%</li>
+                                        <li>Extend equipment life by 3-5 years</li>
+                                        <li>Ensure regulatory compliance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Key Research Questions</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="border-l-4 border-blue-500 pl-3">
+                                    <strong>Operations:</strong>
+                                    <p class="text-gray-700">What are your peak production hours? How does HVAC downtime impact operations?</p>
+                                </div>
+                                <div class="border-l-4 border-green-500 pl-3">
+                                    <strong>Current Provider:</strong>
+                                    <p class="text-gray-700">Who handles your current maintenance? What challenges do you face with them?</p>
+                                </div>
+                                <div class="border-l-4 border-yellow-500 pl-3">
+                                    <strong>Budget & Timeline:</strong>
+                                    <p class="text-gray-700">What's your annual maintenance budget? When does your current contract expire?</p>
+                                </div>
+                                <div class="border-l-4 border-purple-500 pl-3">
+                                    <strong>Decision Making:</strong>
+                                    <p class="text-gray-700">Who's involved in vendor selection? What's your evaluation process?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Page -->
+        <div id="analytics" class="page hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Performance Analytics</h2>
+                </div>
+                <div class="p-6">
+                    <!-- Performance Metrics -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">73%</div>
+                            <div class="text-sm text-gray-600">Call-to-Meeting Rate</div>
+                            <div class="text-xs text-gray-500">Industry avg: 45%</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">$52K</div>
+                            <div class="text-sm text-gray-600">Average Deal Size</div>
+                            <div class="text-xs text-gray-500">Target: $45K</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">89 days</div>
+                            <div class="text-sm text-gray-600">Average Sales Cycle</div>
+                            <div class="text-xs text-gray-500">Industry avg: 120 days</div>
+                        </div>
+                    </div>
+
+                    <!-- Performance by Industry -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Performance by Industry</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Manufacturing</span>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600">85% success rate</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Data Centers</span>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600">92% success rate</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Healthcare</span>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                        <div class="bg-yellow-600 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600">78% success rate</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Universities</span>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 67%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600">67% success rate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Apollo AI Import Modal -->
+    <div id="apolloModal" class="fixed inset-0 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-black opacity-50"></div>
+            <div class="relative bg-white rounded-lg p-6 max-w-2xl w-full max-h-screen overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Apollo AI Import</h3>
+                    <button onclick="closeApolloModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">Paste your Apollo AI export data below. Supports both CSV and JSON formats.</p>
+                <textarea id="apolloDataInput" class="w-full h-48 p-3 border rounded-lg" placeholder="Paste your Apollo AI CSV or JSON data here...
+
+Example CSV:
+Company Name,Contact Name,Email,Phone,Industry
+Acme Corp,John Smith,john@acme.com,(555) 123-4567,Manufacturing
+
+Example JSON:
+[{&quot;company_name&quot;:&quot;Acme Corp&quot;,&quot;contact_name&quot;:&quot;John Smith&quot;,...}]"></textarea>
+                <div class="mt-4 flex justify-end gap-3">
+                    <button onclick="closeApolloModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">Cancel</button>
+                    <button onclick="importData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Import Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Find and update the clicked tab
+            const clickedTab = Array.from(document.querySelectorAll('.nav-tab')).find(tab => 
+                tab.getAttribute('onclick').includes(pageId)
+            );
+            if (clickedTab) {
+                clickedTab.classList.remove('border-transparent', 'text-gray-500');
+                clickedTab.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
+
+        // Apollo AI Import Functions
+        function showApolloImport() {
+            document.getElementById('apolloModal').classList.remove('hidden');
+        }
+
+        function closeApolloModal() {
+            document.getElementById('apolloModal').classList.add('hidden');
+        }
+
+        function importData() {
+            const data = document.getElementById('apolloDataInput').value.trim();
+            if (!data) {
+                alert('Please paste your Apollo AI data first');
+                return;
+            }
+            
+            // Simulate import process
+            alert('Apollo AI import functionality will be fully integrated in the next version!\n\nFor now, you can manually add leads using the "Add Lead" button.');
+            closeApolloModal();
+        }
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Pipeline Chart
+                const pipelineCtx = document.getElementById('pipelineChart');
+                if (pipelineCtx) {
+                    new Chart(pipelineCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['New', 'Qualified', 'Meeting', 'Proposal', 'Closed Won'],
+                            datasets: [{
+                                label: 'Number of Leads',
+                                data: [45, 32, 28, 15, 8],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)',
+                                    'rgba(34, 197, 94, 0.8)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Industry Chart  
+                const industryCtx = document.getElementById('industryChart');
+                if (industryCtx) {
+                    new Chart(industryCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Manufacturing', 'Data Centers', 'Healthcare', 'Universities', 'Pharmaceutical'],
+                            datasets: [{
+                                data: [35, 25, 20, 15, 5],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)', 
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)',
+                                    'rgba(107, 114, 128, 0.8)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+
+                console.log('HVAC ProSpector Dashboard loaded successfully!');
+            } catch (error) {
+                console.error('Error initializing charts:', error);
+            }
+        });
+    </script>
+</body>
+</html>
