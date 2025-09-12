@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSpector Pro - AI-Powered Sales Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" href="favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-morphism {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark-glass {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .nav-item.active { 
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px 0 rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item:hover:not(.active) {
+            background: rgba(148, 163, 184, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .card-modern {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px 0 rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px 0 rgba(16, 185, 129, 0.4);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .loading-screen {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-left: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tab-content {
+            min-height: 600px;
+        }
+        
+        /* Responsive navigation */
+        @media (max-width: 768px) {
+            .nav-item {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Table styles */
+        .table-container {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        
+        /* Form styles */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white overflow-x-hidden">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen fixed inset-0 z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="spinner mx-auto mb-6"></div>
+            <h2 class="text-2xl font-bold gradient-text mb-2">ProSpector Pro</h2>
+            <p class="text-slate-400">Initializing AI-Powered Sales Dashboard...</p>
+        </div>
+    </div>
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Sidebar Navigation -->
+        <div class="w-full lg:w-64 glass-morphism lg:min-h-screen">
+            <div class="p-6 border-b border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">ProSpector</h1>
+                        <p class="text-xs text-slate-400">AI Sales Platform</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Items -->
+            <nav class="p-4 space-y-2">
+                <button data-tab="dashboard" class="nav-item active w-full flex items-center py-4 px-4 text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-tachometer-alt mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Dashboard</span>
+                </button>
+                
+                <button data-tab="leads" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-users mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Leads</span>
+                </button>
+                
+                <button data-tab="scripts" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-file-alt mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Scripts</span>
+                </button>
+                
+                <button data-tab="voicecalling" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-phone mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Voice AI</span>
+                </button>
+                
+                <button data-tab="meetings" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-calendar mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Meetings</span>
+                </button>
+                
+                <button data-tab="research" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-search mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Research</span>
+                </button>
+                
+                <button data-tab="analytics" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300">
+                    <i class="fas fa-chart-bar mr-3 text-lg"></i>
+                    <span class="hidden lg:block">Analytics</span>
+                </button>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-hidden">
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content p-6 animate-fade-in">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Sales Dashboard</h2>
+                    <p class="text-slate-400">AI-powered lead management and voice calling platform</p>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-blue-500/20">
+                                <i class="fas fa-users text-2xl text-blue-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="totalLeadsCount">247</p>
+                                <p class="text-sm font-semibold text-slate-300">Total Leads</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                            <span class="text-green-500 font-semibold">12%</span>
+                            <span class="text-slate-400 ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20">
+                                <i class="fas fa-fire text-2xl text-green-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="hotLeadsCount">89</p>
+                                <p class="text-sm font-semibold text-slate-300">Hot Leads</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                            <span class="text-green-500 font-semibold">36%</span>
+                            <span class="text-slate-400 ml-1">conversion rate</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-yellow-500/20">
+                                <i class="fas fa-clock text-2xl text-yellow-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="pendingLeadsCount">124</p>
+                                <p class="text-sm font-semibold text-slate-300">Pending</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-phone text-blue-500 mr-1"></i>
+                            <span class="text-slate-400">awaiting calls</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-purple-500/20">
+                                <i class="fas fa-trophy text-2xl text-purple-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100" id="convertedLeadsCount">34</p>
+                                <p class="text-sm font-semibold text-slate-300">Converted</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-dollar-sign text-green-500 mr-1"></i>
+                            <span class="text-green-500 font-semibold">$145,200</span>
+                            <span class="text-slate-400 ml-1">revenue</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <button data-tab="leads" class="group p-6 rounded-xl bg-gradient-to-br from-blue-900/30 to-blue-800/40 border border-blue-500/30 hover:from-blue-800/40 hover:to-blue-700/50 transition-all duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-all duration-300">
+                                <i class="fas fa-plus text-2xl text-blue-400"></i>
+                            </div>
+                            <div class="ml-4 text-left">
+                                <h3 class="text-lg font-bold text-white">Add New Leads</h3>
+                                <p class="text-sm text-blue-200">Import or create leads</p>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-blue-100 text-sm">Import from LinkedIn, Apollo AI, add manually, or use Seamless AI integration</p>
+                        </div>
+                    </button>
+                    
+                    <button data-tab="voicecalling" class="group p-6 rounded-xl bg-gradient-to-br from-slate-700/30 to-slate-600/40 border border-slate-500/30 hover:from-slate-600/40 hover:to-slate-500/50 transition-all duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 rounded-xl bg-slate-500/20 group-hover:bg-slate-500/30 transition-all duration-300">
+                                <i class="fas fa-phone-volume text-2xl text-slate-400"></i>
+                            </div>
+                            <div class="ml-4 text-left">
+                                <h3 class="text-lg font-bold text-white">Start Voice Calling</h3>
+                                <p class="text-sm text-slate-200">AI-powered calls</p>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-slate-100 text-sm">Launch AI voice campaigns with smart scripts and real-time coaching</p>
+                        </div>
+                    </button>
+                    
+                    <button data-tab="scripts" class="group p-6 rounded-xl bg-gradient-to-br from-green-900/30 to-green-800/40 border border-green-500/30 hover:from-green-800/40 hover:to-green-700/50 transition-all duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20 group-hover:bg-green-500/30 transition-all duration-300">
+                                <i class="fas fa-magic text-2xl text-green-400"></i>
+                            </div>
+                            <div class="ml-4 text-left">
+                                <h3 class="text-lg font-bold text-white">Generate Scripts</h3>
+                                <p class="text-sm text-green-200">AI voice scripts</p>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-green-100 text-sm">Create personalized call scripts with AI assistance and proven templates</p>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card-modern rounded-2xl p-6">
+                    <h3 class="text-xl font-bold gradient-text mb-4">Recent Activity</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-white">New lead imported from LinkedIn Sales Navigator</p>
+                                <p class="text-xs text-slate-400">2 minutes ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-white">AI script generated for cold calling</p>
+                                <p class="text-xs text-slate-400">5 minutes ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-white">Voice call completed successfully</p>
+                                <p class="text-xs text-slate-400">8 minutes ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-white">Follow-up meeting scheduled</p>
+                                <p class="text-xs text-slate-400">12 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leads Tab -->
+            <div id="leads-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Lead Management</h2>
+                    <p class="text-slate-400">Import, manage, and track your sales leads with AI-powered tools</p>
+                </div>
+                
+                <!-- Primary Lead Import Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="card-modern rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-700 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fab fa-linkedin text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">LinkedIn Sales Navigator</h3>
+                        <p class="text-slate-300 text-sm mb-6">Import leads directly from your LinkedIn Sales Navigator searches and saved lists</p>
+                        
+                        <button id="linkedinImportBtn" class="w-full bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 mb-3">
+                            <i class="fab fa-linkedin"></i>
+                            <span>Connect LinkedIn</span>
+                        </button>
+                        
+                        <div class="text-xs text-slate-400">
+                            <p>• Direct Navigator sync</p>
+                            <p>• Search results import</p>
+                            <p>• Profile enrichment</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-download text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Apollo AI Import</h3>
+                        <p class="text-slate-300 text-sm mb-6">Import leads directly from your Apollo AI exports with intelligent field mapping</p>
+                        
+                        <button id="apolloImportBtn" class="w-full btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 mb-3">
+                            <i class="fas fa-upload"></i>
+                            <span>Import from Apollo AI</span>
+                        </button>
+                        
+                        <div class="text-xs text-slate-400">
+                            <p>• Supports CSV format</p>
+                            <p>• Automatic duplicate detection</p>
+                            <p>• Bulk import validation</p>
+                        </div>
+                    </div>
+
+                    <div class="card-modern rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-plus text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Manual Entry</h3>
+                        <p class="text-slate-300 text-sm mb-6">Add individual leads manually with comprehensive contact information</p>
+                        
+                        <button id="manualEntryBtn" class="w-full btn-success text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 mb-3">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Lead Manually</span>
+                        </button>
+                        
+                        <div class="text-xs text-slate-400">
+                            <p>• Complete contact forms</p>
+                            <p>• Custom field support</p>
+                            <p>• Immediate call scheduling</p>
+                        </div>
+                    </div>
+
+                    <div class="card-modern rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-robot text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Seamless AI</h3>
+                        <p class="text-slate-300 text-sm mb-6">Integrate with Seamless AI to automatically enrich prospect data</p>
+                        
+                        <button id="seamlessAiBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 mb-3">
+                            <i class="fas fa-magic"></i>
+                            <span>Seamless AI Import</span>
+                        </button>
+                        
+                        <div class="text-xs text-slate-400">
+                            <p>• Real-time enrichment</p>
+                            <p>• Contact verification</p>
+                            <p>• Social media profiles</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Import Sources -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-orange-900/20 to-orange-800/30 border border-orange-500/30 rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-search text-2xl text-orange-400 mr-3"></i>
+                            <h4 class="text-lg font-bold text-white">ZoomInfo</h4>
+                        </div>
+                        <p class="text-orange-100 text-sm mb-4">Sync with ZoomInfo database for enhanced contact information and company insights</p>
+                        <button id="zoomInfoImportBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                            Setup ZoomInfo
+                        </button>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-green-900/20 to-green-800/30 border border-green-500/30 rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fab fa-google text-2xl text-green-400 mr-3"></i>
+                            <h4 class="text-lg font-bold text-white">Google Business</h4>
+                        </div>
+                        <p class="text-green-100 text-sm mb-4">Import local business contacts from Google Business directory and maps data</p>
+                        <button id="googleBusinessImportBtn" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                            Import Google
+                        </button>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-slate-700/20 to-slate-600/30 border border-slate-500/30 rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-file-csv text-2xl text-slate-400 mr-3"></i>
+                            <h4 class="text-lg font-bold text-white">CSV Upload</h4>
+                        </div>
+                        <p class="text-slate-100 text-sm mb-4">Upload any CSV file with lead data from your existing CRM or database</p>
+                        <button id="csvUploadBtn" class="w-full bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                            Upload CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sample Leads Table -->
+                <div class="card-modern rounded-2xl">
+                    <div class="p-6 border-b border-slate-700/50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <h3 class="text-xl font-bold gradient-text mb-4 sm:mb-0">Lead Database</h3>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search leads..." 
+                                           class="pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                                </div>
+                                <select class="px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="all">All Sources</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="apollo">Apollo AI</option>
+                                    <option value="seamless">Seamless AI</option>
+                                    <option value="manual">Manual Entry</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-slate-700/50">
+                                    <th class="text-left py-4 px-6 text-slate-300 font-semibold">Contact</th>
+                                    <th class="text-left py-4 px-6 text-slate-300 font-semibold">Company</th>
+                                    <th class="text-left py-4 px-6 text-slate-300 font-semibold">Status</th>
+                                    <th class="text-left py-4 px-6 text-slate-300 font-semibold">Source</th>
+                                    <th class="text-left py-4 px-6 text-slate-300 font-semibold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-white/5 transition-colors duration-200">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fab fa-linkedin text-white"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-white">Sarah Johnson</div>
+                                                <div class="text-sm text-slate-400">sarah.j@techcorp.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">TechCorp Solutions</div>
+                                        <div class="text-sm text-slate-400">Technology • VP Sales</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-500 text-green-100 rounded-full">
+                                            QUALIFIED
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <i class="fab fa-linkedin text-blue-400 mr-2"></i>
+                                            <span class="text-slate-300">LinkedIn</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-400 hover:text-blue-300" title="Call Lead">
+                                                <i class="fas fa-phone"></i>
+                                            </button>
+                                            <button class="text-green-400 hover:text-green-300" title="Send Message">
+                                                <i class="fab fa-linkedin"></i>
+                                            </button>
+                                            <button class="text-purple-400 hover:text-purple-300" title="Schedule Meeting">
+                                                <i class="fas fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-white/5 transition-colors duration-200">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fas fa-rocket text-white"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-white">Mike Rodriguez</div>
+                                                <div class="text-sm text-slate-400">m.rodriguez@innovate.co</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">Innovate Co</div>
+                                        <div class="text-sm text-slate-400">Healthcare • CTO</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-500 text-blue-100 rounded-full">
+                                            NEW
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-rocket text-blue-400 mr-2"></i>
+                                            <span class="text-slate-300">Apollo AI</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-400 hover:text-blue-300" title="Call Lead">
+                                                <i class="fas fa-phone"></i>
+                                            </button>
+                                            <button class="text-green-400 hover:text-green-300" title="Send Email">
+                                                <i class="fas fa-envelope"></i>
+                                            </button>
+                                            <button class="text-purple-400 hover:text-purple-300" title="Schedule Meeting">
+                                                <i class="fas fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-white/5 transition-colors duration-200">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fas fa-user text-white"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-white">Emily Chen</div>
+                                                <div class="text-sm text-slate-400">e.chen@growth.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-white">Growth Dynamics</div>
+                                        <div class="text-sm text-slate-400">Finance • Director</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-yellow-500 text-yellow-100 rounded-full">
+                                            CONTACTED
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-user-plus text-green-400 mr-2"></i>
+                                            <span class="text-slate-300">Manual</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-400 hover:text-blue-300" title="Call Lead">
+                                                <i class="fas fa-phone"></i>
+                                            </button>
+                                            <button class="text-green-400 hover:text-green-300" title="Send Email">
+                                                <i class="fas fa-envelope"></i>
+                                            </button>
+                                            <button class="text-purple-400 hover:text-purple-300" title="Schedule Meeting">
+                                                <i class="fas fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="p-6 border-t border-slate-700/50 bg-slate-800/30">
+                        <div class="flex items-center justify-between text-sm text-slate-400">
+                            <span>Showing 3 of 247 leads</span>
+                            <div class="flex items-center space-x-2">
+                                <button class="px-3 py-1 rounded border border-slate-600 hover:bg-slate-700 transition-colors">Previous</button>
+                                <span class="px-3 py-1">Page 1 of 83</span>
+                                <button class="px-3 py-1 rounded border border-slate-600 hover:bg-slate-700 transition-colors">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LinkedIn Import Modal -->
+            <div id="linkedinImportModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div class="card-modern rounded-2xl p-8 m-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">LinkedIn Sales Navigator Import</h3>
+                        <button id="closeLinkedinModalBtn" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fab fa-linkedin text-white text-3xl"></i>
+                        </div>
+                        <p class="text-slate-300 text-lg">Connect your LinkedIn Sales Navigator to import leads automatically</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="space-y-6">
+                            <h4 class="text-lg font-bold text-white">Import Options</h4>
+                            
+                            <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-search text-blue-400 text-xl mr-3"></i>
+                                    <h5 class="font-semibold text-white">Search Results</h5>
+                                </div>
+                                <p class="text-slate-300 text-sm mb-4">Import leads directly from your Sales Navigator search results</p>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                                    Import Search Results
+                                </button>
+                            </div>
+                            
+                            <div class="bg-green-900/20 border border-green-500/30 rounded-xl p-6">
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-bookmark text-green-400 text-xl mr-3"></i>
+                                    <h5 class="font-semibold text-white">Saved Lists</h5>
+                                </div>
+                                <p class="text-slate-300 text-sm mb-4">Import from your saved lead lists in Sales Navigator</p>
+                                <button class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                                    Import Saved Lists
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <h4 class="text-lg font-bold text-white">Features</h4>
+                            
+                            <ul class="space-y-3 text-slate-300">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Profile information enrichment
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Company details and insights
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Contact information extraction
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Activity history tracking
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Duplicate prevention
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-3"></i>
+                                    Real-time synchronization
+                                </li>
+                            </ul>
+                            
+                            <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-yellow-400 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="text-yellow-200 text-sm font-medium mb-2">Setup Required</p>
+                                        <p class="text-yellow-100 text-xs">You'll need to install our LinkedIn Sales Navigator extension and authenticate your account.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center space-x-3 mx-auto mb-4">
+                            <i class="fab fa-linkedin text-xl"></i>
+                            <span>Authorize LinkedIn Sales Navigator</span>
+                        </button>
+                        
+                        <p class="text-xs text-slate-500">
+                            By connecting, you agree to our terms of service and LinkedIn's data usage policies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scripts Tab -->
+            <div id="scripts-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">AI Voice Scripts</h2>
+                    <p class="text-slate-400">Generate, customize, and manage AI-powered voice scripts for every sales scenario</p>
+                </div>
+                
+                <!-- Scripts Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-blue-500/20">
+                                <i class="fas fa-file-alt text-2xl text-blue-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100">24</p>
+                                <p class="text-sm font-semibold text-slate-300">Total Scripts</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-green-500/20">
+                                <i class="fas fa-star text-2xl text-green-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100">8</p>
+                                <p class="text-sm font-semibold text-slate-300">Active Scripts</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-xl bg-orange-500/20">
+                                <i class="fas fa-chart-line text-2xl text-orange-600"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-slate-100">87%</p>
+                                <p class="text-sm font-semibold text-slate-300">Success Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Script Generation Categories -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6">Generate New Script</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Cold Calling -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-blue-200/30 hover:border-blue-400 bg-gradient-to-br from-blue-900/20 to-blue-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="cold_calling">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-all duration-300">
+                                    <i class="fas fa-phone text-2xl text-blue-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Cold Calling</h4>
+                                    <p class="text-sm text-blue-200">First contact scripts</p>
+                                </div>
+                            </div>
+                            <p class="text-blue-100 text-sm">Generate engaging cold call scripts that capture attention and create interest.</p>
+                            <div class="mt-4 flex items-center text-xs text-blue-300">
+                                <i class="fas fa-magic mr-2"></i>
+                                <span>AI-Powered Generation</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Follow-up -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-green-200/30 hover:border-green-400 bg-gradient-to-br from-green-900/20 to-green-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="follow_up">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-green-500/20 group-hover:bg-green-500/30 transition-all duration-300">
+                                    <i class="fas fa-redo text-2xl text-green-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Follow-up</h4>
+                                    <p class="text-sm text-green-200">Nurture relationships</p>
+                                </div>
+                            </div>
+                            <p class="text-green-100 text-sm">Create compelling follow-up scripts that maintain momentum.</p>
+                            <div class="mt-4 flex items-center text-xs text-green-300">
+                                <i class="fas fa-heart mr-2"></i>
+                                <span>Relationship Building</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Setting -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-purple-200/30 hover:border-purple-400 bg-gradient-to-br from-purple-900/20 to-purple-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="appointment_setting">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-purple-500/20 group-hover:bg-purple-500/30 transition-all duration-300">
+                                    <i class="fas fa-calendar text-2xl text-purple-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Appointment Setting</h4>
+                                    <p class="text-sm text-purple-200">Schedule meetings</p>
+                                </div>
+                            </div>
+                            <p class="text-purple-100 text-sm">Develop persuasive scripts that effectively secure meetings.</p>
+                            <div class="mt-4 flex items-center text-xs text-purple-300">
+                                <i class="fas fa-calendar-check mr-2"></i>
+                                <span>Meeting Conversion</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Quote Discussion -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-orange-200/30 hover:border-orange-400 bg-gradient-to-br from-orange-900/20 to-orange-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="quote_discussion">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-orange-500/20 group-hover:bg-orange-500/30 transition-all duration-300">
+                                    <i class="fas fa-file-invoice-dollar text-2xl text-orange-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Quote Discussion</h4>
+                                    <p class="text-sm text-orange-200">Present pricing</p>
+                                </div>
+                            </div>
+                            <p class="text-orange-100 text-sm">Generate confident pricing presentation scripts.</p>
+                            <div class="mt-4 flex items-center text-xs text-orange-300">
+                                <i class="fas fa-dollar-sign mr-2"></i>
+                                <span>Value Presentation</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Objection Handling -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-red-200/30 hover:border-red-400 bg-gradient-to-br from-red-900/20 to-red-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="objection_handling">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-red-500/20 group-hover:bg-red-500/30 transition-all duration-300">
+                                    <i class="fas fa-shield-alt text-2xl text-red-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Objection Handling</h4>
+                                    <p class="text-sm text-red-200">Overcome resistance</p>
+                                </div>
+                            </div>
+                            <p class="text-red-100 text-sm">Craft scripts that gracefully address common objections.</p>
+                            <div class="mt-4 flex items-center text-xs text-red-300">
+                                <i class="fas fa-shield mr-2"></i>
+                                <span>Objection Resolution</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Emergency Service -->
+                        <div class="script-card group p-6 rounded-2xl border-2 border-yellow-200/30 hover:border-yellow-400 bg-gradient-to-br from-yellow-900/20 to-yellow-800/30 hover:shadow-2xl transition-all duration-300 cursor-pointer" data-script-type="emergency_service">
+                            <div class="flex items-center mb-4">
+                                <div class="p-3 rounded-xl bg-yellow-500/20 group-hover:bg-yellow-500/30 transition-all duration-300">
+                                    <i class="fas fa-exclamation-triangle text-2xl text-yellow-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-white">Emergency Service</h4>
+                                    <p class="text-sm text-yellow-200">Urgent situations</p>
+                                </div>
+                            </div>
+                            <p class="text-yellow-100 text-sm">Create urgent response scripts for emergency situations.</p>
+                            <div class="mt-4 flex items-center text-xs text-yellow-300">
+                                <i class="fas fa-bolt mr-2"></i>
+                                <span>Rapid Response</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Scripts -->
+                <div class="card-modern rounded-2xl">
+                    <div class="p-6 border-b border-slate-700/50">
+                        <h3 class="text-xl font-bold gradient-text">Recent Scripts</h3>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-4"></div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">HVAC Cold Call - Seasonal</h4>
+                                        <p class="text-sm text-slate-400">Cold Calling • Created 2 hours ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs text-green-400 bg-green-400/20 px-2 py-1 rounded">92% Success</span>
+                                    <button class="text-blue-400 hover:text-blue-300">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="text-slate-400 hover:text-slate-300">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Follow-up After Quote</h4>
+                                        <p class="text-sm text-slate-400">Follow-up • Created 1 day ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs text-green-400 bg-green-400/20 px-2 py-1 rounded">87% Success</span>
+                                    <button class="text-blue-400 hover:text-blue-300">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="text-slate-400 hover:text-slate-300">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full mr-4"></div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Emergency AC Repair</h4>
+                                        <p class="text-sm text-slate-400">Emergency Service • Created 2 days ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs text-green-400 bg-green-400/20 px-2 py-1 rounded">95% Success</span>
+                                    <button class="text-blue-400 hover:text-blue-300">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="text-slate-400 hover:text-slate-300">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice AI Tab -->
+            <div id="voicecalling-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">AI Voice Calling</h2>
+                    <p class="text-slate-400">Choose your preferred calling method and start engaging with prospects</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Free Platforms Section -->
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-gift text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Free AI Platforms</h3>
+                            <p class="text-slate-300">Get started with free AI voice tools</p>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span class="text-slate-200">Free tier AI voice generation</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span class="text-slate-200">Basic call automation</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span class="text-slate-200">Simple script following</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center space-x-2 mb-3">
+                            <i class="fas fa-rocket"></i>
+                            <span>Start Free Setup</span>
+                        </button>
+                        
+                        <button class="w-full bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            View Platform Options
+                        </button>
+                    </div>
+                    
+                    <!-- Professional Platforms -->
+                    <div class="card-modern rounded-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-crown text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Professional AI</h3>
+                            <p class="text-slate-300">Advanced features for scaling teams</p>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                                <span class="text-slate-200">Advanced AI conversation</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                                <span class="text-slate-200">Real-time coaching & feedback</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                                <span class="text-slate-200">CRM integration & analytics</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded-xl p-4 mb-4 border border-blue-500/30">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white font-semibold">Starting at $49/month</p>
+                                    <p class="text-blue-200 text-sm">Professional features</p>
+                                </div>
+                                <div class="text-2xl">💎</div>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-upgrade"></i>
+                            <span>Upgrade to Professional</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Success Story -->
+                <div class="card-modern rounded-2xl p-6">
+                    <h3 class="text-xl font-bold gradient-text mb-4">🚀 Success Story</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-400 mb-2">340%</div>
+                            <div class="text-sm text-slate-400">Lead Increase</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-400 mb-2">45%</div>
+                            <div class="text-sm text-slate-400">Cost Reduction</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-purple-400 mb-2">2.5x</div>
+                            <div class="text-sm text-slate-400">ROI Improvement</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meetings Tab -->
+            <div id="meetings-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Meeting Scheduler</h2>
+                    <p class="text-slate-400">Schedule and manage meetings with prospects and clients</p>
+                </div>
+                
+                <div class="card-modern rounded-2xl p-8 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Meeting Management</h3>
+                    <p class="text-slate-300 mb-6">Advanced meeting scheduling functionality coming soon with calendar integration, automated reminders, and AI-powered meeting preparation.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Calendar Integration
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Automated Reminders
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            AI Meeting Prep
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Tab -->
+            <div id="research-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Prospect Research</h2>
+                    <p class="text-slate-400">AI-powered research tools for prospect intelligence</p>
+                </div>
+                
+                <div class="card-modern rounded-2xl p-8 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-search text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Research Tools</h3>
+                    <p class="text-slate-300 mb-6">Comprehensive prospect research functionality coming soon with company insights, social media analysis, and competitive intelligence.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Company Intelligence
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Social Media Analysis
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Competitive Insights
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content hidden animate-fade-in p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Analytics Dashboard</h2>
+                    <p class="text-slate-400">Performance analytics and business intelligence</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="card-modern rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4">Call Performance</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Success Rate</span>
+                                <span class="text-green-400 font-semibold">87%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Avg Call Duration</span>
+                                <span class="text-blue-400 font-semibold">4:32</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Conversion Rate</span>
+                                <span class="text-purple-400 font-semibold">23%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4">Revenue Metrics</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Monthly Revenue</span>
+                                <span class="text-green-400 font-semibold">$145,200</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Avg Deal Size</span>
+                                <span class="text-blue-400 font-semibold">$4,271</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-300">Pipeline Value</span>
+                                <span class="text-purple-400 font-semibold">$287,500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-modern rounded-2xl p-8 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-bar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Advanced Analytics</h3>
+                    <p class="text-slate-300 mb-6">Comprehensive analytics suite coming soon with detailed reporting, predictive insights, and custom dashboards for data-driven decision making.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-400">
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Predictive Analytics
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Custom Dashboards
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            Detailed Reporting
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        console.log('🚀 ProSpector Pro initializing...');
+        
+        // Tab switching function
+        function switchTab(tabName, event) {
+            console.log(`🔄 Switching to ${tabName} tab`);
+            
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active', 'text-white');
+                item.classList.add('text-white/80');
+            });
+            
+            // Show target tab
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                console.log(`✅ Showed ${tabName} tab`);
+            }
+            
+            // Activate nav item
+            const navButton = event ? event.currentTarget : document.querySelector(`[data-tab="${tabName}"]`);
+            if (navButton) {
+                navButton.classList.add('active', 'text-white');
+                navButton.classList.remove('text-white/80');
+                console.log(`✅ Activated ${tabName} nav`);
+            }
+        }
+        
+        // Generate script function
+        function generateScript(scriptType) {
+            console.log(`🎯 Generating ${scriptType} script...`);
+            
+            const scriptNames = {
+                'cold_calling': 'Cold Calling',
+                'follow_up': 'Follow-up',
+                'appointment_setting': 'Appointment Setting',
+                'quote_discussion': 'Quote Discussion',
+                'objection_handling': 'Objection Handling',
+                'emergency_service': 'Emergency Service'
+            };
+            
+            const scriptName = scriptNames[scriptType] || scriptType.replace('_', ' ');
+            
+            alert(`🎯 ${scriptName} Script Generator\n\n✨ AI is generating your personalized script...\n\n🚀 Features:\n• Industry-specific language\n• Tone customization\n• Length options\n• Professional templates\n• Success rate optimization\n\nThis would open the full AI script generator interface!`);
+        }
+        
+        // LinkedIn import function
+        function showLinkedInImport() {
+            console.log('🔗 Opening LinkedIn Sales Navigator import...');
+            document.getElementById('linkedinImportModal').classList.remove('hidden');
+        }
+        
+        // Close LinkedIn modal
+        function closeLinkedInModal() {
+            console.log('❌ Closing LinkedIn import modal');
+            document.getElementById('linkedinImportModal').classList.add('hidden');
+        }
+        
+        // Other import functions
+        function showApolloImport() {
+            console.log('🚀 Opening Apollo AI import...');
+            alert('🚀 Apollo AI Import\n\nPaste your Apollo AI CSV data:\n• Company, Contact, Email, Phone, Industry, Title\n• Automatic duplicate detection\n• Bulk validation and import\n• Real-time preview\n\nThis would open the full Apollo AI import interface!');
+        }
+        
+        function showManualEntry() {
+            console.log('➕ Opening manual lead entry...');
+            alert('➕ Manual Lead Entry\n\n📝 Add individual leads with:\n• Complete contact information\n• Company and industry details\n• Custom notes and tags\n• Immediate call scheduling\n• Priority assignment\n\nThis would open the manual lead entry form!');
+        }
+        
+        function showSeamlessAI() {
+            console.log('🤖 Opening Seamless AI integration...');
+            alert('🤖 Seamless AI Integration\n\n✨ Features:\n• Real-time lead enrichment\n• Contact verification\n• Social media profiles\n• Company insights\n• Bulk processing\n\nThis would open the Seamless AI setup interface!');
+        }
+        
+        function showZoomInfoImport() {
+            console.log('🔍 Opening ZoomInfo integration...');
+            alert('🔍 ZoomInfo Integration\n\n🎯 Capabilities:\n• Direct database access\n• Advanced filtering\n• Contact verification\n• Company technographics\n• Intent data\n\nThis would open the ZoomInfo setup wizard!');
+        }
+        
+        function showGoogleBusinessImport() {
+            console.log('🌐 Opening Google Business import...');
+            alert('🌐 Google Business Import\n\n📍 Local targeting:\n• Business directory scraping\n• Geographic filtering\n• Contact extraction\n• Category targeting\n• Review analysis\n\nThis would open the Google Business import tool!');
+        }
+        
+        function showCSVUpload() {
+            console.log('📄 Opening CSV upload...');
+            alert('📄 CSV Upload\n\n📊 Universal import:\n• Any CSV format\n• Field mapping\n• Data validation\n• Duplicate handling\n• Batch processing\n\nThis would open the CSV upload interface!');
+        }
+        
+        // Initialize the application
+        function initializeApp() {
+            console.log('🚀 Initializing ProSpector Pro...');
+            
+            try {
+                // Add tab click listeners
+                document.querySelectorAll('[data-tab]').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        const tabName = this.getAttribute('data-tab');
+                        if (tabName) {
+                            console.log(`🖱️ Tab clicked: ${tabName}`);
+                            switchTab(tabName, e);
+                        }
+                    });
+                });
+                
+                // Add script generation listeners
+                document.querySelectorAll('[data-script-type]').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const scriptType = this.getAttribute('data-script-type');
+                        if (scriptType) {
+                            generateScript(scriptType);
+                        }
+                    });
+                });
+                
+                // Add import button listeners
+                const linkedinBtn = document.getElementById('linkedinImportBtn');
+                if (linkedinBtn) {
+                    linkedinBtn.addEventListener('click', showLinkedInImport);
+                }
+                
+                const apolloBtn = document.getElementById('apolloImportBtn');
+                if (apolloBtn) {
+                    apolloBtn.addEventListener('click', showApolloImport);
+                }
+                
+                const manualBtn = document.getElementById('manualEntryBtn');
+                if (manualBtn) {
+                    manualBtn.addEventListener('click', showManualEntry);
+                }
+                
+                const seamlessBtn = document.getElementById('seamlessAiBtn');
+                if (seamlessBtn) {
+                    seamlessBtn.addEventListener('click', showSeamlessAI);
+                }
+                
+                const zoomInfoBtn = document.getElementById('zoomInfoImportBtn');
+                if (zoomInfoBtn) {
+                    zoomInfoBtn.addEventListener('click', showZoomInfoImport);
+                }
+                
+                const googleBtn = document.getElementById('googleBusinessImportBtn');
+                if (googleBtn) {
+                    googleBtn.addEventListener('click', showGoogleBusinessImport);
+                }
+                
+                const csvBtn = document.getElementById('csvUploadBtn');
+                if (csvBtn) {
+                    csvBtn.addEventListener('click', showCSVUpload);
+                }
+                
+                // LinkedIn modal close button
+                const closeLinkedinBtn = document.getElementById('closeLinkedinModalBtn');
+                if (closeLinkedinBtn) {
+                    closeLinkedinBtn.addEventListener('click', closeLinkedInModal);
+                }
+                
+                console.log('✅ ProSpector Pro initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+            }
+        }
+        
+        // Hide loading screen
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 500);
+                console.log('✅ Loading screen hidden');
+            }
+        }
+        
+        // Start initialization when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM loaded, starting initialization...');
+            initializeApp();
+            
+            // Hide loading screen after short delay
+            setTimeout(hideLoadingScreen, 1200);
+        });
+        
+        // Fallback loading screen removal
+        setTimeout(hideLoadingScreen, 3000);
+        
+        // Make functions globally available
+        window.switchTab = switchTab;
+        window.generateScript = generateScript;
+        window.showLinkedInImport = showLinkedInImport;
+        
+        console.log('🎯 ProSpector Pro scripts loaded');
+    </script>
+</body>
+</html>
