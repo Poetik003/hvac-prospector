@@ -172,14 +172,14 @@
     
     <!-- IMMEDIATE LOADING SCREEN FIX -->
     <script>
-        // Force hide loading screen after 3 seconds no matter what
+        // Force hide loading screen after 1 second for faster load
         setTimeout(function() {
             const loadingScreen = document.getElementById('loadingScreen');
             if (loadingScreen) {
                 loadingScreen.style.display = 'none';
-                console.log('🚨 Emergency loading screen removal');
+                console.log('✅ Loading screen auto-hidden');
             }
-        }, 3000);
+        }, 1000);
         
         // Skip loading function - works immediately
         function skipLoading() {
@@ -200,11 +200,7 @@
             <p class="text-slate-400 mb-4">Initializing AI-Powered Sales Dashboard...</p>
             <!-- Multiple skip methods for reliability -->
             <button onclick="skipLoading()" class="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-lg transition-colors duration-300 cursor-pointer">
-                Skip Loading
-            </button>
-            <br>
-            <button onclick="document.getElementById('loadingScreen').style.display='none'" class="mt-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors duration-300 cursor-pointer">
-                Emergency Skip
+                Enter Dashboard
             </button>
         </div>
     </div>
@@ -217,7 +213,7 @@
                     <div class="w-12 h-12 flex items-center justify-center rounded-lg overflow-hidden bg-slate-800/20 backdrop-blur-sm relative">
                         <!-- ProSpector Logo -->
                         <img 
-                            src="prospector-logo-final.png?v=28" 
+                            src="prospector-logo-final.png?v=29" 
                             alt="ProSpector Logo" 
                             class="w-10 h-10 object-contain"
                             style="display: block;"
@@ -291,7 +287,7 @@
                         <!-- Featured ProSpector Logo -->
                         <div class="w-24 h-24 flex items-center justify-center rounded-full bg-slate-800/30 backdrop-blur-sm relative">
                             <img 
-                                src="prospector-logo-final.png?v=28" 
+                                src="prospector-logo-final.png?v=29" 
                                 alt="ProSpector Logo" 
                                 class="object-contain"
                                 style="width: 88px; height: 88px; display: block;"
@@ -503,14 +499,14 @@
         
         // IMMEDIATE LOADING SCREEN FIXES
         
-        // Force remove loading screen after 2 seconds max
+        // Force remove loading screen after 1.5 seconds max
         setTimeout(function() {
             const loadingScreen = document.getElementById('loadingScreen');
             if (loadingScreen) {
                 loadingScreen.remove();
-                console.log('🚨 Emergency loading screen removal');
+                console.log('✅ Loading screen completely removed');
             }
-        }, 2000);
+        }, 1500);
         
         // Tab switching function
         function switchTab(tabName, event) {
@@ -595,17 +591,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('📄 DOM loaded, starting initialization...');
             
-            // Hide loading screen immediately
+            // Hide loading screen immediately on DOM load
             setTimeout(function() {
                 const loadingScreen = document.getElementById('loadingScreen');
                 if (loadingScreen) {
                     loadingScreen.style.opacity = '0';
-                    loadingScreen.style.transition = 'opacity 0.5s ease-out';
+                    loadingScreen.style.transition = 'opacity 0.3s ease-out';
                     setTimeout(() => {
                         loadingScreen.style.display = 'none';
-                    }, 500);
+                    }, 300);
                 }
-            }, 500);
+            }, 100);
             
             initializeApp();
         });
