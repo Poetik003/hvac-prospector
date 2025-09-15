@@ -3192,12 +3192,15 @@ I'd love to schedule..."></textarea>
                 }
             });
             
-            // Voice preview handler
+            // Voice preview handler with floating stop button
             modal.querySelector('#preview-voice-btn').addEventListener('click', function() {
                 var voiceType = modal.querySelector('#ai-voice-type').value;
                 var pace = modal.querySelector('#speaking-pace').value;
                 var tone = modal.querySelector('#voice-tone').value;
                 var accent = modal.querySelector('#voice-accent').value;
+                
+                // Stop any currently playing voice first
+                stopCurrentVoice();
                 
                 // Update button states during preview
                 var playBtn = modal.querySelector('#preview-voice-btn');
@@ -3208,11 +3211,15 @@ I'd love to schedule..."></textarea>
                 playBtn.disabled = true;
                 stopBtn.classList.remove('hidden');
                 
+                // Show floating stop button for easy access
+                showFloatingStopButton();
+                
                 // Play real AI voice preview
                 playVoicePreview(voiceType, pace, tone, accent, function() {
                     playBtn.innerHTML = originalText;
                     playBtn.disabled = false;
                     stopBtn.classList.add('hidden');
+                    hideFloatingStopButton();
                 });
             });
             
@@ -3738,19 +3745,38 @@ I'd love to schedule..."></textarea>
                 }
             });
             
-            // Voice preview handlers
+            // Voice preview handlers with stop functionality
             modal.querySelectorAll('.preview-voice').forEach(function(btn) {
                 btn.addEventListener('click', function() {
+                    // If voice is currently playing, stop it
+                    if (btn.innerHTML.includes('Speaking') || btn.innerHTML.includes('Stop')) {
+                        stopCurrentVoice();
+                        return;
+                    }
+                    
                     var voiceType = btn.getAttribute('data-voice');
                     var originalText = btn.innerHTML;
                     
-                    btn.innerHTML = '<i class="fas fa-volume-up fa-pulse mr-1"></i>Speaking...';
-                    btn.disabled = true;
+                    // Stop any currently playing voice first
+                    stopCurrentVoice();
+                    
+                    // Update button to show it's playing with stop option
+                    btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+                    btn.disabled = false;
+                    btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                    
+                    // Show floating stop button
+                    showFloatingStopButton();
                     
                     // Play real voice preview for the specific voice type
                     playVoicePreviewByType(voiceType, function() {
+                        // Reset button when voice finishes
                         btn.innerHTML = originalText;
                         btn.disabled = false;
+                        btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        hideFloatingStopButton();
                     });
                 });
             });
@@ -5588,8 +5614,10 @@ I'd love to schedule..."></textarea>
             }
         }
         
-        // Enhanced voice stopping function
+        // Enhanced voice stopping function - stops ALL types of audio playback
         function stopCurrentVoice() {
+            console.log('🛑 Stopping all voice playback...');
+            
             // Stop speech synthesis
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -5604,6 +5632,16 @@ I'd love to schedule..."></textarea>
                 console.log('🛑 Stopped HTML5 audio playback');
             }
             
+            // Stop all audio elements on the page
+            var audioElements = document.querySelectorAll('audio');
+            audioElements.forEach(function(audio) {
+                if (!audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    console.log('🛑 Stopped audio element:', audio.src);
+                }
+            });
+            
             // Stop any simulation timers
             if (window.currentVoiceTimer) {
                 clearInterval(window.currentVoiceTimer);
@@ -5611,13 +5649,64 @@ I'd love to schedule..."></textarea>
                 console.log('🛑 Stopped voice simulation timer');
             }
             
+            // Clear any voice-related timeouts
+            if (window.voiceTimeouts) {
+                window.voiceTimeouts.forEach(function(timeoutId) {
+                    clearTimeout(timeoutId);
+                });
+                window.voiceTimeouts = [];
+                console.log('🛑 Cleared voice timeouts');
+            }
+            
             // Stop real-time conversation
             if (window.conversationManager) {
                 window.conversationManager.stopConversation();
             }
             
-            showNotification('Voice playback stopped', 'info');
+            // Reset all voice preview buttons to their original state
+            resetAllVoiceButtons();
+            
+            showNotification('🛑 All voice playback stopped', 'info');
         }
+        
+        // Reset all voice preview buttons to their original state
+        function resetAllVoiceButtons() {
+            // Reset main preview voice button
+            var previewBtn = document.getElementById('preview-voice-btn');
+            var stopBtn = document.getElementById('stop-voice-btn');
+            if (previewBtn && stopBtn) {
+                previewBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
+                previewBtn.disabled = false;
+                stopBtn.classList.add('hidden');
+            }
+            
+            // Reset all .preview-voice buttons
+            var previewVoiceBtns = document.querySelectorAll('.preview-voice');
+            previewVoiceBtns.forEach(function(btn) {
+                btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                btn.disabled = false;
+            });
+            
+            console.log('✅ Reset all voice preview buttons');
+        }
+        
+        // Global keyboard shortcut to stop voice (Escape key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                stopCurrentVoice();
+                showNotification('🛑 Voice stopped with Escape key', 'info');
+            }
+        });
+        
+        // Show help notification about voice stopping when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (!localStorage.getItem('voiceStopHelpShown')) {
+                    showNotification('🎤 Voice Preview Tips: Press ESC key or click the red Stop button to stop voice playback anytime!', 'info');
+                    localStorage.setItem('voiceStopHelpShown', 'true');
+                }
+            }, 3000);
+        });
         
         // Real-Time Conversational AI System
         class ConversationManager {
@@ -8415,6 +8504,64 @@ I'd love to schedule..."></textarea>
         window.useTemplate = useTemplate;
         window.requestCustomTemplate = requestCustomTemplate;
         window.initializeAIScriptButtons = initializeAIScriptButtons;
+        
+        // Floating Stop Button Functions
+        function showFloatingStopButton() {
+            var stopBtn = document.getElementById('floating-stop-voice');
+            if (!stopBtn) {
+                // Create floating stop button if it doesn't exist
+                stopBtn = document.createElement('div');
+                stopBtn.id = 'floating-stop-voice';
+                stopBtn.className = 'fixed bottom-6 right-6 z-50 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full shadow-2xl cursor-pointer transition-all duration-300 transform hover:scale-105';
+                stopBtn.innerHTML = '<i class="fas fa-stop mr-2"></i>Stop Voice';
+                stopBtn.onclick = function() {
+                    stopCurrentVoice();
+                };
+                document.body.appendChild(stopBtn);
+            }
+            stopBtn.style.display = 'block';
+            // Animate in
+            setTimeout(function() {
+                stopBtn.style.transform = 'translateY(0) scale(1)';
+                stopBtn.style.opacity = '1';
+            }, 10);
+        }
+        
+        function hideFloatingStopButton() {
+            var stopBtn = document.getElementById('floating-stop-voice');
+            if (stopBtn) {
+                stopBtn.style.display = 'none';
+            }
+        }
+        
+        // Enhanced reset function that also hides floating button
+        var originalResetAllVoiceButtons = window.resetAllVoiceButtons;
+        window.resetAllVoiceButtons = function() {
+            if (originalResetAllVoiceButtons) {
+                originalResetAllVoiceButtons();
+            }
+            hideFloatingStopButton();
+        };
+        
+        // Initialize floating stop button styles
+        var floatingStopCSS = `
+            #floating-stop-voice {
+                transform: translateY(100px) scale(0.8);
+                opacity: 0;
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            }
+            #floating-stop-voice:hover {
+                box-shadow: 0 25px 50px rgba(239, 68, 68, 0.4);
+            }
+        `;
+        var styleSheet = document.createElement('style');
+        styleSheet.textContent = floatingStopCSS;
+        document.head.appendChild(styleSheet);
     </script>
+    
+    <!-- Floating Stop Voice Button (will be created dynamically) -->
+    
 </body>
 </html>
