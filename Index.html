@@ -235,13 +235,15 @@
                 <button 
                     id="emergency-stop-btn" 
                     onclick="emergencyStopAllVoices()" 
-                    class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 border-2 border-red-500 shadow-lg"
+                    onmousedown="this.style.transform='scale(0.95)'"
+                    onmouseup="this.style.transform='scale(1)'"
+                    class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 border-2 border-red-500 shadow-lg pulse-on-hover"
                     style="cursor: pointer !important; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;"
-                    title="Click to stop ALL voice playback immediately (or press ESC key)"
+                    title="Click to stop ALL voice playback immediately (or press ESC/SPACEBAR)"
                 >
-                    <i class="fas fa-stop mr-2"></i>🛑 STOP ALL VOICES
+                    <i class="fas fa-stop mr-2"></i>🛑 EMERGENCY STOP
                 </button>
-                <p class="text-xs text-red-400 text-center mt-1 opacity-75">Press ESC or Ctrl+Shift+S</p>
+                <p class="text-xs text-red-400 text-center mt-1 opacity-75">ESC, SPACEBAR, or Ctrl+Shift+S</p>
             </div>
             
             <!-- Navigation Items -->
@@ -5835,49 +5837,114 @@ I'd love to schedule..."></textarea>
             showNotification('🛑 All voice playback stopped', 'info');
         }
         
-        // Emergency stop function - simplest possible implementation
+        // Emergency stop function - ULTIMATE VOICE STOPPER
         function emergencyStopAllVoices() {
-            console.log('🚨 EMERGENCY STOP - Stopping ALL voices immediately');
+            console.log('🚨 EMERGENCY STOP - NUCLEAR OPTION - Stopping EVERYTHING immediately');
             
             try {
-                // Call existing stop function
+                // 1. Call existing stop function first
                 stopCurrentVoice();
                 
-                // Additional emergency measures
+                // 2. Stop speech synthesis API
                 if (window.speechSynthesis) {
                     window.speechSynthesis.cancel();
+                    console.log('🛑 Speech synthesis cancelled');
                 }
                 
-                // Stop ALL audio on the page
+                // 3. Stop ALL HTML5 audio and video elements (including CDN audio files)
                 var allAudio = document.querySelectorAll('audio, video');
+                console.log('🔍 Found ' + allAudio.length + ' audio/video elements');
                 for (var i = 0; i < allAudio.length; i++) {
-                    allAudio[i].pause();
-                    allAudio[i].currentTime = 0;
-                }
-                
-                // Clear all timers
-                var highestId = setTimeout(function(){}, 0);
-                for (var i = 0; i < highestId; i++) {
-                    clearTimeout(i);
-                }
-                
-                // Force reset ALL buttons on page that might be speaking
-                var allButtons = document.querySelectorAll('button');
-                for (var j = 0; j < allButtons.length; j++) {
-                    var btn = allButtons[j];
-                    if (btn.innerHTML.indexOf('Speaking') !== -1) {
-                        btn.innerHTML = btn.innerHTML.replace('🎙️ Speaking...', '<i class="fas fa-play mr-1"></i>Preview Voice');
-                        btn.style.backgroundColor = '#3b82f6';
-                        btn.disabled = false;
+                    try {
+                        allAudio[i].pause();
+                        allAudio[i].currentTime = 0;
+                        allAudio[i].src = ''; // Clear source to fully stop
+                        console.log('🛑 Stopped audio element ' + i);
+                    } catch (e) {
+                        console.log('⚠️ Could not stop audio element ' + i + ':', e.message);
                     }
                 }
                 
-                // Show big notification
-                alert('🛑 EMERGENCY STOP ACTIVATED\n\nAll voice playback has been stopped immediately.');
+                // 4. Clear the currentAudio global variable used by the app
+                if (window.currentAudio) {
+                    try {
+                        window.currentAudio.pause();
+                        window.currentAudio.currentTime = 0;
+                        window.currentAudio.src = '';
+                        window.currentAudio = null;
+                        console.log('🛑 Cleared global currentAudio');
+                    } catch (e) {
+                        console.log('⚠️ Error clearing currentAudio:', e.message);
+                    }
+                }
+                
+                // 4.5. Stop all tracked audio elements
+                if (typeof stopAllTrackedAudio === 'function') {
+                    stopAllTrackedAudio();
+                }
+                
+                // 5. Clear ALL timers and intervals (nuclear option)
+                var highestTimeout = setTimeout(function(){}, 0);
+                for (var i = 0; i < highestTimeout; i++) {
+                    clearTimeout(i);
+                }
+                var highestInterval = setInterval(function(){}, 999999);
+                for (var j = 0; j < highestInterval; j++) {
+                    clearInterval(j);
+                }
+                console.log('🛑 Cleared all timers and intervals');
+                
+                // 6. Force reset ALL buttons showing any speaking state
+                var allButtons = document.querySelectorAll('button');
+                var resetCount = 0;
+                for (var k = 0; k < allButtons.length; k++) {
+                    var btn = allButtons[k];
+                    var innerHTML = btn.innerHTML;
+                    
+                    // Check for ANY speaking-related text
+                    if (innerHTML.indexOf('Speaking') !== -1 || 
+                        innerHTML.indexOf('Stop') !== -1 ||
+                        innerHTML.indexOf('🎙️') !== -1 ||
+                        btn.classList.contains('bg-red-600')) {
+                        
+                        // Reset to preview state
+                        if (btn.classList.contains('preview-voice') || btn.id === 'preview-voice-btn') {
+                            btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                        } else {
+                            btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
+                        }
+                        
+                        // Reset styling
+                        btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        btn.disabled = false;
+                        btn.style.backgroundColor = '#3b82f6';
+                        btn.style.cursor = 'pointer';
+                        resetCount++;
+                    }
+                }
+                console.log('🛑 Reset ' + resetCount + ' buttons');
+                
+                // 7. Clear voice-related global variables
+                window.isVoiceToggleMode = false;
+                window.toggleVoiceButton = null;
+                if (window.buttonStateInterval) {
+                    clearInterval(window.buttonStateInterval);
+                    window.buttonStateInterval = null;
+                }
+                
+                // 8. Stop conversation manager if active
+                if (window.conversationManager && window.conversationManager.stopConversation) {
+                    window.conversationManager.stopConversation();
+                }
+                
+                // 9. Show success notification
+                showNotification('🛑 EMERGENCY STOP SUCCESSFUL - All audio stopped!', 'success');
+                alert('🛑 EMERGENCY STOP ACTIVATED\n\n✅ ALL voice playback stopped successfully!\n\n• Speech synthesis cancelled\n• All audio files stopped (' + allAudio.length + ' elements)\n• All timers cleared\n• All buttons reset (' + resetCount + ' buttons)\n• System ready for new voice commands');
                 
             } catch (error) {
-                console.error('Emergency stop error:', error);
-                alert('⚠️ Emergency stop attempted with error: ' + error.message);
+                console.error('🚨 Emergency stop error:', error);
+                alert('🚨 EMERGENCY STOP ERROR\n\n' + error.message + '\n\nSome audio may still be playing. Try refreshing the page if needed.');
             }
         }
         
@@ -8977,13 +9044,61 @@ I'd love to schedule..."></textarea>
         
         // Add emergency keyboard shortcuts for stopping voice
         document.addEventListener('keydown', function(e) {
-            // Press ESC or CTRL+SHIFT+S to emergency stop
-            if (e.key === 'Escape' || (e.ctrlKey && e.shiftKey && e.key === 'S')) {
-                e.preventDefault();
+            // Press ESC, SPACEBAR, or CTRL+SHIFT+S to emergency stop
+            if (e.key === 'Escape' || e.key === ' ' || (e.ctrlKey && e.shiftKey && e.key === 'S')) {
+                // Prevent spacebar from scrolling page when used as stop key
+                if (e.key === ' ' && (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA')) {
+                    e.preventDefault();
+                }
                 e.stopPropagation();
                 emergencyStopAllVoices();
             }
         }, true); // Use capture to ensure we get this event first
+        
+        // Also add a mouse click event to stop any audio when clicking the emergency button
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'emergency-stop-btn') {
+                // Extra aggressive stop when emergency button is clicked
+                console.log('🚨 Emergency button clicked - executing nuclear stop');
+                setTimeout(emergencyStopAllVoices, 50); // Small delay to ensure click is processed
+            }
+        });
+        
+        // Intercept audio creation to track all audio elements
+        var originalAudio = window.Audio;
+        var activeAudioElements = [];
+        window.Audio = function() {
+            var audio = new originalAudio();
+            activeAudioElements.push(audio);
+            console.log('🎵 New audio element created, total active:', activeAudioElements.length);
+            
+            // Clean up when audio ends
+            audio.addEventListener('ended', function() {
+                var index = activeAudioElements.indexOf(audio);
+                if (index > -1) {
+                    activeAudioElements.splice(index, 1);
+                    console.log('🎵 Audio element removed, remaining:', activeAudioElements.length);
+                }
+            });
+            
+            return audio;
+        };
+        
+        // Enhanced emergency stop that targets tracked audio
+        function stopAllTrackedAudio() {
+            console.log('🛑 Stopping ' + activeAudioElements.length + ' tracked audio elements');
+            for (var i = 0; i < activeAudioElements.length; i++) {
+                try {
+                    var audio = activeAudioElements[i];
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.src = '';
+                } catch (e) {
+                    console.log('⚠️ Error stopping tracked audio ' + i + ':', e.message);
+                }
+            }
+            activeAudioElements = []; // Clear the array
+        }
     </script>
     
     <!-- Floating Stop Voice Button (will be created dynamically) -->
