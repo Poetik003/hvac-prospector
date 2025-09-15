@@ -950,7 +950,64 @@
                             sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
                             sarahBtn.onclick = function() {
-                                alert('🎤 SARAH VOICE TEST\\n\\nHey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\\n\\n✅ Professional Female Voice\\n✅ Sofia Vergara warmth\\n✅ Ready for campaigns!');
+                                console.log('🎤 Playing Sarah voice...');
+                                sarahBtn.textContent = '🎵 Generating Sarah Voice...';
+                                sarahBtn.style.background = 'linear-gradient(135deg, #7c3aed, #5b21b6)';
+                                
+                                // Call Flask API to generate real voice
+                                fetch('/api/generate-voice', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        model: 'elevenlabs/v3-tts',
+                                        query: 'Hey there! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today? We have some amazing HVAC maintenance deals I think you are going to love.',
+                                        requirements: 'Professional female voice with Sofia Vergara style warmth and Miami accent. Friendly but professional tone perfect for B2B HVAC sales calls.',
+                                        task_summary: 'ProSpector Pro Sarah Voice Preview',
+                                        file_name: 'sarah_preview.mp3'
+                                    })
+                                }).then(response => response.json())
+                                .then(result => {
+                                    if (result.success && result.audio_urls && result.audio_urls.length > 0) {
+                                        console.log('✅ Sarah voice generated, playing...');
+                                        sarahBtn.textContent = '🔊 Playing Sarah Voice...';
+                                        
+                                        // Create and play audio
+                                        var audio = new Audio(result.audio_urls[0]);
+                                        audio.volume = 0.8;
+                                        
+                                        audio.onended = function() {
+                                            sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
+                                            sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                                        };
+                                        
+                                        audio.onerror = function() {
+                                            sarahBtn.textContent = '❌ Voice Error - Try Again';
+                                            sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                            setTimeout(function() {
+                                                sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
+                                                sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                                            }, 3000);
+                                        };
+                                        
+                                        audio.play();
+                                    } else {
+                                        console.error('❌ Voice generation failed');
+                                        sarahBtn.textContent = '❌ Generation Failed';
+                                        sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                        setTimeout(function() {
+                                            sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
+                                            sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                                        }, 3000);
+                                    }
+                                }).catch(error => {
+                                    console.error('❌ API Error:', error);
+                                    sarahBtn.textContent = '❌ API Error';
+                                    sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                    setTimeout(function() {
+                                        sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
+                                        sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                                    }, 3000);
+                                });
                             };
                             sarahBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             sarahBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -960,7 +1017,137 @@
                             sarahCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
                             sarahCustomBtn.textContent = '⚙️ CUSTOMIZE SARAH';
                             sarahCustomBtn.onclick = function() {
-                                alert('⚙️ SARAH CUSTOMIZER\\n\\n• Speaking pace: Normal/Fast/Slow\\n• Accent strength: Miami subtle\\n• Conversation style: Professional friendly\\n• Personality: Sofia Vergara warmth\\n\\nFull customizer coming soon!');
+                                console.log('⚙️ Opening Sarah customizer...');
+                                
+                                // Remove any existing customizer
+                                var existingCustomizer = document.getElementById('voice-customizer');
+                                if (existingCustomizer) existingCustomizer.remove();
+                                
+                                // Create customizer modal
+                                var custModal = document.createElement('div');
+                                custModal.id = 'voice-customizer';
+                                custModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                                
+                                var custContent = document.createElement('div');
+                                custContent.style.cssText = 'background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569;';
+                                
+                                // Title
+                                var custTitle = document.createElement('h2');
+                                custTitle.style.cssText = 'margin: 0 0 30px 0; font-size: 24px; text-align: center; color: #60a5fa;';
+                                custTitle.textContent = '⚙️ Customize Sarah Voice';
+                                
+                                // Pace selector
+                                var paceLabel = document.createElement('label');
+                                paceLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                paceLabel.textContent = '🎵 Speaking Pace:';
+                                
+                                var paceSelect = document.createElement('select');
+                                paceSelect.id = 'sarah-pace';
+                                paceSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 20px;';
+                                paceSelect.innerHTML = '<option value=\"slow\">🐢 Slow & Clear</option><option value=\"normal\" selected>⚡ Normal Pace</option><option value=\"fast\">🚀 Fast & Energetic</option>';
+                                
+                                // Tone selector
+                                var toneLabel = document.createElement('label');
+                                toneLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                toneLabel.textContent = '🎭 Voice Tone:';
+                                
+                                var toneSelect = document.createElement('select');
+                                toneSelect.id = 'sarah-tone';
+                                toneSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 20px;';
+                                toneSelect.innerHTML = '<option value=\"professional\" selected>💼 Professional</option><option value=\"friendly\">😊 Friendly</option><option value=\"warm\">🤗 Warm & Caring</option><option value=\"enthusiastic\">🎉 Enthusiastic</option>';
+                                
+                                // Accent selector
+                                var accentLabel = document.createElement('label');
+                                accentLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                accentLabel.textContent = '🌴 Miami Accent:';
+                                
+                                var accentSelect = document.createElement('select');
+                                accentSelect.id = 'sarah-accent';
+                                accentSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 30px;';
+                                accentSelect.innerHTML = '<option value=\"subtle\" selected>🌊 Subtle Miami</option><option value=\"moderate\">🏖️ Moderate Miami</option><option value=\"strong\">🎺 Strong Miami</option>';
+                                
+                                // Test custom voice button
+                                var testCustomBtn = document.createElement('button');
+                                testCustomBtn.style.cssText = 'width: 100%; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin: 10px 0;';
+                                testCustomBtn.textContent = '🎤 Test Custom Sarah Voice';
+                                testCustomBtn.onclick = function() {
+                                    var pace = document.getElementById('sarah-pace').value;
+                                    var tone = document.getElementById('sarah-tone').value;
+                                    var accent = document.getElementById('sarah-accent').value;
+                                    
+                                    testCustomBtn.textContent = '🎵 Generating Custom Voice...';
+                                    testCustomBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
+                                    
+                                    var customRequirements = tone + ' female voice with Sofia Vergara style and ' + accent + ' Miami accent. Speaking at ' + pace + ' pace. Perfect for HVAC sales calls.';
+                                    
+                                    fetch('/api/generate-voice', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            model: 'elevenlabs/v3-tts',
+                                            query: 'Hi there! This is Sarah with your customized voice settings. How does this sound for your HVAC campaigns? I think this tone and pace will work perfectly for your sales calls.',
+                                            requirements: customRequirements,
+                                            task_summary: 'Custom Sarah Voice Test',
+                                            file_name: 'sarah_custom_test.mp3'
+                                        })
+                                    }).then(response => response.json())
+                                    .then(result => {
+                                        if (result.success && result.audio_urls) {
+                                            testCustomBtn.textContent = '🔊 Playing Custom Voice...';
+                                            var audio = new Audio(result.audio_urls[0]);
+                                            audio.onended = function() {
+                                                testCustomBtn.textContent = '🎤 Test Custom Sarah Voice';
+                                                testCustomBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                            };
+                                            audio.play();
+                                        } else {
+                                            testCustomBtn.textContent = '❌ Test Failed';
+                                            setTimeout(function() {
+                                                testCustomBtn.textContent = '🎤 Test Custom Sarah Voice';
+                                                testCustomBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                            }, 2000);
+                                        }
+                                    });
+                                };
+                                
+                                // Save settings button
+                                var saveBtn = document.createElement('button');
+                                saveBtn.style.cssText = 'width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin: 10px 0;';
+                                saveBtn.textContent = '✅ Save Sarah Settings';
+                                saveBtn.onclick = function() {
+                                    var pace = document.getElementById('sarah-pace').value;
+                                    var tone = document.getElementById('sarah-tone').value;
+                                    var accent = document.getElementById('sarah-accent').value;
+                                    
+                                    // Save to localStorage
+                                    localStorage.setItem('sarah-voice-settings', JSON.stringify({pace: pace, tone: tone, accent: accent}));
+                                    
+                                    saveBtn.textContent = '✅ Settings Saved!';
+                                    saveBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                                    setTimeout(function() {
+                                        custModal.remove();
+                                    }, 1000);
+                                };
+                                
+                                // Close button
+                                var closeBtn = document.createElement('button');
+                                closeBtn.style.cssText = 'position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;';
+                                closeBtn.textContent = '✕';
+                                closeBtn.onclick = function() { custModal.remove(); };
+                                
+                                // Assemble customizer
+                                custContent.appendChild(closeBtn);
+                                custContent.appendChild(custTitle);
+                                custContent.appendChild(paceLabel);
+                                custContent.appendChild(paceSelect);
+                                custContent.appendChild(toneLabel);
+                                custContent.appendChild(toneSelect);
+                                custContent.appendChild(accentLabel);
+                                custContent.appendChild(accentSelect);
+                                custContent.appendChild(testCustomBtn);
+                                custContent.appendChild(saveBtn);
+                                custModal.appendChild(custContent);
+                                document.body.appendChild(custModal);
                             };
                             sarahCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             sarahCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -970,7 +1157,64 @@
                             dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
                             dannyBtn.onclick = function() {
-                                alert('🎤 DANNY VOICE TEST\\n\\n¡Oye! Danny here from ProSpector Pro. How you been, my friend?\\n\\n✅ Bilingual Male Voice\\n✅ Benicio Del Toro charm\\n✅ Ready for campaigns!');
+                                console.log('🎤 Playing Danny voice...');
+                                dannyBtn.textContent = '🎵 Generating Danny Voice...';
+                                dannyBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
+                                
+                                // Call Flask API to generate real voice
+                                fetch('/api/generate-voice', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        model: 'elevenlabs/v3-tts',
+                                        query: '¡Oye! Danny here from ProSpector Pro. How you been, my friend? We got some incredible deals on air conditioning repair that I think you are gonna love today.',
+                                        requirements: 'Bilingual male voice with Benicio Del Toro style charm and Miami Latino accent. Warm and enthusiastic tone perfect for residential HVAC outreach.',
+                                        task_summary: 'ProSpector Pro Danny Voice Preview',
+                                        file_name: 'danny_preview.mp3'
+                                    })
+                                }).then(response => response.json())
+                                .then(result => {
+                                    if (result.success && result.audio_urls && result.audio_urls.length > 0) {
+                                        console.log('✅ Danny voice generated, playing...');
+                                        dannyBtn.textContent = '🔊 Playing Danny Voice...';
+                                        
+                                        // Create and play audio
+                                        var audio = new Audio(result.audio_urls[0]);
+                                        audio.volume = 0.8;
+                                        
+                                        audio.onended = function() {
+                                            dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
+                                            dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                        };
+                                        
+                                        audio.onerror = function() {
+                                            dannyBtn.textContent = '❌ Voice Error - Try Again';
+                                            dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                            setTimeout(function() {
+                                                dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
+                                                dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                            }, 3000);
+                                        };
+                                        
+                                        audio.play();
+                                    } else {
+                                        console.error('❌ Voice generation failed');
+                                        dannyBtn.textContent = '❌ Generation Failed';
+                                        dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                        setTimeout(function() {
+                                            dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
+                                            dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                        }, 3000);
+                                    }
+                                }).catch(error => {
+                                    console.error('❌ API Error:', error);
+                                    dannyBtn.textContent = '❌ API Error';
+                                    dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                    setTimeout(function() {
+                                        dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
+                                        dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                    }, 3000);
+                                });
                             };
                             dannyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             dannyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -980,7 +1224,141 @@
                             dannyCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
                             dannyCustomBtn.textContent = '⚙️ CUSTOMIZE DANNY';
                             dannyCustomBtn.onclick = function() {
-                                alert('⚙️ DANNY CUSTOMIZER\\n\\n• Bilingual mode: English/Spanish mix\\n• Conversation style: Community friendly\\n• Friendliness level: Warm and enthusiastic\\n• Technical depth: HVAC knowledge\\n\\nFull customizer coming soon!');
+                                console.log('⚙️ Opening Danny customizer...');
+                                
+                                // Remove any existing customizer
+                                var existingCustomizer = document.getElementById('voice-customizer');
+                                if (existingCustomizer) existingCustomizer.remove();
+                                
+                                // Create Danny customizer modal
+                                var custModal = document.createElement('div');
+                                custModal.id = 'voice-customizer';
+                                custModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                                
+                                var custContent = document.createElement('div');
+                                custContent.style.cssText = 'background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569;';
+                                
+                                // Title
+                                var custTitle = document.createElement('h2');
+                                custTitle.style.cssText = 'margin: 0 0 30px 0; font-size: 24px; text-align: center; color: #34d399;';
+                                custTitle.textContent = '⚙️ Customize Danny Voice';
+                                
+                                // Language selector
+                                var langLabel = document.createElement('label');
+                                langLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                langLabel.textContent = '🗣️ Language Mode:';
+                                
+                                var langSelect = document.createElement('select');
+                                langSelect.id = 'danny-language';
+                                langSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 20px;';
+                                langSelect.innerHTML = '<option value=\"english\">🇺🇸 English Only</option><option value=\"bilingual\" selected>🌎 English/Spanish Mix</option><option value=\"spanish-heavy\">🇪🇸 Spanish Heavy</option>';
+                                
+                                // Friendliness selector
+                                var friendLabel = document.createElement('label');
+                                friendLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                friendLabel.textContent = '😊 Friendliness Level:';
+                                
+                                var friendSelect = document.createElement('select');
+                                friendSelect.id = 'danny-friendliness';
+                                friendSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 20px;';
+                                friendSelect.innerHTML = '<option value=\"professional\">💼 Professional</option><option value=\"warm\" selected>🤗 Warm & Friendly</option><option value=\"enthusiastic\">🎉 Very Enthusiastic</option>';
+                                
+                                // Accent selector
+                                var accentLabel = document.createElement('label');
+                                accentLabel.style.cssText = 'display: block; margin: 20px 0 10px 0; font-weight: bold; color: #cbd5e1;';
+                                accentLabel.textContent = '🌴 Latino Accent:';
+                                
+                                var accentSelect = document.createElement('select');
+                                accentSelect.id = 'danny-accent';
+                                accentSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px; margin-bottom: 30px;';
+                                accentSelect.innerHTML = '<option value=\"subtle\">🌊 Subtle Latino</option><option value=\"moderate\" selected>🏖️ Moderate Miami</option><option value=\"strong\">🎺 Strong Cuban-American</option>';
+                                
+                                // Test custom voice button
+                                var testCustomBtn = document.createElement('button');
+                                testCustomBtn.style.cssText = 'width: 100%; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin: 10px 0;';
+                                testCustomBtn.textContent = '🎤 Test Custom Danny Voice';
+                                testCustomBtn.onclick = function() {
+                                    var language = document.getElementById('danny-language').value;
+                                    var friendliness = document.getElementById('danny-friendliness').value;
+                                    var accent = document.getElementById('danny-accent').value;
+                                    
+                                    testCustomBtn.textContent = '🎵 Generating Custom Voice...';
+                                    testCustomBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
+                                    
+                                    var testPhrase = language === 'spanish-heavy' ? '¡Hola amigo! Danny aquí with your custom voice settings. ¿How does this sound for your campaigns?' : 
+                                                    language === 'bilingual' ? '¡Oye! Danny here with your custom settings, my friend. How does this sound for your HVAC business?' :
+                                                    'Hey there! Danny here with your customized voice. How does this sound for your HVAC sales calls?';
+                                    
+                                    var customRequirements = friendliness + ' bilingual male voice with Benicio Del Toro style and ' + accent + ' Miami Latino accent. ' + language + ' language mode. Perfect for residential HVAC outreach.';
+                                    
+                                    fetch('/api/generate-voice', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            model: 'elevenlabs/v3-tts',
+                                            query: testPhrase,
+                                            requirements: customRequirements,
+                                            task_summary: 'Custom Danny Voice Test',
+                                            file_name: 'danny_custom_test.mp3'
+                                        })
+                                    }).then(response => response.json())
+                                    .then(result => {
+                                        if (result.success && result.audio_urls) {
+                                            testCustomBtn.textContent = '🔊 Playing Custom Voice...';
+                                            var audio = new Audio(result.audio_urls[0]);
+                                            audio.onended = function() {
+                                                testCustomBtn.textContent = '🎤 Test Custom Danny Voice';
+                                                testCustomBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                            };
+                                            audio.play();
+                                        } else {
+                                            testCustomBtn.textContent = '❌ Test Failed';
+                                            setTimeout(function() {
+                                                testCustomBtn.textContent = '🎤 Test Custom Danny Voice';
+                                                testCustomBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                            }, 2000);
+                                        }
+                                    });
+                                };
+                                
+                                // Save settings button
+                                var saveBtn = document.createElement('button');
+                                saveBtn.style.cssText = 'width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin: 10px 0;';
+                                saveBtn.textContent = '✅ Save Danny Settings';
+                                saveBtn.onclick = function() {
+                                    var language = document.getElementById('danny-language').value;
+                                    var friendliness = document.getElementById('danny-friendliness').value;
+                                    var accent = document.getElementById('danny-accent').value;
+                                    
+                                    // Save to localStorage
+                                    localStorage.setItem('danny-voice-settings', JSON.stringify({language: language, friendliness: friendliness, accent: accent}));
+                                    
+                                    saveBtn.textContent = '✅ Settings Saved!';
+                                    saveBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                                    setTimeout(function() {
+                                        custModal.remove();
+                                    }, 1000);
+                                };
+                                
+                                // Close button
+                                var closeBtn = document.createElement('button');
+                                closeBtn.style.cssText = 'position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;';
+                                closeBtn.textContent = '✕';
+                                closeBtn.onclick = function() { custModal.remove(); };
+                                
+                                // Assemble customizer
+                                custContent.appendChild(closeBtn);
+                                custContent.appendChild(custTitle);
+                                custContent.appendChild(langLabel);
+                                custContent.appendChild(langSelect);
+                                custContent.appendChild(friendLabel);
+                                custContent.appendChild(friendSelect);
+                                custContent.appendChild(accentLabel);
+                                custContent.appendChild(accentSelect);
+                                custContent.appendChild(testCustomBtn);
+                                custContent.appendChild(saveBtn);
+                                custModal.appendChild(custContent);
+                                document.body.appendChild(custModal);
                             };
                             dannyCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             dannyCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
