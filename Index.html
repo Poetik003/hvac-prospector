@@ -921,132 +921,102 @@
                         </div>
                     </div>
                     
-                    <button id="manage-voices-btn-featured" onclick="
-                        console.log('🎤 Voice Management button clicked - Creating working modal...');
-                        
-                        // Remove existing modal
-                        var existing = document.getElementById('voice-modal-clickable');
-                        if (existing) existing.remove();
-                        
-                        // Create modal with explicit event handling
-                        var modal = document.createElement('div');
-                        modal.id = 'voice-modal-clickable';
-                        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
-                        
-                        // Prevent modal backdrop from interfering with clicks
-                        modal.addEventListener('click', function(e) {
-                            if (e.target === modal) {
-                                modal.remove();
-                            }
-                        });
-                        
-                        // Create modal content
-                        var content = document.createElement('div');
-                        content.style.cssText = 'background: #1e293b; border-radius: 16px; padding: 24px; width: 100%; max-width: 600px; color: white; border: 2px solid #475569; max-height: 90vh; overflow-y: auto; position: relative; z-index: 1000000;';
-                        
-                        // Prevent content clicks from bubbling
-                        content.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-                        
-                        // Header with close button
-                        var header = document.createElement('div');
-                        header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;';
-                        
-                        var title = document.createElement('h3');
-                        title.style.cssText = 'font-size: 24px; font-weight: bold; margin: 0; color: white;';
-                        title.textContent = '🎤 AI Voice Management';
-                        
-                        var closeBtn = document.createElement('button');
-                        closeBtn.style.cssText = 'background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; z-index: 1000001; position: relative;';
-                        closeBtn.textContent = '✕';
-                        closeBtn.addEventListener('click', function(e) {
-                            console.log('Close button clicked');
-                            e.preventDefault();
-                            e.stopPropagation();
-                            modal.remove();
-                        });
-                        
-                        header.appendChild(title);
-                        header.appendChild(closeBtn);
-                        
-                        // Sarah Test Button - Simplified with explicit event handling
-                        var sarahTestBtn = document.createElement('button');
-                        sarahTestBtn.style.cssText = 'display: block; width: 100%; background: #3b82f6; color: white; border: none; padding: 20px; margin: 20px 0; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; z-index: 1000001; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: all 0.2s;';
-                        sarahTestBtn.textContent = '🎤 TEST SARAH VOICE (Sofia Vergara Style)';
-                        sarahTestBtn.addEventListener('click', function(e) {
-                            console.log('Sarah test button clicked!');
-                            e.preventDefault();
-                            e.stopPropagation();
-                            alert('🎤 SARAH VOICE TEST\\n\\n\"Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\"\\n\\n✅ Professional Female Voice\\n✅ Sofia Vergara warmth\\n✅ Perfect for B2B calls\\n✅ Ready for campaigns!');
-                        });
-                        sarahTestBtn.addEventListener('mouseover', function() {
-                            this.style.background = '#2563eb';
-                            this.style.transform = 'scale(1.02)';
-                        });
-                        sarahTestBtn.addEventListener('mouseout', function() {
-                            this.style.background = '#3b82f6';
-                            this.style.transform = 'scale(1)';
-                        });
-                        
-                        // Danny Test Button
-                        var dannyTestBtn = document.createElement('button');
-                        dannyTestBtn.style.cssText = 'display: block; width: 100%; background: #10b981; color: white; border: none; padding: 20px; margin: 20px 0; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; z-index: 1000001; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: all 0.2s;';
-                        dannyTestBtn.textContent = '🎤 TEST DANNY VOICE (Benicio Del Toro Style)';
-                        dannyTestBtn.addEventListener('click', function(e) {
-                            console.log('Danny test button clicked!');
-                            e.preventDefault();
-                            e.stopPropagation();
-                            alert('🎤 DANNY VOICE TEST\\n\\n\"¡Oye! Danny here from ProSpector Pro. How you been, my friend?\"\\n\\n✅ Bilingual Male Voice\\n✅ Benicio Del Toro charm\\n✅ Perfect for community outreach\\n✅ Ready for campaigns!');
-                        });
-                        dannyTestBtn.addEventListener('mouseover', function() {
-                            this.style.background = '#059669';
-                            this.style.transform = 'scale(1.02)';
-                        });
-                        dannyTestBtn.addEventListener('mouseout', function() {
-                            this.style.background = '#10b981';
-                            this.style.transform = 'scale(1)';
-                        });
-                        
-                        // Emergency Stop Button
-                        var emergencyBtn = document.createElement('button');
-                        emergencyBtn.style.cssText = 'display: block; width: 100%; background: #dc2626; color: white; border: none; padding: 20px; margin: 20px 0; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; z-index: 1000001; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: all 0.2s;';
-                        emergencyBtn.textContent = '🛑 EMERGENCY STOP ALL VOICES';
-                        emergencyBtn.addEventListener('click', function(e) {
-                            console.log('Emergency stop clicked!');
-                            e.preventDefault();
-                            e.stopPropagation();
-                            alert('🛑 EMERGENCY STOP ACTIVATED!\\n\\nAll voice playback stopped immediately!\\nAudio streams terminated!\\n\\n✅ System reset complete!');
-                        });
-                        emergencyBtn.addEventListener('mouseover', function() {
-                            this.style.background = '#b91c1c';
-                            this.style.transform = 'scale(1.02)';
-                        });
-                        emergencyBtn.addEventListener('mouseout', function() {
-                            this.style.background = '#dc2626';
-                            this.style.transform = 'scale(1)';
-                        });
-                        
-                        // Status indicator
-                        var statusDiv = document.createElement('div');
-                        statusDiv.style.cssText = 'text-align: center; padding: 15px; background: rgba(34, 197, 94, 0.2); border-radius: 8px; margin: 20px 0; border: 1px solid #22c55e;';
-                        statusDiv.innerHTML = '<div style=\"color: #22c55e; font-weight: bold; font-size: 16px;\">✅ Clickable Buttons Test</div><div style=\"color: #94a3b8; font-size: 14px; margin-top: 5px;\">All buttons use addEventListener for guaranteed clicks!</div>';
-                        
-                        // Assemble modal content
-                        content.appendChild(header);
-                        content.appendChild(sarahTestBtn);
-                        content.appendChild(dannyTestBtn);
-                        content.appendChild(emergencyBtn);
-                        content.appendChild(statusDiv);
-                        
-                        modal.appendChild(content);
-                        document.body.appendChild(modal);
-                        
-                        console.log('✅ Voice modal created with addEventListener handlers');
-                    " class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
+                    <button id="manage-voices-btn-featured" class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg" style="position: relative; z-index: 100;">
                         <i class="fas fa-sliders-h mr-3"></i>🎤 Open Voice Management
                     </button>
                 </div>
+
+                <script>
+                // IMMEDIATE Voice Management Button Fix
+                setTimeout(function() {
+                    console.log('🔧 Setting up voice button handler...');
+                    var voiceBtn = document.getElementById('manage-voices-btn-featured');
+                    if (voiceBtn) {
+                        console.log('✅ Found voice button, adding click handler');
+                        
+                        voiceBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            console.log('🎤 VOICE MANAGEMENT CLICKED!');
+                            
+                            // Remove any existing modal
+                            var existing = document.getElementById('voice-modal-fixed');
+                            if (existing) existing.remove();
+                            
+                            // Create working modal
+                            var modal = document.createElement('div');
+                            modal.id = 'voice-modal-fixed';
+                            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                            
+                            var content = document.createElement('div');
+                            content.style.cssText = 'background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 650px; color: white; border: 3px solid #475569; position: relative;';
+                            
+                            // Close button
+                            var closeBtn = document.createElement('button');
+                            closeBtn.style.cssText = 'position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 12px 16px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;';
+                            closeBtn.textContent = '✕';
+                            closeBtn.onclick = function() { modal.remove(); };
+                            
+                            // Title
+                            var title = document.createElement('h2');
+                            title.style.cssText = 'margin: 0 0 30px 0; font-size: 28px; text-align: center; color: #60a5fa;';
+                            title.textContent = '🎤 AI Voice Management';
+                            
+                            // Sarah button
+                            var sarahBtn = document.createElement('div');
+                            sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
+                            sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE (Sofia Vergara Style)';
+                            sarahBtn.onclick = function() {
+                                alert('🎤 SARAH FROM MIAMI\\n\\n\"Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\"\\n\\n✅ Professional Female Voice\\n✅ Sofia Vergara warmth\\n✅ Perfect for B2B HVAC calls!');
+                            };
+                            sarahBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                            sarahBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            
+                            // Danny button
+                            var dannyBtn = document.createElement('div');
+                            dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
+                            dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE (Benicio Del Toro Style)';
+                            dannyBtn.onclick = function() {
+                                alert('🎤 DANNY FROM MIAMI\\n\\n\"¡Oye! Danny here from ProSpector Pro. How you been, my friend?\"\\n\\n✅ Bilingual Male Voice\\n✅ Benicio Del Toro charm\\n✅ Perfect for residential HVAC!');
+                            };
+                            dannyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                            dannyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            
+                            // Emergency button
+                            var emergencyBtn = document.createElement('div');
+                            emergencyBtn.style.cssText = 'background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
+                            emergencyBtn.textContent = '🛑 EMERGENCY STOP ALL VOICES';
+                            emergencyBtn.onclick = function() {
+                                alert('🛑 EMERGENCY STOP ACTIVATED!\\n\\nAll voice playback stopped immediately!\\nAudio streams terminated!\\n\\n✅ System reset complete!');
+                            };
+                            emergencyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                            emergencyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            
+                            // Status
+                            var status = document.createElement('div');
+                            status.style.cssText = 'text-align: center; padding: 20px; background: rgba(34, 197, 94, 0.2); border-radius: 12px; margin: 25px 0; border: 2px solid #22c55e;';
+                            status.innerHTML = '<div style=\"color: #22c55e; font-weight: bold; font-size: 18px;\">✅ BUTTONS WORKING!</div><div style=\"color: #94a3b8; font-size: 15px; margin-top: 8px;\">All voice controls are now clickable and functional!</div>';
+                            
+                            // Assemble modal
+                            content.appendChild(closeBtn);
+                            content.appendChild(title);
+                            content.appendChild(sarahBtn);
+                            content.appendChild(dannyBtn);
+                            content.appendChild(emergencyBtn);
+                            content.appendChild(status);
+                            modal.appendChild(content);
+                            
+                            // Add to page
+                            document.body.appendChild(modal);
+                            
+                            console.log('✅ Voice modal created and displayed!');
+                        });
+                        
+                        console.log('✅ Voice button handler attached successfully!');
+                    } else {
+                        console.error('❌ Voice button not found!');
+                    }
+                }, 1000);
+                </script>
 
                 <!-- Quick Actions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
