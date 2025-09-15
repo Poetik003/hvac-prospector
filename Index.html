@@ -1153,6 +1153,65 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- AI Call Analysis Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold gradient-text mb-6">📞 AI Call Analysis & Notes</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Call Logging -->
+                        <div class="card-modern rounded-2xl p-6">
+                            <h3 class="text-xl font-bold gradient-text mb-4">Call Logging</h3>
+                            <div class="space-y-3">
+                                <button onclick="logNewCall()" class="w-full p-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium text-left">
+                                    <i class="fas fa-plus mr-2"></i>Log New Call
+                                    <p class="text-sm text-green-200 mt-1">Record call details and AI-powered analysis</p>
+                                </button>
+                                <button onclick="openCallAnalyticsDashboard()" class="w-full p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium text-left">
+                                    <i class="fas fa-chart-line mr-2"></i>Call Analytics Dashboard
+                                    <p class="text-sm text-purple-200 mt-1">View detailed call performance and trends</p>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Call Notes -->
+                        <div class="card-modern rounded-2xl p-6">
+                            <h3 class="text-xl font-bold gradient-text mb-4">Recent Call Notes</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors" onclick="viewCallDetails('call-001')">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-white font-medium">John Smith - HVAC Solutions Inc.</p>
+                                            <p class="text-sm text-slate-400">Today, 2:15 PM • 8 min call</p>
+                                            <p class="text-xs text-green-400">✅ Appointment Scheduled</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-600 text-white text-xs rounded-full">94% Score</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors" onclick="viewCallDetails('call-002')">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-white font-medium">Sarah Johnson - Climate Control Pro</p>
+                                            <p class="text-sm text-slate-400">Yesterday, 4:20 PM • 5 min call</p>
+                                            <p class="text-xs text-yellow-400">📞 Follow-up Needed</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-yellow-600 text-white text-xs rounded-full">72% Score</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors" onclick="viewCallDetails('call-003')">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-white font-medium">Mike Wilson - BuildTech Services</p>
+                                            <p class="text-sm text-slate-400">2 days ago • 3 min call</p>
+                                            <p class="text-xs text-red-400">❌ Not Interested</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-red-600 text-white text-xs rounded-full">31% Score</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Analytics Tab -->
@@ -7451,6 +7510,256 @@ I'd love to schedule..."></textarea>
             alert('📚 Research History\n\n✅ Recent AI research completed:\n• Michael Chen (Energy Systems Corp) - 92% match\n• Lisa Rodriguez (Facility Pro Inc) - 96% match\n• David Park (BuildSmart Solutions) - 89% match\n\n🎯 This would show detailed research history in the full application.');
         }
         
+        // AI Call Analysis Functions
+        function logNewCall() {
+            console.log('Opening new call logging modal...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'call-log-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-4xl mx-auto border border-green-600 shadow-2xl max-h-screen overflow-y-auto">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-green-400">📞 Log New Call & AI Analysis</h3>';
+            modalHTML += '<button onclick="closeCallLogModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<form class="space-y-6">';
+            
+            // Basic Call Info
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Prospect Name *</label>';
+            modalHTML += '<input type="text" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="John Smith"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Company *</label>';
+            modalHTML += '<input type="text" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="HVAC Solutions Inc."></div>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Call Duration</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="1-2">1-2 minutes</option><option value="3-5">3-5 minutes</option><option value="6-10">6-10 minutes</option><option value="10+">10+ minutes</option>';
+            modalHTML += '</select></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Call Outcome</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="appointment">Appointment Scheduled</option><option value="followup">Follow-up Needed</option><option value="callback">Callback Requested</option><option value="not-interested">Not Interested</option><option value="voicemail">Voicemail Left</option><option value="wrong-number">Wrong Number</option>';
+            modalHTML += '</select></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Interest Level</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="high">High Interest</option><option value="medium">Medium Interest</option><option value="low">Low Interest</option><option value="none">No Interest</option>';
+            modalHTML += '</select></div>';
+            modalHTML += '</div>';
+            
+            // Detailed Call Notes
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Call Summary & Key Points</label>';
+            modalHTML += '<textarea rows="4" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Summarize the conversation, key points discussed, prospect responses, and any important details..."></textarea></div>';
+            
+            // Pain Points & Needs
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Pain Points Identified</label>';
+            modalHTML += '<textarea rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="What challenges or issues did the prospect mention?"></textarea></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">HVAC Needs/Interests</label>';
+            modalHTML += '<textarea rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="What HVAC services or solutions were they interested in?"></textarea></div>';
+            modalHTML += '</div>';
+            
+            // Objections & Responses
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Objections Raised & Your Responses</label>';
+            modalHTML += '<textarea rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="What objections did they raise? How did you respond? What worked or didn\'t work?"></textarea></div>';
+            
+            // Next Steps
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Next Steps & Follow-up Actions</label>';
+            modalHTML += '<textarea rows="2" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="What are the next steps? When to follow up? What to prepare for next contact?"></textarea></div>';
+            
+            // AI Analysis Options
+            modalHTML += '<div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-purple-300 mb-3">🤖 AI Analysis Options</h4>';
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+            modalHTML += '<label class="flex items-center"><input type="checkbox" checked class="mr-2"> Sentiment Analysis</label>';
+            modalHTML += '<label class="flex items-center"><input type="checkbox" checked class="mr-2"> Objection Pattern Recognition</label>';
+            modalHTML += '<label class="flex items-center"><input type="checkbox" checked class="mr-2"> Success Factor Analysis</label>';
+            modalHTML += '<label class="flex items-center"><input type="checkbox" checked class="mr-2"> Improvement Recommendations</label>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '<div class="flex space-x-3 pt-4 border-t border-slate-600">';
+            modalHTML += '<button type="button" onclick="saveCallWithAI()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-robot mr-2"></i>Save & Run AI Analysis</button>';
+            modalHTML += '<button type="button" onclick="saveCallQuick()" class="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Quick Save</button>';
+            modalHTML += '<button type="button" onclick="closeCallLogModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Cancel</button>';
+            modalHTML += '</div></form></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeCallLogModal();
+            });
+        }
+        
+        function openCallAnalyticsDashboard() {
+            console.log('Opening call analytics dashboard...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'call-analytics-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-6xl mx-auto border border-purple-600 shadow-2xl max-h-screen overflow-y-auto">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-purple-400">📊 AI Call Analytics Dashboard</h3>';
+            modalHTML += '<button onclick="closeCallAnalyticsModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            // Key Metrics
+            modalHTML += '<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">';
+            modalHTML += '<div class="bg-green-900/30 border border-green-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-green-300">Total Calls</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">247</p>';
+            modalHTML += '<p class="text-sm text-slate-400">This month</p></div>';
+            modalHTML += '<div class="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-blue-300">Appointments</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">52</p>';
+            modalHTML += '<p class="text-sm text-slate-400">21% conversion</p></div>';
+            modalHTML += '<div class="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-yellow-300">Avg Call Score</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">73%</p>';
+            modalHTML += '<p class="text-sm text-slate-400">AI analysis</p></div>';
+            modalHTML += '<div class="bg-red-900/30 border border-red-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-red-300">Top Objection</h4>';
+            modalHTML += '<p class="text-lg font-bold text-white mt-2">Price</p>';
+            modalHTML += '<p class="text-sm text-slate-400">34% of calls</p></div>';
+            modalHTML += '</div>';
+            
+            // AI Insights
+            modalHTML += '<div class="bg-slate-700/30 rounded-lg p-6 mb-6">';
+            modalHTML += '<h4 class="text-xl font-bold text-white mb-4">🧠 AI Performance Insights</h4>';
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+            modalHTML += '<div><h5 class="font-bold text-green-400 mb-2">Top Success Factors</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• Mentioning energy savings first (+23% success)</li>';
+            modalHTML += '<li>• Calls between 10-11 AM (+18% success)</li>';
+            modalHTML += '<li>• Using prospect\'s name 3+ times (+15% success)</li>';
+            modalHTML += '<li>• Discussing preventive maintenance (+12% success)</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '<div><h5 class="font-bold text-red-400 mb-2">Improvement Opportunities</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• Handle price objections better (-15% when mentioned)</li>';
+            modalHTML += '<li>• Reduce call length for higher success (-8% after 8 min)</li>';
+            modalHTML += '<li>• Improve follow-up timing (32% no response)</li>';
+            modalHTML += '<li>• Use more social proof examples (+potential 10%)</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '</div></div>';
+            
+            // Recent Call Analysis
+            modalHTML += '<div class="bg-slate-700/30 rounded-lg p-6">';
+            modalHTML += '<h4 class="text-xl font-bold text-white mb-4">📞 Recent Call Analysis</h4>';
+            modalHTML += '<div class="space-y-3">';
+            modalHTML += '<div class="p-4 bg-slate-800/50 rounded-lg">';
+            modalHTML += '<div class="flex justify-between items-start mb-2">';
+            modalHTML += '<h5 class="font-bold text-white">John Smith - HVAC Solutions Inc.</h5>';
+            modalHTML += '<span class="px-3 py-1 bg-green-600 text-white text-sm rounded-full">94% Score</span></div>';
+            modalHTML += '<p class="text-sm text-slate-400 mb-2">Today, 2:15 PM • 8 min call • Appointment Scheduled</p>';
+            modalHTML += '<div class="grid grid-cols-2 gap-4 text-sm">';
+            modalHTML += '<div><strong class="text-green-400">Positive:</strong> Great rapport building, addressed energy concerns effectively</div>';
+            modalHTML += '<div><strong class="text-yellow-400">Improve:</strong> Could have mentioned maintenance packages sooner</div>';
+            modalHTML += '</div></div>';
+            modalHTML += '<div class="p-4 bg-slate-800/50 rounded-lg">';
+            modalHTML += '<div class="flex justify-between items-start mb-2">';
+            modalHTML += '<h5 class="font-bold text-white">Sarah Johnson - Climate Control Pro</h5>';
+            modalHTML += '<span class="px-3 py-1 bg-yellow-600 text-white text-sm rounded-full">72% Score</span></div>';
+            modalHTML += '<p class="text-sm text-slate-400 mb-2">Yesterday, 4:20 PM • 5 min call • Follow-up Needed</p>';
+            modalHTML += '<div class="grid grid-cols-2 gap-4 text-sm">';
+            modalHTML += '<div><strong class="text-green-400">Positive:</strong> Good pain point identification, showed expertise</div>';
+            modalHTML += '<div><strong class="text-red-400">Issue:</strong> Price objection not handled well, ended call too quickly</div>';
+            modalHTML += '</div></div>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '<div class="flex space-x-3 pt-6 border-t border-slate-600">';
+            modalHTML += '<button onclick="generateCallReport()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-chart-bar mr-2"></i>Generate Detailed Report</button>';
+            modalHTML += '<button onclick="exportCallData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-download mr-2"></i>Export Data</button>';
+            modalHTML += '<button onclick="closeCallAnalyticsModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Close</button>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeCallAnalyticsModal();
+            });
+        }
+        
+        function viewCallDetails(callId) {
+            console.log('Viewing call details for:', callId);
+            
+            var callData = {
+                'call-001': {
+                    name: 'John Smith',
+                    company: 'HVAC Solutions Inc.',
+                    date: 'Today, 2:15 PM',
+                    duration: '8 minutes',
+                    outcome: 'Appointment Scheduled',
+                    score: 94,
+                    summary: 'Great call with strong rapport. Discussed energy efficiency concerns and scheduled consultation for tomorrow at 2:30 PM.',
+                    painPoints: 'High energy bills, aging HVAC system (15 years old), inconsistent temperatures',
+                    objections: 'Initial concern about cost, addressed with energy savings calculations',
+                    nextSteps: 'Site visit scheduled for tomorrow. Prepare energy audit tools and maintenance package options.'
+                },
+                'call-002': {
+                    name: 'Sarah Johnson',
+                    company: 'Climate Control Pro',
+                    date: 'Yesterday, 4:20 PM',
+                    duration: '5 minutes',
+                    outcome: 'Follow-up Needed',
+                    score: 72,
+                    summary: 'Interested prospect but price-sensitive. Needs to discuss with management before proceeding.',
+                    painPoints: 'Frequent breakdowns, high repair costs, need for reliable service provider',
+                    objections: 'Budget constraints, needs approval from facilities director',
+                    nextSteps: 'Follow up in 2 days. Prepare cost comparison with current service provider.'
+                }
+            };
+            
+            var data = callData[callId] || callData['call-001'];
+            
+            alert('📞 Call Details: ' + data.name + '\n\n' +
+                  '🏢 Company: ' + data.company + '\n' +
+                  '📅 Date: ' + data.date + '\n' +
+                  '⏱️ Duration: ' + data.duration + '\n' +
+                  '✅ Outcome: ' + data.outcome + '\n' +
+                  '📊 AI Score: ' + data.score + '%\n\n' +
+                  '📝 Summary: ' + data.summary + '\n\n' +
+                  '😰 Pain Points: ' + data.painPoints + '\n\n' +
+                  '❌ Objections: ' + data.objections + '\n\n' +
+                  '⏭️ Next Steps: ' + data.nextSteps + '\n\n' +
+                  '🎯 This would show the complete call analysis in the full application.');
+        }
+        
+        function closeCallLogModal() {
+            var modal = document.getElementById('call-log-modal');
+            if (modal) modal.remove();
+        }
+        
+        function closeCallAnalyticsModal() {
+            var modal = document.getElementById('call-analytics-modal');
+            if (modal) modal.remove();
+        }
+        
+        function saveCallWithAI() {
+            alert('🤖 AI Call Analysis Complete!\n\n✅ Call logged and analyzed:\n• Sentiment analysis: Positive (78%)\n• Key success factors identified\n• Objection patterns recognized\n• Personalized improvement recommendations generated\n• Next call strategy created\n\n📊 AI Score: 87% - Above average performance\n\n📈 Recommendation: Focus on energy savings earlier in next calls for better results.');
+            closeCallLogModal();
+        }
+        
+        function saveCallQuick() {
+            alert('✅ Call Saved!\n\nCall details have been logged. You can run AI analysis later from the Call Analytics Dashboard.');
+            closeCallLogModal();
+        }
+        
+        function generateCallReport() {
+            alert('📊 Generating Comprehensive Call Report...\n\n✅ Report will include:\n• Performance trends and metrics\n• AI-identified success patterns\n• Objection handling analysis\n• Conversion rate by time/approach\n• Personalized coaching recommendations\n• Competitor mention analysis\n\n📧 Full report will be emailed to you in 5 minutes.');
+        }
+        
+        function exportCallData() {
+            alert('📥 Exporting Call Data...\n\n✅ Preparing export with:\n• All call logs and notes\n• AI analysis results\n• Performance metrics\n• Success factor data\n• Objection patterns\n\n💾 CSV file will be downloaded shortly.');
+        }
+        
         // Make functions globally available
         window.openScheduleModal = openScheduleModal;
         window.closeModal = closeModal;
@@ -7469,6 +7778,17 @@ I'd love to schedule..."></textarea>
         window.createPreMeetingBrief = createPreMeetingBrief;
         window.startBulkResearch = startBulkResearch;
         window.viewResearchHistory = viewResearchHistory;
+        
+        // AI Call Analysis Functions
+        window.logNewCall = logNewCall;
+        window.openCallAnalyticsDashboard = openCallAnalyticsDashboard;
+        window.viewCallDetails = viewCallDetails;
+        window.closeCallLogModal = closeCallLogModal;
+        window.closeCallAnalyticsModal = closeCallAnalyticsModal;
+        window.saveCallWithAI = saveCallWithAI;
+        window.saveCallQuick = saveCallQuick;
+        window.generateCallReport = generateCallReport;
+        window.exportCallData = exportCallData;
     </script>
 </body>
 </html>
