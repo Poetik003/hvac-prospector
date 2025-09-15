@@ -230,55 +230,46 @@
                 </div>
             </div>
             
-            <!-- EMERGENCY STOP BUTTON - Always Visible -->
-            <div class="p-4 pb-2">
-                <button 
-                    id="emergency-stop-btn" 
-                    onclick="emergencyStopAllVoices()" 
-                    onmousedown="this.style.transform='scale(0.95)'"
-                    onmouseup="this.style.transform='scale(1)'"
-                    class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 border-2 border-red-500 shadow-lg pulse-on-hover"
-                    style="cursor: pointer !important; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important; z-index: 99999 !important; position: relative !important;"
-                    title="Click to stop ALL voice playback immediately (or press ESC/SPACEBAR)"
-                >
-                    <i class="fas fa-stop mr-2"></i>🛑 EMERGENCY STOP
-                </button>
-                <div class="flex gap-2 mt-2">
+            <!-- EMERGENCY CONTROLS (only when voice is active) -->
+            <div class="p-4 pb-2" id="emergency-controls" style="display: none;">
+                <div class="bg-red-900/30 border border-red-500/50 rounded-lg p-3 mb-2">
+                    <p class="text-xs text-red-200 text-center mb-2">🚨 Emergency Voice Controls</p>
                     <button 
-                        onclick="muteAllAudio()" 
-                        class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded-lg font-semibold text-xs transition-colors"
-                        style="z-index: 99999 !important; position: relative !important;"
-                        title="Mute all audio immediately"
+                        id="emergency-stop-btn" 
+                        onclick="emergencyStopAllVoices()" 
+                        class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg font-bold text-xs transition-colors"
+                        title="Stop ALL voice playback immediately"
                     >
-                        🔇 MUTE
+                        🛑 STOP ALL VOICES
                     </button>
-                    <button 
-                        onclick="if(confirm('🔄 Reload page to stop ALL voices and reset everything?')) { window.location.reload(); }" 
-                        class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg font-semibold text-xs transition-colors"
-                        style="z-index: 99999 !important; position: relative !important;"
-                        title="Emergency page reload - stops everything"
-                    >
-                        🔄 RELOAD
-                    </button>
+                    <div class="flex gap-1 mt-2">
+                        <button 
+                            onclick="muteAllAudio()" 
+                            class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-1 px-2 rounded text-xs"
+                            title="Mute all audio"
+                        >
+                            🔇 MUTE
+                        </button>
+                        <button 
+                            onclick="if(confirm('Reload page to reset everything?')) { window.location.reload(); }" 
+                            class="flex-1 bg-slate-600 hover:bg-slate-700 text-white py-1 px-2 rounded text-xs"
+                            title="Reload page"
+                        >
+                            🔄 RELOAD
+                        </button>
+                    </div>
                 </div>
+            </div>
                 
-                <!-- DIAGNOSTIC BUTTONS -->
-                <div class="flex gap-1 mt-2">
+                <!-- NAVIGATION HELPER -->
+                <div class="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <p class="text-xs text-slate-300 text-center mb-2">🎤 For AI Voice Management:</p>
                     <button 
-                        onclick="alert('✅ CLICK TEST SUCCESSFUL! Buttons are working.'); console.log('✅ Click test button works!');"
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded-lg font-bold text-xs"
-                        style="z-index: 99999 !important; position: relative !important;"
-                        title="Test if button clicks are working"
+                        onclick="emergencySwitchTab('voicecalling'); alert('🧭 Navigating to AI Cold Calling tab\\n\\n✅ This is where you\\'ll find:\\n• Voice Management\\n• AI Voice Campaigns\\n• Voice Training\\n• Call Analytics');"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-lg font-bold text-xs transition-colors"
+                        title="Go to AI Cold Calling tab for voice features"
                     >
-                        🧪 TEST
-                    </button>
-                    <button 
-                        onclick="alert('🔧 VOICE MODAL DEBUG\\n\\n' + 'Modal Status: ' + (document.getElementById('voice-modal') ? 'EXISTS' : 'NOT FOUND') + '\\n' + 'Voice Test Buttons: ' + (document.getElementById('sarah-btn') ? 'FOUND' : 'MISSING') + '\\n\\n' + '🛠️ If buttons don\\'t work:\\n1. Try the TEST ALERT button in modal\\n2. Use 🔄 RELOAD for emergency stop\\n3. Check browser console (F12)');"
-                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded-lg font-bold text-xs"
-                        style="z-index: 99999 !important; position: relative !important;"
-                        title="Diagnose voice modal issues"
-                    >
-                        🔍 VOICE
+                        📞 Go to AI Cold Calling
                     </button>
                 </div>
                 
@@ -3654,7 +3645,25 @@ I'd love to schedule..."></textarea>
         }
         
         // SIMPLIFIED Voice Management Modal - Guaranteed to work
+        // Show/hide emergency controls based on voice activity
+        function showEmergencyControls() {
+            var controls = document.getElementById('emergency-controls');
+            if (controls) {
+                controls.style.display = 'block';
+            }
+        }
+        
+        function hideEmergencyControls() {
+            var controls = document.getElementById('emergency-controls');
+            if (controls) {
+                controls.style.display = 'none';
+            }
+        }
+        
         function showVoiceManagementModal() {
+            // Show emergency controls when voice modal opens
+            showEmergencyControls();
+            
             // Remove any existing modal first
             var existingModal = document.getElementById('voice-modal');
             if (existingModal) {
@@ -6129,7 +6138,10 @@ I'd love to schedule..."></textarea>
                     window.conversationManager.stopConversation();
                 }
                 
-                // 9. Show success notification
+                // 9. Hide emergency controls after successful stop
+                hideEmergencyControls();
+                
+                // 10. Show success notification
                 showNotification('🛑 EMERGENCY STOP SUCCESSFUL - All audio stopped!', 'success');
                 alert('🛑 EMERGENCY STOP ACTIVATED\n\n✅ ALL voice playback stopped successfully!\n\n• Speech synthesis cancelled\n• All audio files stopped (' + allAudio.length + ' elements)\n• All timers cleared\n• All buttons reset (' + resetCount + ' buttons)\n• System ready for new voice commands');
                 
@@ -9461,6 +9473,8 @@ I'd love to schedule..."></textarea>
             if (modal) {
                 document.body.removeChild(modal);
             }
+            // Hide emergency controls when voice modal closes
+            hideEmergencyControls();
         }
         
         // SIMPLE VOICE BUTTON HANDLER - Direct onclick approach
