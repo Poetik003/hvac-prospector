@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tab Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="p-4">
+        <h1>Tab Test</h1>
+        
+        <div class="flex space-x-4 mb-4">
+            <button data-tab="test1" class="nav-item bg-blue-600 px-4 py-2 rounded">Tab 1</button>
+            <button data-tab="test2" class="nav-item bg-blue-600 px-4 py-2 rounded">Tab 2</button>
+        </div>
+        
+        <div id="test1-tab" class="tab-content p-4 bg-gray-800 rounded">
+            <h2>Content 1</h2>
+            <p>This is tab 1 content</p>
+        </div>
+        
+        <div id="test2-tab" class="tab-content hidden p-4 bg-gray-800 rounded">
+            <h2>Content 2</h2>
+            <p>This is tab 2 content</p>
+        </div>
+    </div>
+    
+    <script>
+        console.log('Test page loaded');
+        
+        function switchTab(tabName) {
+            console.log('Switching to:', tabName);
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show target tab
+            const target = document.getElementById(tabName + '-tab');
+            if (target) {
+                target.classList.remove('hidden');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-tab]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

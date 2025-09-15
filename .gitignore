@@ -1,0 +1,35 @@
+# Log files
+*.log
+voice_api.log
+voice_api_error.log
+webserver.log
+supervisord.log
+supervisord.pid
+supervisor.sock
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

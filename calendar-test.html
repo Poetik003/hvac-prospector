@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar Button Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <h1 class="text-2xl mb-6">Calendar Button Test</h1>
+    
+    <div class="space-y-4 max-w-md">
+        <button id="connect-google-calendar-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors">
+            Connect Google Calendar
+        </button>
+        <button id="connect-outlook-btn" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 px-4 rounded-lg transition-colors">
+            Connect Outlook
+        </button>
+        <button id="schedule-appointment-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors">
+            Schedule New Appointment
+        </button>
+    </div>
+    
+    <div id="status" class="mt-6 p-4 bg-slate-800 rounded-lg">
+        <p>Status: Ready to test buttons</p>
+    </div>
+
+    <script>
+        console.log('🧪 Calendar Button Test Started');
+        
+        function showStatus(message) {
+            document.getElementById('status').innerHTML = '<p>' + message + '</p>';
+            console.log('📝 ' + message);
+        }
+        
+        // Test calendar button functionality
+        function initializeCalendarButtons() {
+            console.log('🗓️ Initializing calendar buttons...');
+            
+            var googleBtn = document.getElementById('connect-google-calendar-btn');
+            if (googleBtn) {
+                googleBtn.addEventListener('click', function() {
+                    console.log('📅 Google Calendar clicked!');
+                    showStatus('✅ Google Calendar button works! Modal should open here.');
+                    alert('Google Calendar button clicked successfully!');
+                });
+                console.log('✅ Google Calendar button initialized');
+            }
+            
+            var outlookBtn = document.getElementById('connect-outlook-btn');
+            if (outlookBtn) {
+                outlookBtn.addEventListener('click', function() {
+                    console.log('📅 Outlook clicked!');
+                    showStatus('✅ Outlook button works! Modal should open here.');
+                    alert('Outlook button clicked successfully!');
+                });
+                console.log('✅ Outlook button initialized');
+            }
+            
+            var scheduleBtn = document.getElementById('schedule-appointment-btn');
+            if (scheduleBtn) {
+                scheduleBtn.addEventListener('click', function() {
+                    console.log('📅 Schedule Appointment clicked!');
+                    showStatus('✅ Schedule Appointment button works! Form should open here.');
+                    alert('Schedule Appointment button clicked successfully!');
+                });
+                console.log('✅ Schedule Appointment button initialized');
+            }
+            
+            showStatus('🎉 All calendar buttons initialized and ready!');
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCalendarButtons();
+        });
+    </script>
+</body>
+</html>

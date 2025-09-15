@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mobile Calendar Links</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0f172a;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .google { background: #4285f4; }
+        .microsoft { background: #0078d4; }
+        .test { background: #10b981; }
+        .info {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .status {
+            background: #374151;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 12px;
+            min-height: 60px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile Calendar Test</h1>
+        
+        <div class="status" id="status">
+            Ready for testing on iPhone/mobile...
+        </div>
+        
+        <!-- Method 1: Direct Links -->
+        <div class="info">
+            <strong>Method 1: Direct Links (No JavaScript)</strong>
+        </div>
+        
+        <a href="https://accounts.google.com/signin" class="button google">
+            🔗 Google Calendar (Link)
+        </a>
+        
+        <a href="https://login.microsoftonline.com/" class="button microsoft">
+            🔗 Microsoft Outlook (Link)
+        </a>
+        
+        <!-- Method 2: JavaScript with Mobile Detection -->
+        <div class="info">
+            <strong>Method 2: JavaScript with Mobile Detection</strong>
+        </div>
+        
+        <button class="button google" onclick="openGoogle()">
+            📱 Google (Mobile JS)
+        </button>
+        
+        <button class="button microsoft" onclick="openMicrosoft()">
+            📱 Microsoft (Mobile JS)
+        </button>
+        
+        <!-- Method 3: Test Links -->
+        <div class="info">
+            <strong>Method 3: Simple Test Links</strong>
+        </div>
+        
+        <a href="https://apple.com" class="button test">
+            🍎 Apple.com
+        </a>
+        
+        <a href="https://google.com" class="button test">
+            🔍 Google.com
+        </a>
+        
+        <div class="info">
+            <strong>Instructions:</strong><br>
+            1. Try each button/link above<br>
+            2. Check which ones open in new tabs<br>
+            3. Look for any error messages<br>
+            4. Note which method works on your iPhone
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML = '[' + new Date().toLocaleTimeString() + '] ' + message;
+        }
+        
+        function openGoogle() {
+            updateStatus('Attempting to open Google Calendar...');
+            
+            // Mobile-friendly approach
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                updateStatus('Mobile detected - using location.href');
+                // For mobile, direct navigation often works better
+                window.location.href = 'https://accounts.google.com/signin';
+            } else {
+                updateStatus('Desktop detected - using window.open');
+                window.open('https://accounts.google.com/signin', '_blank');
+            }
+        }
+        
+        function openMicrosoft() {
+            updateStatus('Attempting to open Microsoft Outlook...');
+            
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                updateStatus('Mobile detected - using location.href');
+                window.location.href = 'https://login.microsoftonline.com/';
+            } else {
+                updateStatus('Desktop detected - using window.open');
+                window.open('https://login.microsoftonline.com/', '_blank');
+            }
+        }
+        
+        // Detect device info
+        document.addEventListener('DOMContentLoaded', function() {
+            var userAgent = navigator.userAgent;
+            var isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+            var isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+            
+            updateStatus('Device: ' + (isMobile ? 'Mobile' : 'Desktop') + 
+                        (isIOS ? ' (iOS)' : '') + ' | Ready to test');
+        });
+    </script>
+</body>
+</html>

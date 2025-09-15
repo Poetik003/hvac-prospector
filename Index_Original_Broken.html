@@ -1027,21 +1027,20 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Calendar Integration - Enhanced Iframe Solution -->
+                    <!-- Calendar Integration -->
                     <div class="card-modern rounded-2xl p-6">
                         <h3 class="text-xl font-bold gradient-text mb-4">Calendar Integration</h3>
-                        <div class="bg-slate-800/50 rounded-xl p-1">
-                            <iframe src="calendar-isolated.html" 
-                                    style="width: 100%; height: 220px; border: none; background: transparent; border-radius: 8px;" 
-                                    title="Calendar Integration Buttons"
-                                    id="calendar-integration-iframe"
-                                    onload="console.log('✅ Calendar iframe loaded successfully')">
-                            </iframe>
+                        <div class="space-y-4">
+                            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors">
+                                <i class="fab fa-google mr-2"></i>Connect Google Calendar
+                            </button>
+                            <button class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 px-4 rounded-lg transition-colors">
+                                <i class="fab fa-microsoft mr-2"></i>Connect Outlook
+                            </button>
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
+                            </button>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Embedded calendar integration - click buttons above to connect your calendar services
-                        </p>
                     </div>
 
                     <!-- Upcoming Appointments -->
@@ -1779,13 +1778,6 @@ I'd love to schedule..."></textarea>
                 activeBtn.classList.add('active', 'text-white');
                 activeBtn.classList.remove('text-white/80');
             }
-            
-            // Initialize calendar buttons when switching to meetings tab
-            if (tabName === 'meetings') {
-                setTimeout(function() {
-                    initializeCalendarButtons();
-                }, 100);
-            }
         }
         
         // Initialize when ready
@@ -1815,12 +1807,6 @@ I'd love to schedule..."></textarea>
             }
             
             console.log('Tabs initialized!');
-            
-            // Initialize integration buttons including ProSpector login/signup
-            initializeIntegrationButtons();
-            
-            // Initialize calendar buttons
-            initializeCalendarButtons();
         });
         
         // Check logos after short delay
@@ -1836,7 +1822,7 @@ I'd love to schedule..."></textarea>
                 apolloBtn.addEventListener('click', function() {
                     console.log('🚀 Apollo AI connection clicked');
                     showConnectionModal('Apollo AI', {
-                        loginUrl: 'https://app.apollo.io/#/login?redirectTo=https%3A%2F%2Fapp.apollo.io%2F%23%2F',
+                        loginUrl: 'https://app.apollo.io/sign_in',
                         signupUrl: 'https://app.apollo.io/sign_up',
                         description: 'Connect your Apollo AI account to import leads and access 275M+ contacts.',
                         color: 'purple'
@@ -1850,7 +1836,7 @@ I'd love to schedule..."></textarea>
                 seamlessBtn.addEventListener('click', function() {
                     console.log('🧠 Seamless AI connection clicked');
                     showConnectionModal('Seamless AI', {
-                        loginUrl: 'https://login.seamless.ai/login',
+                        loginUrl: 'https://login.seamless.ai/',
                         signupUrl: 'https://login.seamless.ai/register',
                         description: 'Connect your Seamless AI account for real-time contact search and verification.',
                         color: 'green'
@@ -2033,17 +2019,6 @@ I'd love to schedule..."></textarea>
                     cancelActiveCampaign();
                 });
             }
-            
-            // Calendar Integration - Now handled by iframe (calendar-isolated.html)
-            // The calendar buttons are embedded via iframe to avoid JavaScript conflicts
-            
-            // Listen for messages from calendar iframe
-            window.addEventListener('message', function(event) {
-                if (event.data && event.data.type === 'schedule_appointment') {
-                    console.log('📅 Schedule appointment requested from iframe');
-                    openAppointmentSchedulingModal();
-                }
-            });
         }
         
         // Connection Modal for Integrations
@@ -2110,302 +2085,6 @@ I'd love to schedule..."></textarea>
                     document.body.removeChild(modal);
                 });
             });
-        }
-        
-        // Initialize Calendar Buttons (separate function for tab switching)
-        function initializeCalendarButtons() {
-            console.log('🗓️ Initializing calendar buttons...');
-            
-            // Calendar Integration Buttons - Direct redirect to calendar services
-            var googleCalendarBtn = document.getElementById('connect-google-calendar-btn');
-            if (googleCalendarBtn) {
-                // Remove existing listeners to prevent duplicates
-                googleCalendarBtn.replaceWith(googleCalendarBtn.cloneNode(true));
-                googleCalendarBtn = document.getElementById('connect-google-calendar-btn');
-                
-                googleCalendarBtn.addEventListener('click', function() {
-                    console.log('📅 Connect Google Calendar clicked - redirecting to Google OAuth');
-                    showNotification('Redirecting to Google Calendar...', 'info');
-                    
-                    // Redirect directly to Google Calendar OAuth with realistic parameters
-                    var googleCalendarUrl = 'https://accounts.google.com/o/oauth2/auth?' +
-                        'client_id=1234567890-abcdefghijklmnop.apps.googleusercontent.com&' +
-                        'redirect_uri=https://prospector.pro/oauth/google/callback&' +
-                        'scope=https://www.googleapis.com/auth/calendar&' +
-                        'response_type=code&' +
-                        'access_type=offline&' +
-                        'prompt=consent&' +
-                        'state=google-calendar-integration';
-                    
-                    window.open(googleCalendarUrl, '_blank');
-                });
-            }
-            
-            var outlookBtn = document.getElementById('connect-outlook-btn');
-            if (outlookBtn) {
-                // Remove existing listeners to prevent duplicates  
-                outlookBtn.replaceWith(outlookBtn.cloneNode(true));
-                outlookBtn = document.getElementById('connect-outlook-btn');
-                
-                outlookBtn.addEventListener('click', function() {
-                    console.log('📅 Connect Outlook clicked - redirecting to Microsoft OAuth');
-                    showNotification('Redirecting to Microsoft Outlook...', 'info');
-                    
-                    // Redirect directly to Microsoft OAuth with realistic parameters
-                    var outlookUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?' +
-                        'client_id=12345678-1234-1234-1234-123456789012&' +
-                        'response_type=code&' +
-                        'redirect_uri=https://prospector.pro/oauth/microsoft/callback&' +
-                        'scope=https://graph.microsoft.com/calendars.readwrite%20offline_access&' +
-                        'response_mode=query&' +
-                        'state=outlook-calendar-integration&' +
-                        'prompt=consent';
-                    
-                    window.open(outlookUrl, '_blank');
-                });
-            }
-            
-            var scheduleAppointmentBtn = document.getElementById('schedule-appointment-btn');
-            if (scheduleAppointmentBtn) {
-                // Remove existing listeners to prevent duplicates
-                scheduleAppointmentBtn.replaceWith(scheduleAppointmentBtn.cloneNode(true));
-                scheduleAppointmentBtn = document.getElementById('schedule-appointment-btn');
-                
-                scheduleAppointmentBtn.addEventListener('click', function() {
-                    console.log('📅 Schedule New Appointment clicked');
-                    openAppointmentSchedulingModal();
-                });
-            }
-            
-            console.log('✅ Calendar buttons initialized with direct OAuth redirects!');
-        }
-        
-        // Calendar Connection Modal for Calendar Integrations
-        function showCalendarConnectionModal(serviceName, config) {
-            var modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-            modal.innerHTML = `
-                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-auto border border-slate-600 shadow-2xl">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold gradient-text">Connect ${serviceName}</h3>
-                        <button class="close-calendar-modal text-slate-400 hover:text-white transition-colors">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="text-center mb-6">
-                        <div class="w-16 h-16 bg-${config.color}-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <i class="fab fa-${config.icon} text-3xl text-${config.color}-400"></i>
-                        </div>
-                        <p class="text-slate-300 text-sm">${config.description}</p>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <button class="connect-calendar-btn w-full btn-primary px-4 py-3 rounded-lg text-white font-semibold" data-url="${config.authUrl}">
-                            <i class="fas fa-link mr-2"></i>Connect ${serviceName}
-                        </button>
-                        <button class="login-calendar-btn w-full border border-${config.color}-500 text-${config.color}-400 hover:bg-${config.color}-500/10 px-4 py-3 rounded-lg font-semibold transition-colors" data-url="${config.loginUrl}">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In to ${serviceName}
-                        </button>
-                    </div>
-                    
-                    <div class="mt-4 p-3 bg-slate-700/50 rounded-lg">
-                        <p class="text-xs text-slate-400">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            After connecting, ProSpector will automatically sync appointments and schedule follow-ups.
-                        </p>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Close modal handlers
-            modal.querySelector('.close-calendar-modal').addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            });
-            
-            // Calendar connection handlers
-            var connectBtn = modal.querySelector('.connect-calendar-btn');
-            var loginBtn = modal.querySelector('.login-calendar-btn');
-            
-            if (connectBtn) {
-                connectBtn.addEventListener('click', function() {
-                    var url = this.getAttribute('data-url');
-                    console.log('🔗 Connecting to calendar:', serviceName);
-                    showNotification(`Connecting to ${serviceName}...`, 'info');
-                    
-                    // For demo purposes, simulate connection
-                    setTimeout(function() {
-                        showNotification(`${serviceName} connected successfully!`, 'success');
-                        document.body.removeChild(modal);
-                        updateCalendarConnectionStatus(serviceName, true);
-                    }, 2000);
-                });
-            }
-            
-            if (loginBtn) {
-                loginBtn.addEventListener('click', function() {
-                    var url = this.getAttribute('data-url');
-                    window.open(url, '_blank');
-                    showNotification(`Opening ${serviceName} login...`, 'info');
-                    document.body.removeChild(modal);
-                });
-            }
-        }
-        
-        // Appointment Scheduling Modal
-        function openAppointmentSchedulingModal() {
-            var modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-            modal.innerHTML = `
-                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-lg mx-auto border border-slate-600 shadow-2xl">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold gradient-text">Schedule New Appointment</h3>
-                        <button class="close-appointment-modal text-slate-400 hover:text-white transition-colors">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    
-                    <form id="appointmentForm" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Customer Name *</label>
-                                <input type="text" id="appointmentCustomerName" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Phone Number *</label>
-                                <input type="tel" id="appointmentPhone" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Service Address *</label>
-                            <input type="text" id="appointmentAddress" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="123 Main St, City, State, ZIP">
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Date *</label>
-                                <input type="date" id="appointmentDate" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Time *</label>
-                                <select id="appointmentTime" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
-                                    <option value="">Select time...</option>
-                                    <option value="08:00">8:00 AM</option>
-                                    <option value="09:00">9:00 AM</option>
-                                    <option value="10:00">10:00 AM</option>
-                                    <option value="11:00">11:00 AM</option>
-                                    <option value="12:00">12:00 PM</option>
-                                    <option value="13:00">1:00 PM</option>
-                                    <option value="14:00">2:00 PM</option>
-                                    <option value="15:00">3:00 PM</option>
-                                    <option value="16:00">4:00 PM</option>
-                                    <option value="17:00">5:00 PM</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Service Type *</label>
-                            <select id="appointmentServiceType" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
-                                <option value="">Select service...</option>
-                                <option value="maintenance">Routine Maintenance</option>
-                                <option value="repair">Repair Service</option>
-                                <option value="installation">New Installation</option>
-                                <option value="consultation">System Consultation</option>
-                                <option value="emergency">Emergency Service</option>
-                                <option value="quote">Quote/Estimate</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Notes</label>
-                            <textarea id="appointmentNotes" rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="Additional details about the appointment..."></textarea>
-                        </div>
-                        
-                        <div class="flex space-x-3 pt-4">
-                            <button type="submit" class="flex-1 btn-success px-4 py-3 rounded-lg text-white font-semibold">
-                                <i class="fas fa-calendar-check mr-2"></i>Schedule Appointment
-                            </button>
-                            <button type="button" class="cancel-appointment px-4 py-3 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-700 transition-colors">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Set minimum date to today
-            var today = new Date().toISOString().split('T')[0];
-            modal.querySelector('#appointmentDate').setAttribute('min', today);
-            
-            // Focus on first input
-            modal.querySelector('#appointmentCustomerName').focus();
-            
-            // Close modal handlers
-            modal.querySelector('.close-appointment-modal').addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-            
-            modal.querySelector('.cancel-appointment').addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            });
-            
-            // Form submission
-            modal.querySelector('#appointmentForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                var appointmentData = {
-                    customerName: modal.querySelector('#appointmentCustomerName').value,
-                    phone: modal.querySelector('#appointmentPhone').value,
-                    address: modal.querySelector('#appointmentAddress').value,
-                    date: modal.querySelector('#appointmentDate').value,
-                    time: modal.querySelector('#appointmentTime').value,
-                    serviceType: modal.querySelector('#appointmentServiceType').value,
-                    notes: modal.querySelector('#appointmentNotes').value,
-                    createdAt: new Date().toISOString()
-                };
-                
-                console.log('📅 New appointment scheduled:', appointmentData);
-                showNotification('Appointment scheduled successfully!', 'success');
-                
-                // In a real application, you would send this data to your backend
-                // For demo purposes, we'll just close the modal
-                document.body.removeChild(modal);
-                
-                // Update appointment list (could be implemented to refresh the UI)
-                updateAppointmentsList(appointmentData);
-            });
-        }
-        
-        // Update calendar connection status in UI
-        function updateCalendarConnectionStatus(serviceName, connected) {
-            console.log('📅 Calendar connection status updated:', serviceName, connected);
-            // In a real application, you would update the UI to show connection status
-            // This could include changing button colors, showing checkmarks, etc.
-        }
-        
-        // Update appointments list in UI
-        function updateAppointmentsList(appointmentData) {
-            console.log('📋 Appointments list updated with:', appointmentData);
-            // In a real application, you would update the appointments display
-            // This could include adding the new appointment to the list, refreshing calendars, etc.
         }
         
         // Lead Entry Modal Functions
@@ -2696,10 +2375,10 @@ I'd love to schedule..."></textarea>
             }
         }
         
-        var campaignTimer;
-        var campaignStartTime;
-        var callCount = 47;
-        var appointmentCount = 12;
+        let campaignTimer;
+        let campaignStartTime;
+        let callCount = 47;
+        let appointmentCount = 12;
         
         function startCampaignTimer() {
             campaignStartTime = Date.now();
@@ -3891,7 +3570,7 @@ I'd love to schedule..."></textarea>
                         
                         <div class="script-section">
                             <h5 class="font-bold text-yellow-400 mb-2">📋 NEXT STEPS & RELATIONSHIP BUILDING (120-150 seconds)</h5>
-                            <p class="mb-4">"Before I var you go, I want to make sure you have our direct number for any future needs. We guarantee all our work, and if you have any concerns at all, please don't hesitate to call."</p>
+                            <p class="mb-4">"Before I let you go, I want to make sure you have our direct number for any future needs. We guarantee all our work, and if you have any concerns at all, please don't hesitate to call."</p>
                             
                             <div class="mb-4">
                                 <p class="mb-2"><strong>Seasonal Preparation:</strong></p>
@@ -4692,7 +4371,7 @@ I'd love to schedule..."></textarea>
                 };
                 
                 // Format as CSV
-                var csvContent = "ProSpector Pro - Voice Campaign Analytics Report\\n";
+                let csvContent = "ProSpector Pro - Voice Campaign Analytics Report\\n";
                 csvContent += `Generated: ${reportData.generatedDate}\\n\\n`;
                 
                 csvContent += "CAMPAIGN SUMMARY\\n";
@@ -4782,7 +4461,7 @@ I'd love to schedule..."></textarea>
             };
             
             // Format email body
-            var emailBody = `ProSpector Pro - Voice Campaign Analytics Report\\n`;
+            let emailBody = `ProSpector Pro - Voice Campaign Analytics Report\\n`;
             emailBody += `Generated: ${reportData.generatedDate}\\n\\n`;
             
             emailBody += `📊 CAMPAIGN SUMMARY\\n`;
@@ -4839,13 +4518,13 @@ I'd love to schedule..."></textarea>
                     name: 'Sarah - Natural Conversation',
                     gender: 'female',
                     personality: 'conversational',
-                    sample: "Hey! This is Sarah from ProSpector Pro down in Miami. How's everything going with you today? ... Oh good, I'm glad to hear that! Listen, I hope you don't mind me calling, but I was actually thinking about your facility earlier and I had a quick question for you... Have you noticed your energy bills being higher than usual lately? ... Yeah, I figured you might be dealing with that too. You know, down here in Miami, we're all struggling with the same thing - these AC units just running non-stop! ... Right? It's crazy! So here's why I'm calling... we've been working with some businesses around South Florida, and we found this really simple way to cut those bills down without any major changes. Would you be curious to hear about it? ... Actually, var me ask you this first - what's your biggest challenge right now with your HVAC system?"
+                    sample: "Hey! This is Sarah from ProSpector Pro down in Miami. How's everything going with you today? ... Oh good, I'm glad to hear that! Listen, I hope you don't mind me calling, but I was actually thinking about your facility earlier and I had a quick question for you... Have you noticed your energy bills being higher than usual lately? ... Yeah, I figured you might be dealing with that too. You know, down here in Miami, we're all struggling with the same thing - these AC units just running non-stop! ... Right? It's crazy! So here's why I'm calling... we've been working with some businesses around South Florida, and we found this really simple way to cut those bills down without any major changes. Would you be curious to hear about it? ... Actually, let me ask you this first - what's your biggest challenge right now with your HVAC system?"
                 },
                 'professional-male': {
                     name: 'David Rodriguez - Business Dialogue',
                     gender: 'male', 
                     personality: 'conversational',
-                    sample: "David Rodriguez here from ProSpector Pro. How are things going for you today? ... That's great to hear! I hope you don't mind the call - I got your information through some mutual connections in the Miami business community... Actually, I wanted to run something by you because I think you might find this interesting... Have you been keeping an eye on your facility's energy costs lately? ... Yeah, I thought that might be on your radar. You know, I've been talking to a lot of business owners around Brickell and downtown, and everyone's dealing with the same challenge right now... The cooling costs are just getting out of hand, especially with these Miami summers, right? ... Exactly. So here's what got my attention - we started working with a few companies in the area, and we found this approach that's been making a real difference for them. Nothing disruptive, just optimizing how their systems operate... Before I go into the details though, var me ask - what's been your biggest concern with your current HVAC setup? Is it mainly the costs, or are there other issues you're dealing with?"
+                    sample: "David Rodriguez here from ProSpector Pro. How are things going for you today? ... That's great to hear! I hope you don't mind the call - I got your information through some mutual connections in the Miami business community... Actually, I wanted to run something by you because I think you might find this interesting... Have you been keeping an eye on your facility's energy costs lately? ... Yeah, I thought that might be on your radar. You know, I've been talking to a lot of business owners around Brickell and downtown, and everyone's dealing with the same challenge right now... The cooling costs are just getting out of hand, especially with these Miami summers, right? ... Exactly. So here's what got my attention - we started working with a few companies in the area, and we found this approach that's been making a real difference for them. Nothing disruptive, just optimizing how their systems operate... Before I go into the details though, let me ask - what's been your biggest concern with your current HVAC setup? Is it mainly the costs, or are there other issues you're dealing with?"
                 },
                 'friendly-female': {
                     name: 'Emma - Friendly Conversation',
@@ -4857,7 +4536,7 @@ I'd love to schedule..."></textarea>
                     name: 'Marcus - Community Conversation',
                     gender: 'male',
                     personality: 'conversational', 
-                    sample: "¡Oye! Marcus here from ProSpector Pro. How you been, my friend? ... Ah, that's good to hear! Listen, I hope it's cool that I'm calling you... I was just talking to my neighbor about something and it made me think of you, you know? ... So check this out - you ever notice how crazy your electric bill gets during the summer months here in Miami? ... Yeah, right? It's insane! My cousin owns a business over in Kendall and he was telling me his AC bill was killing him... So I'm like, wait a minute, there's gotta be something we can do about this, right? ... Exactly! So that's actually why I wanted to talk to you. We figured out this thing that's been helping businesses around here - nothing complicated, just makes the AC work smarter, you know what I mean? ... But before I get into all that, var me ask you - what's been your experience with your cooling costs lately? Has it been rough on you too?"
+                    sample: "¡Oye! Marcus here from ProSpector Pro. How you been, my friend? ... Ah, that's good to hear! Listen, I hope it's cool that I'm calling you... I was just talking to my neighbor about something and it made me think of you, you know? ... So check this out - you ever notice how crazy your electric bill gets during the summer months here in Miami? ... Yeah, right? It's insane! My cousin owns a business over in Kendall and he was telling me his AC bill was killing him... So I'm like, wait a minute, there's gotta be something we can do about this, right? ... Exactly! So that's actually why I wanted to talk to you. We figured out this thing that's been helping businesses around here - nothing complicated, just makes the AC work smarter, you know what I mean? ... But before I get into all that, let me ask you - what's been your experience with your cooling costs lately? Has it been rough on you too?"
                 },
                 'authoritative-male': {
                     name: 'James',
@@ -4892,7 +4571,7 @@ I'd love to schedule..."></textarea>
             window.speechSynthesis.cancel();
             
             // Wait for voices to load if needed
-            var voices = window.speechSynthesis.getVoices();
+            let voices = window.speechSynthesis.getVoices();
             if (voices.length === 0) {
                 // Wait for voices to load
                 window.speechSynthesis.addEventListener('voiceschanged', function() {
@@ -4946,15 +4625,14 @@ I'd love to schedule..."></textarea>
                         'australian': ['en-AU']
                     };
                     var preferredLangs = accentMap[accent] || ['en-US', 'en'];
-                    return preferredLangs.some(function(lang) { return voice.lang.startsWith(lang); });
+                    return preferredLangs.some(lang => voice.lang.startsWith(lang));
                 }
             ];
             
-            var selectedVoice = null;
+            let selectedVoice = null;
             
             // Try each selection criteria in order of priority
-            for (var i = 0; i < voiceSelectionCriteria.length; i++) {
-                var criteria = voiceSelectionCriteria[i];
+            for (let criteria of voiceSelectionCriteria) {
                 var matchingVoices = voices.filter(criteria);
                 if (matchingVoices.length > 0) {
                     selectedVoice = matchingVoices[0];
@@ -5059,7 +4737,7 @@ I'd love to schedule..."></textarea>
                 var voiceSettings = voiceMapping[voiceConfig.personality + '-' + voiceConfig.gender] || voiceMapping['professional-female'];
                 
                 // Enhance the voice sample with natural conversation elements
-                var enhancedSample = voiceConfig.sample;
+                let enhancedSample = voiceConfig.sample;
                 
                 // Add natural conversation elements based on tone
                 var conversationalEnhancements = {
@@ -5465,11 +5143,11 @@ I'd love to schedule..."></textarea>
             }
             
             handleSpeechResult(event) {
-                var finalTranscript = '';
-                var interimTranscript = '';
-                var confidence = 0;
+                let finalTranscript = '';
+                let interimTranscript = '';
+                let confidence = 0;
                 
-                for (var i = event.resultIndex; i < event.results.length; i++) {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
                     var result = event.results[i];
                     var transcript = result[0].transcript;
                     confidence = Math.max(confidence, result[0].confidence || 0);
@@ -5777,28 +5455,25 @@ I'd love to schedule..."></textarea>
                 // Priority selection for authentic Miami voices
                 var voicePreferences = [
                     // Try to find voices with regional characteristics
-                    function(voice) { return voice.name.toLowerCase().includes('english (united states)'); },
-                    function(voice) { return voice.lang === 'en-US'; },
+                    (voice) => voice.name.toLowerCase().includes('english (united states)'),
+                    (voice) => voice.lang === 'en-US',
                     // Gender-specific preferences
-                    function(voice) {
+                    (voice) function() {
                         if (profileName.includes('yeni') || profileName.includes('gabi')) {
                             return voice.name.toLowerCase().includes('female') || 
                                    voice.name.toLowerCase().includes('woman') ||
-                                   ['samantha', 'victoria', 'karen', 'susan'].some(function(name) { 
-                                       return voice.name.toLowerCase().includes(name);
-                                   });
+                                   ['samantha', 'victoria', 'karen', 'susan'].some(name => 
+                                       voice.name.toLowerCase().includes(name));
                         } else {
                             return voice.name.toLowerCase().includes('male') || 
                                    voice.name.toLowerCase().includes('man') ||
-                                   ['david', 'alex', 'daniel', 'thomas'].some(function(name) { 
-                                       return voice.name.toLowerCase().includes(name);
-                                   });
+                                   ['david', 'alex', 'daniel', 'thomas'].some(name => 
+                                       voice.name.toLowerCase().includes(name));
                         }
                     }
                 ];
                 
-                for (var i = 0; i < voicePreferences.length; i++) {
-                    var preference = voicePreferences[i];
+                for (var preference of voicePreferences) {
                     var matchingVoices = voices.filter(preference);
                     if (matchingVoices.length > 0) {
                         return matchingVoices[0];
@@ -5824,17 +5499,17 @@ I'd love to schedule..."></textarea>
                 
                 // Try to find appropriate voice based on profile
                 if (profileName.includes('yeni') || profileName.includes('gabi')) {
-                    return voices.find(function(voice) { 
-                        return voice.name.toLowerCase().includes('female') ||
-                               voice.name.toLowerCase().includes('samantha') ||
-                               voice.name.toLowerCase().includes('kate');
-                    });
+                    return voices.find(voice => 
+                        voice.name.toLowerCase().includes('female') ||
+                        voice.name.toLowerCase().includes('samantha') ||
+                        voice.name.toLowerCase().includes('kate')
+                    );
                 } else if (profileName.includes('danny') || profileName.includes('pedro')) {
-                    return voices.find(function(voice) { 
-                        return voice.name.toLowerCase().includes('male') ||
-                               voice.name.toLowerCase().includes('daniel') ||
-                               voice.name.toLowerCase().includes('alex');
-                    });
+                    return voices.find(voice => 
+                        voice.name.toLowerCase().includes('male') ||
+                        voice.name.toLowerCase().includes('daniel') ||
+                        voice.name.toLowerCase().includes('alex')
+                    );
                 }
                 
                 return null;
@@ -6164,9 +5839,9 @@ I'd love to schedule..."></textarea>
                 
                 var responses = {
                     'Yeni - Miami Latina Consultant': "Are you still there? I just want to make sure I'm not catching you at a bad time. Should I call back later?",
-                    'Danny - Bilingual Miami Charm': "You still with me? If this is a bad time, just var me know and I can call you back later.",
+                    'Danny - Bilingual Miami Charm': "You still with me? If this is a bad time, just let me know and I can call you back later.",
                     'Pedro Rodriguez - Executive Authority': "I want to make sure I have your attention. If this isn't a good time, I'm happy to schedule a brief call for later.",
-                    'Gabi - Friendly Miami Personality': "Hello? I hope I didn't lose you there! If you need to go, just var me know and we can chat another time."
+                    'Gabi - Friendly Miami Personality': "Hello? I hope I didn't lose you there! If you need to go, just let me know and we can chat another time."
                 };
                 
                 return responses[profileName] || responses['Yeni - Miami Latina Consultant'];
@@ -6279,7 +5954,7 @@ I'd love to schedule..."></textarea>
             // Initialize Web Speech API and load voices
             if ('speechSynthesis' in window) {
                 // Load voices immediately
-                var voices = window.speechSynthesis.getVoices();
+                let voices = window.speechSynthesis.getVoices();
                 console.log(`🔊 Initial voices available: ${voices.length}`);
                 
                 // Listen for voice changes (some browsers load voices asynchronously)
@@ -6340,558 +6015,6 @@ I'd love to schedule..."></textarea>
         });
         
         console.log('🎯 ProSpector Pro scripts loaded');
-    </script>
-    
-    <!-- EMERGENCY TAB FIX - ISOLATED WORKING TAB SYSTEM -->
-    <script>
-        // WORKING TAB SYSTEM - INDEPENDENT OF OTHER JAVASCRIPT
-        function emergencySwitchTab(tabName) {
-            console.log('🔧 Emergency tab switch to:', tabName);
-            
-            // Hide all content
-            var contents = document.querySelectorAll('.tab-content');
-            for (var i = 0; i < contents.length; i++) {
-                contents[i].classList.add('hidden');
-            }
-            
-            // Remove active from buttons
-            var buttons = document.querySelectorAll('.nav-item');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active', 'text-white');
-                buttons[i].classList.add('text-white/80');
-            }
-            
-            // Show target tab
-            var target = document.getElementById(tabName + '-tab');
-            if (target) {
-                target.classList.remove('hidden');
-                console.log('✅ Activated content:', tabName);
-            }
-            
-            // Activate button
-            var activeBtn = document.querySelector('[data-tab="' + tabName + '"]');
-            if (activeBtn) {
-                activeBtn.classList.add('active', 'text-white');
-                activeBtn.classList.remove('text-white/80');
-                console.log('✅ Activated button:', tabName);
-            }
-            
-            // Initialize calendar buttons when switching to meetings tab
-            if (tabName === 'meetings') {
-                setTimeout(function() {
-                    if (typeof initializeCalendarButtons === 'function') {
-                        initializeCalendarButtons();
-                    }
-                }, 200);
-            }
-        }
-        
-        // Emergency initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚨 Emergency tab system initializing...');
-            
-            var tabButtons = document.querySelectorAll('[data-tab]');
-            console.log('🔍 Found', tabButtons.length, 'tab buttons for emergency fix');
-            
-            for (var i = 0; i < tabButtons.length; i++) {
-                var btn = tabButtons[i];
-                var tabName = btn.getAttribute('data-tab');
-                
-                // Use closure to capture tabName
-                (function(name) {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        console.log('🖱️ Emergency tab clicked:', name);
-                        emergencySwitchTab(name);
-                    });
-                })(tabName);
-            }
-            
-            console.log('✅ Emergency tab system ready!');
-            
-            // Initialize interactive elements within tabs
-            initializeTabContentInteractions();
-            
-            // Force initialize calendar buttons after emergency system is ready
-            setTimeout(function() {
-                if (typeof initializeCalendarButtons === 'function') {
-                    console.log('🚨 Emergency system forcing calendar initialization...');
-                    initializeCalendarButtons();
-                }
-            }, 1000);
-        });
-        
-        // Initialize all interactive elements within tab content
-        function initializeTabContentInteractions() {
-            console.log('🔧 Initializing tab content interactions...');
-            
-            // Voice preview buttons
-            var previewButtons = document.querySelectorAll('[id*="preview"], .voice-preview-btn, .preview-voice-btn');
-            console.log('🎤 Found', previewButtons.length, 'voice preview buttons');
-            for (var i = 0; i < previewButtons.length; i++) {
-                previewButtons[i].addEventListener('click', function() {
-                    console.log('🎤 Voice preview clicked');
-                    var voiceId = this.getAttribute('data-voice') || 'pedro';
-                    previewVoiceEmergency(voiceId);
-                });
-            }
-            
-            // Live chat buttons  
-            var liveChatButtons = document.querySelectorAll('.live-chat-btn, [id*="liveChat"]');
-            console.log('💬 Found', liveChatButtons.length, 'live chat buttons');
-            for (var i = 0; i < liveChatButtons.length; i++) {
-                liveChatButtons[i].addEventListener('click', function() {
-                    console.log('💬 Live chat clicked');
-                    alert('Live chat functionality will be available soon!');
-                });
-            }
-            
-            // Note: Connection buttons handled by setupSpecificConnectionButtons() function
-            
-            // Campaign buttons
-            var campaignButtons = document.querySelectorAll('.campaign-btn, [id*="campaign"], [id*="start"], [id*="launch"]');
-            console.log('🚀 Found', campaignButtons.length, 'campaign buttons');  
-            for (var i = 0; i < campaignButtons.length; i++) {
-                campaignButtons[i].addEventListener('click', function() {
-                    console.log('🚀 Campaign button clicked');
-                    alert('Campaign functionality will be available soon!');
-                });
-            }
-            
-            // Generate/Create buttons
-            var generateButtons = document.querySelectorAll('[id*="generate"], [id*="create"], .generate-btn');
-            console.log('⚡ Found', generateButtons.length, 'generate buttons');
-            for (var i = 0; i < generateButtons.length; i++) {
-                generateButtons[i].addEventListener('click', function() {
-                    console.log('⚡ Generate button clicked');
-                    alert('Generation functionality will be available soon!');
-                });
-            }
-            
-            // Schedule buttons
-            var scheduleButtons = document.querySelectorAll('[id*="schedule"], .schedule-btn');
-            console.log('📅 Found', scheduleButtons.length, 'schedule buttons');
-            for (var i = 0; i < scheduleButtons.length; i++) {
-                scheduleButtons[i].addEventListener('click', function() {
-                    console.log('📅 Schedule button clicked');
-                    alert('Scheduling functionality will be available soon!');
-                });
-            }
-            
-            // Manual entry and import buttons
-            var manualEntryButtons = document.querySelectorAll('#add-lead-btn, #import-csv-btn, [id*="add-lead"], [id*="import"], .add-lead-btn, .import-btn');
-            console.log('👤 Found', manualEntryButtons.length, 'manual entry/import buttons');
-            for (var i = 0; i < manualEntryButtons.length; i++) {
-                manualEntryButtons[i].addEventListener('click', function() {
-                    console.log('👤 Manual entry/import button clicked:', this.id || this.className);
-                    if (this.id === 'add-lead-btn' || this.textContent.includes('Add New Lead')) {
-                        console.log('📝 Opening Add New Lead form...');
-                        openLeadEntryForm();
-                    } else if (this.id === 'import-csv-btn' || this.textContent.includes('Import')) {
-                        console.log('📄 Opening Import CSV dialog...');
-                        openImportCSVDialog();
-                    } else {
-                        alert('Lead management functionality will be available soon!');
-                    }
-                });
-            }
-            
-            // Specific service connection handlers
-            setupSpecificConnectionButtons();
-            
-            // Add delegated event listeners for connection buttons (fallback)
-            document.addEventListener('click', function(e) {
-                if (e.target && (e.target.id === 'connect-apollo-btn' || e.target.id === 'connect-seamless-btn' || 
-                    e.target.id === 'connect-linkedin-btn' || e.target.id === 'connect-zoominfo-btn' || 
-                    e.target.id === 'connect-google-btn')) {
-                    
-                    console.log('🎯 Delegated click detected for:', e.target.id);
-                    e.preventDefault();
-                    
-                    if (e.target.id === 'connect-apollo-btn') {
-                        connectService('Apollo AI', 'https://app.apollo.io/#/login?redirectTo=https%3A%2F%2Fapp.apollo.io%2F%23%2F', 'https://app.apollo.io/sign_up');
-                    } else if (e.target.id === 'connect-seamless-btn') {
-                        connectService('Seamless AI', 'https://login.seamless.ai/login', 'https://login.seamless.ai/register');
-                    } else if (e.target.id === 'connect-linkedin-btn') {
-                        connectService('LinkedIn Sales Navigator', 'https://www.linkedin.com/login?session_redirect=%2Fsales&_f=navigator&fromSignIn=true', 'https://business.linkedin.com/sales-solutions/sales-navigator');
-                    } else if (e.target.id === 'connect-zoominfo-btn') {
-                        connectService('ZoomInfo', 'https://login.zoominfo.com/', 'https://www.zoominfo.com/free-trial');
-                    } else if (e.target.id === 'connect-google-btn') {
-                        connectService('Google Business', 'https://accounts.google.com/signin', 'https://business.google.com/');
-                    }
-                }
-            });
-            
-            console.log('✅ All tab content interactions initialized!');
-        }
-        
-        // Emergency voice preview function
-        function previewVoiceEmergency(voiceId) {
-            console.log('🎤 Emergency voice preview for:', voiceId);
-            
-            // Find the button that was clicked
-            var btn = event.target;
-            var originalText = btn.innerHTML;
-            
-            // Show loading state
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
-            btn.disabled = true;
-            
-            // Simulate voice preview (replace with actual API call when ready)
-            setTimeout(function() {
-                alert('🎤 Voice Preview for ' + voiceId + '\n\n"Hello! This is ' + voiceId + ' from Cool Breeze HVAC. I specialize in professional air conditioning maintenance, repairs, and energy-efficient system installations. How can I help you today?"\n\n(Voice preview functionality will connect to the voice API soon!)');
-                
-                btn.innerHTML = '<i class="fas fa-check mr-2"></i>Preview Played';
-                setTimeout(function() {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 2000);
-            }, 1500);
-        }
-        
-        // Setup specific service connection buttons
-        function setupSpecificConnectionButtons() {
-            console.log('🔗 Setting up service-specific connection handlers...');
-            
-            // Apollo AI
-            var apolloBtn = document.getElementById('connect-apollo-btn');
-            if (apolloBtn) {
-                console.log('✅ Found Apollo AI button, setting up handler');
-                apolloBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🚀 Apollo AI button clicked!');
-                    connectService('Apollo AI', 'https://app.apollo.io/#/login?redirectTo=https%3A%2F%2Fapp.apollo.io%2F%23%2F', 'https://app.apollo.io/sign_up');
-                });
-            } else {
-                console.log('❌ Apollo AI button not found');
-            }
-            
-            // Seamless AI  
-            var seamlessBtn = document.getElementById('connect-seamless-btn');
-            if (seamlessBtn) {
-                console.log('✅ Found Seamless AI button, setting up handler');
-                seamlessBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🚀 Seamless AI button clicked!');
-                    connectService('Seamless AI', 'https://login.seamless.ai/login', 'https://login.seamless.ai/register');
-                });
-            } else {
-                console.log('❌ Seamless AI button not found');
-            }
-            
-            // LinkedIn Sales Navigator
-            var linkedinBtn = document.getElementById('connect-linkedin-btn');
-            if (linkedinBtn) {
-                linkedinBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    connectService('LinkedIn Sales Navigator', 'https://www.linkedin.com/login?session_redirect=%2Fsales&_f=navigator&fromSignIn=true', 'https://business.linkedin.com/sales-solutions/sales-navigator');
-                });
-            }
-            
-            // ZoomInfo
-            var zoominfoBtn = document.getElementById('connect-zoominfo-btn');
-            if (zoominfoBtn) {
-                zoominfoBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    connectService('ZoomInfo', 'https://login.zoominfo.com/', 'https://www.zoominfo.com/free-trial');
-                });
-            }
-            
-            // Google Business
-            var googleBtn = document.getElementById('connect-google-btn');
-            if (googleBtn) {
-                googleBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    connectService('Google Business', 'https://accounts.google.com/signin', 'https://business.google.com/');
-                });
-            }
-        }
-        
-        // Universal service connection function
-        function connectService(serviceName, loginUrl, signupUrl) {
-            console.log('🔗 Connecting to:', serviceName);
-            
-            var message = '🔗 Connect ' + serviceName + ' to ProSpector Pro\n\n' +
-                         '📊 BENEFITS:\n' +
-                         '✅ Import leads directly from ' + serviceName + '\n' +
-                         '✅ Sync contact data and company insights\n' +
-                         '✅ Access advanced search and filtering\n' +
-                         '✅ Automate HVAC prospect identification\n\n' +
-                         '🔐 SECURE CONNECTION:\n' +
-                         '• Your credentials stay with ' + serviceName + '\n' +
-                         '• ProSpector Pro uses official APIs only\n' +
-                         '• No passwords stored in our system\n\n' +
-                         'Choose an option:';
-            
-            // Create custom modal for login/signup choice
-            if (confirm(message + '\n\nOK = Login to existing account\nCancel = Sign up for new account')) {
-                // User chose login
-                console.log('🔑 Opening login for:', serviceName);
-                window.open(loginUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-            } else {
-                // User chose signup  
-                console.log('📝 Opening signup for:', serviceName);
-                window.open(signupUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-            }
-        }
-        
-        // Lead Entry Form Functions
-        function openLeadEntryForm() {
-            // Create modal overlay
-            var modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-            modal.style.backdropFilter = 'blur(5px)';
-            
-            modal.innerHTML = `
-                <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 max-h-screen overflow-y-auto">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-white flex items-center">
-                            <i class="fas fa-user-plus mr-2 text-blue-400"></i>
-                            Add New HVAC Lead
-                        </h2>
-                        <button class="close-lead-form text-gray-400 hover:text-white">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    
-                    <form id="leadEntryForm" class="space-y-4">
-                        <!-- Contact Information -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Company Name *</label>
-                            <input type="text" id="companyName" required 
-                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                   placeholder="e.g., Miami Office Complex">
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">First Name *</label>
-                                <input type="text" id="firstName" required 
-                                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                       placeholder="John">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Last Name *</label>
-                                <input type="text" id="lastName" required 
-                                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                       placeholder="Smith">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Job Title</label>
-                            <input type="text" id="jobTitle" 
-                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                   placeholder="Facility Manager, Operations Director">
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Phone *</label>
-                                <input type="tel" id="phone" required 
-                                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                       placeholder="(305) 555-0123">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Email</label>
-                                <input type="email" id="email" 
-                                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                       placeholder="john@company.com">
-                            </div>
-                        </div>
-                        
-                        <!-- HVAC-Specific Fields -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">HVAC System Type</label>
-                            <select id="hvacType" 
-                                    class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none">
-                                <option value="">Select System Type</option>
-                                <option value="central-ac">Central Air Conditioning</option>
-                                <option value="chiller">Chiller System</option>
-                                <option value="rooftop">Rooftop Units</option>
-                                <option value="heat-pump">Heat Pump</option>
-                                <option value="vrf">VRF System</option>
-                                <option value="split">Split System</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Last Maintenance Date</label>
-                            <input type="date" id="lastMaintenance" 
-                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Notes</label>
-                            <textarea id="notes" rows="3" 
-                                      class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                                      placeholder="HVAC concerns, energy costs, maintenance issues..."></textarea>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-3 pt-4">
-                            <button type="submit" 
-                                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
-                                <i class="fas fa-save mr-2"></i>Save Lead
-                            </button>
-                            <button type="button" class="close-lead-form flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Setup event handlers
-            modal.querySelectorAll('.close-lead-form').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    document.body.removeChild(modal);
-                });
-            });
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            });
-            
-            // Handle form submission
-            document.getElementById('leadEntryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveLead();
-            });
-            
-            // Focus first input
-            setTimeout(function() {
-                document.getElementById('companyName').focus();
-            }, 100);
-        }
-        
-        function saveLead() {
-            // Get form data
-            var leadData = {
-                companyName: document.getElementById('companyName').value,
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                jobTitle: document.getElementById('jobTitle').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                hvacType: document.getElementById('hvacType').value,
-                lastMaintenance: document.getElementById('lastMaintenance').value,
-                notes: document.getElementById('notes').value,
-                dateAdded: new Date().toISOString()
-            };
-            
-            console.log('💾 Saving lead:', leadData);
-            
-            // Store in localStorage for now (in production, send to backend)
-            var leads = JSON.parse(localStorage.getItem('prospectorLeads') || '[]');
-            leads.push(leadData);
-            localStorage.setItem('prospectorLeads', JSON.stringify(leads));
-            
-            // Show success message
-            alert('✅ Lead Saved Successfully!\n\n' +
-                  'Company: ' + leadData.companyName + '\n' +
-                  'Contact: ' + leadData.firstName + ' ' + leadData.lastName + '\n' +
-                  'Phone: ' + leadData.phone + '\n\n' +
-                  'Lead has been added to your ProSpector Pro pipeline.');
-            
-            // Close modal
-            var modal = document.querySelector('.fixed.inset-0');
-            if (modal) {
-                document.body.removeChild(modal);
-            }
-        }
-        
-        function openImportCSVDialog() {
-            // Create file input dialog
-            var input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.csv,.txt';
-            input.style.display = 'none';
-            
-            input.onchange = function(e) {
-                var file = e.target.files[0];
-                if (file) {
-                    console.log('📄 Processing CSV file:', file.name);
-                    
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        var csvData = e.target.result;
-                        processCSVImport(csvData, file.name);
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            
-            document.body.appendChild(input);
-            input.click();
-            document.body.removeChild(input);
-        }
-        
-        function processCSVImport(csvData, fileName) {
-            // Parse CSV data
-            var lines = csvData.split('\n');
-            var headers = lines[0].split(',').map(function(h) { return h.trim(); });
-            var leads = [];
-            
-            for (var i = 1; i < lines.length; i++) {
-                if (lines[i].trim()) {
-                    var values = lines[i].split(',').map(function(v) { return v.trim(); });
-                    var lead = {};
-                    
-                    for (var j = 0; j < headers.length; j++) {
-                        lead[headers[j]] = values[j] || '';
-                    }
-                    lead.dateAdded = new Date().toISOString();
-                    lead.source = 'CSV Import: ' + fileName;
-                    leads.push(lead);
-                }
-            }
-            
-            // Save imported leads
-            var existingLeads = JSON.parse(localStorage.getItem('prospectorLeads') || '[]');
-            var allLeads = existingLeads.concat(leads);
-            localStorage.setItem('prospectorLeads', JSON.stringify(allLeads));
-            
-            console.log('📊 Imported', leads.length, 'leads from', fileName);
-            
-            // Show success message
-            alert('✅ CSV Import Successful!\n\n' +
-                  'File: ' + fileName + '\n' +
-                  'Imported: ' + leads.length + ' leads\n' +
-                  'Headers: ' + headers.join(', ') + '\n\n' +
-                  'All leads have been added to your ProSpector Pro pipeline.');
-        }
-        
-        // Calendar functions that work on mobile (copied from mobile-calendar.html)
-        function openGoogleCalendar() {
-            console.log('📅 Opening Google Calendar...');
-            
-            // Mobile-friendly approach (same as working mobile test page)
-            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                console.log('📱 Mobile detected - using location.href for Google');
-                window.location.href = 'https://accounts.google.com/signin';
-            } else {
-                console.log('🖥️ Desktop detected - using window.open for Google');
-                window.open('https://accounts.google.com/signin', '_blank');
-            }
-        }
-        
-        function openMicrosoftCalendar() {
-            console.log('📅 Opening Microsoft Outlook...');
-            
-            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                console.log('📱 Mobile detected - using location.href for Microsoft');
-                window.location.href = 'https://login.microsoftonline.com/';
-            } else {
-                console.log('🖥️ Desktop detected - using window.open for Microsoft');
-                window.open('https://login.microsoftonline.com/', '_blank');
-            }
-        }
     </script>
 </body>
 </html>
