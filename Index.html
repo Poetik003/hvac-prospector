@@ -949,20 +949,19 @@
                             var sarahBtn = document.createElement('div');
                             sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
+                            
+                            // Register button with GlobalAudioManager
+                            window.GlobalAudioManager.registerButton(
+                                sarahBtn, 
+                                '👩‍💼 TEST SARAH VOICE',
+                                'linear-gradient(135deg, #3b82f6, #1d4ed8)'
+                            );
+                            
                             sarahBtn.onclick = function() {
-                                console.log('🎤 SARAH BUTTON CLICKED - Starting voice generation...');
+                                console.log('🎤 SARAH BUTTON CLICKED - Using GlobalAudioManager...');
                                 
-                                // Simple audio stop - no complex function calls
-                                try {
-                                    var allAudio = document.querySelectorAll('audio');
-                                    for (var i = 0; i < allAudio.length; i++) {
-                                        allAudio[i].pause();
-                                        allAudio[i].currentTime = 0;
-                                    }
-                                    console.log('🛑 Stopped existing audio');
-                                } catch (e) {
-                                    console.log('⚠️ Audio stop error (continuing anyway):', e);
-                                }
+                                // Stop all existing audio using GlobalAudioManager
+                                window.GlobalAudioManager.stopAll();
                                 
                                 sarahBtn.textContent = '🎵 Generating Sarah Voice...';
                                 sarahBtn.style.background = 'linear-gradient(135deg, #7c3aed, #5b21b6)';
@@ -1070,20 +1069,19 @@
                             var dannyBtn = document.createElement('div');
                             dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
+                            
+                            // Register button with GlobalAudioManager
+                            window.GlobalAudioManager.registerButton(
+                                dannyBtn, 
+                                '👨‍🔧 TEST DANNY VOICE',
+                                'linear-gradient(135deg, #10b981, #047857)'
+                            );
+                            
                             dannyBtn.onclick = function() {
-                                console.log('🎤 DANNY BUTTON CLICKED - Starting voice generation...');
+                                console.log('🎤 DANNY BUTTON CLICKED - Using GlobalAudioManager...');
                                 
-                                // Simple audio stop - no complex function calls
-                                try {
-                                    var allAudio = document.querySelectorAll('audio');
-                                    for (var i = 0; i < allAudio.length; i++) {
-                                        allAudio[i].pause();
-                                        allAudio[i].currentTime = 0;
-                                    }
-                                    console.log('🛑 Stopped existing audio');
-                                } catch (e) {
-                                    console.log('⚠️ Audio stop error (continuing anyway):', e);
-                                }
+                                // Stop all existing audio using GlobalAudioManager
+                                window.GlobalAudioManager.stopAll();
                                 
                                 dannyBtn.textContent = '🎵 Generating Danny Voice...';
                                 dannyBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
@@ -1192,9 +1190,9 @@
                             stopBtn.style.cssText = 'background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 20px; margin: 20px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
                             stopBtn.textContent = '⏹️ Stop Voice Preview';
                             stopBtn.onclick = function() {
-                                console.log('⏹️ Stop Voice Preview clicked');
-                                stopCurrentVoice();
-                                showNotification('⏹️ Voice preview stopped', 'info');
+                                console.log('⏹️ Stop Voice Preview clicked - calling GlobalAudioManager');
+                                window.GlobalAudioManager.stopAll();
+                                showNotification('⏹️ All voices stopped immediately!', 'success');
                             };
                             stopBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             stopBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -1233,8 +1231,122 @@
                 </div>
 
                 <script>
-                // Voice API Functions for Real AI Voice Playback
-                let currentAudio = null;
+                // GLOBAL AUDIO MANAGER - Single source of truth for all audio
+                window.GlobalAudioManager = {
+                    currentAudio: null,
+                    audioQueue: [],
+                    voiceButtons: [], // Track all voice buttons for reset
+                    
+                    // Stop all audio immediately and clear queue
+                    stopAll: function() {
+                        console.log('🛑 GlobalAudioManager: Stopping all audio...');
+                        
+                        // Stop current audio
+                        if (this.currentAudio) {
+                            try {
+                                this.currentAudio.pause();
+                                this.currentAudio.currentTime = 0;
+                                this.currentAudio.src = '';
+                                console.log('🛑 Stopped current audio');
+                            } catch (e) {
+                                console.log('⚠️ Error stopping current audio:', e);
+                            }
+                            this.currentAudio = null;
+                        }
+                        
+                        // Clear audio queue
+                        this.audioQueue = [];
+                        
+                        // Stop all HTML5 audio elements on page
+                        var allAudio = document.querySelectorAll('audio');
+                        for (var i = 0; i < allAudio.length; i++) {
+                            try {
+                                allAudio[i].pause();
+                                allAudio[i].currentTime = 0;
+                                allAudio[i].src = '';
+                            } catch (e) {
+                                console.log('⚠️ Error stopping audio element:', e);
+                            }
+                        }
+                        
+                        // Stop speech synthesis
+                        if (window.speechSynthesis) {
+                            window.speechSynthesis.cancel();
+                        }
+                        
+                        // Reset all voice buttons to initial state
+                        this.resetAllVoiceButtons();
+                        
+                        console.log('✅ All audio stopped by GlobalAudioManager');
+                    },
+                    
+                    // Play new audio (stops current audio first)
+                    playAudio: function(audioUrl, onComplete) {
+                        console.log('🎵 GlobalAudioManager: Playing audio:', audioUrl);
+                        
+                        // Stop any existing audio first
+                        this.stopAll();
+                        
+                        // Create new audio element
+                        this.currentAudio = new Audio(audioUrl);
+                        this.currentAudio.volume = 0.8;
+                        
+                        // Set up event handlers
+                        var manager = this;
+                        this.currentAudio.onended = function() {
+                            console.log('✅ Audio completed');
+                            manager.currentAudio = null;
+                            manager.resetAllVoiceButtons();
+                            if (onComplete) onComplete();
+                        };
+                        
+                        this.currentAudio.onerror = function(e) {
+                            console.error('❌ Audio error:', e);
+                            manager.currentAudio = null;
+                            manager.resetAllVoiceButtons();
+                            if (onComplete) onComplete();
+                        };
+                        
+                        // Play audio
+                        this.currentAudio.play().catch(function(error) {
+                            console.error('❌ Play error:', error);
+                            manager.currentAudio = null;
+                            manager.resetAllVoiceButtons();
+                            if (onComplete) onComplete();
+                        });
+                    },
+                    
+                    // Check if audio is currently playing
+                    isPlaying: function() {
+                        return this.currentAudio && !this.currentAudio.paused && !this.currentAudio.ended;
+                    },
+                    
+                    // Register voice button for management
+                    registerButton: function(button, originalText, originalStyle) {
+                        this.voiceButtons.push({
+                            button: button,
+                            originalText: originalText,
+                            originalStyle: originalStyle
+                        });
+                    },
+                    
+                    // Reset all voice buttons to original state
+                    resetAllVoiceButtons: function() {
+                        console.log('🔄 Resetting', this.voiceButtons.length, 'voice buttons');
+                        for (var i = 0; i < this.voiceButtons.length; i++) {
+                            var buttonData = this.voiceButtons[i];
+                            try {
+                                buttonData.button.textContent = buttonData.originalText;
+                                buttonData.button.style.background = buttonData.originalStyle;
+                            } catch (e) {
+                                console.log('⚠️ Error resetting button:', e);
+                            }
+                        }
+                    }
+                };
+                
+                // Voice API Functions for Real AI Voice Playback (DEPRECATED - use GlobalAudioManager)
+                let currentAudio = null; // DEPRECATED
                 let voiceSettings = {
                     sarah: {
                         pace: 'normal',
@@ -1287,23 +1399,8 @@
                         if (result.success && result.audio_urls && result.audio_urls.length > 0) {
                             console.log('✅ Voice generated, playing audio...');
                             
-                            // Create and play audio
-                            currentAudio = new Audio(result.audio_urls[0]);
-                            currentAudio.volume = 0.8;
-                            
-                            currentAudio.onended = function() {
-                                console.log('✅ Audio playback completed');
-                                currentAudio = null;
-                                if (onComplete) onComplete();
-                            };
-                            
-                            currentAudio.onerror = function(e) {
-                                console.error('❌ Audio playback error:', e);
-                                if (onComplete) onComplete();
-                            };
-                            
-                            // Play the audio
-                            await currentAudio.play();
+                            // Create and play audio using GlobalAudioManager
+                            window.GlobalAudioManager.playAudio(result.audio_urls[0], onComplete);
                             
                         } else {
                             console.error('❌ Voice generation failed:', result);
@@ -1506,6 +1603,14 @@
                             var sarahBtn = document.createElement('div');
                             sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE (Sofia Vergara Style)';
+                            
+                            // Register button with GlobalAudioManager
+                            window.GlobalAudioManager.registerButton(
+                                sarahBtn, 
+                                '👩‍💼 TEST SARAH VOICE (Sofia Vergara Style)',
+                                'linear-gradient(135deg, #3b82f6, #1d4ed8)'
+                            );
+                            
                             sarahBtn.onclick = function() {
                                 console.log('🎤 Playing Sarah voice preview...');
                                 sarahBtn.textContent = '🎵 Playing Sarah Voice...';
@@ -1531,6 +1636,14 @@
                             var dannyBtn = document.createElement('div');
                             dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE (Benicio Del Toro Style)';
+                            
+                            // Register button with GlobalAudioManager
+                            window.GlobalAudioManager.registerButton(
+                                dannyBtn, 
+                                '👨‍🔧 TEST DANNY VOICE (Benicio Del Toro Style)',
+                                'linear-gradient(135deg, #10b981, #047857)'
+                            );
+                            
                             dannyBtn.onclick = function() {
                                 console.log('🎤 Playing Danny voice preview...');
                                 dannyBtn.textContent = '🎵 Playing Danny Voice...';
@@ -6610,8 +6723,8 @@ I'd love to schedule..."></textarea>
                         });
                 }
                 
-                // Store reference for potential stopping
-                window.currentAudio = audio;
+                // Store reference for potential stopping - now managed by GlobalAudioManager
+                window.GlobalAudioManager.currentAudio = audio;
                 
             } catch (audioError) {
                 console.error('🚨 Audio setup error:', audioError);
@@ -6658,7 +6771,7 @@ I'd love to schedule..."></textarea>
                 audio.addEventListener('ended', function() {
                     console.log('📱 Mobile audio completed:', voiceName);
                     showNotification(`✅ ${voiceName} preview complete!`, 'success');
-                    window.currentAudio = null;
+                    window.GlobalAudioManager.currentAudio = null;
                     if (callback) callback();
                 });
                 
@@ -6666,7 +6779,7 @@ I'd love to schedule..."></textarea>
                     console.error('📱❌ Mobile audio error for', voiceName, ':', e);
                     console.error('📱❌ Error details:', audio.error);
                     showNotification(`❌ Cannot play ${voiceName} - Check connection`, 'error');
-                    window.currentAudio = null;
+                    window.GlobalAudioManager.currentAudio = null;
                     if (callback) callback();
                 });
                 
@@ -6676,15 +6789,15 @@ I'd love to schedule..."></textarea>
                 
                 audio.addEventListener('abort', function() {
                     console.log('📱 Audio aborted:', voiceName);
-                    window.currentAudio = null;
+                    window.GlobalAudioManager.currentAudio = null;
                     if (callback) callback();
                 });
                 
                 // Set source and attempt playback
                 audio.src = audioUrl;
                 
-                // Store reference globally for stopping
-                window.currentAudio = audio;
+                // Store reference globally for stopping - now managed by GlobalAudioManager
+                window.GlobalAudioManager.currentAudio = audio;
                 
                 // Try immediate playback (works if user recently interacted)
                 var playPromise = audio.play();
@@ -6745,21 +6858,8 @@ I'd love to schedule..."></textarea>
         
         // Enhanced voice stopping function - stops ALL types of audio playback
         function stopCurrentVoice() {
-            console.log('🛑 Stopping all voice playback...');
-            
-            // Stop speech synthesis
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                console.log('🛑 Stopped speech synthesis');
-            }
-            
-            // Stop HTML5 Audio playback (currentAudio variable)
-            if (window.currentAudio && typeof window.currentAudio.pause === 'function') {
-                window.currentAudio.pause();
-                window.currentAudio.currentTime = 0;
-                window.currentAudio = null;
-                console.log('🛑 Stopped HTML5 currentAudio playback');
-            }
+            console.log('🛑 stopCurrentVoice called - using GlobalAudioManager');
+            window.GlobalAudioManager.stopAll();
             
             // Stop tracked audio elements
             if (window.activeAudioElements && Array.isArray(window.activeAudioElements)) {
@@ -6863,7 +6963,7 @@ I'd love to schedule..."></textarea>
                         window.currentAudio.pause();
                         window.currentAudio.currentTime = 0;
                         window.currentAudio.src = '';
-                        window.currentAudio = null;
+                        window.GlobalAudioManager.currentAudio = null;
                         console.log('🛑 Cleared global currentAudio');
                     } catch (e) {
                         console.log('⚠️ Error clearing currentAudio:', e.message);
