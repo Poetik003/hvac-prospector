@@ -2048,26 +2048,6 @@ I'd love to schedule..."></textarea>
             
             // Calendar Integration - Direct buttons in main application
             console.log('📅 Calendar integration using direct buttons for maximum compatibility');
-            
-            // Direct Schedule Appointment Button
-            var directScheduleBtn = document.getElementById('direct-schedule-btn');
-            if (directScheduleBtn) {
-                directScheduleBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📅 Direct Schedule Appointment button clicked');
-                    try {
-                        openAppointmentSchedulingModal();
-                        console.log('✅ Appointment modal opened successfully');
-                    } catch (e) {
-                        console.error('❌ Error opening appointment modal:', e);
-                        // Fallback alert
-                        alert('Opening appointment scheduling...');
-                    }
-                });
-                console.log('✅ Direct schedule button event listener added');
-            } else {
-                console.log('❌ Direct schedule button not found');
-            }
         }
         
         // Connection Modal for Integrations
@@ -6495,12 +6475,17 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Schedule buttons
+            // Schedule buttons (exclude our direct schedule button)
             var scheduleButtons = document.querySelectorAll('[id*="schedule"], .schedule-btn');
             console.log('📅 Found', scheduleButtons.length, 'schedule buttons');
             for (var i = 0; i < scheduleButtons.length; i++) {
+                // Skip our direct schedule button - it has its own handler
+                if (scheduleButtons[i].id === 'direct-schedule-btn') {
+                    console.log('📅 Skipping direct-schedule-btn - has specific handler');
+                    continue;
+                }
                 scheduleButtons[i].addEventListener('click', function() {
-                    console.log('📅 Schedule button clicked');
+                    console.log('📅 Generic schedule button clicked');
                     alert('Scheduling functionality will be available soon!');
                 });
             }
@@ -6550,6 +6535,32 @@ I'd love to schedule..."></textarea>
             });
             
             console.log('✅ All tab content interactions initialized!');
+            
+            // CRITICAL: Direct Schedule Appointment Button Handler (must be AFTER generic handlers)
+            setTimeout(function() {
+                var directScheduleBtn = document.getElementById('direct-schedule-btn');
+                if (directScheduleBtn) {
+                    // Remove any existing event listeners
+                    var newBtn = directScheduleBtn.cloneNode(true);
+                    directScheduleBtn.parentNode.replaceChild(newBtn, directScheduleBtn);
+                    
+                    // Add our specific handler
+                    newBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🎯 DIRECT Schedule Appointment button clicked - opening modal');
+                        try {
+                            openAppointmentSchedulingModal();
+                            console.log('✅ Appointment modal opened successfully');
+                        } catch (e) {
+                            console.error('❌ Error opening appointment modal:', e);
+                        }
+                    });
+                    console.log('✅ Direct schedule button handler attached with priority');
+                } else {
+                    console.log('❌ Direct schedule button not found');
+                }
+            }, 500);
         }
         
         // Emergency voice preview function
