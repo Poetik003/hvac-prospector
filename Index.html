@@ -3680,6 +3680,25 @@ I'd love to schedule..."></textarea>
                         </div>
                     </div>
                     
+                    <!-- EMERGENCY VOICE STOP PANEL -->
+                    <div class="bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl p-4 mb-6 border border-red-500/20">
+                        <h4 class="font-bold text-white mb-3">
+                            <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Emergency Voice Controls
+                        </h4>
+                        <div class="flex gap-3">
+                            <button onclick="emergencyStopAllVoices()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
+                                🛑 STOP ALL VOICES
+                            </button>
+                            <button onclick="muteAllAudio()" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
+                                🔇 MUTE AUDIO
+                            </button>
+                            <button onclick="resetAllVoiceButtons()" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
+                                🔄 RESET BUTTONS
+                            </button>
+                        </div>
+                        <p class="text-xs text-red-300 text-center mt-2">Use these if voice previews won't stop normally</p>
+                    </div>
+                    
                     <!-- Voice Profiles -->
                     <div class="mb-6">
                         <h4 class="text-lg font-bold text-white mb-4">
@@ -3706,13 +3725,23 @@ I'd love to schedule..."></textarea>
                                     </div>
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" data-voice="professional-female">
+                                    <button 
+                                        class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" 
+                                        data-voice="professional-female"
+                                        onclick="handleVoiceButtonClick(this, 'professional-female')"
+                                        style="position: relative; z-index: 10000;"
+                                    >
                                         <i class="fas fa-volume-up mr-1"></i><span class="voice-btn-text">Preview</span>
                                     </button>
                                     <button class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors start-conversation" data-voice="professional-female">
                                         <i class="fas fa-comments mr-1"></i>Live Chat
                                     </button>
-                                    <button class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" data-voice="professional-female">
+                                    <button 
+                                        class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" 
+                                        data-voice="professional-female"
+                                        onclick="openVoiceCustomizer('professional-female')"
+                                        style="position: relative; z-index: 10000;"
+                                    >
                                         <i class="fas fa-sliders-h mr-1"></i>Customize
                                     </button>
                                 </div>
@@ -3737,13 +3766,23 @@ I'd love to schedule..."></textarea>
                                     </div>
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" data-voice="friendly-male">
+                                    <button 
+                                        class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" 
+                                        data-voice="friendly-male"
+                                        onclick="handleVoiceButtonClick(this, 'friendly-male')"
+                                        style="position: relative; z-index: 10000;"
+                                    >
                                         <i class="fas fa-volume-up mr-1"></i>Preview
                                     </button>
                                     <button class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors start-conversation" data-voice="friendly-male">
                                         <i class="fas fa-comments mr-1"></i>Live Chat
                                     </button>
-                                    <button class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" data-voice="friendly-male">
+                                    <button 
+                                        class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" 
+                                        data-voice="friendly-male"
+                                        onclick="openVoiceCustomizer('friendly-male')"
+                                        style="position: relative; z-index: 10000;"
+                                    >
                                         <i class="fas fa-sliders-h mr-1"></i>Customize
                                     </button>
                                 </div>
@@ -9022,6 +9061,11 @@ I'd love to schedule..."></textarea>
         window.muteAllAudio = muteAllAudio;
         window.showFloatingEmergencyStop = showFloatingEmergencyStop;
         window.diagnoseClickIssues = diagnoseClickIssues;
+        
+        // Voice Modal Functions
+        window.handleVoiceButtonClick = handleVoiceButtonClick;
+        window.openVoiceCustomizer = openVoiceCustomizer;
+        window.resetAllVoiceButtons = resetAllVoiceButtons;
         window.viewScript = viewScript;
         window.useScript = useScript;
         window.optimizeScript = optimizeScript;
@@ -9256,6 +9300,52 @@ I'd love to schedule..."></textarea>
                   'Blocked buttons: ' + blockedButtons + '\n' +
                   'Potential overlays: ' + overlays.length + '\n\n' +
                   'Check browser console for detailed results.');
+        }
+        
+        // SIMPLE VOICE BUTTON HANDLER - Direct onclick approach
+        function handleVoiceButtonClick(button, voiceType) {
+            console.log('🎤 Direct voice button click for:', voiceType);
+            console.log('🎤 Button current state:', button.innerHTML);
+            
+            // If button contains Speaking, Stop, or is red - STOP the voice
+            if (button.innerHTML.indexOf('Speaking') !== -1 || 
+                button.innerHTML.indexOf('Stop') !== -1 ||
+                button.classList.contains('bg-red-600')) {
+                
+                console.log('🛑 STOPPING voice from direct click');
+                emergencyStopAllVoices();
+                
+                // Reset this specific button
+                button.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Preview';
+                button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                return;
+            }
+            
+            // Otherwise start the voice
+            console.log('▶️ STARTING voice preview for:', voiceType);
+            
+            // Change button to stop state
+            button.innerHTML = '<i class="fas fa-stop mr-1"></i>🛑 STOP';
+            button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            button.classList.add('bg-red-600', 'hover:bg-red-700');
+            
+            // Show floating emergency controls
+            showFloatingEmergencyStop();
+            
+            // Start voice preview
+            playVoicePreviewByType(voiceType, function() {
+                // Reset when finished
+                button.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Preview';
+                button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            });
+        }
+        
+        // SIMPLE CUSTOMIZE HANDLER
+        function openVoiceCustomizer(voiceType) {
+            console.log('⚙️ Opening voice customizer for:', voiceType);
+            alert('🎛️ Voice Customizer\n\nCustomizing voice: ' + voiceType + '\n\nThis feature allows you to:\n• Adjust speaking pace\n• Modify tone and accent\n• Set conversation style\n• Configure personality traits\n\n[Feature coming in next update]');
         }
         
         // Enhanced emergency stop that targets tracked audio
