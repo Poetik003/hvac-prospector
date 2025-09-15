@@ -3197,15 +3197,17 @@ I'd love to schedule..."></textarea>
                 var playBtn = modal.querySelector('#preview-voice-btn');
                 var stopBtn = modal.querySelector('#stop-voice-btn');
                 
-                // Check if voice is currently playing (button shows stop state)
-                if (playBtn.innerHTML.includes('Stop') || playBtn.innerHTML.includes('Speaking')) {
+                // Check if voice is currently playing (button shows stop state or speaking)
+                if (playBtn.innerHTML.includes('Stop') || playBtn.innerHTML.includes('Speaking') || playBtn.classList.contains('bg-red-600')) {
                     // Currently playing - stop it
                     stopCurrentVoice();
                     playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
                     playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
                     playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    playBtn.disabled = false;
                     stopBtn.classList.add('hidden');
                     hideFloatingStopButton();
+                    window.isVoiceToggleMode = false;
                     return;
                 }
                 
@@ -3213,6 +3215,13 @@ I'd love to schedule..."></textarea>
                 var pace = modal.querySelector('#speaking-pace').value;
                 var tone = modal.querySelector('#voice-tone').value;
                 var accent = modal.querySelector('#voice-accent').value;
+                
+                // Stop any currently playing voice first
+                stopCurrentVoice();
+                
+                // Set flag to prevent other functions from changing button text
+                window.isVoiceToggleMode = true;
+                window.toggleVoiceButton = playBtn;
                 
                 // Not playing - start playing and change to stop button
                 playBtn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop Voice';
@@ -3229,11 +3238,15 @@ I'd love to schedule..."></textarea>
                 // Play real AI voice preview
                 playVoicePreview(voiceType, pace, tone, accent, function() {
                     // Reset button when voice finishes naturally
-                    playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
-                    playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
-                    playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                    playBtn.disabled = false;
-                    hideFloatingStopButton();
+                    if (window.isVoiceToggleMode && window.toggleVoiceButton === playBtn) {
+                        playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
+                        playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        playBtn.disabled = false;
+                        hideFloatingStopButton();
+                        window.isVoiceToggleMode = false;
+                        window.toggleVoiceButton = null;
+                    }
                 });
             });
             
@@ -3764,19 +3777,29 @@ I'd love to schedule..."></textarea>
                 btn.addEventListener('click', function() {
                     var voiceType = btn.getAttribute('data-voice');
                     
-                    // Check if voice is currently playing (button shows stop state)
-                    if (btn.innerHTML.includes('Stop') || btn.innerHTML.includes('Speaking')) {
+                    // Check if voice is currently playing (button shows stop state, speaking, or has red background)
+                    if (btn.innerHTML.includes('Stop') || btn.innerHTML.includes('Speaking') || btn.classList.contains('bg-red-600')) {
                         // Currently playing - stop it
                         stopCurrentVoice();
                         btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
                         btn.classList.remove('bg-red-600', 'hover:bg-red-700');
                         btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        btn.disabled = false;
                         hideFloatingStopButton();
+                        // Clear toggle mode for this button
+                        if (window.toggleVoiceButton === btn) {
+                            window.isVoiceToggleMode = false;
+                            window.toggleVoiceButton = null;
+                        }
                         return;
                     }
                     
                     // Not playing - stop any other voice and start this one
                     stopCurrentVoice();
+                    
+                    // Set toggle mode protection for this button
+                    window.isVoiceToggleMode = true;
+                    window.toggleVoiceButton = btn;
                     
                     // Change button to stop state immediately
                     btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
@@ -3789,12 +3812,16 @@ I'd love to schedule..."></textarea>
                     
                     // Play real voice preview for the specific voice type
                     playVoicePreviewByType(voiceType, function() {
-                        // Reset button when voice finishes naturally
-                        btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
-                        btn.classList.remove('bg-red-600', 'hover:bg-red-700');
-                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                        btn.disabled = false;
-                        hideFloatingStopButton();
+                        // Reset button when voice finishes naturally (only if still in toggle mode for this button)
+                        if (window.isVoiceToggleMode && window.toggleVoiceButton === btn) {
+                            btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                            btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                            btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            btn.disabled = false;
+                            hideFloatingStopButton();
+                            window.isVoiceToggleMode = false;
+                            window.toggleVoiceButton = null;
+                        }
                     });
                 });
             });
@@ -5684,6 +5711,10 @@ I'd love to schedule..."></textarea>
             // Reset all voice preview buttons to their original state
             resetAllVoiceButtons();
             
+            // Clear toggle mode
+            window.isVoiceToggleMode = false;
+            window.toggleVoiceButton = null;
+            
             showNotification('🛑 All voice playback stopped', 'info');
         }
         
@@ -5713,6 +5744,28 @@ I'd love to schedule..."></textarea>
             
             console.log('✅ Reset all voice preview buttons');
         }
+        
+        // Protect voice button text during toggle mode
+        function isButtonProtected(button) {
+            return window.isVoiceToggleMode && window.toggleVoiceButton === button;
+        }
+        
+        // Safe button text update (respects toggle mode)
+        function safeUpdateButtonText(button, newText) {
+            if (!isButtonProtected(button)) {
+                button.innerHTML = newText;
+            }
+        }
+        
+        // Override any functions that might interfere with button text
+        var originalSetAttribute = Element.prototype.setAttribute;
+        Element.prototype.setAttribute = function(name, value) {
+            // If someone tries to disable a protected voice button, prevent it
+            if (name === 'disabled' && isButtonProtected(this)) {
+                return;
+            }
+            return originalSetAttribute.call(this, name, value);
+        };
         
         // Global keyboard shortcut to stop voice (Escape key)
         document.addEventListener('keydown', function(e) {
