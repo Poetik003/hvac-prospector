@@ -8128,15 +8128,8 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Live chat buttons  
-            var liveChatButtons = document.querySelectorAll('.live-chat-btn, [id*="liveChat"]');
-            console.log('💬 Found', liveChatButtons.length, 'live chat buttons');
-            for (var i = 0; i < liveChatButtons.length; i++) {
-                liveChatButtons[i].addEventListener('click', function() {
-                    console.log('💬 Live chat clicked');
-                    alert('Live chat functionality will be available soon!');
-                });
-            }
+            // Live chat buttons use specific handlers where needed
+            console.log('💬 Live chat buttons use specific onclick handlers where implemented');
             
             // Note: Connection buttons handled by setupSpecificConnectionButtons() function
             
@@ -8186,58 +8179,17 @@ I'd love to schedule..."></textarea>
             var shareScriptBtns = document.querySelectorAll('.share-script-btn');
             console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons with onclick attributes');
             
-            // Campaign buttons
-            var campaignButtons = document.querySelectorAll('.campaign-btn, [id*="campaign"], [id*="start"], [id*="launch"]');
-            console.log('🚀 Found', campaignButtons.length, 'campaign buttons');  
-            for (var i = 0; i < campaignButtons.length; i++) {
-                campaignButtons[i].addEventListener('click', function() {
-                    console.log('🚀 Campaign button clicked');
-                    alert('Campaign functionality will be available soon!');
-                });
-            }
+            // Campaign buttons now use proper onclick handlers - no generic listeners needed
+            console.log('🚀 Campaign buttons use specific onclick handlers for functionality');
             
-            // Generate/Create buttons
-            var generateButtons = document.querySelectorAll('[id*="generate"], [id*="create"], .generate-btn');
-            console.log('⚡ Found', generateButtons.length, 'generate buttons');
-            for (var i = 0; i < generateButtons.length; i++) {
-                generateButtons[i].addEventListener('click', function() {
-                    console.log('⚡ Generate button clicked');
-                    alert('Generation functionality will be available soon!');
-                });
-            }
+            // Generate/Create buttons use specific onclick handlers where needed
+            console.log('⚡ Generate buttons use specific onclick handlers where needed');
             
-            // Schedule buttons (exclude our main schedule button)
-            var scheduleButtons = document.querySelectorAll('button[id*="schedule"], .schedule-btn');
-            console.log('📅 Found', scheduleButtons.length, 'schedule buttons');
-            for (var i = 0; i < scheduleButtons.length; i++) {
-                // Skip our main schedule button
-                if (scheduleButtons[i].id === 'main-schedule-btn' || scheduleButtons[i].textContent.includes('Schedule New Appointment')) {
-                    console.log('📅 Skipping main-schedule-btn - has specific handler');
-                    continue;
-                }
-                scheduleButtons[i].addEventListener('click', function() {
-                    console.log('📅 Generic schedule button clicked');
-                    alert('Scheduling functionality will be available soon!');
-                });
-            }
+            // Schedule buttons use specific handlers where needed
+            console.log('📅 Schedule buttons use specific onclick handlers where implemented');
             
-            // Manual entry and import buttons
-            var manualEntryButtons = document.querySelectorAll('#add-lead-btn, #import-csv-btn, [id*="add-lead"], [id*="import"], .add-lead-btn, .import-btn');
-            console.log('👤 Found', manualEntryButtons.length, 'manual entry/import buttons');
-            for (var i = 0; i < manualEntryButtons.length; i++) {
-                manualEntryButtons[i].addEventListener('click', function() {
-                    console.log('👤 Manual entry/import button clicked:', this.id || this.className);
-                    if (this.id === 'add-lead-btn' || this.textContent.includes('Add New Lead')) {
-                        console.log('📝 Opening Add New Lead form...');
-                        openLeadEntryForm();
-                    } else if (this.id === 'import-csv-btn' || this.textContent.includes('Import')) {
-                        console.log('📄 Opening Import CSV dialog...');
-                        openImportCSVDialog();
-                    } else {
-                        alert('Lead management functionality will be available soon!');
-                    }
-                });
-            }
+            // Manual entry and import buttons use specific handlers
+            console.log('👤 Manual entry and import buttons use specific onclick handlers where implemented');
             
             // Specific service connection handlers
             setupSpecificConnectionButtons();
