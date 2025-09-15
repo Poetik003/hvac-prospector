@@ -10119,7 +10119,7 @@ I'd love to schedule..."></textarea>
         window.openAIGuildTraining = openAIGuildTraining;
         
         // Emergency Stop Functions
-        window.emergencyStopAllVoices = emergencyStopAllVoices;
+        window.emergencyStopAllVoices = stopCurrentVoice; // Redirect to new function
         window.muteAllAudio = muteAllAudio;
         window.showFloatingStopButton = showFloatingStopButton;
         window.diagnoseClickIssues = diagnoseClickIssues;
@@ -11480,18 +11480,22 @@ I'd love to schedule..."></textarea>
         
         // Failsafe for emergency stop if main function fails
         window.emergencyStopAllVoices = window.emergencyStopAllVoices || function() {
-            console.log('🛑 FAILSAFE: Emergency stop activated');
+            console.log('🛑 FAILSAFE: Redirecting to stopCurrentVoice');
             
-            // Stop all audio elements
-            var audioElements = document.querySelectorAll('audio');
-            audioElements.forEach(function(audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            });
-            
-            // Cancel speech synthesis
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
+            // Use the main stop function instead of duplicating logic
+            if (typeof stopCurrentVoice === 'function') {
+                stopCurrentVoice();
+            } else {
+                // Fallback if stopCurrentVoice is not available
+                var audioElements = document.querySelectorAll('audio');
+                audioElements.forEach(function(audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+                
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
             }
             
             // Show confirmation
