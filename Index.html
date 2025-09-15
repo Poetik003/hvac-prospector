@@ -950,16 +950,26 @@
                             sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
                             sarahBtn.onclick = function() {
-                                console.log('🎤 Playing Sarah voice...');
+                                console.log('🎤 SARAH BUTTON CLICKED - Starting voice generation...');
                                 
-                                // CRITICAL: Stop any currently playing audio first
-                                stopCurrentVoice();
-                                stopAllAudioPlayback();
+                                // Simple audio stop - no complex function calls
+                                try {
+                                    var allAudio = document.querySelectorAll('audio');
+                                    for (var i = 0; i < allAudio.length; i++) {
+                                        allAudio[i].pause();
+                                        allAudio[i].currentTime = 0;
+                                    }
+                                    console.log('🛑 Stopped existing audio');
+                                } catch (e) {
+                                    console.log('⚠️ Audio stop error (continuing anyway):', e);
+                                }
                                 
                                 sarahBtn.textContent = '🎵 Generating Sarah Voice...';
                                 sarahBtn.style.background = 'linear-gradient(135deg, #7c3aed, #5b21b6)';
+                                console.log('🔄 Updated Sarah button display');
                                 
                                 // Call Flask API to generate real voice
+                                console.log('🌐 Making API call to /api/generate-voice...');
                                 fetch('/api/generate-voice', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -970,22 +980,33 @@
                                         task_summary: 'ProSpector Pro Sarah Voice Preview',
                                         file_name: 'sarah_preview.mp3'
                                     })
-                                }).then(response => response.json())
+                                })
+                                .then(response => {
+                                    console.log('📡 API Response received, status:', response.status);
+                                    if (!response.ok) {
+                                        throw new Error('API request failed with status: ' + response.status);
+                                    }
+                                    return response.json();
+                                })
                                 .then(result => {
+                                    console.log('📋 API Result received:', result);
                                     if (result.success && result.audio_urls && result.audio_urls.length > 0) {
-                                        console.log('✅ Sarah voice generated, playing...');
+                                        console.log('✅ Sarah voice generated successfully! Audio URL:', result.audio_urls[0]);
                                         sarahBtn.textContent = '🔊 Playing Sarah Voice...';
                                         
                                         // Create and play audio
                                         var audio = new Audio(result.audio_urls[0]);
                                         audio.volume = 0.8;
+                                        console.log('🎵 Audio element created, attempting to play...');
                                         
                                         audio.onended = function() {
+                                            console.log('🏁 Sarah voice playback ended');
                                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
                                             sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
                                         };
                                         
-                                        audio.onerror = function() {
+                                        audio.onerror = function(e) {
+                                            console.error('❌ Audio playback error:', e);
                                             sarahBtn.textContent = '❌ Voice Error - Try Again';
                                             sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
                                             setTimeout(function() {
@@ -994,7 +1015,25 @@
                                             }, 3000);
                                         };
                                         
-                                        audio.play();
+                                        audio.onloadstart = function() {
+                                            console.log('📥 Audio loading started...');
+                                        };
+                                        
+                                        audio.oncanplay = function() {
+                                            console.log('▶️ Audio ready to play!');
+                                        };
+                                        
+                                        console.log('🚀 Calling audio.play()...');
+                                        var playPromise = audio.play();
+                                        if (playPromise !== undefined) {
+                                            playPromise.then(function() {
+                                                console.log('✅ Audio playback started successfully!');
+                                            }).catch(function(error) {
+                                                console.error('❌ Play promise rejected:', error);
+                                                sarahBtn.textContent = '❌ Playback Failed';
+                                                sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                            });
+                                        }
                                     } else {
                                         console.error('❌ Voice generation failed');
                                         sarahBtn.textContent = '❌ Generation Failed';
@@ -1032,16 +1071,26 @@
                             dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
                             dannyBtn.onclick = function() {
-                                console.log('🎤 Playing Danny voice...');
+                                console.log('🎤 DANNY BUTTON CLICKED - Starting voice generation...');
                                 
-                                // CRITICAL: Stop any currently playing audio first
-                                stopCurrentVoice();
-                                stopAllAudioPlayback();
+                                // Simple audio stop - no complex function calls
+                                try {
+                                    var allAudio = document.querySelectorAll('audio');
+                                    for (var i = 0; i < allAudio.length; i++) {
+                                        allAudio[i].pause();
+                                        allAudio[i].currentTime = 0;
+                                    }
+                                    console.log('🛑 Stopped existing audio');
+                                } catch (e) {
+                                    console.log('⚠️ Audio stop error (continuing anyway):', e);
+                                }
                                 
                                 dannyBtn.textContent = '🎵 Generating Danny Voice...';
                                 dannyBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
+                                console.log('🔄 Updated Danny button display');
                                 
                                 // Call Flask API to generate real voice
+                                console.log('🌐 Making API call to /api/generate-voice for Danny...');
                                 fetch('/api/generate-voice', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -1052,22 +1101,33 @@
                                         task_summary: 'ProSpector Pro Danny Voice Preview',
                                         file_name: 'danny_preview.mp3'
                                     })
-                                }).then(response => response.json())
+                                })
+                                .then(response => {
+                                    console.log('📡 API Response received for Danny, status:', response.status);
+                                    if (!response.ok) {
+                                        throw new Error('API request failed with status: ' + response.status);
+                                    }
+                                    return response.json();
+                                })
                                 .then(result => {
+                                    console.log('📋 API Result received for Danny:', result);
                                     if (result.success && result.audio_urls && result.audio_urls.length > 0) {
-                                        console.log('✅ Danny voice generated, playing...');
+                                        console.log('✅ Danny voice generated successfully! Audio URL:', result.audio_urls[0]);
                                         dannyBtn.textContent = '🔊 Playing Danny Voice...';
                                         
                                         // Create and play audio
                                         var audio = new Audio(result.audio_urls[0]);
                                         audio.volume = 0.8;
+                                        console.log('🎵 Danny audio element created, attempting to play...');
                                         
                                         audio.onended = function() {
+                                            console.log('🏁 Danny voice playback ended');
                                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
                                             dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
                                         };
                                         
-                                        audio.onerror = function() {
+                                        audio.onerror = function(e) {
+                                            console.error('❌ Danny audio playback error:', e);
                                             dannyBtn.textContent = '❌ Voice Error - Try Again';
                                             dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
                                             setTimeout(function() {
@@ -1076,7 +1136,25 @@
                                             }, 3000);
                                         };
                                         
-                                        audio.play();
+                                        audio.onloadstart = function() {
+                                            console.log('📥 Danny audio loading started...');
+                                        };
+                                        
+                                        audio.oncanplay = function() {
+                                            console.log('▶️ Danny audio ready to play!');
+                                        };
+                                        
+                                        console.log('🚀 Calling Danny audio.play()...');
+                                        var playPromise = audio.play();
+                                        if (playPromise !== undefined) {
+                                            playPromise.then(function() {
+                                                console.log('✅ Danny audio playback started successfully!');
+                                            }).catch(function(error) {
+                                                console.error('❌ Danny play promise rejected:', error);
+                                                dannyBtn.textContent = '❌ Playback Failed';
+                                                dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                            });
+                                        }
                                     } else {
                                         console.error('❌ Voice generation failed');
                                         dannyBtn.textContent = '❌ Generation Failed';
