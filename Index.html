@@ -1045,7 +1045,7 @@
                             </button>
                             
                             <button 
-                                onclick="openAppointmentSchedulingModal()"
+                                id="direct-schedule-btn"
                                 class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                 <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
                             </button>
@@ -2048,6 +2048,26 @@ I'd love to schedule..."></textarea>
             
             // Calendar Integration - Direct buttons in main application
             console.log('📅 Calendar integration using direct buttons for maximum compatibility');
+            
+            // Direct Schedule Appointment Button
+            var directScheduleBtn = document.getElementById('direct-schedule-btn');
+            if (directScheduleBtn) {
+                directScheduleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📅 Direct Schedule Appointment button clicked');
+                    try {
+                        openAppointmentSchedulingModal();
+                        console.log('✅ Appointment modal opened successfully');
+                    } catch (e) {
+                        console.error('❌ Error opening appointment modal:', e);
+                        // Fallback alert
+                        alert('Opening appointment scheduling...');
+                    }
+                });
+                console.log('✅ Direct schedule button event listener added');
+            } else {
+                console.log('❌ Direct schedule button not found');
+            }
         }
         
         // Connection Modal for Integrations
@@ -2264,7 +2284,7 @@ I'd love to schedule..."></textarea>
             }
         }
         
-        // Appointment Scheduling Modal
+        // Appointment Scheduling Modal - Make it globally available
         function openAppointmentSchedulingModal() {
             var modal = document.createElement('div');
             modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
@@ -2397,6 +2417,9 @@ I'd love to schedule..."></textarea>
                 updateAppointmentsList(appointmentData);
             });
         }
+        
+        // Make the function globally available
+        window.openAppointmentSchedulingModal = openAppointmentSchedulingModal;
         
         // Update calendar connection status in UI
         function updateCalendarConnectionStatus(serviceName, connected) {
