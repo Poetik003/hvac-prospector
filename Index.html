@@ -2039,9 +2039,15 @@ I'd love to schedule..."></textarea>
             
             // Listen for messages from calendar iframe
             window.addEventListener('message', function(event) {
+                console.log('📨 Message received from iframe:', event.data);
                 if (event.data && event.data.type === 'schedule_appointment') {
-                    console.log('📅 Schedule appointment requested from iframe');
-                    openAppointmentSchedulingModal();
+                    console.log('📅 Schedule appointment requested from iframe - opening modal');
+                    try {
+                        openAppointmentSchedulingModal();
+                        console.log('✅ Appointment modal opened successfully');
+                    } catch (e) {
+                        console.error('❌ Error opening appointment modal:', e);
+                    }
                 }
             });
         }
