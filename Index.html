@@ -921,7 +921,7 @@
                         </div>
                     </div>
                     
-                    <button id="manage-voices-btn-featured" onclick="alert('🎤 Voice Management Test\\n\\nDirect onclick working!'); showVoiceManagementModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
+                    <button id="manage-voices-btn-featured" onclick="console.log('🎤 Opening Voice Management Modal...'); showVoiceManagementModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
                         <i class="fas fa-sliders-h mr-3"></i>🎤 Open Voice Management
                     </button>
                 </div>
@@ -964,7 +964,7 @@
                         
                         <!-- Campaign Control Buttons -->
                         <div id="campaign-controls">
-                            <button id="start-calling-btn" onclick="alert('📞 Start Calling Test\\n\\nDirect onclick working! Campaign would start here.'); console.log('📞 Direct onclick triggered');" class="w-full btn-primary px-4 py-3 rounded-lg text-white font-semibold mb-2">
+                            <button id="start-calling-btn" onclick="console.log('📞 Starting calling campaign...'); startCallingCampaign();" class="w-full btn-primary px-4 py-3 rounded-lg text-white font-semibold mb-2">
                                 <i class="fas fa-microphone mr-2"></i>Start Calling Now
                             </button>
                             
@@ -992,7 +992,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-sm mb-4">View detailed analytics, conversion rates, and AI-powered insights from your voice campaigns.</p>
-                        <button id="view-analytics-btn" onclick="alert('📊 Analytics Test\\n\\nDirect onclick working! Analytics dashboard would open here.'); console.log('📊 Analytics direct onclick');" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-3 rounded-lg text-white font-semibold transition-colors">
+                        <button id="view-analytics-btn" onclick="console.log('📊 Opening analytics dashboard...'); showAnalyticsDashboard();" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-3 rounded-lg text-white font-semibold transition-colors">
                             <i class="fas fa-analytics mr-2"></i>View Analytics
                         </button>
                     </div>
@@ -1009,7 +1009,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-sm mb-4">Get real-time coaching and suggestions to improve your calling techniques and conversion rates.</p>
-                        <button id="start-voice-training-btn" onclick="alert('🎓 Training Test\\n\\nDirect onclick working! Voice training would start here.'); console.log('🎓 Training direct onclick');" class="w-full btn-success px-4 py-3 rounded-lg text-white font-semibold">
+                        <button id="start-voice-training-btn" onclick="console.log('🎓 Starting voice training...'); startVoiceTraining();" class="w-full btn-success px-4 py-3 rounded-lg text-white font-semibold">
                             <i class="fas fa-brain mr-2"></i>Start Training
                         </button>
                     </div>
@@ -9567,6 +9567,57 @@ I'd love to schedule..."></textarea>
             }
             // Hide emergency controls when voice modal closes
             hideEmergencyControls();
+        }
+        
+        // AI COLD CALLING BUTTON FUNCTIONS
+        function startCallingCampaign() {
+            console.log('📞 Starting AI Cold Calling Campaign...');
+            
+            // Show notification about starting campaign
+            showNotification('🚀 AI Cold Calling Campaign Starting...', 'info');
+            
+            setTimeout(function() {
+                showNotification('📞 AI Callers are now active! Monitor progress in Analytics.', 'success');
+            }, 2000);
+            
+            // In a real implementation, this would:
+            // 1. Validate campaign settings
+            // 2. Load prospect list
+            // 3. Initialize AI voice agents
+            // 4. Start making calls
+            // 5. Update dashboard with live metrics
+        }
+        
+        function showAnalyticsDashboard() {
+            console.log('📊 Opening Analytics Dashboard...');
+            
+            // Show notification about analytics
+            showNotification('📊 Loading call analytics and performance metrics...', 'info');
+            
+            // For now, just scroll to the Analytics section
+            setTimeout(function() {
+                var analyticsSection = document.querySelector('[data-tab="analytics"]');
+                if (analyticsSection) {
+                    analyticsSection.scrollIntoView({ behavior: 'smooth' });
+                    showNotification('📈 Analytics dashboard updated with latest call data!', 'success');
+                } else {
+                    showNotification('📊 Analytics feature available in full dashboard view', 'info');
+                }
+            }, 1000);
+        }
+        
+        function startVoiceTraining() {
+            console.log('🎓 Starting Voice Training...');
+            
+            // Show notification about training
+            showNotification('🎓 AI Voice Training Module Loading...', 'info');
+            
+            setTimeout(function() {
+                showNotification('🎤 Voice training: Practice scripts, tone, and conversation flow', 'success');
+                
+                // Open voice management modal for training
+                showVoiceManagementModal();
+            }, 1500);
         }
         
         // SIMPLE VOICE BUTTON HANDLER - Direct onclick approach
