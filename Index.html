@@ -683,7 +683,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-sm mb-4">Generate personalized call scripts based on lead information, industry, and campaign goals.</p>
-                        <button id="generate-script-btn" class="w-full btn-success px-4 py-3 rounded-lg text-white font-semibold">
+                        <button id="generate-script-btn" onclick="openScriptGenerator()" class="w-full btn-success px-4 py-3 rounded-lg text-white font-semibold">
                             <i class="fas fa-wand-magic-sparkles mr-2"></i>Generate Script
                         </button>
                     </div>
@@ -700,7 +700,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-sm mb-4">Access proven script templates for HVAC, home services, B2B, and other industries.</p>
-                        <button id="browse-templates-btn" class="w-full btn-primary px-4 py-3 rounded-lg text-white font-semibold">
+                        <button id="browse-templates-btn" onclick="openTemplateBrowser()" class="w-full btn-primary px-4 py-3 rounded-lg text-white font-semibold">
                             <i class="fas fa-clipboard-list mr-2"></i>Browse Templates
                         </button>
                     </div>
@@ -717,7 +717,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-sm mb-4">Optimize scripts based on performance data and AI recommendations for better conversion rates.</p>
-                        <button id="optimize-scripts-btn" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-3 rounded-lg text-white font-semibold transition-colors">
+                        <button id="optimize-scripts-btn" onclick="openScriptOptimizer()" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-3 rounded-lg text-white font-semibold transition-colors">
                             <i class="fas fa-rocket mr-2"></i>Optimize Scripts
                         </button>
                     </div>
@@ -728,10 +728,10 @@
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold gradient-text">Your Recent Scripts</h3>
                         <div class="flex space-x-2">
-                            <button id="new-script-btn" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
+                            <button id="new-script-btn" onclick="openAIScriptImport()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
                                 <i class="fas fa-upload mr-1"></i>Import AI Script
                             </button>
-                            <button id="ai-actors-guild-btn" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors">
+                            <button id="ai-actors-guild-btn" onclick="openAIGuildTraining()" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors">
                                 <i class="fas fa-theater-masks mr-1"></i>AI Guild Training
                             </button>
                         </div>
@@ -749,10 +749,10 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="hvac-maintenance-1">
+                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="hvac-maintenance-1" onclick="viewScript('hvac-maintenance-1')">
                                     <i class="fas fa-eye mr-1"></i>View
                                 </button>
-                                <button class="use-script-btn px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors" data-script-id="hvac-maintenance-1">
+                                <button class="use-script-btn px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors" data-script-id="hvac-maintenance-1" onclick="useScript('hvac-maintenance-1')">
                                     <i class="fas fa-phone mr-1"></i>Use
                                 </button>
                             </div>
@@ -769,10 +769,10 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="new-customer-1">
+                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="new-customer-1" onclick="viewScript('new-customer-1')">
                                     <i class="fas fa-eye mr-1"></i>View
                                 </button>
-                                <button class="optimize-script-btn px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors" data-script-id="new-customer-1">
+                                <button class="optimize-script-btn px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors" data-script-id="new-customer-1" onclick="optimizeScript('new-customer-1')">
                                     <i class="fas fa-chart-line mr-1"></i>Optimize
                                 </button>
                             </div>
@@ -789,13 +789,13 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment">
+                                <button class="view-script-btn px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment" onclick="viewScript('follow-up-appointment')">
                                     <i class="fas fa-eye mr-1"></i>View
                                 </button>
-                                <button class="clone-script-btn px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment">
+                                <button class="clone-script-btn px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment" onclick="cloneScript('follow-up-appointment')">
                                     <i class="fas fa-copy mr-1"></i>Clone
                                 </button>
-                                <button class="share-script-btn px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment">
+                                <button class="share-script-btn px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors" data-script-id="follow-up-appointment" onclick="shareScript('follow-up-appointment')">
                                     <i class="fas fa-share-alt mr-1"></i>Share
                                 </button>
                             </div>
@@ -6690,113 +6690,50 @@ I'd love to schedule..."></textarea>
             // Note: Connection buttons handled by setupSpecificConnectionButtons() function
             
             // AI Script Generator buttons (for AI Actors tab)
-            console.log('🎭 Initializing AI Script buttons...');
+            console.log('🎭 AI Script buttons use HTML onclick attributes - no JavaScript listeners needed');
             
+            // Check if buttons exist but don't add conflicting listeners
             var generateScriptBtn = document.getElementById('generate-script-btn');
             if (generateScriptBtn) {
-                console.log('✅ Found Generate Script button in tab initialization');
-                generateScriptBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🎭 Generate Script button clicked!');
-                    openScriptGenerator();
-                });
+                console.log('✅ Found Generate Script button with onclick attribute');
             }
             
             var browseTemplatesBtn = document.getElementById('browse-templates-btn');
             if (browseTemplatesBtn) {
-                console.log('✅ Found Browse Templates button in tab initialization');
-                browseTemplatesBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📄 Browse Templates button clicked!');
-                    openTemplateBrowser();
-                });
+                console.log('✅ Found Browse Templates button with onclick attribute');
             }
             
             var optimizeScriptsBtn = document.getElementById('optimize-scripts-btn');
             if (optimizeScriptsBtn) {
-                console.log('✅ Found Optimize Scripts button in tab initialization');
-                optimizeScriptsBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🚀 Optimize Scripts button clicked!');
-                    openScriptOptimizer();
-                });
+                console.log('✅ Found Optimize Scripts button with onclick attribute');
             }
             
             var newScriptBtn = document.getElementById('new-script-btn');
             if (newScriptBtn) {
-                console.log('✅ Found Import AI Script button in tab initialization');
-                newScriptBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📥 Import AI Script button clicked!');
-                    openAIScriptImport();
-                });
+                console.log('✅ Found Import AI Script button with onclick attribute');
             }
             
             var aiGuildBtn = document.getElementById('ai-actors-guild-btn');
             if (aiGuildBtn) {
-                console.log('✅ Found AI Guild Training button in tab initialization');
-                aiGuildBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🎭 AI Guild Training button clicked!');
-                    openAIGuildTraining();
-                });
+                console.log('✅ Found AI Guild Training button with onclick attribute');
             }
             
             // Script action buttons (View, Use, Optimize, Clone, Share)
+            // These buttons use HTML onclick attributes - no JavaScript listeners needed
             var viewScriptBtns = document.querySelectorAll('.view-script-btn');
-            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons in tab initialization');
-            for (var i = 0; i < viewScriptBtns.length; i++) {
-                viewScriptBtns[i].addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var scriptId = this.getAttribute('data-script-id');
-                    console.log('👁️ View Script button clicked for:', scriptId);
-                    viewScript(scriptId);
-                });
-            }
+            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons with onclick attributes');
             
             var useScriptBtns = document.querySelectorAll('.use-script-btn');
-            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons in tab initialization');
-            for (var i = 0; i < useScriptBtns.length; i++) {
-                useScriptBtns[i].addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var scriptId = this.getAttribute('data-script-id');
-                    console.log('📞 Use Script button clicked for:', scriptId);
-                    useScript(scriptId);
-                });
-            }
+            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons with onclick attributes');
             
             var optimizeScriptBtns = document.querySelectorAll('.optimize-script-btn');
-            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons in tab initialization');
-            for (var i = 0; i < optimizeScriptBtns.length; i++) {
-                optimizeScriptBtns[i].addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var scriptId = this.getAttribute('data-script-id');
-                    console.log('📈 Optimize Script button clicked for:', scriptId);
-                    optimizeScript(scriptId);
-                });
-            }
+            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons with onclick attributes');
             
             var cloneScriptBtns = document.querySelectorAll('.clone-script-btn');
-            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons in tab initialization');
-            for (var i = 0; i < cloneScriptBtns.length; i++) {
-                cloneScriptBtns[i].addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var scriptId = this.getAttribute('data-script-id');
-                    console.log('📋 Clone Script button clicked for:', scriptId);
-                    cloneScript(scriptId);
-                });
-            }
+            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons with onclick attributes');
             
             var shareScriptBtns = document.querySelectorAll('.share-script-btn');
-            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons in tab initialization');
-            for (var i = 0; i < shareScriptBtns.length; i++) {
-                shareScriptBtns[i].addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var scriptId = this.getAttribute('data-script-id');
-                    console.log('🔗 Share Script button clicked for:', scriptId);
-                    shareScript(scriptId);
-                });
-            }
+            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons with onclick attributes');
             
             // Campaign buttons
             var campaignButtons = document.querySelectorAll('.campaign-btn, [id*="campaign"], [id*="start"], [id*="launch"]');
@@ -7479,137 +7416,61 @@ I'd love to schedule..."></textarea>
         
         // Initialize AI Script buttons specifically for scripts tab
         function initializeAIScriptButtons() {
-            console.log('🎭 Initializing AI Script buttons for scripts tab...');
+            console.log('🎭 AI Script buttons already have HTML onclick attributes - skipping JavaScript overrides...');
             
-            // Main action buttons
+            // Just verify buttons exist without overriding their onclick attributes
             var generateScriptBtn = document.getElementById('generate-script-btn');
             if (generateScriptBtn) {
-                console.log('✅ Found Generate Script button');
-                // Remove any existing listeners to avoid duplicates
-                generateScriptBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('🎭 Generate Script button clicked!');
-                    openScriptGenerator();
-                };
+                console.log('✅ Generate Script button ready with onclick="openScriptGenerator()"');
             } else {
                 console.log('❌ Generate Script button not found');
             }
             
             var browseTemplatesBtn = document.getElementById('browse-templates-btn');
             if (browseTemplatesBtn) {
-                console.log('✅ Found Browse Templates button');
-                browseTemplatesBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('📄 Browse Templates button clicked!');
-                    openTemplateBrowser();
-                };
+                console.log('✅ Browse Templates button ready with onclick="openTemplateBrowser()"');
             } else {
                 console.log('❌ Browse Templates button not found');
             }
             
             var optimizeScriptsBtn = document.getElementById('optimize-scripts-btn');
             if (optimizeScriptsBtn) {
-                console.log('✅ Found Optimize Scripts button');
-                optimizeScriptsBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('🚀 Optimize Scripts button clicked!');
-                    openScriptOptimizer();
-                };
+                console.log('✅ Optimize Scripts button ready with onclick="openScriptOptimizer()"');
             } else {
                 console.log('❌ Optimize Scripts button not found');
             }
             
             var newScriptBtn = document.getElementById('new-script-btn');
             if (newScriptBtn) {
-                console.log('✅ Found Import AI Script button');
-                newScriptBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('📥 Import AI Script button clicked!');
-                    openAIScriptImport();
-                };
+                console.log('✅ Import AI Script button ready with onclick="openAIScriptImport()"');
             } else {
                 console.log('❌ Import AI Script button not found');
             }
             
             var aiGuildBtn = document.getElementById('ai-actors-guild-btn');
             if (aiGuildBtn) {
-                console.log('✅ Found AI Guild Training button');
-                aiGuildBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('🎭 AI Guild Training button clicked!');
-                    openAIGuildTraining();
-                };
+                console.log('✅ AI Guild Training button ready with onclick="openAIGuildTraining()"');
             } else {
                 console.log('❌ AI Guild Training button not found');
             }
             
-            // Script action buttons
+            // Script action buttons already have HTML onclick attributes - verify only
             var viewScriptBtns = document.querySelectorAll('.view-script-btn');
-            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons');
-            for (var i = 0; i < viewScriptBtns.length; i++) {
-                (function(btn) {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        var scriptId = btn.getAttribute('data-script-id');
-                        console.log('👁️ View Script button clicked for:', scriptId);
-                        viewScript(scriptId);
-                    };
-                })(viewScriptBtns[i]);
-            }
+            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons with onclick attributes');
             
             var useScriptBtns = document.querySelectorAll('.use-script-btn');
-            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons');
-            for (var i = 0; i < useScriptBtns.length; i++) {
-                (function(btn) {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        var scriptId = btn.getAttribute('data-script-id');
-                        console.log('📞 Use Script button clicked for:', scriptId);
-                        useScript(scriptId);
-                    };
-                })(useScriptBtns[i]);
-            }
+            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons with onclick attributes');
             
             var optimizeScriptBtns = document.querySelectorAll('.optimize-script-btn');
-            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons');
-            for (var i = 0; i < optimizeScriptBtns.length; i++) {
-                (function(btn) {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        var scriptId = btn.getAttribute('data-script-id');
-                        console.log('📈 Optimize Script button clicked for:', scriptId);
-                        optimizeScript(scriptId);
-                    };
-                })(optimizeScriptBtns[i]);
-            }
+            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons with onclick attributes');
             
             var cloneScriptBtns = document.querySelectorAll('.clone-script-btn');
-            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons');
-            for (var i = 0; i < cloneScriptBtns.length; i++) {
-                (function(btn) {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        var scriptId = btn.getAttribute('data-script-id');
-                        console.log('📋 Clone Script button clicked for:', scriptId);
-                        cloneScript(scriptId);
-                    };
-                })(cloneScriptBtns[i]);
-            }
+            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons with onclick attributes');
             
             var shareScriptBtns = document.querySelectorAll('.share-script-btn');
-            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons');
-            for (var i = 0; i < shareScriptBtns.length; i++) {
-                (function(btn) {
-                    btn.onclick = function(e) {
-                        e.preventDefault();
-                        var scriptId = btn.getAttribute('data-script-id');
-                        console.log('🔗 Share Script button clicked for:', scriptId);
-                        shareScript(scriptId);
-                    };
-                })(shareScriptBtns[i]);
-            }
+            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons with onclick attributes');
             
-            console.log('✅ AI Script buttons initialization complete!');
+            console.log('✅ AI Script buttons ready - using HTML onclick attributes!');
         }
         
         // Lead Entry Form Functions
