@@ -1044,11 +1044,11 @@
                                 <i class="fab fa-microsoft mr-2"></i>Connect Outlook
                             </button>
                             
-                            <button 
-                                id="direct-schedule-btn"
-                                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                            <a href="javascript:void(0);" 
+                               onclick="try{openAppointmentSchedulingModal();console.log('Modal opened');}catch(e){console.log('Error:',e);alert('Appointment Form\n\nCustomer Name: _______\nPhone: _______\nDate: _______\nTime: _______\nService: HVAC Maintenance\n\nThis is a demo form. In the full app, this would be a complete scheduling interface.');}"
+                               class="block w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center">
                                 <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
-                            </button>
+                            </a>
                         </div>
                         <p class="text-xs text-slate-500 mt-4">
                             <i class="fas fa-info-circle mr-1"></i>
@@ -6475,13 +6475,13 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Schedule buttons (exclude our direct schedule button)
-            var scheduleButtons = document.querySelectorAll('[id*="schedule"], .schedule-btn');
+            // Schedule buttons (exclude our direct schedule link)
+            var scheduleButtons = document.querySelectorAll('button[id*="schedule"], .schedule-btn');
             console.log('📅 Found', scheduleButtons.length, 'schedule buttons');
             for (var i = 0; i < scheduleButtons.length; i++) {
-                // Skip our direct schedule button - it has its own handler
-                if (scheduleButtons[i].id === 'direct-schedule-btn') {
-                    console.log('📅 Skipping direct-schedule-btn - has specific handler');
+                // Skip if it contains appointment scheduling
+                if (scheduleButtons[i].textContent.includes('Schedule New Appointment')) {
+                    console.log('📅 Skipping Schedule New Appointment - has specific handler');
                     continue;
                 }
                 scheduleButtons[i].addEventListener('click', function() {
@@ -6535,32 +6535,6 @@ I'd love to schedule..."></textarea>
             });
             
             console.log('✅ All tab content interactions initialized!');
-            
-            // CRITICAL: Direct Schedule Appointment Button Handler (must be AFTER generic handlers)
-            setTimeout(function() {
-                var directScheduleBtn = document.getElementById('direct-schedule-btn');
-                if (directScheduleBtn) {
-                    // Remove any existing event listeners
-                    var newBtn = directScheduleBtn.cloneNode(true);
-                    directScheduleBtn.parentNode.replaceChild(newBtn, directScheduleBtn);
-                    
-                    // Add our specific handler
-                    newBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🎯 DIRECT Schedule Appointment button clicked - opening modal');
-                        try {
-                            openAppointmentSchedulingModal();
-                            console.log('✅ Appointment modal opened successfully');
-                        } catch (e) {
-                            console.error('❌ Error opening appointment modal:', e);
-                        }
-                    });
-                    console.log('✅ Direct schedule button handler attached with priority');
-                } else {
-                    console.log('❌ Direct schedule button not found');
-                }
-            }, 500);
         }
         
         // Emergency voice preview function
