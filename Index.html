@@ -993,46 +993,15 @@
                                         console.log('✅ Sarah voice generated successfully! Audio URL:', result.audio_urls[0]);
                                         sarahBtn.textContent = '🔊 Playing Sarah Voice...';
                                         
-                                        // Create and play audio
-                                        var audio = new Audio(result.audio_urls[0]);
-                                        audio.volume = 0.8;
-                                        console.log('🎵 Audio element created, attempting to play...');
+                                        // Use GlobalAudioManager for proper overlap prevention
+                                        console.log('✅ Sarah voice generated successfully! Using GlobalAudioManager...');
+                                        sarahBtn.textContent = '🔊 Playing Sarah Voice...';
                                         
-                                        audio.onended = function() {
-                                            console.log('🏁 Sarah voice playback ended');
+                                        window.GlobalAudioManager.playAudio(result.audio_urls[0], function() {
+                                            console.log('🏁 Sarah voice playback ended via GlobalAudioManager');
                                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
                                             sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-                                        };
-                                        
-                                        audio.onerror = function(e) {
-                                            console.error('❌ Audio playback error:', e);
-                                            sarahBtn.textContent = '❌ Voice Error - Try Again';
-                                            sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
-                                            setTimeout(function() {
-                                                sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
-                                                sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-                                            }, 3000);
-                                        };
-                                        
-                                        audio.onloadstart = function() {
-                                            console.log('📥 Audio loading started...');
-                                        };
-                                        
-                                        audio.oncanplay = function() {
-                                            console.log('▶️ Audio ready to play!');
-                                        };
-                                        
-                                        console.log('🚀 Calling audio.play()...');
-                                        var playPromise = audio.play();
-                                        if (playPromise !== undefined) {
-                                            playPromise.then(function() {
-                                                console.log('✅ Audio playback started successfully!');
-                                            }).catch(function(error) {
-                                                console.error('❌ Play promise rejected:', error);
-                                                sarahBtn.textContent = '❌ Playback Failed';
-                                                sarahBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
-                                            });
-                                        }
+                                        });
                                     } else {
                                         console.error('❌ Voice generation failed');
                                         sarahBtn.textContent = '❌ Generation Failed';
@@ -1113,46 +1082,15 @@
                                         console.log('✅ Danny voice generated successfully! Audio URL:', result.audio_urls[0]);
                                         dannyBtn.textContent = '🔊 Playing Danny Voice...';
                                         
-                                        // Create and play audio
-                                        var audio = new Audio(result.audio_urls[0]);
-                                        audio.volume = 0.8;
-                                        console.log('🎵 Danny audio element created, attempting to play...');
+                                        // Use GlobalAudioManager for proper overlap prevention
+                                        console.log('✅ Danny voice generated successfully! Using GlobalAudioManager...');
+                                        dannyBtn.textContent = '🔊 Playing Danny Voice...';
                                         
-                                        audio.onended = function() {
-                                            console.log('🏁 Danny voice playback ended');
+                                        window.GlobalAudioManager.playAudio(result.audio_urls[0], function() {
+                                            console.log('🏁 Danny voice playback ended via GlobalAudioManager');
                                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
                                             dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
-                                        };
-                                        
-                                        audio.onerror = function(e) {
-                                            console.error('❌ Danny audio playback error:', e);
-                                            dannyBtn.textContent = '❌ Voice Error - Try Again';
-                                            dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
-                                            setTimeout(function() {
-                                                dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
-                                                dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
-                                            }, 3000);
-                                        };
-                                        
-                                        audio.onloadstart = function() {
-                                            console.log('📥 Danny audio loading started...');
-                                        };
-                                        
-                                        audio.oncanplay = function() {
-                                            console.log('▶️ Danny audio ready to play!');
-                                        };
-                                        
-                                        console.log('🚀 Calling Danny audio.play()...');
-                                        var playPromise = audio.play();
-                                        if (playPromise !== undefined) {
-                                            playPromise.then(function() {
-                                                console.log('✅ Danny audio playback started successfully!');
-                                            }).catch(function(error) {
-                                                console.error('❌ Danny play promise rejected:', error);
-                                                dannyBtn.textContent = '❌ Playback Failed';
-                                                dannyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
-                                            });
-                                        }
+                                        });
                                     } else {
                                         console.error('❌ Voice generation failed');
                                         dannyBtn.textContent = '❌ Generation Failed';
@@ -6667,12 +6605,10 @@ I'd love to schedule..."></textarea>
         
         function playGeneratedAudio(audioUrl, voiceName, callback) {
             try {
-                showNotification(`🔊 Playing ${voiceName}'s AI voice - Listen now!`, 'success');
+                showNotification(`🔊 Playing ${voiceName}'s AI voice via GlobalAudioManager!`, 'success');
                 
-                // Create and configure HTML5 Audio element
-                var audio = new Audio();
-                audio.crossOrigin = 'anonymous';
-                audio.preload = 'auto';
+                // Use GlobalAudioManager instead of creating new Audio elements
+                window.GlobalAudioManager.playAudio(audioUrl, callback);
                 
                 // Set up event listeners
                 audio.onloadstart = function() {
@@ -6740,11 +6676,10 @@ I'd love to schedule..."></textarea>
                 
                 showNotification(`🔊 ${voiceName} speaking - Turn up volume!`, 'success');
                 
-                // Stop any existing audio
-                stopCurrentVoice();
-                
-                // Create HTML5 Audio with mobile optimizations
-                var audio = new Audio();
+                // Use GlobalAudioManager for mobile audio too
+                console.log('📱 Using GlobalAudioManager for mobile audio playback');
+                window.GlobalAudioManager.playAudio(audioUrl, callback);
+                return; // Skip the rest of the old implementation
                 
                 // Mobile-friendly configuration
                 audio.preload = 'metadata'; // Lighter than 'auto' for mobile
@@ -7577,11 +7512,10 @@ I'd love to schedule..."></textarea>
             }
             
             playProfessionalAudio(audioUrl, callback) {
-                console.log('🔊 Playing professional Miami AI voice:', audioUrl);
+                console.log('🔊 Playing professional Miami AI voice via GlobalAudioManager:', audioUrl);
                 
-                var audio = new Audio();
-                audio.crossOrigin = 'anonymous';
-                audio.preload = 'auto';
+                // Use GlobalAudioManager for professional audio too
+                window.GlobalAudioManager.playAudio(audioUrl, callback);
                 
                 audio.oncanplaythrough = function() {
                     console.log('🎤 Professional Miami AI voice ready to play');
