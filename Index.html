@@ -896,6 +896,48 @@
                     <p class="text-slate-400 mb-6">Launch intelligent voice campaigns with AI coaching and real-time insights</p>
                 </div>
 
+                <!-- FEATURED: AI Voice Management - Top Priority -->
+                <div class="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-16 h-16 bg-indigo-500/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-microphone text-3xl text-indigo-400"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-2">🎤 AI Voice Management</h3>
+                                <p class="text-slate-300">Configure Miami AI Personalities • Test Voice Previews • Manage Voice Settings</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex items-center space-x-2">
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full">✅ Ready</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">🎭 Miami AI</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-800/30 rounded-xl p-4">
+                            <h4 class="text-white font-semibold mb-2">👩‍💼 Sarah from Miami</h4>
+                            <p class="text-slate-400 text-sm mb-3">Professional female voice • Sofia Vergara style warmth • Perfect for B2B calls</p>
+                            <div class="flex items-center text-xs text-green-400">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <span>Ready for campaigns</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/30 rounded-xl p-4">
+                            <h4 class="text-white font-semibold mb-2">👨‍🔧 Danny from Miami</h4>
+                            <p class="text-slate-400 text-sm mb-3">Friendly male voice • Benicio Del Toro smooth style • Great for community outreach</p>
+                            <div class="flex items-center text-xs text-green-400">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <span>Ready for campaigns</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="manage-voices-btn-featured" class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
+                        <i class="fas fa-sliders-h mr-3"></i>🎤 Open Voice Management
+                    </button>
+                </div>
+
                 <!-- Quick Actions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Start New Campaign -->
@@ -984,22 +1026,7 @@
                         </button>
                     </div>
 
-                    <!-- AI Voice Management -->
-                    <div class="card-modern rounded-2xl p-6 hover:shadow-2xl transition-all duration-300">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-cogs text-2xl text-indigo-400"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-lg font-bold text-white">Voice Management</h3>
-                                <p class="text-sm text-slate-400">Configure AI Voices</p>
-                            </div>
-                        </div>
-                        <p class="text-slate-300 text-sm mb-4">Manage AI voice profiles, create custom voices, and test voice configurations for optimal campaign performance.</p>
-                        <button id="manage-voices-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 px-4 py-3 rounded-lg text-white font-semibold transition-colors">
-                            <i class="fas fa-sliders-h mr-2"></i>Manage Voices
-                        </button>
-                    </div>
+
                 </div>
 
                 <!-- Active Campaigns -->
@@ -2154,6 +2181,18 @@ I'd love to schedule..."></textarea>
                 });
             }
             
+            // Featured Voice Management Button (top of AI Cold Calling tab)
+            var featuredVoicesBtn = document.getElementById('manage-voices-btn-featured');
+            if (featuredVoicesBtn) {
+                featuredVoicesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎤 Featured Voice Management button clicked');
+                    alert('🎤 AI Voice Management\\n\\n🎭 Miami AI Personalities Ready:\\n• Sarah - Professional female (Sofia Vergara style)\\n• Danny - Friendly male (Benicio Del Toro style)\\n\\n✅ Features Available:\\n• Test voice previews\\n• Customize speaking pace\\n• Configure personality traits\\n• Emergency stop controls');
+                    showVoiceManagementModal();
+                });
+            }
+            
+            // Legacy Voice Management Button (if any remain)
             var manageVoicesBtn = document.getElementById('manage-voices-btn');
             if (manageVoicesBtn) {
                 manageVoicesBtn.addEventListener('click', function(e) {
