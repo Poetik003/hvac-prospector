@@ -3201,6 +3201,13 @@ I'd love to schedule..."></textarea>
                 if (playBtn.innerHTML.includes('Stop') || playBtn.innerHTML.includes('Speaking') || playBtn.classList.contains('bg-red-600')) {
                     // Currently playing - stop it
                     stopCurrentVoice();
+                    
+                    // Clear the aggressive state maintenance
+                    if (window.buttonStateInterval) {
+                        clearInterval(window.buttonStateInterval);
+                        window.buttonStateInterval = null;
+                    }
+                    
                     playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
                     playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
                     playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
@@ -3229,6 +3236,20 @@ I'd love to schedule..."></textarea>
                 playBtn.classList.add('bg-red-600', 'hover:bg-red-700');
                 playBtn.disabled = false; // Keep enabled so user can click to stop
                 
+                // Aggressively maintain button state during playback
+                window.buttonStateInterval = setInterval(function() {
+                    if (window.isVoiceToggleMode && window.toggleVoiceButton === playBtn) {
+                        if (!playBtn.innerHTML.includes('Stop Voice')) {
+                            playBtn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop Voice';
+                        }
+                        if (!playBtn.classList.contains('bg-red-600')) {
+                            playBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                            playBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                        }
+                        playBtn.disabled = false;
+                    }
+                }, 100); // Check every 100ms
+                
                 // Hide the separate stop button since main button now handles stopping
                 stopBtn.classList.add('hidden');
                 
@@ -3239,6 +3260,12 @@ I'd love to schedule..."></textarea>
                 playVoicePreview(voiceType, pace, tone, accent, function() {
                     // Reset button when voice finishes naturally
                     if (window.isVoiceToggleMode && window.toggleVoiceButton === playBtn) {
+                        // Clear the aggressive state maintenance
+                        if (window.buttonStateInterval) {
+                            clearInterval(window.buttonStateInterval);
+                            window.buttonStateInterval = null;
+                        }
+                        
                         playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
                         playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
                         playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
@@ -3781,6 +3808,13 @@ I'd love to schedule..."></textarea>
                     if (btn.innerHTML.includes('Stop') || btn.innerHTML.includes('Speaking') || btn.classList.contains('bg-red-600')) {
                         // Currently playing - stop it
                         stopCurrentVoice();
+                        
+                        // Clear the aggressive state maintenance
+                        if (window.buttonStateInterval) {
+                            clearInterval(window.buttonStateInterval);
+                            window.buttonStateInterval = null;
+                        }
+                        
                         btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
                         btn.classList.remove('bg-red-600', 'hover:bg-red-700');
                         btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
@@ -3807,6 +3841,20 @@ I'd love to schedule..."></textarea>
                     btn.classList.add('bg-red-600', 'hover:bg-red-700');
                     btn.disabled = false; // Keep enabled for stopping
                     
+                    // Aggressively maintain button state during playback
+                    window.buttonStateInterval = setInterval(function() {
+                        if (window.isVoiceToggleMode && window.toggleVoiceButton === btn) {
+                            if (!btn.innerHTML.includes('Stop')) {
+                                btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+                            }
+                            if (!btn.classList.contains('bg-red-600')) {
+                                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                                btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                            }
+                            btn.disabled = false;
+                        }
+                    }, 100); // Check every 100ms
+                    
                     // Show floating stop button for additional access
                     showFloatingStopButton();
                     
@@ -3814,6 +3862,12 @@ I'd love to schedule..."></textarea>
                     playVoicePreviewByType(voiceType, function() {
                         // Reset button when voice finishes naturally (only if still in toggle mode for this button)
                         if (window.isVoiceToggleMode && window.toggleVoiceButton === btn) {
+                            // Clear the aggressive state maintenance
+                            if (window.buttonStateInterval) {
+                                clearInterval(window.buttonStateInterval);
+                                window.buttonStateInterval = null;
+                            }
+                            
                             btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
                             btn.classList.remove('bg-red-600', 'hover:bg-red-700');
                             btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
@@ -5711,7 +5765,11 @@ I'd love to schedule..."></textarea>
             // Reset all voice preview buttons to their original state
             resetAllVoiceButtons();
             
-            // Clear toggle mode
+            // Clear toggle mode and aggressive state maintenance
+            if (window.buttonStateInterval) {
+                clearInterval(window.buttonStateInterval);
+                window.buttonStateInterval = null;
+            }
             window.isVoiceToggleMode = false;
             window.toggleVoiceButton = null;
             
