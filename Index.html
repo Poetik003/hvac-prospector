@@ -6617,6 +6617,14 @@ I'd love to schedule..."></textarea>
                     }
                 }, 200);
             }
+            
+            // Initialize AI script buttons when switching to scripts tab
+            if (tabName === 'scripts') {
+                setTimeout(function() {
+                    console.log('🎭 Initializing AI Scripts tab buttons...');
+                    initializeAIScriptButtons();
+                }, 200);
+            }
         }
         
         // Emergency initialization
@@ -6680,6 +6688,115 @@ I'd love to schedule..."></textarea>
             }
             
             // Note: Connection buttons handled by setupSpecificConnectionButtons() function
+            
+            // AI Script Generator buttons (for AI Actors tab)
+            console.log('🎭 Initializing AI Script buttons...');
+            
+            var generateScriptBtn = document.getElementById('generate-script-btn');
+            if (generateScriptBtn) {
+                console.log('✅ Found Generate Script button in tab initialization');
+                generateScriptBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎭 Generate Script button clicked!');
+                    openScriptGenerator();
+                });
+            }
+            
+            var browseTemplatesBtn = document.getElementById('browse-templates-btn');
+            if (browseTemplatesBtn) {
+                console.log('✅ Found Browse Templates button in tab initialization');
+                browseTemplatesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📄 Browse Templates button clicked!');
+                    openTemplateBrowser();
+                });
+            }
+            
+            var optimizeScriptsBtn = document.getElementById('optimize-scripts-btn');
+            if (optimizeScriptsBtn) {
+                console.log('✅ Found Optimize Scripts button in tab initialization');
+                optimizeScriptsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🚀 Optimize Scripts button clicked!');
+                    openScriptOptimizer();
+                });
+            }
+            
+            var newScriptBtn = document.getElementById('new-script-btn');
+            if (newScriptBtn) {
+                console.log('✅ Found Import AI Script button in tab initialization');
+                newScriptBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📥 Import AI Script button clicked!');
+                    openAIScriptImport();
+                });
+            }
+            
+            var aiGuildBtn = document.getElementById('ai-actors-guild-btn');
+            if (aiGuildBtn) {
+                console.log('✅ Found AI Guild Training button in tab initialization');
+                aiGuildBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎭 AI Guild Training button clicked!');
+                    openAIGuildTraining();
+                });
+            }
+            
+            // Script action buttons (View, Use, Optimize, Clone, Share)
+            var viewScriptBtns = document.querySelectorAll('.view-script-btn');
+            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons in tab initialization');
+            for (var i = 0; i < viewScriptBtns.length; i++) {
+                viewScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('👁️ View Script button clicked for:', scriptId);
+                    viewScript(scriptId);
+                });
+            }
+            
+            var useScriptBtns = document.querySelectorAll('.use-script-btn');
+            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons in tab initialization');
+            for (var i = 0; i < useScriptBtns.length; i++) {
+                useScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📞 Use Script button clicked for:', scriptId);
+                    useScript(scriptId);
+                });
+            }
+            
+            var optimizeScriptBtns = document.querySelectorAll('.optimize-script-btn');
+            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons in tab initialization');
+            for (var i = 0; i < optimizeScriptBtns.length; i++) {
+                optimizeScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📈 Optimize Script button clicked for:', scriptId);
+                    optimizeScript(scriptId);
+                });
+            }
+            
+            var cloneScriptBtns = document.querySelectorAll('.clone-script-btn');
+            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons in tab initialization');
+            for (var i = 0; i < cloneScriptBtns.length; i++) {
+                cloneScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📋 Clone Script button clicked for:', scriptId);
+                    cloneScript(scriptId);
+                });
+            }
+            
+            var shareScriptBtns = document.querySelectorAll('.share-script-btn');
+            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons in tab initialization');
+            for (var i = 0; i < shareScriptBtns.length; i++) {
+                shareScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('🔗 Share Script button clicked for:', scriptId);
+                    shareScript(scriptId);
+                });
+            }
             
             // Campaign buttons
             var campaignButtons = document.querySelectorAll('.campaign-btn, [id*="campaign"], [id*="start"], [id*="launch"]');
@@ -7358,6 +7475,141 @@ I'd love to schedule..."></textarea>
         function requestCustomTemplate() {
             alert('💡 Custom Template Request\n\n✅ Our AI team will create a custom template for:\n• Your specific industry needs\n• Unique value propositions\n• Custom objection handling\n• Specialized terminology\n\n📧 Request submitted!\n\nOur AI specialists will contact you within 24 hours to discuss your custom template requirements.');
             closeTemplateBrowserModal();
+        }
+        
+        // Initialize AI Script buttons specifically for scripts tab
+        function initializeAIScriptButtons() {
+            console.log('🎭 Initializing AI Script buttons for scripts tab...');
+            
+            // Main action buttons
+            var generateScriptBtn = document.getElementById('generate-script-btn');
+            if (generateScriptBtn) {
+                console.log('✅ Found Generate Script button');
+                // Remove any existing listeners to avoid duplicates
+                generateScriptBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('🎭 Generate Script button clicked!');
+                    openScriptGenerator();
+                };
+            } else {
+                console.log('❌ Generate Script button not found');
+            }
+            
+            var browseTemplatesBtn = document.getElementById('browse-templates-btn');
+            if (browseTemplatesBtn) {
+                console.log('✅ Found Browse Templates button');
+                browseTemplatesBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('📄 Browse Templates button clicked!');
+                    openTemplateBrowser();
+                };
+            } else {
+                console.log('❌ Browse Templates button not found');
+            }
+            
+            var optimizeScriptsBtn = document.getElementById('optimize-scripts-btn');
+            if (optimizeScriptsBtn) {
+                console.log('✅ Found Optimize Scripts button');
+                optimizeScriptsBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('🚀 Optimize Scripts button clicked!');
+                    openScriptOptimizer();
+                };
+            } else {
+                console.log('❌ Optimize Scripts button not found');
+            }
+            
+            var newScriptBtn = document.getElementById('new-script-btn');
+            if (newScriptBtn) {
+                console.log('✅ Found Import AI Script button');
+                newScriptBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('📥 Import AI Script button clicked!');
+                    openAIScriptImport();
+                };
+            } else {
+                console.log('❌ Import AI Script button not found');
+            }
+            
+            var aiGuildBtn = document.getElementById('ai-actors-guild-btn');
+            if (aiGuildBtn) {
+                console.log('✅ Found AI Guild Training button');
+                aiGuildBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('🎭 AI Guild Training button clicked!');
+                    openAIGuildTraining();
+                };
+            } else {
+                console.log('❌ AI Guild Training button not found');
+            }
+            
+            // Script action buttons
+            var viewScriptBtns = document.querySelectorAll('.view-script-btn');
+            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons');
+            for (var i = 0; i < viewScriptBtns.length; i++) {
+                (function(btn) {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        var scriptId = btn.getAttribute('data-script-id');
+                        console.log('👁️ View Script button clicked for:', scriptId);
+                        viewScript(scriptId);
+                    };
+                })(viewScriptBtns[i]);
+            }
+            
+            var useScriptBtns = document.querySelectorAll('.use-script-btn');
+            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons');
+            for (var i = 0; i < useScriptBtns.length; i++) {
+                (function(btn) {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        var scriptId = btn.getAttribute('data-script-id');
+                        console.log('📞 Use Script button clicked for:', scriptId);
+                        useScript(scriptId);
+                    };
+                })(useScriptBtns[i]);
+            }
+            
+            var optimizeScriptBtns = document.querySelectorAll('.optimize-script-btn');
+            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons');
+            for (var i = 0; i < optimizeScriptBtns.length; i++) {
+                (function(btn) {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        var scriptId = btn.getAttribute('data-script-id');
+                        console.log('📈 Optimize Script button clicked for:', scriptId);
+                        optimizeScript(scriptId);
+                    };
+                })(optimizeScriptBtns[i]);
+            }
+            
+            var cloneScriptBtns = document.querySelectorAll('.clone-script-btn');
+            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons');
+            for (var i = 0; i < cloneScriptBtns.length; i++) {
+                (function(btn) {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        var scriptId = btn.getAttribute('data-script-id');
+                        console.log('📋 Clone Script button clicked for:', scriptId);
+                        cloneScript(scriptId);
+                    };
+                })(cloneScriptBtns[i]);
+            }
+            
+            var shareScriptBtns = document.querySelectorAll('.share-script-btn');
+            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons');
+            for (var i = 0; i < shareScriptBtns.length; i++) {
+                (function(btn) {
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        var scriptId = btn.getAttribute('data-script-id');
+                        console.log('🔗 Share Script button clicked for:', scriptId);
+                        shareScript(scriptId);
+                    };
+                })(shareScriptBtns[i]);
+            }
+            
+            console.log('✅ AI Script buttons initialization complete!');
         }
         
         // Lead Entry Form Functions
@@ -8301,6 +8553,7 @@ I'd love to schedule..."></textarea>
         window.generateAIScript = generateAIScript;
         window.useTemplate = useTemplate;
         window.requestCustomTemplate = requestCustomTemplate;
+        window.initializeAIScriptButtons = initializeAIScriptButtons;
     </script>
 </body>
 </html>
