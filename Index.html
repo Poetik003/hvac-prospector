@@ -927,6 +927,195 @@
                 </div>
 
                 <script>
+                // Voice API Functions for Real AI Voice Playback
+                let currentAudio = null;
+                let voiceSettings = {
+                    sarah: {
+                        pace: 'normal',
+                        tone: 'professional',
+                        accent: 'miami-subtle'
+                    },
+                    danny: {
+                        pace: 'normal', 
+                        tone: 'friendly',
+                        accent: 'miami-latino'
+                    }
+                };
+                
+                // Function to play actual AI voices using the Flask API
+                async function playAIVoice(text, requirements, fileName, onComplete) {
+                    try {
+                        console.log('🎤 Calling voice API...');
+                        
+                        // Stop any currently playing audio
+                        stopAllAudioPlayback();
+                        
+                        const response = await fetch('/api/generate-voice', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                model: 'elevenlabs/v3-tts',
+                                query: text,
+                                requirements: requirements,
+                                task_summary: 'ProSpector Pro HVAC Voice Preview',
+                                file_name: fileName
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success && result.audio_urls && result.audio_urls.length > 0) {
+                            console.log('✅ Voice generated, playing audio...');
+                            
+                            // Create and play audio
+                            currentAudio = new Audio(result.audio_urls[0]);
+                            currentAudio.volume = 0.8;
+                            
+                            currentAudio.onended = function() {
+                                console.log('✅ Audio playback completed');
+                                currentAudio = null;
+                                if (onComplete) onComplete();
+                            };
+                            
+                            currentAudio.onerror = function(e) {
+                                console.error('❌ Audio playback error:', e);
+                                if (onComplete) onComplete();
+                            };
+                            
+                            // Play the audio
+                            await currentAudio.play();
+                            
+                        } else {
+                            console.error('❌ Voice generation failed:', result);
+                            alert('⚠️ Voice generation failed. Please try again.');
+                            if (onComplete) onComplete();
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Voice API error:', error);
+                        alert('⚠️ Unable to connect to voice service. Please check your connection.');
+                        if (onComplete) onComplete();
+                    }
+                }
+                
+                // Function to stop all audio playback
+                function stopAllAudioPlayback() {
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        currentAudio = null;
+                        console.log('🛑 Audio playback stopped');
+                    }
+                    
+                    // Also stop any HTML5 audio elements
+                    const audioElements = document.querySelectorAll('audio');
+                    audioElements.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                }
+                
+                // Function to show voice customizer
+                function showVoiceCustomizer(voiceType) {
+                    console.log('⚙️ Opening customizer for:', voiceType);
+                    
+                    // Remove existing customizer
+                    const existing = document.getElementById('voice-customizer-modal');
+                    if (existing) existing.remove();
+                    
+                    // Create customizer modal
+                    const custModal = document.createElement('div');
+                    custModal.id = 'voice-customizer-modal';
+                    custModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                    
+                    const custContent = document.createElement('div');
+                    custContent.style.cssText = 'background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569;';
+                    
+                    const voiceName = voiceType === 'sarah' ? 'Sarah (Sofia Vergara Style)' : 'Danny (Benicio Del Toro Style)';
+                    const settings = voiceSettings[voiceType];
+                    
+                    custContent.innerHTML = `
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h2 style="margin: 0; color: #60a5fa; font-size: 24px;">⚙️ Customize ${voiceName}</h2>
+                        </div>
+                        
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎵 Speaking Pace:</label>
+                            <select id="pace-select" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">
+                                <option value="slow" ${settings.pace === 'slow' ? 'selected' : ''}>🐢 Slow & Clear</option>
+                                <option value="normal" ${settings.pace === 'normal' ? 'selected' : ''}>⚡ Normal Pace</option>
+                                <option value="fast" ${settings.pace === 'fast' ? 'selected' : ''}>🚀 Fast & Energetic</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎭 Voice Tone:</label>
+                            <select id="tone-select" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">
+                                <option value="professional" ${settings.tone === 'professional' ? 'selected' : ''}>💼 Professional</option>
+                                <option value="friendly" ${settings.tone === 'friendly' ? 'selected' : ''}>😊 Friendly</option>
+                                <option value="warm" ${settings.tone === 'warm' ? 'selected' : ''}>🤗 Warm & Caring</option>
+                                <option value="enthusiastic" ${settings.tone === 'enthusiastic' ? 'selected' : ''}>🎉 Enthusiastic</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🌴 Miami Accent Strength:</label>
+                            <select id="accent-select" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">
+                                <option value="subtle" ${settings.accent === 'subtle' || settings.accent === 'miami-subtle' ? 'selected' : ''}>🌊 Subtle Miami Touch</option>
+                                <option value="moderate" ${settings.accent === 'moderate' || settings.accent === 'miami-latino' ? 'selected' : ''}>🏖️ Moderate Miami Accent</option>
+                                <option value="strong" ${settings.accent === 'strong' ? 'selected' : ''}>🎺 Strong Miami Flavor</option>
+                            </select>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-top: 30px;">
+                            <button id="test-custom-voice" style="flex: 1; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                                🎤 Test Custom Voice
+                            </button>
+                            <button id="save-voice-settings" style="flex: 1; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                                ✅ Save Settings
+                            </button>
+                        </div>
+                        
+                        <button onclick="document.getElementById('voice-customizer-modal').remove();" style="position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;">✕</button>
+                    `;
+                    
+                    // Add event listeners
+                    custModal.appendChild(custContent);
+                    document.body.appendChild(custModal);
+                    
+                    // Test custom voice button
+                    document.getElementById('test-custom-voice').onclick = function() {
+                        const pace = document.getElementById('pace-select').value;
+                        const tone = document.getElementById('tone-select').value; 
+                        const accent = document.getElementById('accent-select').value;
+                        
+                        const testText = voiceType === 'sarah' ? 
+                            'Hi there! This is Sarah with your customized voice settings. How does this sound for your HVAC campaigns?' :
+                            '¡Hola! Danny here with your custom voice. This is how I\\'ll sound with your new settings, amigo!';
+                            
+                        const requirements = `${tone} ${voiceType === 'sarah' ? 'female' : 'male'} voice with ${accent} Miami accent, ${pace} speaking pace. ${voiceType === 'sarah' ? 'Sofia Vergara' : 'Benicio Del Toro'} style personality.`;
+                        
+                        this.textContent = '🎵 Testing...';
+                        playAIVoice(testText, requirements, `${voiceType}_custom_test.mp3`, () => {
+                            this.textContent = '🎤 Test Custom Voice';
+                        });
+                    };
+                    
+                    // Save settings button
+                    document.getElementById('save-voice-settings').onclick = function() {
+                        voiceSettings[voiceType] = {
+                            pace: document.getElementById('pace-select').value,
+                            tone: document.getElementById('tone-select').value,
+                            accent: document.getElementById('accent-select').value
+                        };
+                        
+                        alert(`✅ Voice settings saved for ${voiceName}!\\n\\nPace: ${voiceSettings[voiceType].pace}\\nTone: ${voiceSettings[voiceType].tone}\\nAccent: ${voiceSettings[voiceType].accent}`);
+                        custModal.remove();
+                    };
+                }
+                
                 // IMMEDIATE Voice Management Button Fix
                 setTimeout(function() {
                     console.log('🔧 Setting up voice button handler...');
@@ -966,7 +1155,22 @@
                             sarahBtn.style.cssText = 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE (Sofia Vergara Style)';
                             sarahBtn.onclick = function() {
-                                alert('🎤 SARAH FROM MIAMI\\n\\n\"Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\"\\n\\n✅ Professional Female Voice\\n✅ Sofia Vergara warmth\\n✅ Perfect for B2B HVAC calls!');
+                                console.log('🎤 Playing Sarah voice preview...');
+                                sarahBtn.textContent = '🎵 Playing Sarah Voice...';
+                                sarahBtn.style.background = 'linear-gradient(135deg, #7c3aed, #5b21b6)';
+                                
+                                const settings = voiceSettings.sarah;
+                                const requirements = `${settings.tone} professional female voice with ${settings.accent} Miami accent, ${settings.pace} speaking pace. Sofia Vergara style warmth and charm, perfect for B2B HVAC calls.`;
+                                
+                                playAIVoice(
+                                    'Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today? We\\'re offering a special promotion on HVAC maintenance that I think you\\'ll love.',
+                                    requirements,
+                                    'sarah_voice_preview.mp3',
+                                    function() {
+                                        sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE (Sofia Vergara Style)';
+                                        sarahBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                                    }
+                                );
                             };
                             sarahBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             sarahBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -976,17 +1180,59 @@
                             dannyBtn.style.cssText = 'background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE (Benicio Del Toro Style)';
                             dannyBtn.onclick = function() {
-                                alert('🎤 DANNY FROM MIAMI\\n\\n\"¡Oye! Danny here from ProSpector Pro. How you been, my friend?\"\\n\\n✅ Bilingual Male Voice\\n✅ Benicio Del Toro charm\\n✅ Perfect for residential HVAC!');
+                                console.log('🎤 Playing Danny voice preview...');
+                                dannyBtn.textContent = '🎵 Playing Danny Voice...';
+                                dannyBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
+                                
+                                const settings = voiceSettings.danny;
+                                const requirements = `${settings.tone} bilingual male voice with ${settings.accent} Miami Latino accent, ${settings.pace} speaking pace. Benicio Del Toro style charm and warmth, perfect for residential HVAC outreach.`;
+                                
+                                playAIVoice(
+                                    '¡Oye! Danny here from ProSpector Pro. How you been, my friend? We got some great deals on air conditioning repair that I think you\\'re gonna love today.',
+                                    requirements,
+                                    'danny_voice_preview.mp3',
+                                    function() {
+                                        dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE (Benicio Del Toro Style)';
+                                        dannyBtn.style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                                    }
+                                );
                             };
                             dannyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             dannyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
                             
+                            // Sarah Customize Button
+                            var sarahCustomBtn = document.createElement('div');
+                            sarahCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
+                            sarahCustomBtn.textContent = '⚙️ CUSTOMIZE SARAH VOICE';
+                            sarahCustomBtn.onclick = function() {
+                                showVoiceCustomizer('sarah');
+                            };
+                            sarahCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                            sarahCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            
+                            // Danny Customize Button 
+                            var dannyCustomBtn = document.createElement('div');
+                            dannyCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
+                            dannyCustomBtn.textContent = '⚙️ CUSTOMIZE DANNY VOICE';
+                            dannyCustomBtn.onclick = function() {
+                                showVoiceCustomizer('danny');
+                            };
+                            dannyCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                            dannyCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            
                             // Emergency button
                             var emergencyBtn = document.createElement('div');
                             emergencyBtn.style.cssText = 'background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 25px; margin: 20px 0; border-radius: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 20px; transition: transform 0.2s;';
-                            emergencyBtn.textContent = '🛑 EMERGENCY STOP ALL VOICES';
+                            emergencyBtn.textContent = '🛑 STOP ALL VOICE PLAYBACK';
                             emergencyBtn.onclick = function() {
-                                alert('🛑 EMERGENCY STOP ACTIVATED!\\n\\nAll voice playback stopped immediately!\\nAudio streams terminated!\\n\\n✅ System reset complete!');
+                                console.log('🛑 Emergency stop activated!');
+                                stopAllAudioPlayback();
+                                emergencyBtn.textContent = '✅ ALL VOICES STOPPED';
+                                emergencyBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                                setTimeout(function() {
+                                    emergencyBtn.textContent = '🛑 STOP ALL VOICE PLAYBACK';
+                                    emergencyBtn.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                                }, 2000);
                             };
                             emergencyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             emergencyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
@@ -996,11 +1242,16 @@
                             status.style.cssText = 'text-align: center; padding: 20px; background: rgba(34, 197, 94, 0.2); border-radius: 12px; margin: 25px 0; border: 2px solid #22c55e;';
                             status.innerHTML = '<div style=\"color: #22c55e; font-weight: bold; font-size: 18px;\">✅ BUTTONS WORKING!</div><div style=\"color: #94a3b8; font-size: 15px; margin-top: 8px;\">All voice controls are now clickable and functional!</div>';
                             
+                            // Update status message
+                            status.innerHTML = '<div style=\"color: #22c55e; font-weight: bold; font-size: 18px;\">🎤 REAL AI VOICES!</div><div style=\"color: #94a3b8; font-size: 15px; margin-top: 8px;\">Click Test buttons for actual voice playback • Use Customize for voice settings!</div>';
+                            
                             // Assemble modal
                             content.appendChild(closeBtn);
                             content.appendChild(title);
                             content.appendChild(sarahBtn);
+                            content.appendChild(sarahCustomBtn);
                             content.appendChild(dannyBtn);
+                            content.appendChild(dannyCustomBtn);
                             content.appendChild(emergencyBtn);
                             content.appendChild(status);
                             modal.appendChild(content);
