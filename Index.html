@@ -951,6 +951,11 @@
                             sarahBtn.textContent = '👩‍💼 TEST SARAH VOICE';
                             sarahBtn.onclick = function() {
                                 console.log('🎤 Playing Sarah voice...');
+                                
+                                // CRITICAL: Stop any currently playing audio first
+                                stopCurrentVoice();
+                                stopAllAudioPlayback();
+                                
                                 sarahBtn.textContent = '🎵 Generating Sarah Voice...';
                                 sarahBtn.style.background = 'linear-gradient(135deg, #7c3aed, #5b21b6)';
                                 
@@ -1028,6 +1033,11 @@
                             dannyBtn.textContent = '👨‍🔧 TEST DANNY VOICE';
                             dannyBtn.onclick = function() {
                                 console.log('🎤 Playing Danny voice...');
+                                
+                                // CRITICAL: Stop any currently playing audio first
+                                stopCurrentVoice();
+                                stopAllAudioPlayback();
+                                
                                 dannyBtn.textContent = '🎵 Generating Danny Voice...';
                                 dannyBtn.style.background = 'linear-gradient(135deg, #7c2d12, #451a03)';
                                 
@@ -6665,12 +6675,30 @@ I'd love to schedule..."></textarea>
                 console.log('🛑 Stopped speech synthesis');
             }
             
-            // Stop HTML5 Audio playback
+            // Stop HTML5 Audio playback (currentAudio variable)
             if (window.currentAudio && typeof window.currentAudio.pause === 'function') {
                 window.currentAudio.pause();
                 window.currentAudio.currentTime = 0;
                 window.currentAudio = null;
-                console.log('🛑 Stopped HTML5 audio playback');
+                console.log('🛑 Stopped HTML5 currentAudio playback');
+            }
+            
+            // Stop tracked audio elements
+            if (window.activeAudioElements && Array.isArray(window.activeAudioElements)) {
+                console.log('🛑 Stopping ' + window.activeAudioElements.length + ' tracked audio elements');
+                for (var i = 0; i < window.activeAudioElements.length; i++) {
+                    try {
+                        var audio = window.activeAudioElements[i];
+                        if (audio && typeof audio.pause === 'function') {
+                            audio.pause();
+                            audio.currentTime = 0;
+                            audio.src = '';
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Error stopping tracked audio ' + i + ':', e.message);
+                    }
+                }
+                window.activeAudioElements = [];
             }
             
             // Stop all audio elements on the page
