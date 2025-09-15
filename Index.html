@@ -5897,50 +5897,148 @@ I'd love to schedule..."></textarea>
             }
         });
         
-        // Global scanner to fix any 'Speaking' buttons that should be stop buttons
+        // Add spacebar as another stop key
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                var speakingButtons = document.querySelectorAll('button');
+                var hasSpeak = false;
+                for (var i = 0; i < speakingButtons.length; i++) {
+                    if (speakingButtons[i].innerHTML.includes('Speaking')) {
+                        hasSpeak = true;
+                        break;
+                    }
+                }
+                if (hasSpeak) {
+                    e.preventDefault();
+                    stopCurrentVoice();
+                    showNotification('🛑 Voice stopped with Spacebar', 'info');
+                }
+            }
+        });
+        
+        // Global scanner - make ANY 'Speaking' button clickable to stop voice
         setInterval(function() {
             var speakingButtons = document.querySelectorAll('button');
+            var foundSpeakingButton = false;
+            
             for (var i = 0; i < speakingButtons.length; i++) {
                 var btn = speakingButtons[i];
-                if (btn.innerHTML.includes('Speaking') && !btn.innerHTML.includes('Stop')) {
-                    // Check if this looks like a voice preview button
-                    if (btn.classList.contains('preview-voice') || 
-                        btn.id === 'preview-voice-btn' ||
-                        btn.innerHTML.includes('🎤')) {
+                if (btn.innerHTML.includes('Speaking')) {
+                    foundSpeakingButton = true;
+                    
+                    // Make this button red and add stop functionality if not already done
+                    if (!btn.classList.contains('bg-red-600')) {
+                        console.log('🔧 Making Speaking button clickable to stop:', btn);
                         
-                        console.log('🔧 Converting Speaking button to Stop button:', btn);
-                        
-                        // Convert to stop button
-                        var stopText = btn.id === 'preview-voice-btn' ? 
-                                      '<i class="fas fa-stop mr-1"></i>Stop Voice' : 
-                                      '<i class="fas fa-stop mr-1"></i>Stop';
-                        
-                        btn.innerHTML = stopText;
                         btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                         btn.classList.add('bg-red-600', 'hover:bg-red-700');
                         btn.disabled = false;
+                        btn.style.cursor = 'pointer';
+                        btn.title = 'Click to stop voice playback';
                         
-                        // Ensure it can stop voice when clicked
-                        btn.onclick = function(e) {
+                        // Add stop functionality - use addEventListener to not override existing
+                        btn.addEventListener('click', function(e) {
                             e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🛑 Stop clicked from Speaking button');
                             stopCurrentVoice();
                             return false;
-                        };
-                        
-                        // Set as toggle button
-                        window.isVoiceToggleMode = true;
-                        window.toggleVoiceButton = btn;
+                        });
                     }
+                }
+            }
+            
+            // Show/hide permanent stop button based on whether voices are playing
+            var permanentStopBtn = document.getElementById('permanent-stop-btn');
+            if (foundSpeakingButton) {
+                if (!permanentStopBtn) {
+                    createPermanentStopButton();
+                }
+            } else {
+                if (permanentStopBtn) {
+                    permanentStopBtn.remove();
                 }
             }
         }, 200); // Check every 200ms
         
+        // Create a permanent, always-visible stop button
+        function createPermanentStopButton() {
+            var stopBtn = document.createElement('button');
+            stopBtn.id = 'permanent-stop-btn';
+            stopBtn.innerHTML = '<i class="fas fa-stop mr-2"></i>STOP ALL VOICES';
+            stopBtn.className = 'fixed top-20 right-4 z-50 bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-full shadow-2xl font-bold text-lg animate-pulse';
+            stopBtn.style.cssText = `
+                position: fixed !important;
+                top: 80px !important;
+                right: 16px !important;
+                z-index: 9999 !important;
+                background: #dc2626 !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 50px !important;
+                padding: 16px 24px !important;
+                font-weight: bold !important;
+                font-size: 16px !important;
+                box-shadow: 0 20px 40px rgba(220, 38, 38, 0.5) !important;
+                animation: pulse 1s infinite !important;
+                cursor: pointer !important;
+            `;
+            
+            stopBtn.onclick = function(e) {
+                e.preventDefault();
+                console.log('🛑 Permanent stop button clicked');
+                stopCurrentVoice();
+                
+                // Force reset all buttons
+                var allButtons = document.querySelectorAll('button');
+                for (var i = 0; i < allButtons.length; i++) {
+                    var btn = allButtons[i];
+                    if (btn.innerHTML.includes('Speaking')) {
+                        if (btn.classList.contains('preview-voice') || btn.id === 'preview-voice-btn') {
+                            btn.innerHTML = btn.id === 'preview-voice-btn' ? 
+                                           '<i class="fas fa-play mr-1"></i>Preview Voice' : 
+                                           '<i class="fas fa-play mr-1"></i>Preview';
+                            btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                            btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            btn.disabled = false;
+                        }
+                    }
+                }
+                
+                this.remove();
+            };
+            
+            document.body.appendChild(stopBtn);
+            
+            // Auto-remove after 30 seconds if still there
+            setTimeout(function() {
+                if (stopBtn && stopBtn.parentNode) {
+                    stopBtn.remove();
+                }
+            }, 30000);
+        }
+        
+        // Show help notification about voice stopping when voice starts
+        var originalPlayVoicePreview = window.playVoicePreview;
+        window.playVoicePreview = function() {
+            if (originalPlayVoicePreview) {
+                var result = originalPlayVoicePreview.apply(this, arguments);
+            }
+            
+            // Show stop instructions when voice starts
+            setTimeout(function() {
+                showNotification('🎤 To STOP voice: Click the red Speaking button, press ESC, or press SPACEBAR', 'info');
+            }, 1000);
+            
+            return result;
+        };
+        
         // Show help notification about voice toggle functionality when page loads
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                if (!localStorage.getItem('voiceToggleHelpShown')) {
-                    showNotification('🎤 Voice Preview: Click any Preview button to play/stop voices! Press ESC key to stop from anywhere.', 'info');
-                    localStorage.setItem('voiceToggleHelpShown', 'true');
+                if (!localStorage.getItem('voiceStopHelpShown2')) {
+                    showNotification('🎤 Voice Controls: Click any red Speaking button to stop, or press ESC/SPACEBAR keys!', 'info');
+                    localStorage.setItem('voiceStopHelpShown2', 'true');
                 }
             }, 3000);
         });
