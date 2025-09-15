@@ -1044,11 +1044,12 @@
                                 <i class="fab fa-microsoft mr-2"></i>Connect Outlook
                             </button>
                             
-                            <a href="javascript:void(0);" 
-                               onclick="try{openAppointmentSchedulingModal();console.log('Modal opened');}catch(e){console.log('Error:',e);alert('Appointment Form\n\nCustomer Name: _______\nPhone: _______\nDate: _______\nTime: _______\nService: HVAC Maintenance\n\nThis is a demo form. In the full app, this would be a complete scheduling interface.');}"
-                               class="block w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center">
+                            <button 
+                                id="main-schedule-btn"
+                                onclick="createDirectAppointmentModal()"
+                                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                 <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
-                            </a>
+                            </button>
                         </div>
                         <p class="text-xs text-slate-500 mt-4">
                             <i class="fas fa-info-circle mr-1"></i>
@@ -2400,6 +2401,141 @@ I'd love to schedule..."></textarea>
         
         // Make the function globally available
         window.openAppointmentSchedulingModal = openAppointmentSchedulingModal;
+        
+        // Direct appointment modal for main app (bypasses any conflicts)
+        function createDirectAppointmentModal() {
+            console.log('🎯 Creating direct appointment modal');
+            
+            // Remove any existing modals first
+            var existingModals = document.querySelectorAll('.appointment-modal');
+            for (var i = 0; i < existingModals.length; i++) {
+                existingModals[i].remove();
+            }
+            
+            var modal = document.createElement('div');
+            modal.className = 'appointment-modal fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-lg mx-auto border border-slate-600 shadow-2xl max-h-screen overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-blue-400">Schedule HVAC Appointment</h3>
+                        <button onclick="this.closest('.appointment-modal').remove()" class="text-slate-400 hover:text-white text-2xl">×</button>
+                    </div>
+                    
+                    <form onsubmit="submitAppointment(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Customer Name *</label>
+                                <input type="text" name="customerName" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Phone Number *</label>
+                                <input type="tel" name="phone" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Service Address *</label>
+                            <input type="text" name="address" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="123 Main St, City, State, ZIP">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Date *</label>
+                                <input type="date" name="date" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" min="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Time *</label>
+                                <select name="time" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
+                                    <option value="">Select time...</option>
+                                    <option value="08:00">8:00 AM</option>
+                                    <option value="09:00">9:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="13:00">1:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="15:00">3:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                    <option value="17:00">5:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Service Type *</label>
+                            <select name="serviceType" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500">
+                                <option value="">Select service...</option>
+                                <option value="maintenance">Routine Maintenance</option>
+                                <option value="repair">Repair Service</option>
+                                <option value="installation">New Installation</option>
+                                <option value="consultation">System Consultation</option>
+                                <option value="emergency">Emergency Service</option>
+                                <option value="quote">Quote/Estimate</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Notes</label>
+                            <textarea name="notes" rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="Additional details about the appointment..."></textarea>
+                        </div>
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                <i class="fas fa-calendar-check mr-2"></i>Schedule Appointment
+                            </button>
+                            <button type="button" onclick="this.closest('.appointment-modal').remove()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-700 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Focus on first input
+            setTimeout(function() {
+                var firstInput = modal.querySelector('input[name="customerName"]');
+                if (firstInput) firstInput.focus();
+            }, 100);
+            
+            // Click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        // Handle appointment form submission
+        function submitAppointment(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            
+            var appointmentData = {
+                customerName: formData.get('customerName'),
+                phone: formData.get('phone'),
+                address: formData.get('address'),
+                date: formData.get('date'),
+                time: formData.get('time'),
+                serviceType: formData.get('serviceType'),
+                notes: formData.get('notes'),
+                createdAt: new Date().toISOString()
+            };
+            
+            console.log('✅ Appointment scheduled:', appointmentData);
+            
+            // Show success message
+            alert('✅ Appointment Scheduled Successfully!\\n\\nCustomer: ' + appointmentData.customerName + '\\nDate: ' + appointmentData.date + ' at ' + appointmentData.time + '\\nService: ' + appointmentData.serviceType + '\\n\\nThis appointment would be synced with your calendar in the full application.');
+            
+            // Close modal
+            form.closest('.appointment-modal').remove();
+        }
+        
+        // Make functions globally available
+        window.createDirectAppointmentModal = createDirectAppointmentModal;
+        window.submitAppointment = submitAppointment;
         
         // Update calendar connection status in UI
         function updateCalendarConnectionStatus(serviceName, connected) {
@@ -6475,13 +6611,13 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Schedule buttons (exclude our direct schedule link)
+            // Schedule buttons (exclude our main schedule button)
             var scheduleButtons = document.querySelectorAll('button[id*="schedule"], .schedule-btn');
             console.log('📅 Found', scheduleButtons.length, 'schedule buttons');
             for (var i = 0; i < scheduleButtons.length; i++) {
-                // Skip if it contains appointment scheduling
-                if (scheduleButtons[i].textContent.includes('Schedule New Appointment')) {
-                    console.log('📅 Skipping Schedule New Appointment - has specific handler');
+                // Skip our main schedule button
+                if (scheduleButtons[i].id === 'main-schedule-btn' || scheduleButtons[i].textContent.includes('Schedule New Appointment')) {
+                    console.log('📅 Skipping main-schedule-btn - has specific handler');
                     continue;
                 }
                 scheduleButtons[i].addEventListener('click', function() {
