@@ -236,7 +236,7 @@
                     <p class="text-xs text-red-200 text-center mb-2">🚨 Emergency Voice Controls</p>
                     <button 
                         id="emergency-stop-btn" 
-                        onclick="emergencyStopAllVoices()" 
+                        onclick="stopCurrentVoice()" 
                         class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg font-bold text-xs transition-colors"
                         title="Stop ALL voice playback immediately"
                     >
@@ -4467,7 +4467,7 @@ I'd love to schedule..."></textarea>
                     ">
                         <h4 style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;">⚠️ EMERGENCY VOICE CONTROLS</h4>
                         <div style="display: flex; gap: 12px;">
-                            <button onclick="emergencyStopAllVoices()" style="
+                            <button onclick="stopCurrentVoice()" style="
                                 flex: 1;
                                 background: #dc2626;
                                 color: white;
@@ -10121,7 +10121,7 @@ I'd love to schedule..."></textarea>
         // Emergency Stop Functions
         window.emergencyStopAllVoices = emergencyStopAllVoices;
         window.muteAllAudio = muteAllAudio;
-        window.showFloatingEmergencyStop = showFloatingEmergencyStop;
+        window.showFloatingStopButton = showFloatingStopButton;
         window.diagnoseClickIssues = diagnoseClickIssues;
         window.showEmergencyControls = showEmergencyControls;
         window.hideEmergencyControls = hideEmergencyControls;
@@ -10245,7 +10245,7 @@ I'd love to schedule..."></textarea>
                     console.log('🚨 EMERGENCY BUTTON DETECTED - Forcing stop');
                     e.preventDefault();
                     e.stopPropagation();
-                    emergencyStopAllVoices();
+                    stopCurrentVoice();
                     return false;
                 }
             }
@@ -10261,7 +10261,7 @@ I'd love to schedule..."></textarea>
                 }
                 e.stopPropagation();
                 console.log('⌨️ EMERGENCY KEYBOARD SHORTCUT PRESSED:', e.key);
-                emergencyStopAllVoices();
+                stopCurrentVoice();
             }
         }, true); // Use capture to ensure we get this event first
         
@@ -10270,7 +10270,7 @@ I'd love to schedule..."></textarea>
             if (e.target && e.target.id === 'emergency-stop-btn') {
                 // Extra aggressive stop when emergency button is clicked
                 console.log('🚨 Emergency button clicked - executing nuclear stop');
-                setTimeout(emergencyStopAllVoices, 50); // Small delay to ensure click is processed
+                setTimeout(stopCurrentVoice, 50); // Small delay to ensure click is processed
             }
         });
         
@@ -10387,7 +10387,7 @@ I'd love to schedule..."></textarea>
             // If button says STOP, stop the voice
             if (button.innerHTML.indexOf('STOP') !== -1) {
                 console.log('🛑 STOPPING voice');
-                emergencyStopAllVoices();
+                stopCurrentVoice();
                 button.innerHTML = '▶️ Test Voice';
                 button.style.background = voiceName === 'sarah' ? '#3b82f6' : '#10b981';
                 return;
@@ -11335,7 +11335,7 @@ I'd love to schedule..."></textarea>
                 button.classList.contains('bg-red-600')) {
                 
                 console.log('🛑 STOPPING voice from direct click');
-                emergencyStopAllVoices();
+                stopCurrentVoice();
                 
                 // Reset this specific button
                 button.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Preview';
