@@ -1950,6 +1950,17 @@ I'd love to schedule..."></textarea>
                     initializeCalendarButtons();
                 }, 100);
             }
+            
+            // Initialize voice buttons when switching to voicecalling tab
+            if (tabName === 'voicecalling') {
+                setTimeout(function() {
+                    console.log('🎤 Initializing ALL voice calling tab buttons...');
+                    initializeFeaturedVoiceButton();
+                    initializeStartCallingButton();
+                    // Re-initialize other voice calling buttons
+                    initializeIntegrationButtons();
+                }, 100);
+            }
         }
         
         // Initialize when ready
@@ -2143,15 +2154,37 @@ I'd love to schedule..."></textarea>
             }
             
             // AI Voice Calling Buttons
-            var startCallingBtn = document.getElementById('start-calling-btn');
-            if (startCallingBtn) {
-                startCallingBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📞 Start Calling Now button clicked');
-                    alert('📞 AI Voice Campaign Starting!\\n\\n🎯 Campaign Setup:\\n• AI Voice: Miami personalities (Sarah/Danny)\\n• Scripts: AI-optimized for HVAC\\n• Leads: Auto-dialing from your list\\n• Coaching: Real-time AI assistance\\n\\n🚀 Launching voice campaign now!');
-                    startAiVoiceCampaign();
-                });
+            function initializeStartCallingButton() {
+                var startCallingBtn = document.getElementById('start-calling-btn');
+                if (startCallingBtn) {
+                    console.log('✅ Found start calling button');
+                    
+                    // Remove existing listeners
+                    var newBtn = startCallingBtn.cloneNode(true);
+                    startCallingBtn.parentNode.replaceChild(newBtn, startCallingBtn);
+                    
+                    newBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('📞 Start Calling Now button clicked!');
+                        alert('📞 AI Voice Campaign Starting!\\n\\n🎯 Campaign Setup:\\n• AI Voice: Miami personalities (Sarah/Danny)\\n• Scripts: AI-optimized for HVAC\\n• Leads: Auto-dialing from your list\\n• Coaching: Real-time AI assistance\\n\\n🚀 Launching voice campaign now!');
+                        startAiVoiceCampaign();
+                    });
+                    
+                    // Backup onclick
+                    newBtn.onclick = function(e) {
+                        e.preventDefault();
+                        console.log('📞 Start Calling onclick backup triggered!');
+                        alert('📞 Voice Campaign (onclick backup)');
+                        startAiVoiceCampaign();
+                    };
+                    
+                    console.log('✅ Start calling button initialized');
+                } else {
+                    console.error('❌ Start calling button not found!');
+                }
             }
+            
+            initializeStartCallingButton();
             
             var viewAnalyticsBtn = document.getElementById('view-analytics-btn');
             if (viewAnalyticsBtn) {
@@ -2169,16 +2202,35 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Featured Voice Management Button (top of AI Cold Calling tab)
-            var featuredVoicesBtn = document.getElementById('manage-voices-btn-featured');
-            if (featuredVoicesBtn) {
-                featuredVoicesBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🎤 Featured Voice Management button clicked');
-                    alert('🎤 AI Voice Management\\n\\n🎭 Miami AI Personalities Ready:\\n• Sarah - Professional female (Sofia Vergara style)\\n• Danny - Friendly male (Benicio Del Toro style)\\n\\n✅ Features Available:\\n• Test voice previews\\n• Customize speaking pace\\n• Configure personality traits\\n• Emergency stop controls');
-                    showVoiceManagementModal();
-                });
+            // Featured Voice Management Button (top of AI Cold Calling tab) - Enhanced with debugging
+            function initializeFeaturedVoiceButton() {
+                console.log('🔧 Initializing featured voice management button...');
+                var featuredVoicesBtn = document.getElementById('manage-voices-btn-featured');
+                if (featuredVoicesBtn) {
+                    console.log('✅ Found featured voice management button');
+                    featuredVoicesBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('🎤 Featured Voice Management button clicked!');
+                        alert('🎤 AI Voice Management\\n\\n🎭 Miami AI Personalities Ready:\\n• Sarah - Professional female (Sofia Vergara style)\\n• Danny - Friendly male (Benicio Del Toro style)\\n\\n✅ Features Available:\\n• Test voice previews\\n• Customize speaking pace\\n• Configure personality traits\\n• Emergency stop controls');
+                        showVoiceManagementModal();
+                    });
+                    
+                    // Also add onclick as backup
+                    featuredVoicesBtn.onclick = function(e) {
+                        e.preventDefault();
+                        console.log('🎤 Featured Voice Management onclick triggered!');
+                        alert('🎤 Voice Management (onclick)\\n\\nBackup click handler activated');
+                        showVoiceManagementModal();
+                    };
+                    
+                    console.log('✅ Featured voice button event handlers attached');
+                } else {
+                    console.error('❌ Featured voice management button not found!');
+                }
             }
+            
+            // Call immediately and also on tab switch
+            initializeFeaturedVoiceButton();
             
             // Legacy Voice Management Button (if any remain)
             var manageVoicesBtn = document.getElementById('manage-voices-btn');
@@ -7404,6 +7456,19 @@ I'd love to schedule..."></textarea>
                 setTimeout(function() {
                     console.log('🎭 Initializing AI Scripts tab buttons...');
                     initializeAIScriptButtons();
+                }, 200);
+            }
+            
+            // Initialize voice buttons when switching to voicecalling tab (emergency system)
+            if (tabName === 'voicecalling') {
+                setTimeout(function() {
+                    console.log('🚨 Emergency system initializing voice calling tab buttons...');
+                    if (typeof initializeFeaturedVoiceButton === 'function') {
+                        initializeFeaturedVoiceButton();
+                    }
+                    if (typeof initializeStartCallingButton === 'function') {
+                        initializeStartCallingButton();
+                    }
                 }, 200);
             }
         }
