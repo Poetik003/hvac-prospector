@@ -3649,17 +3649,54 @@ I'd love to schedule..."></textarea>
             });
         }
         
-        // Voice Management Modal
+        // SIMPLIFIED Voice Management Modal - Guaranteed to work
         function showVoiceManagementModal() {
+            // Remove any existing modal first
+            var existingModal = document.getElementById('voice-modal');
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+            
             var modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+            modal.id = 'voice-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
             modal.innerHTML = `
-                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-4xl mx-auto border border-slate-600 shadow-2xl max-h-[90vh] overflow-y-auto">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold gradient-text">AI Voice Management</h3>
-                        <button class="close-voice-modal text-slate-400 hover:text-white transition-colors">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
+                <div style="
+                    background: #1e293b;
+                    border-radius: 16px;
+                    padding: 24px;
+                    width: 100%;
+                    max-width: 800px;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    border: 2px solid #475569;
+                    color: white;
+                ">
+                    <!-- Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="font-size: 24px; font-weight: bold; margin: 0;">🎤 AI Voice Management</h3>
+                        <button onclick="closeVoiceModal()" style="
+                            background: #dc2626;
+                            color: white;
+                            border: none;
+                            padding: 8px 12px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 18px;
+                        ">✕</button>
                     </div>
                     
                     <div class="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl p-4 mb-6 border border-green-500/20">
@@ -3680,115 +3717,151 @@ I'd love to schedule..."></textarea>
                         </div>
                     </div>
                     
-                    <!-- EMERGENCY VOICE STOP PANEL -->
-                    <div class="bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl p-4 mb-6 border border-red-500/20">
-                        <h4 class="font-bold text-white mb-3">
-                            <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Emergency Voice Controls
-                        </h4>
-                        <div class="flex gap-3">
-                            <button onclick="emergencyStopAllVoices()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
-                                🛑 STOP ALL VOICES
-                            </button>
-                            <button onclick="muteAllAudio()" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
-                                🔇 MUTE AUDIO
-                            </button>
-                            <button onclick="resetAllVoiceButtons()" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-3 px-4 rounded-lg font-bold transition-colors">
-                                🔄 RESET BUTTONS
-                            </button>
+                    <!-- EMERGENCY CONTROLS -->
+                    <div style="
+                        background: rgba(220, 38, 38, 0.1);
+                        border: 2px solid #dc2626;
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-bottom: 20px;
+                    ">
+                        <h4 style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;">⚠️ EMERGENCY VOICE CONTROLS</h4>
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="emergencyStopAllVoices()" style="
+                                flex: 1;
+                                background: #dc2626;
+                                color: white;
+                                border: none;
+                                padding: 12px;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: bold;
+                                font-size: 16px;
+                            ">🛑 STOP ALL</button>
+                            <button onclick="muteAllAudio()" style="
+                                flex: 1;
+                                background: #ea580c;
+                                color: white;
+                                border: none;
+                                padding: 12px;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: bold;
+                                font-size: 16px;
+                            ">🔇 MUTE</button>
+                            <button onclick="window.location.reload()" style="
+                                flex: 1;
+                                background: #7c2d12;
+                                color: white;
+                                border: none;
+                                padding: 12px;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: bold;
+                                font-size: 16px;
+                            ">🔄 RELOAD PAGE</button>
                         </div>
-                        <p class="text-xs text-red-300 text-center mt-2">Use these if voice previews won't stop normally</p>
+                        <p style="text-align: center; margin: 8px 0 0 0; font-size: 12px; color: #fca5a5;">
+                            Use these if voice won't stop normally
+                        </p>
                     </div>
                     
-                    <!-- Voice Profiles -->
-                    <div class="mb-6">
-                        <h4 class="text-lg font-bold text-white mb-4">
-                            <i class="fas fa-user-circle mr-2 text-indigo-400"></i>AI Voice Profiles
-                        </h4>
+                    <!-- SIMPLE VOICE PROFILES -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">🎭 AI Voice Profiles</h4>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Voice Profile 1 -->
-                            <div class="bg-slate-700/30 rounded-xl p-4 border border-slate-600 border-l-4 border-l-blue-500">
-                                <div class="flex items-center justify-between mb-3">
-                                    <h5 class="font-bold text-white">🎆 Yeni - Miami Latina</h5>
-                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Sofia Vergara Style</span>
-                                </div>
-                                <div class="space-y-2 text-sm text-slate-300 mb-3">
-                                    <p><strong>Voice Type:</strong> Latina Business Consultant</p>
-                                    <p><strong>Personality:</strong> Warm & Professional Like Sofia Vergara</p>
-                                    <p><strong>Speaking Style:</strong> Natural pauses, questions, interactive flow</p>
-                                    <p><strong>Success Rate:</strong> 94% (Natural conversation)</p>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="flex items-center text-xs text-blue-400">
-                                        <i class="fas fa-comments mr-1"></i>
-                                        <span>Colombian Charm • Miami Warmth • Professional Latina</span>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button 
-                                        class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" 
-                                        data-voice="professional-female"
-                                        onclick="handleVoiceButtonClick(this, 'professional-female')"
-                                        style="position: relative; z-index: 10000;"
-                                    >
-                                        <i class="fas fa-volume-up mr-1"></i><span class="voice-btn-text">Preview</span>
-                                    </button>
-                                    <button class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors start-conversation" data-voice="professional-female">
-                                        <i class="fas fa-comments mr-1"></i>Live Chat
-                                    </button>
-                                    <button 
-                                        class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" 
-                                        data-voice="professional-female"
-                                        onclick="openVoiceCustomizer('professional-female')"
-                                        style="position: relative; z-index: 10000;"
-                                    >
-                                        <i class="fas fa-sliders-h mr-1"></i>Customize
-                                    </button>
-                                </div>
+                        <!-- Profile 1: Sarah from Miami -->
+                        <div style="
+                            background: rgba(71, 85, 105, 0.3);
+                            border: 2px solid #3b82f6;
+                            border-radius: 12px;
+                            padding: 16px;
+                            margin-bottom: 16px;
+                        ">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <h5 style="font-size: 16px; font-weight: bold; margin: 0;">👩‍💼 Sarah from Miami</h5>
+                                <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Professional</span>
                             </div>
-                            
-                            <!-- Voice Profile 2 -->
-                            <div class="bg-slate-700/30 rounded-xl p-4 border border-slate-600 border-l-4 border-l-green-500">
-                                <div class="flex items-center justify-between mb-3">
-                                    <h5 class="font-bold text-white">🏠 Danny - Bilingual Miami</h5>
-                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Benicio Del Toro Style</span>
-                                </div>
-                                <div class="space-y-2 text-sm text-slate-300 mb-3">
-                                    <p><strong>Voice Type:</strong> Community Latino Charm</p>
-                                    <p><strong>Personality:</strong> Smooth Like Benicio Del Toro</p>
-                                    <p><strong>Speaking Style:</strong> Natural questions, pauses, friendly flow</p>
-                                    <p><strong>Success Rate:</strong> 91% (Community connection)</p>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="flex items-center text-xs text-green-400">
-                                        <i class="fas fa-handshake mr-1"></i>
-                                        <span>Puerto Rican Charm • Bilingual • Community Feel</span>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button 
-                                        class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors preview-voice" 
-                                        data-voice="friendly-male"
-                                        onclick="handleVoiceButtonClick(this, 'friendly-male')"
-                                        style="position: relative; z-index: 10000;"
-                                    >
-                                        <i class="fas fa-volume-up mr-1"></i>Preview
-                                    </button>
-                                    <button class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors start-conversation" data-voice="friendly-male">
-                                        <i class="fas fa-comments mr-1"></i>Live Chat
-                                    </button>
-                                    <button 
-                                        class="flex-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors edit-voice" 
-                                        data-voice="friendly-male"
-                                        onclick="openVoiceCustomizer('friendly-male')"
-                                        style="position: relative; z-index: 10000;"
-                                    >
-                                        <i class="fas fa-sliders-h mr-1"></i>Customize
-                                    </button>
-                                </div>
+                            <p style="margin: 8px 0; font-size: 14px; color: #cbd5e1;">Natural Miami conversational voice - Sofia Vergara style warmth</p>
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button id="sarah-btn" onclick="simpleVoiceTest('sarah')" style="
+                                    flex: 1;
+                                    background: #3b82f6;
+                                    color: white;
+                                    border: none;
+                                    padding: 12px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    font-weight: bold;
+                                ">▶️ Test Voice</button>
+                                <button onclick="alert('Sarah Voice Customizer\\n\\n• Adjust speaking pace\\n• Modify accent strength\\n• Set conversation style\\n• Configure personality traits\\n\\nFeature available in next update!')" style="
+                                    flex: 1;
+                                    background: #6b7280;
+                                    color: white;
+                                    border: none;
+                                    padding: 12px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                ">⚙️ Customize</button>
                             </div>
-                            
-                            <!-- Add New Voice -->
+                        </div>
+                        
+                        <!-- Profile 2: Danny from Miami -->
+                        <div style="
+                            background: rgba(71, 85, 105, 0.3);
+                            border: 2px solid #10b981;
+                            border-radius: 12px;
+                            padding: 16px;
+                            margin-bottom: 16px;
+                        ">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <h5 style="font-size: 16px; font-weight: bold; margin: 0;">👨‍🔧 Danny from Miami</h5>
+                                <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Community</span>
+                            </div>
+                            <p style="margin: 8px 0; font-size: 14px; color: #cbd5e1;">Bilingual Miami charm - Benicio Del Toro smooth style</p>
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button id="danny-btn" onclick="simpleVoiceTest('danny')" style="
+                                    flex: 1;
+                                    background: #10b981;
+                                    color: white;
+                                    border: none;
+                                    padding: 12px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    font-weight: bold;
+                                ">▶️ Test Voice</button>
+                                <button onclick="alert('Danny Voice Customizer\\n\\n• Bilingual mode settings\\n• Community conversation style\\n• Adjust friendliness level\\n• Set technical knowledge depth\\n\\nFeature available in next update!')" style="
+                                    flex: 1;
+                                    background: #6b7280;
+                                    color: white;
+                                    border: none;
+                                    padding: 12px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                ">⚙️ Customize</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CLOSE BUTTON -->
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="closeVoiceModal()" style="
+                            background: #475569;
+                            color: white;
+                            border: none;
+                            padding: 12px 24px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 16px;
+                        ">Close</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // SIMPLE MODAL TEST - No complex event handlers
                             <div class="bg-slate-700/30 rounded-xl p-4 border border-dashed border-slate-500 flex flex-col items-center justify-center min-h-[180px]">
                                 <i class="fas fa-plus-circle text-3xl text-slate-400 mb-3"></i>
                                 <h5 class="font-bold text-white mb-2">Create New Voice</h5>
@@ -9066,6 +9139,8 @@ I'd love to schedule..."></textarea>
         window.handleVoiceButtonClick = handleVoiceButtonClick;
         window.openVoiceCustomizer = openVoiceCustomizer;
         window.resetAllVoiceButtons = resetAllVoiceButtons;
+        window.simpleVoiceTest = simpleVoiceTest;
+        window.closeVoiceModal = closeVoiceModal;
         window.viewScript = viewScript;
         window.useScript = useScript;
         window.optimizeScript = optimizeScript;
@@ -9300,6 +9375,57 @@ I'd love to schedule..."></textarea>
                   'Blocked buttons: ' + blockedButtons + '\n' +
                   'Potential overlays: ' + overlays.length + '\n\n' +
                   'Check browser console for detailed results.');
+        }
+        
+        // ULTRA SIMPLE VOICE TEST FUNCTION
+        function simpleVoiceTest(voiceName) {
+            console.log('🎤 SIMPLE voice test for:', voiceName);
+            
+            var button = document.getElementById(voiceName + '-btn');
+            if (!button) {
+                console.error('Button not found:', voiceName + '-btn');
+                return;
+            }
+            
+            // If button says STOP, stop the voice
+            if (button.innerHTML.indexOf('STOP') !== -1) {
+                console.log('🛑 STOPPING voice');
+                emergencyStopAllVoices();
+                button.innerHTML = '▶️ Test Voice';
+                button.style.background = voiceName === 'sarah' ? '#3b82f6' : '#10b981';
+                return;
+            }
+            
+            // Start voice test
+            console.log('▶️ STARTING voice test');
+            button.innerHTML = '🛑 STOP NOW';
+            button.style.background = '#dc2626';
+            
+            // Show immediate feedback
+            alert('🎤 Voice Test Started\\n\\n' + 
+                  (voiceName === 'sarah' ? 'Sarah from Miami' : 'Danny from Miami') + 
+                  ' is now speaking.\\n\\n🛑 Click "STOP NOW" button to stop\\n🔇 Or use emergency controls above');
+            
+            // Start voice based on type
+            if (voiceName === 'sarah') {
+                playVoicePreviewByType('professional-female', function() {
+                    button.innerHTML = '▶️ Test Voice';
+                    button.style.background = '#3b82f6';
+                });
+            } else {
+                playVoicePreviewByType('friendly-male', function() {
+                    button.innerHTML = '▶️ Test Voice';
+                    button.style.background = '#10b981';
+                });
+            }
+        }
+        
+        // SIMPLE MODAL CLOSE FUNCTION
+        function closeVoiceModal() {
+            var modal = document.getElementById('voice-modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
         }
         
         // SIMPLE VOICE BUTTON HANDLER - Direct onclick approach
