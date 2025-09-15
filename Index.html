@@ -2139,8 +2139,10 @@ I'd love to schedule..."></textarea>
             // AI Voice Calling Buttons
             var startCallingBtn = document.getElementById('start-calling-btn');
             if (startCallingBtn) {
-                startCallingBtn.addEventListener('click', function() {
+                startCallingBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     console.log('📞 Start Calling Now button clicked');
+                    alert('📞 AI Voice Campaign Starting!\\n\\n🎯 Campaign Setup:\\n• AI Voice: Miami personalities (Sarah/Danny)\\n• Scripts: AI-optimized for HVAC\\n• Leads: Auto-dialing from your list\\n• Coaching: Real-time AI assistance\\n\\n🚀 Launching voice campaign now!');
                     startAiVoiceCampaign();
                 });
             }
@@ -2163,8 +2165,10 @@ I'd love to schedule..."></textarea>
             
             var manageVoicesBtn = document.getElementById('manage-voices-btn');
             if (manageVoicesBtn) {
-                manageVoicesBtn.addEventListener('click', function() {
+                manageVoicesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     console.log('🎤 Manage Voices button clicked');
+                    alert('🎤 Voice Management Access\\n\\nOpening AI Voice Management Modal...\\n\\n✅ Miami AI personalities available:\\n• Sarah - Professional female voice\\n• Danny - Friendly male voice\\n\\n🔧 Features:\\n• Test voice previews\\n• Customize speaking pace\\n• Configure personality traits');
                     showVoiceManagementModal();
                 });
             }
@@ -3687,7 +3691,10 @@ I'd love to schedule..."></textarea>
                 ">
                     <!-- Header -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 24px; font-weight: bold; margin: 0;">🎤 AI Voice Management</h3>
+                        <div>
+                            <h3 style="font-size: 24px; font-weight: bold; margin: 0;">🎤 AI Voice Management</h3>
+                            <p style="font-size: 14px; color: #94a3b8; margin: 4px 0 0 0;">Accessed from: AI Cold Calling → Voice Management</p>
+                        </div>
                         <button onclick="closeVoiceModal()" style="
                             background: #dc2626;
                             color: white;
@@ -3700,9 +3707,10 @@ I'd love to schedule..."></textarea>
                     </div>
                     
                     <!-- DIAGNOSTIC TEST SECTION -->
-                    <div style="background: #dc2626; padding: 12px; margin-bottom: 16px; border-radius: 8px; border: 2px solid #fbbf24;">
-                        <h4 style="color: white; margin: 0 0 8px 0; font-weight: bold;">🚨 DIAGNOSTIC TEST</h4>
-                        <button onclick="alert('🎉 SUCCESS! JavaScript is working in this modal!')" style="
+                    <div style="background: #dc2626; padding: 16px; margin-bottom: 16px; border-radius: 8px; border: 2px solid #fbbf24;">
+                        <h4 style="color: white; margin: 0 0 8px 0; font-weight: bold;">🚨 DIAGNOSTIC TEST - Try These First!</h4>
+                        <p style="color: #fbbf24; margin: 0 0 12px 0; font-size: 14px;">If voice buttons don't work, test these diagnostic buttons first:</p>
+                        <button onclick="alert('🎉 SUCCESS! JavaScript is working in this modal!\\n\\n✅ This confirms:\\n• Modal JavaScript execution works\\n• Browser allows popup alerts\\n• Event handlers are functional\\n\\nIf this works but voice buttons don\\'t, there\\'s a specific issue with voice functions.')" style="
                             background: #22c55e;
                             color: white;
                             border: none;
@@ -3711,8 +3719,9 @@ I'd love to schedule..."></textarea>
                             cursor: pointer;
                             font-weight: bold;
                             margin-right: 8px;
+                            margin-bottom: 8px;
                         ">TEST ALERT</button>
-                        <button onclick="console.log('🔧 Console test successful!'); document.getElementById('test-result').innerHTML = '✅ Console & DOM working!'" style="
+                        <button onclick="console.log('🔧 Console test successful!'); document.getElementById('test-result').innerHTML = '✅ Console & DOM working! Check browser console (F12) for logs.'" style="
                             background: #3b82f6;
                             color: white;
                             border: none;
@@ -3720,8 +3729,9 @@ I'd love to schedule..."></textarea>
                             border-radius: 4px;
                             cursor: pointer;
                             font-weight: bold;
+                            margin-bottom: 8px;
                         ">TEST CONSOLE</button>
-                        <div id="test-result" style="color: #fbbf24; margin-top: 8px; font-weight: bold;"></div>
+                        <div id="test-result" style="color: #fbbf24; margin-top: 8px; font-weight: bold; font-size: 14px;"></div>
                     </div>
                     
                     <div class="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl p-4 mb-6 border border-green-500/20">
