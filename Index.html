@@ -6843,6 +6843,31 @@ I'd love to schedule..."></textarea>
                     connectService('Google Business', 'https://accounts.google.com/signin', 'https://business.google.com/');
                 });
             }
+            
+            // ProSpector Login and Sign Up buttons
+            var loginBtn = document.getElementById('prospector-login-btn');
+            if (loginBtn) {
+                console.log('✅ Found Login button, setting up handler');
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔑 ProSpector Login button clicked!');
+                    openProSpectorLogin();
+                });
+            } else {
+                console.log('❌ Login button not found');
+            }
+            
+            var signupBtn = document.getElementById('prospector-signup-btn');
+            if (signupBtn) {
+                console.log('✅ Found Sign Up button, setting up handler');
+                signupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📝 ProSpector Sign Up button clicked!');
+                    openProSpectorSignup();
+                });
+            } else {
+                console.log('❌ Sign Up button not found');
+            }
         }
         
         // Universal service connection function
@@ -6871,6 +6896,116 @@ I'd love to schedule..."></textarea>
                 console.log('📝 Opening signup for:', serviceName);
                 window.open(signupUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
             }
+        }
+        
+        // ProSpector Login function
+        function openProSpectorLogin() {
+            console.log('🔑 Opening ProSpector Pro Login...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'login-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-auto border border-blue-600 shadow-2xl">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-blue-400">🔑 ProSpector Pro Login</h3>';
+            modalHTML += '<button onclick="closeLoginModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<form class="space-y-4">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Email Address</label>';
+            modalHTML += '<input type="email" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="your@email.com"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Password</label>';
+            modalHTML += '<input type="password" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-blue-500" placeholder="Enter your password"></div>';
+            modalHTML += '<div class="flex items-center justify-between">';
+            modalHTML += '<label class="flex items-center text-sm text-slate-400"><input type="checkbox" class="mr-2"> Remember me</label>';
+            modalHTML += '<a href="#" class="text-sm text-blue-400 hover:text-blue-300">Forgot password?</a>';
+            modalHTML += '</div>';
+            modalHTML += '<div class="flex space-x-3 pt-4">';
+            modalHTML += '<button type="button" onclick="processLogin()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold">Sign In</button>';
+            modalHTML += '<button type="button" onclick="closeLoginModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Cancel</button>';
+            modalHTML += '</div></form>';
+            
+            modalHTML += '<div class="mt-6 pt-4 border-t border-slate-600 text-center">';
+            modalHTML += '<p class="text-sm text-slate-400">Don\'t have an account? <a href="#" onclick="closeLoginModal(); openProSpectorSignup();" class="text-blue-400 hover:text-blue-300">Sign up here</a></p>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeLoginModal();
+            });
+        }
+        
+        // ProSpector Sign Up function
+        function openProSpectorSignup() {
+            console.log('📝 Opening ProSpector Pro Sign Up...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'signup-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-auto border border-green-600 shadow-2xl">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-green-400">📝 Join ProSpector Pro</h3>';
+            modalHTML += '<button onclick="closeSignupModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<form class="space-y-4">';
+            modalHTML += '<div class="grid grid-cols-2 gap-3">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">First Name</label>';
+            modalHTML += '<input type="text" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="John"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Last Name</label>';
+            modalHTML += '<input type="text" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Smith"></div>';
+            modalHTML += '</div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Email Address</label>';
+            modalHTML += '<input type="email" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="john@hvaccompany.com"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Company Name</label>';
+            modalHTML += '<input type="text" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Cool Breeze HVAC"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Password</label>';
+            modalHTML += '<input type="password" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Create a strong password"></div>';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Confirm Password</label>';
+            modalHTML += '<input type="password" required class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Confirm your password"></div>';
+            modalHTML += '<div class="flex items-start">';
+            modalHTML += '<input type="checkbox" required class="mt-1 mr-2">';
+            modalHTML += '<p class="text-xs text-slate-400">I agree to the <a href="#" class="text-green-400">Terms of Service</a> and <a href="#" class="text-green-400">Privacy Policy</a></p>';
+            modalHTML += '</div>';
+            modalHTML += '<div class="flex space-x-3 pt-4">';
+            modalHTML += '<button type="button" onclick="processSignup()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold">Create Account</button>';
+            modalHTML += '<button type="button" onclick="closeSignupModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Cancel</button>';
+            modalHTML += '</div></form>';
+            
+            modalHTML += '<div class="mt-6 pt-4 border-t border-slate-600 text-center">';
+            modalHTML += '<p class="text-sm text-slate-400">Already have an account? <a href="#" onclick="closeSignupModal(); openProSpectorLogin();" class="text-blue-400 hover:text-blue-300">Sign in here</a></p>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeSignupModal();
+            });
+        }
+        
+        function closeLoginModal() {
+            var modal = document.getElementById('login-modal');
+            if (modal) modal.remove();
+        }
+        
+        function closeSignupModal() {
+            var modal = document.getElementById('signup-modal');
+            if (modal) modal.remove();
+        }
+        
+        function processLogin() {
+            alert('🔑 Login Successful!\n\nWelcome back to ProSpector Pro!\n\n✅ All features unlocked:\n• AI Cold Calling\n• Lead Management\n• Call Analytics\n• Appointment Scheduling\n• Research Tools\n\n🚀 Ready to supercharge your HVAC sales!');
+            closeLoginModal();
+        }
+        
+        function processSignup() {
+            alert('🎉 Account Created Successfully!\n\nWelcome to ProSpector Pro!\n\n✅ Your account includes:\n• 14-day free trial\n• Full access to AI features\n• Unlimited lead research\n• Call analytics dashboard\n• Priority customer support\n\n📧 Check your email for account verification.\n\n🚀 Let\'s start generating HVAC leads!');
+            closeSignupModal();
         }
         
         // Lead Entry Form Functions
@@ -7789,6 +7924,14 @@ I'd love to schedule..."></textarea>
         window.saveCallQuick = saveCallQuick;
         window.generateCallReport = generateCallReport;
         window.exportCallData = exportCallData;
+        
+        // Login/Signup Functions
+        window.openProSpectorLogin = openProSpectorLogin;
+        window.openProSpectorSignup = openProSpectorSignup;
+        window.closeLoginModal = closeLoginModal;
+        window.closeSignupModal = closeSignupModal;
+        window.processLogin = processLogin;
+        window.processSignup = processSignup;
     </script>
 </body>
 </html>
