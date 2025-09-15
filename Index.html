@@ -921,7 +921,21 @@
                         </div>
                     </div>
                     
-                    <button id="manage-voices-btn-featured" onclick="console.log('🎤 Opening Voice Management Modal...'); showVoiceManagementModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
+                    <button id="manage-voices-btn-featured" onclick="
+                        // Define function inline if not available
+                        if (typeof showVoiceManagementModal === 'undefined') {
+                            console.log('🎤 Defining function inline...');
+                            window.showVoiceManagementModal = function() {
+                                console.log('🎤 Opening voice modal inline...');
+                                var modal = document.createElement('div');
+                                modal.id = 'voice-modal';
+                                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                                modal.innerHTML = '<div style=\"background: #1e293b; border-radius: 16px; padding: 24px; width: 100%; max-width: 600px; color: white;\"><div style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;\"><h3 style=\"font-size: 24px; font-weight: bold; margin: 0;\">🎤 Voice Management</h3><button onclick=\"document.body.removeChild(document.getElementById('voice-modal'));\" style=\"background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;\">✕</button></div><div style=\"text-align: center; padding: 40px; color: #94a3b8;\"><p>🎤 Voice Management System</p><p>Testing modal opening functionality...</p><button onclick=\"alert('Voice system working!')\" style=\"background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin: 10px;\">Test Alert</button></div></div>';
+                                document.body.appendChild(modal);
+                            };
+                        }
+                        showVoiceManagementModal();
+                    " class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
                         <i class="fas fa-sliders-h mr-3"></i>🎤 Open Voice Management
                     </button>
                 </div>
@@ -9273,13 +9287,21 @@ I'd love to schedule..."></textarea>
         window.muteAllAudio = muteAllAudio;
         window.showFloatingEmergencyStop = showFloatingEmergencyStop;
         window.diagnoseClickIssues = diagnoseClickIssues;
+        window.showEmergencyControls = showEmergencyControls;
+        window.hideEmergencyControls = hideEmergencyControls;
         
         // Voice Modal Functions
+        window.showVoiceManagementModal = showVoiceManagementModal;
+        window.closeVoiceModal = closeVoiceModal;
         window.handleVoiceButtonClick = handleVoiceButtonClick;
         window.openVoiceCustomizer = openVoiceCustomizer;
         window.resetAllVoiceButtons = resetAllVoiceButtons;
         window.simpleVoiceTest = simpleVoiceTest;
-        window.closeVoiceModal = closeVoiceModal;
+        
+        // AI Cold Calling Functions
+        window.startCallingCampaign = startCallingCampaign;
+        window.showAnalyticsDashboard = showAnalyticsDashboard;
+        window.startVoiceTraining = startVoiceTraining;
         window.viewScript = viewScript;
         window.useScript = useScript;
         window.optimizeScript = optimizeScript;
