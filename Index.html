@@ -1062,16 +1062,40 @@
                         <h3 class="text-xl font-bold gradient-text mb-4">Upcoming Appointments</h3>
                         <div class="space-y-3">
                             <div class="p-3 bg-slate-800/30 rounded-lg">
-                                <p class="text-white font-medium">HVAC System Consultation</p>
-                                <p class="text-sm text-slate-400">Today, 2:30 PM • John Smith</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <p class="text-white font-medium">HVAC System Consultation</p>
+                                        <p class="text-sm text-slate-400">Today, 2:30 PM • John Smith</p>
+                                    </div>
+                                    <button onclick="researchProspect('John Smith', 'HVAC System Consultation', 'Today, 2:30 PM')" 
+                                            class="ml-3 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors">
+                                        <i class="fas fa-search mr-1"></i>AI Research
+                                    </button>
+                                </div>
                             </div>
                             <div class="p-3 bg-slate-800/30 rounded-lg">
-                                <p class="text-white font-medium">Maintenance Quote Meeting</p>
-                                <p class="text-sm text-slate-400">Tomorrow, 10:00 AM • Sarah Johnson</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <p class="text-white font-medium">Maintenance Quote Meeting</p>
+                                        <p class="text-sm text-slate-400">Tomorrow, 10:00 AM • Sarah Johnson</p>
+                                    </div>
+                                    <button onclick="researchProspect('Sarah Johnson', 'Maintenance Quote Meeting', 'Tomorrow, 10:00 AM')" 
+                                            class="ml-3 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors">
+                                        <i class="fas fa-search mr-1"></i>AI Research
+                                    </button>
+                                </div>
                             </div>
                             <div class="p-3 bg-slate-800/30 rounded-lg">
-                                <p class="text-white font-medium">Follow-up Call</p>
-                                <p class="text-sm text-slate-400">Friday, 3:15 PM • Mike Wilson</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <p class="text-white font-medium">Follow-up Call</p>
+                                        <p class="text-sm text-slate-400">Friday, 3:15 PM • Mike Wilson</p>
+                                    </div>
+                                    <button onclick="researchProspect('Mike Wilson', 'Follow-up Call', 'Friday, 3:15 PM')" 
+                                            class="ml-3 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors">
+                                        <i class="fas fa-search mr-1"></i>AI Research
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1102,6 +1126,13 @@
                                 <p class="text-sm text-slate-400 mb-3">Enrich lead data with email, phone, social profiles, and job details.</p>
                                 <button onclick="openEnrichmentModal()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
                                     Enrich Contacts
+                                </button>
+                            </div>
+                            <div class="p-4 bg-slate-800/30 rounded-lg border-l-4 border-purple-500">
+                                <h4 class="text-white font-medium mb-2">🤖 AI Prospect Research</h4>
+                                <p class="text-sm text-slate-400 mb-3">Comprehensive AI-powered research on your appointment prospects including background, social media, facility info, and preparation insights.</p>
+                                <button onclick="openAIResearchDashboard()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors">
+                                    <i class="fas fa-brain mr-2"></i>AI Research Dashboard
                                 </button>
                             </div>
                         </div>
@@ -7209,6 +7240,217 @@ I'd love to schedule..."></textarea>
             closeEnrichmentModal();
         }
         
+        // AI Prospect Research Functions
+        function researchProspect(name, meeting, time) {
+            console.log('Starting AI research for:', name);
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'ai-research-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-4xl mx-auto border border-purple-600 shadow-2xl max-h-screen overflow-y-auto">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-purple-400">🤖 AI Prospect Research: ' + name + '</h3>';
+            modalHTML += '<button onclick="closeAIResearchModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mb-6">';
+            modalHTML += '<h4 class="text-lg font-bold text-purple-300 mb-2">📅 Appointment Details</h4>';
+            modalHTML += '<p class="text-white"><strong>Meeting:</strong> ' + meeting + '</p>';
+            modalHTML += '<p class="text-slate-300"><strong>Scheduled:</strong> ' + time + '</p>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">';
+            
+            // Professional Background
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-blue-400 mb-3">👤 Professional Background</h4>';
+            modalHTML += '<div class="space-y-2 text-sm">';
+            modalHTML += '<p><strong>Current Role:</strong> Facilities Manager at HVAC Solutions Inc.</p>';
+            modalHTML += '<p><strong>Experience:</strong> 15+ years in facilities management</p>';
+            modalHTML += '<p><strong>Previous Roles:</strong></p>';
+            modalHTML += '<ul class="ml-4 text-slate-300">';
+            modalHTML += '<li>• Senior Technician at Climate Control Pro (2015-2020)</li>';
+            modalHTML += '<li>• HVAC Specialist at BuildTech Services (2010-2015)</li>';
+            modalHTML += '</ul>';
+            modalHTML += '<p><strong>Certifications:</strong> EPA 608 Universal, NATE Certified</p>';
+            modalHTML += '</div></div>';
+            
+            // Facility Information  
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-green-400 mb-3">🏢 Facility Intelligence</h4>';
+            modalHTML += '<div class="space-y-2 text-sm">';
+            modalHTML += '<p><strong>Building:</strong> 50,000 sq ft office complex</p>';
+            modalHTML += '<p><strong>HVAC Systems:</strong></p>';
+            modalHTML += '<ul class="ml-4 text-slate-300">';
+            modalHTML += '<li>• 5x Carrier rooftop units (installed 2018)</li>';
+            modalHTML += '<li>• VRV system for executive floors</li>';
+            modalHTML += '<li>• Building automation system (Honeywell)</li>';
+            modalHTML += '</ul>';
+            modalHTML += '<p><strong>Recent Issues:</strong> High energy costs, inconsistent temperatures</p>';
+            modalHTML += '<p><strong>Budget Authority:</strong> Up to $25,000 for maintenance/repairs</p>';
+            modalHTML += '</div></div>';
+            
+            // Social Media & Online Presence
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-yellow-400 mb-3">📱 Social Media & Online Presence</h4>';
+            modalHTML += '<div class="space-y-2 text-sm">';
+            modalHTML += '<p><strong>LinkedIn:</strong> Active poster about energy efficiency</p>';
+            modalHTML += '<p><strong>Recent Posts:</strong></p>';
+            modalHTML += '<ul class="ml-4 text-slate-300">';
+            modalHTML += '<li>• "Struggling with HVAC efficiency this summer..." (2 days ago)</li>';
+            modalHTML += '<li>• Shared article on preventive maintenance (1 week ago)</li>';
+            modalHTML += '</ul>';
+            modalHTML += '<p><strong>Professional Networks:</strong> BOMA, ASHRAE member</p>';
+            modalHTML += '<p><strong>Online Reviews:</strong> Company rated 4.2/5 for facility management</p>';
+            modalHTML += '</div></div>';
+            
+            // AI Preparation Insights
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-red-400 mb-3">🎯 AI Preparation Insights</h4>';
+            modalHTML += '<div class="space-y-2 text-sm">';
+            modalHTML += '<p><strong>Key Pain Points:</strong></p>';
+            modalHTML += '<ul class="ml-4 text-slate-300">';
+            modalHTML += '<li>• Rising energy costs (mentioned in recent LinkedIn post)</li>';
+            modalHTML += '<li>• Equipment aging (rooftop units are 6 years old)</li>';
+            modalHTML += '<li>• Temperature control issues</li>';
+            modalHTML += '</ul>';
+            modalHTML += '<p><strong>Recommended Approach:</strong></p>';
+            modalHTML += '<ul class="ml-4 text-green-300">';
+            modalHTML += '<li>• Lead with energy efficiency solutions</li>';
+            modalHTML += '<li>• Mention preventive maintenance (his interest area)</li>';
+            modalHTML += '<li>• Reference ASHRAE standards (he\'s a member)</li>';
+            modalHTML += '<li>• Prepare ROI calculations for energy savings</li>';
+            modalHTML += '</ul>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '</div>';
+            
+            // Action Buttons
+            modalHTML += '<div class="flex space-x-3 pt-4 border-t border-slate-600">';
+            modalHTML += '<button onclick="generateTalkingPoints(\'' + name + '\')" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-lightbulb mr-2"></i>Generate Talking Points</button>';
+            modalHTML += '<button onclick="createPreMeetingBrief(\'' + name + '\')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-file-alt mr-2"></i>Pre-Meeting Brief</button>';
+            modalHTML += '<button onclick="closeAIResearchModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Close</button>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeAIResearchModal();
+            });
+        }
+        
+        function openAIResearchDashboard() {
+            console.log('Opening AI Research Dashboard...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'ai-dashboard-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-5xl mx-auto border border-purple-600 shadow-2xl max-h-screen overflow-y-auto">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-purple-400">🤖 AI Research Dashboard</h3>';
+            modalHTML += '<button onclick="closeAIDashboardModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">';
+            modalHTML += '<div class="bg-purple-900/30 border border-purple-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-purple-300">Research Queue</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">3</p>';
+            modalHTML += '<p class="text-sm text-slate-400">Prospects to research</p>';
+            modalHTML += '</div>';
+            modalHTML += '<div class="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-blue-300">Completed</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">12</p>';
+            modalHTML += '<p class="text-sm text-slate-400">Research reports</p>';
+            modalHTML += '</div>';
+            modalHTML += '<div class="bg-green-900/30 border border-green-500/50 rounded-lg p-4 text-center">';
+            modalHTML += '<h4 class="text-lg font-bold text-green-300">Success Rate</h4>';
+            modalHTML += '<p class="text-3xl font-bold text-white mt-2">94%</p>';
+            modalHTML += '<p class="text-sm text-slate-400">Meeting success</p>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '<div class="bg-slate-700/30 rounded-lg p-6">';
+            modalHTML += '<h4 class="text-xl font-bold text-white mb-4">🎯 AI Research Capabilities</h4>';
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+            modalHTML += '<div><h5 class="font-bold text-blue-400 mb-2">Professional Background</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• Current role and responsibilities</li>';
+            modalHTML += '<li>• Previous work history</li>';
+            modalHTML += '<li>• Industry certifications</li>';
+            modalHTML += '<li>• Professional achievements</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '<div><h5 class="font-bold text-green-400 mb-2">Facility Intelligence</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• Building specifications</li>';
+            modalHTML += '<li>• Current HVAC systems</li>';
+            modalHTML += '<li>• Maintenance history</li>';
+            modalHTML += '<li>• Energy consumption patterns</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '<div><h5 class="font-bold text-yellow-400 mb-2">Social Media Analysis</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• LinkedIn posts and activity</li>';
+            modalHTML += '<li>• Professional network connections</li>';
+            modalHTML += '<li>• Industry forum participation</li>';
+            modalHTML += '<li>• Recent concerns or interests</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '<div><h5 class="font-bold text-red-400 mb-2">Strategic Insights</h5>';
+            modalHTML += '<ul class="text-sm text-slate-300 space-y-1">';
+            modalHTML += '<li>• Pain point identification</li>';
+            modalHTML += '<li>• Decision-making authority</li>';
+            modalHTML += '<li>• Budget and timeline insights</li>';
+            modalHTML += '<li>• Personalized talking points</li>';
+            modalHTML += '</ul></div>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '<div class="flex space-x-3 pt-6 border-t border-slate-600">';
+            modalHTML += '<button onclick="startBulkResearch()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-robot mr-2"></i>Start Bulk AI Research</button>';
+            modalHTML += '<button onclick="viewResearchHistory()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-history mr-2"></i>Research History</button>';
+            modalHTML += '<button onclick="closeAIDashboardModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Close</button>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeAIDashboardModal();
+            });
+        }
+        
+        function closeAIResearchModal() {
+            var modal = document.getElementById('ai-research-modal');
+            if (modal) modal.remove();
+        }
+        
+        function closeAIDashboardModal() {
+            var modal = document.getElementById('ai-dashboard-modal');
+            if (modal) modal.remove();
+        }
+        
+        function generateTalkingPoints(name) {
+            alert('💡 AI Talking Points Generated!\n\n✅ Key Points for ' + name + ':\n• Lead with energy efficiency (his main concern)\n• Reference ASHRAE standards (professional interest)\n• Mention preventive maintenance ROI\n• Prepare cost-per-sq-ft calculations\n• Discuss building automation integration\n\n🎯 This would generate personalized talking points in the full application.');
+            closeAIResearchModal();
+        }
+        
+        function createPreMeetingBrief(name) {
+            alert('📄 Pre-Meeting Brief Created!\n\n✅ Comprehensive brief for ' + name + ' includes:\n• Executive summary of research findings\n• Facility overview and current systems\n• Key pain points and opportunities\n• Recommended solutions and pricing\n• Conversation starters and questions\n\n📧 This would be emailed to you in the full application.');
+            closeAIResearchModal();
+        }
+        
+        function startBulkResearch() {
+            alert('🤖 Bulk AI Research Started!\n\n✅ Initiating comprehensive research for all upcoming appointments:\n• John Smith (HVAC System Consultation)\n• Sarah Johnson (Maintenance Quote Meeting)\n• Mike Wilson (Follow-up Call)\n\n📊 Research will complete in 5-10 minutes and you\'ll be notified when ready.');
+            closeAIDashboardModal();
+        }
+        
+        function viewResearchHistory() {
+            alert('📚 Research History\n\n✅ Recent AI research completed:\n• Michael Chen (Energy Systems Corp) - 92% match\n• Lisa Rodriguez (Facility Pro Inc) - 96% match\n• David Park (BuildSmart Solutions) - 89% match\n\n🎯 This would show detailed research history in the full application.');
+        }
+        
         // Make functions globally available
         window.openScheduleModal = openScheduleModal;
         window.closeModal = closeModal;
@@ -7219,6 +7461,14 @@ I'd love to schedule..."></textarea>
         window.closeEnrichmentModal = closeEnrichmentModal;
         window.startResearch = startResearch;
         window.startEnrichment = startEnrichment;
+        window.researchProspect = researchProspect;
+        window.openAIResearchDashboard = openAIResearchDashboard;
+        window.closeAIResearchModal = closeAIResearchModal;
+        window.closeAIDashboardModal = closeAIDashboardModal;
+        window.generateTalkingPoints = generateTalkingPoints;
+        window.createPreMeetingBrief = createPreMeetingBrief;
+        window.startBulkResearch = startBulkResearch;
+        window.viewResearchHistory = viewResearchHistory;
     </script>
 </body>
 </html>
