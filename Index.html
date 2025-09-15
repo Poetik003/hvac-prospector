@@ -926,13 +926,160 @@
                         var existing = document.getElementById('voice-modal-simple');
                         if (existing) existing.remove();
                         
-                        // Create modal
+                        // Create modal backdrop
                         var modal = document.createElement('div');
                         modal.id = 'voice-modal-simple';
                         modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;';
                         
-                        modal.innerHTML = '<div style=\"background: #1e293b; border-radius: 16px; padding: 24px; width: 100%; max-width: 600px; color: white; border: 2px solid #475569; max-height: 90vh; overflow-y: auto;\"><div style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;\"><h3 style=\"font-size: 24px; font-weight: bold; margin: 0;\">🎤 AI Voice Management</h3><button onclick=\"document.getElementById(\\'voice-modal-simple\\').remove();\" style=\"background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 18px;\">✕</button></div><h4 style=\"font-size: 18px; font-weight: bold; margin-bottom: 16px;\">🎭 Miami AI Personalities</h4><div style=\"background: rgba(59, 130, 246, 0.15); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 20px;\"><div style=\"margin-bottom: 12px;\"><h5 style=\"font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #60a5fa;\">👩‍💼 Sarah from Miami</h5><span style=\"background: #22c55e; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;\">Professional</span></div><p style=\"margin: 12px 0 20px 0; font-size: 14px; color: #cbd5e1; line-height: 1.4;\">Sofia Vergara-style warmth • Perfect for B2B calls</p><div style=\"display: block; width: 100%;\"><button onclick=\"alert(\\'🎤 SARAH VOICE TEST\\\\n\\\\nSample: Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\\\\n\\\\n✅ Professional Female Voice\\\\n✅ Sofia Vergara warmth\\\\n✅ Ready for campaigns!\\');\" style=\"display: block; width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;\">▶️ Test Sarah Voice</button><button onclick=\"alert(\\'⚙️ SARAH CUSTOMIZER\\\\n\\\\n• Speaking pace: Normal/Fast/Slow\\\\n• Accent strength: Miami subtle\\\\n• Conversation style: Professional friendly\\\\n• Personality: Sofia Vergara warmth\\\\n\\\\nCustomization coming soon!\\');\" style=\"display: block; width: 100%; background: #6b7280; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;\">⚙️ Customize Sarah</button></div></div><div style=\"background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 20px;\"><div style=\"margin-bottom: 12px;\"><h5 style=\"font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #34d399;\">👨‍🔧 Danny from Miami</h5><span style=\"background: #f59e0b; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;\">Community</span></div><p style=\"margin: 12px 0 20px 0; font-size: 14px; color: #cbd5e1; line-height: 1.4;\">Benicio Del Toro charm • Great for community outreach</p><div style=\"display: block; width: 100%;\"><button onclick=\"alert(\\'🎤 DANNY VOICE TEST\\\\n\\\\nSample: ¡Oye! Danny here from ProSpector Pro. How you been, my friend?\\\\n\\\\n✅ Bilingual Male Voice\\\\n✅ Benicio Del Toro style\\\\n✅ Ready for campaigns!\\');\" style=\"display: block; width: 100%; background: #10b981; color: white; border: none; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;\">▶️ Test Danny Voice</button><button onclick=\"alert(\\'⚙️ DANNY CUSTOMIZER\\\\n\\\\n• Bilingual mode: English/Spanish mix\\\\n• Conversation style: Community friendly\\\\n• Friendliness level: Warm and enthusiastic\\\\n• Technical depth: HVAC knowledge\\\\n\\\\nCustomization coming soon!\\');\" style=\"display: block; width: 100%; background: #6b7280; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;\">⚙️ Customize Danny</button></div></div><div style=\"background: rgba(220, 38, 38, 0.1); border: 2px solid #dc2626; border-radius: 12px; padding: 20px; margin-bottom: 20px;\"><h4 style=\"margin: 0 0 16px 0; font-size: 18px; font-weight: bold; color: #fca5a5;\">⚠️ EMERGENCY CONTROLS</h4><div style=\"display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;\"><button onclick=\"alert(\\'🛑 EMERGENCY STOP ACTIVATED!\\\\n\\\\nAll voice playback stopped immediately!\\\\nAudio streams terminated!\\');\" style=\"background: #dc2626; color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;\">🛑 STOP ALL</button><button onclick=\"alert(\\'🔇 MUTE ALL ACTIVATED!\\\\n\\\\nAll audio muted immediately!\\\\nVolume set to 0%!\\');\" style=\"background: #ea580c; color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;\">🔇 MUTE</button><button onclick=\"if(confirm(\\'🔄 RELOAD PAGE?\\\\n\\\\nThis will refresh the page and stop all activity.\\\\n\\\\nContinue?\\')) window.location.reload();\" style=\"background: #7c2d12; color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;\">🔄 RELOAD</button></div></div><div style=\"text-align: center; padding: 20px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);\"><div style=\"margin-bottom: 8px;\"><span style=\"font-size: 24px;\">✅</span></div><h4 style=\"margin: 8px 0 4px 0; font-size: 16px; font-weight: bold; color: #22c55e;\">Voice Management Modal Working!</h4><p style=\"font-size: 13px; color: #94a3b8; margin: 8px 0 0 0;\">All buttons above should be fully functional • Try clicking them!</p></div></div>';
+                        // Create modal content
+                        var content = document.createElement('div');
+                        content.style.cssText = 'background: #1e293b; border-radius: 16px; padding: 24px; width: 100%; max-width: 600px; color: white; border: 2px solid #475569; max-height: 90vh; overflow-y: auto;';
                         
+                        // Header
+                        var header = document.createElement('div');
+                        header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;';
+                        
+                        var title = document.createElement('h3');
+                        title.style.cssText = 'font-size: 24px; font-weight: bold; margin: 0; color: white;';
+                        title.textContent = '🎤 AI Voice Management';
+                        
+                        var closeBtn = document.createElement('button');
+                        closeBtn.style.cssText = 'background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 18px;';
+                        closeBtn.textContent = '✕';
+                        closeBtn.onclick = function() { document.getElementById('voice-modal-simple').remove(); };
+                        
+                        header.appendChild(title);
+                        header.appendChild(closeBtn);
+                        
+                        // Personalities title
+                        var personalitiesTitle = document.createElement('h4');
+                        personalitiesTitle.style.cssText = 'font-size: 18px; font-weight: bold; margin-bottom: 16px; color: white;';
+                        personalitiesTitle.textContent = '🎭 Miami AI Personalities';
+                        
+                        // Sarah section
+                        var sarahSection = document.createElement('div');
+                        sarahSection.style.cssText = 'background: rgba(59, 130, 246, 0.15); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 20px;';
+                        
+                        var sarahTitle = document.createElement('h5');
+                        sarahTitle.style.cssText = 'font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #60a5fa;';
+                        sarahTitle.textContent = '👩‍💼 Sarah from Miami';
+                        
+                        var sarahBadge = document.createElement('span');
+                        sarahBadge.style.cssText = 'background: #22c55e; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;';
+                        sarahBadge.textContent = 'Professional';
+                        
+                        var sarahDesc = document.createElement('p');
+                        sarahDesc.style.cssText = 'margin: 12px 0 20px 0; font-size: 14px; color: #cbd5e1; line-height: 1.4;';
+                        sarahDesc.textContent = 'Sofia Vergara-style warmth • Perfect for B2B calls';
+                        
+                        var sarahTestBtn = document.createElement('button');
+                        sarahTestBtn.style.cssText = 'display: block; width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;';
+                        sarahTestBtn.textContent = '▶️ Test Sarah Voice';
+                        sarahTestBtn.onclick = function() { alert('🎤 SARAH VOICE TEST\\n\\nSample: Hey! This is Sarah from ProSpector Pro down in Miami. How is everything going with you today?\\n\\n✅ Professional Female Voice\\n✅ Sofia Vergara warmth\\n✅ Ready for campaigns!'); };
+                        
+                        var sarahCustomBtn = document.createElement('button');
+                        sarahCustomBtn.style.cssText = 'display: block; width: 100%; background: #6b7280; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;';
+                        sarahCustomBtn.textContent = '⚙️ Customize Sarah';
+                        sarahCustomBtn.onclick = function() { alert('⚙️ SARAH CUSTOMIZER\\n\\n• Speaking pace: Normal/Fast/Slow\\n• Accent strength: Miami subtle\\n• Conversation style: Professional friendly\\n• Personality: Sofia Vergara warmth\\n\\nCustomization coming soon!'); };
+                        
+                        sarahSection.appendChild(sarahTitle);
+                        sarahSection.appendChild(sarahBadge);
+                        sarahSection.appendChild(sarahDesc);
+                        sarahSection.appendChild(sarahTestBtn);
+                        sarahSection.appendChild(sarahCustomBtn);
+                        
+                        // Danny section
+                        var dannySection = document.createElement('div');
+                        dannySection.style.cssText = 'background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 20px;';
+                        
+                        var dannyTitle = document.createElement('h5');
+                        dannyTitle.style.cssText = 'font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #34d399;';
+                        dannyTitle.textContent = '👨‍🔧 Danny from Miami';
+                        
+                        var dannyBadge = document.createElement('span');
+                        dannyBadge.style.cssText = 'background: #f59e0b; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;';
+                        dannyBadge.textContent = 'Community';
+                        
+                        var dannyDesc = document.createElement('p');
+                        dannyDesc.style.cssText = 'margin: 12px 0 20px 0; font-size: 14px; color: #cbd5e1; line-height: 1.4;';
+                        dannyDesc.textContent = 'Benicio Del Toro charm • Great for community outreach';
+                        
+                        var dannyTestBtn = document.createElement('button');
+                        dannyTestBtn.style.cssText = 'display: block; width: 100%; background: #10b981; color: white; border: none; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;';
+                        dannyTestBtn.textContent = '▶️ Test Danny Voice';
+                        dannyTestBtn.onclick = function() { alert('🎤 DANNY VOICE TEST\\n\\nSample: ¡Oye! Danny here from ProSpector Pro. How you been, my friend?\\n\\n✅ Bilingual Male Voice\\n✅ Benicio Del Toro style\\n✅ Ready for campaigns!'); };
+                        
+                        var dannyCustomBtn = document.createElement('button');
+                        dannyCustomBtn.style.cssText = 'display: block; width: 100%; background: #6b7280; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;';
+                        dannyCustomBtn.textContent = '⚙️ Customize Danny';
+                        dannyCustomBtn.onclick = function() { alert('⚙️ DANNY CUSTOMIZER\\n\\n• Bilingual mode: English/Spanish mix\\n• Conversation style: Community friendly\\n• Friendliness level: Warm and enthusiastic\\n• Technical depth: HVAC knowledge\\n\\nCustomization coming soon!'); };
+                        
+                        dannySection.appendChild(dannyTitle);
+                        dannySection.appendChild(dannyBadge);
+                        dannySection.appendChild(dannyDesc);
+                        dannySection.appendChild(dannyTestBtn);
+                        dannySection.appendChild(dannyCustomBtn);
+                        
+                        // Emergency section
+                        var emergencySection = document.createElement('div');
+                        emergencySection.style.cssText = 'background: rgba(220, 38, 38, 0.1); border: 2px solid #dc2626; border-radius: 12px; padding: 20px; margin-bottom: 20px;';
+                        
+                        var emergencyTitle = document.createElement('h4');
+                        emergencyTitle.style.cssText = 'margin: 0 0 16px 0; font-size: 18px; font-weight: bold; color: #fca5a5;';
+                        emergencyTitle.textContent = '⚠️ EMERGENCY CONTROLS';
+                        
+                        var emergencyBtns = document.createElement('div');
+                        emergencyBtns.style.cssText = 'display: flex; gap: 10px;';
+                        
+                        var stopBtn = document.createElement('button');
+                        stopBtn.style.cssText = 'flex: 1; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;';
+                        stopBtn.textContent = '🛑 STOP ALL';
+                        stopBtn.onclick = function() { alert('🛑 EMERGENCY STOP ACTIVATED!\\n\\nAll voice playback stopped immediately!\\nAudio streams terminated!'); };
+                        
+                        var muteBtn = document.createElement('button');
+                        muteBtn.style.cssText = 'flex: 1; background: #ea580c; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;';
+                        muteBtn.textContent = '🔇 MUTE';
+                        muteBtn.onclick = function() { alert('🔇 MUTE ALL ACTIVATED!\\n\\nAll audio muted immediately!\\nVolume set to 0%!'); };
+                        
+                        var reloadBtn = document.createElement('button');
+                        reloadBtn.style.cssText = 'flex: 1; background: #7c2d12; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;';
+                        reloadBtn.textContent = '🔄 RELOAD';
+                        reloadBtn.onclick = function() { if(confirm('🔄 RELOAD PAGE?\\n\\nThis will refresh the page and stop all activity.\\n\\nContinue?')) window.location.reload(); };
+                        
+                        emergencyBtns.appendChild(stopBtn);
+                        emergencyBtns.appendChild(muteBtn);
+                        emergencyBtns.appendChild(reloadBtn);
+                        emergencySection.appendChild(emergencyTitle);
+                        emergencySection.appendChild(emergencyBtns);
+                        
+                        // Status section
+                        var statusSection = document.createElement('div');
+                        statusSection.style.cssText = 'text-align: center; padding: 20px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);';
+                        
+                        var statusIcon = document.createElement('div');
+                        statusIcon.style.cssText = 'margin-bottom: 8px; font-size: 24px;';
+                        statusIcon.textContent = '✅';
+                        
+                        var statusTitle = document.createElement('h4');
+                        statusTitle.style.cssText = 'margin: 8px 0 4px 0; font-size: 16px; font-weight: bold; color: #22c55e;';
+                        statusTitle.textContent = 'Voice Management Modal Working!';
+                        
+                        var statusDesc = document.createElement('p');
+                        statusDesc.style.cssText = 'font-size: 13px; color: #94a3b8; margin: 8px 0 0 0;';
+                        statusDesc.textContent = 'All buttons above should be fully functional • Try clicking them!';
+                        
+                        statusSection.appendChild(statusIcon);
+                        statusSection.appendChild(statusTitle);
+                        statusSection.appendChild(statusDesc);
+                        
+                        // Assemble modal
+                        content.appendChild(header);
+                        content.appendChild(personalitiesTitle);
+                        content.appendChild(sarahSection);
+                        content.appendChild(dannySection);
+                        content.appendChild(emergencySection);
+                        content.appendChild(statusSection);
+                        modal.appendChild(content);
                         document.body.appendChild(modal);
                     " class="w-full bg-indigo-600 hover:bg-indigo-700 px-6 py-4 rounded-xl text-white font-bold text-lg transition-colors shadow-lg">
                         <i class="fas fa-sliders-h mr-3"></i>🎤 Open Voice Management
