@@ -3192,33 +3192,47 @@ I'd love to schedule..."></textarea>
                 }
             });
             
-            // Voice preview handler with floating stop button
+            // Voice preview handler with toggle Play/Stop functionality
             modal.querySelector('#preview-voice-btn').addEventListener('click', function() {
+                var playBtn = modal.querySelector('#preview-voice-btn');
+                var stopBtn = modal.querySelector('#stop-voice-btn');
+                
+                // Check if voice is currently playing (button shows stop state)
+                if (playBtn.innerHTML.includes('Stop') || playBtn.innerHTML.includes('Speaking')) {
+                    // Currently playing - stop it
+                    stopCurrentVoice();
+                    playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
+                    playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    stopBtn.classList.add('hidden');
+                    hideFloatingStopButton();
+                    return;
+                }
+                
                 var voiceType = modal.querySelector('#ai-voice-type').value;
                 var pace = modal.querySelector('#speaking-pace').value;
                 var tone = modal.querySelector('#voice-tone').value;
                 var accent = modal.querySelector('#voice-accent').value;
                 
-                // Stop any currently playing voice first
-                stopCurrentVoice();
+                // Not playing - start playing and change to stop button
+                playBtn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop Voice';
+                playBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                playBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                playBtn.disabled = false; // Keep enabled so user can click to stop
                 
-                // Update button states during preview
-                var playBtn = modal.querySelector('#preview-voice-btn');
-                var stopBtn = modal.querySelector('#stop-voice-btn');
-                var originalText = playBtn.innerHTML;
+                // Hide the separate stop button since main button now handles stopping
+                stopBtn.classList.add('hidden');
                 
-                playBtn.innerHTML = '<i class="fas fa-volume-up fa-pulse mr-1"></i>Speaking...';
-                playBtn.disabled = true;
-                stopBtn.classList.remove('hidden');
-                
-                // Show floating stop button for easy access
+                // Show floating stop button for additional access
                 showFloatingStopButton();
                 
                 // Play real AI voice preview
                 playVoicePreview(voiceType, pace, tone, accent, function() {
-                    playBtn.innerHTML = originalText;
+                    // Reset button when voice finishes naturally
+                    playBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
+                    playBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    playBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
                     playBtn.disabled = false;
-                    stopBtn.classList.add('hidden');
                     hideFloatingStopButton();
                 });
             });
@@ -3745,37 +3759,41 @@ I'd love to schedule..."></textarea>
                 }
             });
             
-            // Voice preview handlers with stop functionality
+            // Voice preview handlers with toggle Play/Stop functionality
             modal.querySelectorAll('.preview-voice').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                    // If voice is currently playing, stop it
-                    if (btn.innerHTML.includes('Speaking') || btn.innerHTML.includes('Stop')) {
+                    var voiceType = btn.getAttribute('data-voice');
+                    
+                    // Check if voice is currently playing (button shows stop state)
+                    if (btn.innerHTML.includes('Stop') || btn.innerHTML.includes('Speaking')) {
+                        // Currently playing - stop it
                         stopCurrentVoice();
+                        btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                        btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        hideFloatingStopButton();
                         return;
                     }
                     
-                    var voiceType = btn.getAttribute('data-voice');
-                    var originalText = btn.innerHTML;
-                    
-                    // Stop any currently playing voice first
+                    // Not playing - stop any other voice and start this one
                     stopCurrentVoice();
                     
-                    // Update button to show it's playing with stop option
+                    // Change button to stop state immediately
                     btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
-                    btn.disabled = false;
                     btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                     btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                    btn.disabled = false; // Keep enabled for stopping
                     
-                    // Show floating stop button
+                    // Show floating stop button for additional access
                     showFloatingStopButton();
                     
                     // Play real voice preview for the specific voice type
                     playVoicePreviewByType(voiceType, function() {
-                        // Reset button when voice finishes
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
+                        // Reset button when voice finishes naturally
+                        btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
                         btn.classList.remove('bg-red-600', 'hover:bg-red-700');
                         btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        btn.disabled = false;
                         hideFloatingStopButton();
                     });
                 });
@@ -5674,10 +5692,14 @@ I'd love to schedule..."></textarea>
             // Reset main preview voice button
             var previewBtn = document.getElementById('preview-voice-btn');
             var stopBtn = document.getElementById('stop-voice-btn');
-            if (previewBtn && stopBtn) {
+            if (previewBtn) {
                 previewBtn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview Voice';
                 previewBtn.disabled = false;
-                stopBtn.classList.add('hidden');
+                previewBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                previewBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                if (stopBtn) {
+                    stopBtn.classList.add('hidden');
+                }
             }
             
             // Reset all .preview-voice buttons
@@ -5685,6 +5707,8 @@ I'd love to schedule..."></textarea>
             previewVoiceBtns.forEach(function(btn) {
                 btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
                 btn.disabled = false;
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
             });
             
             console.log('✅ Reset all voice preview buttons');
@@ -5698,12 +5722,12 @@ I'd love to schedule..."></textarea>
             }
         });
         
-        // Show help notification about voice stopping when page loads
+        // Show help notification about voice toggle functionality when page loads
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                if (!localStorage.getItem('voiceStopHelpShown')) {
-                    showNotification('🎤 Voice Preview Tips: Press ESC key or click the red Stop button to stop voice playback anytime!', 'info');
-                    localStorage.setItem('voiceStopHelpShown', 'true');
+                if (!localStorage.getItem('voiceToggleHelpShown')) {
+                    showNotification('🎤 Voice Preview: Click any Preview button to play/stop voices! Press ESC key to stop from anywhere.', 'info');
+                    localStorage.setItem('voiceToggleHelpShown', 'true');
                 }
             }, 3000);
         });
@@ -6912,22 +6936,39 @@ I'd love to schedule..."></textarea>
             
             // Find the button that was clicked
             var btn = event.target;
-            var originalText = btn.innerHTML;
             
-            // Show loading state
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
-            btn.disabled = true;
+            // Check if voice is currently playing (button shows stop state)
+            if (btn.innerHTML.includes('Stop') || btn.innerHTML.includes('Speaking')) {
+                // Currently playing - stop it
+                stopCurrentVoice();
+                btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                btn.disabled = false;
+                return;
+            }
             
-            // Simulate voice preview (replace with actual API call when ready)
-            setTimeout(function() {
-                alert('🎤 Voice Preview for ' + voiceId + '\n\n"Hello! This is ' + voiceId + ' from Cool Breeze HVAC. I specialize in professional air conditioning maintenance, repairs, and energy-efficient system installations. How can I help you today?"\n\n(Voice preview functionality will connect to the voice API soon!)');
-                
-                btn.innerHTML = '<i class="fas fa-check mr-2"></i>Preview Played';
-                setTimeout(function() {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 2000);
-            }, 1500);
+            // Not playing - stop any other voice and start this one
+            stopCurrentVoice();
+            
+            // Change to stop state
+            btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            btn.classList.add('bg-red-600', 'hover:bg-red-700');
+            btn.disabled = false; // Keep enabled for stopping
+            
+            // Show floating stop button
+            showFloatingStopButton();
+            
+            // Use actual voice preview with proper voice type
+            playVoicePreviewByType(voiceId, function() {
+                // Reset when finished
+                btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                btn.disabled = false;
+                hideFloatingStopButton();
+            });
         }
         
         // Setup specific service connection buttons
