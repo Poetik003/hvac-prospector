@@ -230,6 +230,20 @@
                 </div>
             </div>
             
+            <!-- EMERGENCY STOP BUTTON - Always Visible -->
+            <div class="p-4 pb-2">
+                <button 
+                    id="emergency-stop-btn" 
+                    onclick="emergencyStopAllVoices()" 
+                    class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 border-2 border-red-500 shadow-lg"
+                    style="cursor: pointer !important; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;"
+                    title="Click to stop ALL voice playback immediately (or press ESC key)"
+                >
+                    <i class="fas fa-stop mr-2"></i>🛑 STOP ALL VOICES
+                </button>
+                <p class="text-xs text-red-400 text-center mt-1 opacity-75">Press ESC or Ctrl+Shift+S</p>
+            </div>
+            
             <!-- Navigation Items -->
             <nav class="p-4 space-y-2 flex-1">
                 <button data-tab="dashboard" class="nav-item active w-full flex items-center py-4 px-4 text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
@@ -5821,6 +5835,52 @@ I'd love to schedule..."></textarea>
             showNotification('🛑 All voice playback stopped', 'info');
         }
         
+        // Emergency stop function - simplest possible implementation
+        function emergencyStopAllVoices() {
+            console.log('🚨 EMERGENCY STOP - Stopping ALL voices immediately');
+            
+            try {
+                // Call existing stop function
+                stopCurrentVoice();
+                
+                // Additional emergency measures
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+                
+                // Stop ALL audio on the page
+                var allAudio = document.querySelectorAll('audio, video');
+                for (var i = 0; i < allAudio.length; i++) {
+                    allAudio[i].pause();
+                    allAudio[i].currentTime = 0;
+                }
+                
+                // Clear all timers
+                var highestId = setTimeout(function(){}, 0);
+                for (var i = 0; i < highestId; i++) {
+                    clearTimeout(i);
+                }
+                
+                // Force reset ALL buttons on page that might be speaking
+                var allButtons = document.querySelectorAll('button');
+                for (var j = 0; j < allButtons.length; j++) {
+                    var btn = allButtons[j];
+                    if (btn.innerHTML.indexOf('Speaking') !== -1) {
+                        btn.innerHTML = btn.innerHTML.replace('🎙️ Speaking...', '<i class="fas fa-play mr-1"></i>Preview Voice');
+                        btn.style.backgroundColor = '#3b82f6';
+                        btn.disabled = false;
+                    }
+                }
+                
+                // Show big notification
+                alert('🛑 EMERGENCY STOP ACTIVATED\n\nAll voice playback has been stopped immediately.');
+                
+            } catch (error) {
+                console.error('Emergency stop error:', error);
+                alert('⚠️ Emergency stop attempted with error: ' + error.message);
+            }
+        }
+        
         // Reset all voice preview buttons to their original state
         function resetAllVoiceButtons() {
             // Reset main preview voice button
@@ -8845,6 +8905,9 @@ I'd love to schedule..."></textarea>
         window.openScriptOptimizer = openScriptOptimizer;
         window.openAIScriptImport = openAIScriptImport;
         window.openAIGuildTraining = openAIGuildTraining;
+        
+        // Emergency Stop Function
+        window.emergencyStopAllVoices = emergencyStopAllVoices;
         window.viewScript = viewScript;
         window.useScript = useScript;
         window.optimizeScript = optimizeScript;
@@ -8911,6 +8974,16 @@ I'd love to schedule..."></textarea>
         var styleSheet = document.createElement('style');
         styleSheet.textContent = floatingStopCSS;
         document.head.appendChild(styleSheet);
+        
+        // Add emergency keyboard shortcuts for stopping voice
+        document.addEventListener('keydown', function(e) {
+            // Press ESC or CTRL+SHIFT+S to emergency stop
+            if (e.key === 'Escape' || (e.ctrlKey && e.shiftKey && e.key === 'S')) {
+                e.preventDefault();
+                e.stopPropagation();
+                emergencyStopAllVoices();
+            }
+        }, true); // Use capture to ensure we get this event first
     </script>
     
     <!-- Floating Stop Voice Button (will be created dynamically) -->
