@@ -1027,20 +1027,32 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Calendar Integration - Enhanced Iframe Solution -->
+                    <!-- Calendar Integration - Direct Buttons Solution -->
                     <div class="card-modern rounded-2xl p-6">
                         <h3 class="text-xl font-bold gradient-text mb-4">Calendar Integration</h3>
-                        <div class="bg-slate-800/50 rounded-xl p-1">
-                            <iframe src="calendar-isolated.html" 
-                                    style="width: 100%; height: 220px; border: none; background: transparent; border-radius: 8px;" 
-                                    title="Calendar Integration Buttons"
-                                    id="calendar-integration-iframe"
-                                    onload="console.log('✅ Calendar iframe loaded successfully')">
-                            </iframe>
+                        <div class="space-y-4">
+                            <!-- Direct Calendar Buttons (No Iframe) -->
+                            <button 
+                                onclick="if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){window.location.href='https://accounts.google.com/signin';}else{window.open('https://accounts.google.com/signin','_blank');}"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-blue-500 hover:border-blue-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <i class="fab fa-google mr-2"></i>Connect Google Calendar
+                            </button>
+                            
+                            <button 
+                                onclick="if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){window.location.href='https://login.microsoftonline.com/';}else{window.open('https://login.microsoftonline.com/','_blank');}"
+                                class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-blue-600 hover:border-blue-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <i class="fab fa-microsoft mr-2"></i>Connect Outlook
+                            </button>
+                            
+                            <button 
+                                onclick="openAppointmentSchedulingModal()"
+                                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium border border-green-500 hover:border-green-400 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
+                            </button>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2">
+                        <p class="text-xs text-slate-500 mt-4">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Embedded calendar integration - click buttons above to connect your calendar services
+                            Direct calendar integration - optimized for mobile and desktop
                         </p>
                     </div>
 
@@ -2034,22 +2046,8 @@ I'd love to schedule..."></textarea>
                 });
             }
             
-            // Calendar Integration - Now handled by iframe (calendar-isolated.html)
-            // The calendar buttons are embedded via iframe to avoid JavaScript conflicts
-            
-            // Listen for messages from calendar iframe
-            window.addEventListener('message', function(event) {
-                console.log('📨 Message received from iframe:', event.data);
-                if (event.data && event.data.type === 'schedule_appointment') {
-                    console.log('📅 Schedule appointment requested from iframe - opening modal');
-                    try {
-                        openAppointmentSchedulingModal();
-                        console.log('✅ Appointment modal opened successfully');
-                    } catch (e) {
-                        console.error('❌ Error opening appointment modal:', e);
-                    }
-                }
-            });
+            // Calendar Integration - Direct buttons in main application
+            console.log('📅 Calendar integration using direct buttons for maximum compatibility');
         }
         
         // Connection Modal for Integrations
