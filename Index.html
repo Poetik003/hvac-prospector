@@ -3236,17 +3236,39 @@ I'd love to schedule..."></textarea>
                 playBtn.classList.add('bg-red-600', 'hover:bg-red-700');
                 playBtn.disabled = false; // Keep enabled so user can click to stop
                 
-                // Aggressively maintain button state during playback
+                // Aggressively maintain button state during playback and fix any 'Speaking' buttons
                 window.buttonStateInterval = setInterval(function() {
                     if (window.isVoiceToggleMode && window.toggleVoiceButton === playBtn) {
+                        // Force correct button state
                         if (!playBtn.innerHTML.includes('Stop Voice')) {
+                            // Temporarily disable protection to force update
+                            window.isVoiceToggleMode = false;
                             playBtn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop Voice';
+                            window.isVoiceToggleMode = true;
                         }
                         if (!playBtn.classList.contains('bg-red-600')) {
                             playBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                             playBtn.classList.add('bg-red-600', 'hover:bg-red-700');
                         }
                         playBtn.disabled = false;
+                    }
+                    
+                    // Also fix any other buttons showing 'Speaking' that should be 'Stop'
+                    var speakingButtons = document.querySelectorAll('button');
+                    for (var i = 0; i < speakingButtons.length; i++) {
+                        var btn = speakingButtons[i];
+                        if (btn.innerHTML.includes('Speaking') && (btn.classList.contains('preview-voice') || btn.id === 'preview-voice-btn')) {
+                            // Make this button a stop button
+                            btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+                            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                            btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                            btn.disabled = false;
+                            
+                            // Add click handler to stop voice
+                            btn.onclick = function() {
+                                stopCurrentVoice();
+                            };
+                        }
                     }
                 }, 100); // Check every 100ms
                 
@@ -3841,17 +3863,40 @@ I'd love to schedule..."></textarea>
                     btn.classList.add('bg-red-600', 'hover:bg-red-700');
                     btn.disabled = false; // Keep enabled for stopping
                     
-                    // Aggressively maintain button state during playback
+                    // Aggressively maintain button state during playback and scan for Speaking buttons
                     window.buttonStateInterval = setInterval(function() {
                         if (window.isVoiceToggleMode && window.toggleVoiceButton === btn) {
+                            // Force correct button state
                             if (!btn.innerHTML.includes('Stop')) {
+                                // Temporarily disable protection to force update
+                                window.isVoiceToggleMode = false;
                                 btn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+                                window.isVoiceToggleMode = true;
                             }
                             if (!btn.classList.contains('bg-red-600')) {
                                 btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                                 btn.classList.add('bg-red-600', 'hover:bg-red-700');
                             }
                             btn.disabled = false;
+                        }
+                        
+                        // Scan and fix any buttons showing 'Speaking' that should be stop buttons
+                        var allButtons = document.querySelectorAll('button');
+                        for (var i = 0; i < allButtons.length; i++) {
+                            var speakingBtn = allButtons[i];
+                            if (speakingBtn.innerHTML.includes('Speaking') && 
+                                (speakingBtn.classList.contains('preview-voice') || speakingBtn.id === 'preview-voice-btn')) {
+                                // Convert to stop button
+                                speakingBtn.innerHTML = '<i class="fas fa-stop mr-1"></i>Stop';
+                                speakingBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                                speakingBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                                speakingBtn.disabled = false;
+                                
+                                // Ensure it has stop functionality
+                                speakingBtn.onclick = function() {
+                                    stopCurrentVoice();
+                                };
+                            }
                         }
                     }, 100); // Check every 100ms
                     
@@ -5825,6 +5870,25 @@ I'd love to schedule..."></textarea>
             return originalSetAttribute.call(this, name, value);
         };
         
+        // Override innerHTML setter to prevent text changes on protected buttons
+        var originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML') || 
+                                         Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerHTML');
+        
+        if (originalInnerHTMLDescriptor) {
+            Object.defineProperty(Element.prototype, 'innerHTML', {
+                get: originalInnerHTMLDescriptor.get,
+                set: function(value) {
+                    // If this is a protected voice button, don't allow innerHTML changes
+                    if (isButtonProtected(this)) {
+                        console.log('🛡️ Blocked innerHTML change on protected button:', value);
+                        return;
+                    }
+                    return originalInnerHTMLDescriptor.set.call(this, value);
+                },
+                configurable: true
+            });
+        }
+        
         // Global keyboard shortcut to stop voice (Escape key)
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
@@ -5832,6 +5896,44 @@ I'd love to schedule..."></textarea>
                 showNotification('🛑 Voice stopped with Escape key', 'info');
             }
         });
+        
+        // Global scanner to fix any 'Speaking' buttons that should be stop buttons
+        setInterval(function() {
+            var speakingButtons = document.querySelectorAll('button');
+            for (var i = 0; i < speakingButtons.length; i++) {
+                var btn = speakingButtons[i];
+                if (btn.innerHTML.includes('Speaking') && !btn.innerHTML.includes('Stop')) {
+                    // Check if this looks like a voice preview button
+                    if (btn.classList.contains('preview-voice') || 
+                        btn.id === 'preview-voice-btn' ||
+                        btn.innerHTML.includes('🎤')) {
+                        
+                        console.log('🔧 Converting Speaking button to Stop button:', btn);
+                        
+                        // Convert to stop button
+                        var stopText = btn.id === 'preview-voice-btn' ? 
+                                      '<i class="fas fa-stop mr-1"></i>Stop Voice' : 
+                                      '<i class="fas fa-stop mr-1"></i>Stop';
+                        
+                        btn.innerHTML = stopText;
+                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                        btn.disabled = false;
+                        
+                        // Ensure it can stop voice when clicked
+                        btn.onclick = function(e) {
+                            e.preventDefault();
+                            stopCurrentVoice();
+                            return false;
+                        };
+                        
+                        // Set as toggle button
+                        window.isVoiceToggleMode = true;
+                        window.toggleVoiceButton = btn;
+                    }
+                }
+            }
+        }, 200); // Check every 200ms
         
         // Show help notification about voice toggle functionality when page loads
         document.addEventListener('DOMContentLoaded', function() {
