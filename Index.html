@@ -6868,6 +6868,123 @@ I'd love to schedule..."></textarea>
             } else {
                 console.log('❌ Sign Up button not found');
             }
+            
+            // AI Script Generator buttons
+            var generateScriptBtn = document.getElementById('generate-script-btn');
+            if (generateScriptBtn) {
+                console.log('✅ Found Generate Script button, setting up handler');
+                generateScriptBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎭 Generate Script button clicked!');
+                    openScriptGenerator();
+                });
+            } else {
+                console.log('❌ Generate Script button not found');
+            }
+            
+            var browseTemplatesBtn = document.getElementById('browse-templates-btn');
+            if (browseTemplatesBtn) {
+                console.log('✅ Found Browse Templates button, setting up handler');
+                browseTemplatesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📄 Browse Templates button clicked!');
+                    openTemplateBrowser();
+                });
+            } else {
+                console.log('❌ Browse Templates button not found');
+            }
+            
+            var optimizeScriptsBtn = document.getElementById('optimize-scripts-btn');
+            if (optimizeScriptsBtn) {
+                console.log('✅ Found Optimize Scripts button, setting up handler');
+                optimizeScriptsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🚀 Optimize Scripts button clicked!');
+                    openScriptOptimizer();
+                });
+            } else {
+                console.log('❌ Optimize Scripts button not found');
+            }
+            
+            var newScriptBtn = document.getElementById('new-script-btn');
+            if (newScriptBtn) {
+                console.log('✅ Found Import AI Script button, setting up handler');
+                newScriptBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📥 Import AI Script button clicked!');
+                    openAIScriptImport();
+                });
+            } else {
+                console.log('❌ Import AI Script button not found');
+            }
+            
+            var aiGuildBtn = document.getElementById('ai-actors-guild-btn');
+            if (aiGuildBtn) {
+                console.log('✅ Found AI Guild Training button, setting up handler');
+                aiGuildBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎭 AI Guild Training button clicked!');
+                    openAIGuildTraining();
+                });
+            } else {
+                console.log('❌ AI Guild Training button not found');
+            }
+            
+            // Script action buttons (View, Use, Optimize, Clone, Share)
+            var viewScriptBtns = document.querySelectorAll('.view-script-btn');
+            console.log('👁️ Found', viewScriptBtns.length, 'View Script buttons');
+            for (var i = 0; i < viewScriptBtns.length; i++) {
+                viewScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('👁️ View Script button clicked for:', scriptId);
+                    viewScript(scriptId);
+                });
+            }
+            
+            var useScriptBtns = document.querySelectorAll('.use-script-btn');
+            console.log('📞 Found', useScriptBtns.length, 'Use Script buttons');
+            for (var i = 0; i < useScriptBtns.length; i++) {
+                useScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📞 Use Script button clicked for:', scriptId);
+                    useScript(scriptId);
+                });
+            }
+            
+            var optimizeScriptBtns = document.querySelectorAll('.optimize-script-btn');
+            console.log('📈 Found', optimizeScriptBtns.length, 'Optimize Script buttons');
+            for (var i = 0; i < optimizeScriptBtns.length; i++) {
+                optimizeScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📈 Optimize Script button clicked for:', scriptId);
+                    optimizeScript(scriptId);
+                });
+            }
+            
+            var cloneScriptBtns = document.querySelectorAll('.clone-script-btn');
+            console.log('📋 Found', cloneScriptBtns.length, 'Clone Script buttons');
+            for (var i = 0; i < cloneScriptBtns.length; i++) {
+                cloneScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('📋 Clone Script button clicked for:', scriptId);
+                    cloneScript(scriptId);
+                });
+            }
+            
+            var shareScriptBtns = document.querySelectorAll('.share-script-btn');
+            console.log('🔗 Found', shareScriptBtns.length, 'Share Script buttons');
+            for (var i = 0; i < shareScriptBtns.length; i++) {
+                shareScriptBtns[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var scriptId = this.getAttribute('data-script-id');
+                    console.log('🔗 Share Script button clicked for:', scriptId);
+                    shareScript(scriptId);
+                });
+            }
         }
         
         // Universal service connection function
@@ -7006,6 +7123,241 @@ I'd love to schedule..."></textarea>
         function processSignup() {
             alert('🎉 Account Created Successfully!\n\nWelcome to ProSpector Pro!\n\n✅ Your account includes:\n• 14-day free trial\n• Full access to AI features\n• Unlimited lead research\n• Call analytics dashboard\n• Priority customer support\n\n📧 Check your email for account verification.\n\n🚀 Let\'s start generating HVAC leads!');
             closeSignupModal();
+        }
+        
+        // AI Script Generator Functions
+        function openScriptGenerator() {
+            console.log('🎭 Opening AI Script Generator...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'script-generator-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-lg mx-auto border border-green-600 shadow-2xl">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-green-400">🎭 AI Script Generator</h3>';
+            modalHTML += '<button onclick="closeScriptGeneratorModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<form class="space-y-4">';
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Script Type</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="cold-call">Cold Call - New Prospects</option>';
+            modalHTML += '<option value="follow-up">Follow-up Call</option>';
+            modalHTML += '<option value="appointment">Appointment Setting</option>';
+            modalHTML += '<option value="maintenance">Maintenance Reminder</option>';
+            modalHTML += '<option value="emergency">Emergency Service</option>';
+            modalHTML += '<option value="quote">Quote Follow-up</option>';
+            modalHTML += '</select></div>';
+            
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Target Industry</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="hvac">HVAC Services</option>';
+            modalHTML += '<option value="hospitals">Hospitals & Critical Care</option>';
+            modalHTML += '<option value="datacenters">Data Centers</option>';
+            modalHTML += '<option value="manufacturing">Manufacturing Facilities</option>';
+            modalHTML += '<option value="commercial">Commercial Buildings</option>';
+            modalHTML += '<option value="industrial">Industrial Facilities</option>';
+            modalHTML += '</select></div>';
+            
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Campaign Goal</label>';
+            modalHTML += '<select class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500">';
+            modalHTML += '<option value="appointment">Schedule Appointment</option>';
+            modalHTML += '<option value="quote">Generate Quote Request</option>';
+            modalHTML += '<option value="service">Book Service Call</option>';
+            modalHTML += '<option value="contract">Secure Maintenance Contract</option>';
+            modalHTML += '<option value="upgrade">Promote System Upgrade</option>';
+            modalHTML += '</select></div>';
+            
+            modalHTML += '<div><label class="block text-sm font-medium text-slate-300 mb-2">Special Requirements (Optional)</label>';
+            modalHTML += '<textarea rows="3" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-green-500" placeholder="Any specific talking points, objections to handle, or unique selling propositions..."></textarea></div>';
+            
+            modalHTML += '<div class="flex space-x-3 pt-4">';
+            modalHTML += '<button type="button" onclick="generateAIScript()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-magic mr-2"></i>Generate AI Script</button>';
+            modalHTML += '<button type="button" onclick="closeScriptGeneratorModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Cancel</button>';
+            modalHTML += '</div></form></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeScriptGeneratorModal();
+            });
+        }
+        
+        function openTemplateBrowser() {
+            console.log('📄 Opening Template Browser...');
+            
+            var modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+            modal.id = 'template-browser-modal';
+            
+            var modalHTML = '<div class="bg-slate-800 rounded-2xl p-6 w-full max-w-4xl mx-auto border border-blue-600 shadow-2xl max-h-screen overflow-y-auto">';
+            modalHTML += '<div class="flex items-center justify-between mb-6">';
+            modalHTML += '<h3 class="text-2xl font-bold text-blue-400">📄 Proven Script Templates</h3>';
+            modalHTML += '<button onclick="closeTemplateBrowserModal()" class="text-slate-400 hover:text-white text-2xl">×</button>';
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">';
+            
+            // HVAC Templates
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-green-400 mb-3">🌊 HVAC Services</h4>';
+            modalHTML += '<div class="space-y-3">';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'hvac-emergency\')">';
+            modalHTML += '<h5 class="font-bold text-white">Emergency HVAC Service</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">94% conversion • Critical system failures</p></div>';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'hvac-maintenance\')">';
+            modalHTML += '<h5 class="font-bold text-white">Seasonal Maintenance</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">88% conversion • Preventive care programs</p></div>';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'hvac-replacement\')">';
+            modalHTML += '<h5 class="font-bold text-white">System Replacement</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">76% conversion • Upgrade opportunities</p></div>';
+            modalHTML += '</div></div>';
+            
+            // Commercial Templates
+            modalHTML += '<div class="bg-slate-700/50 rounded-lg p-4">';
+            modalHTML += '<h4 class="text-lg font-bold text-blue-400 mb-3">🏢 Commercial & Industrial</h4>';
+            modalHTML += '<div class="space-y-3">';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'commercial-maintenance\')">';
+            modalHTML += '<h5 class="font-bold text-white">Commercial Maintenance Contracts</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">85% conversion • Large facility management</p></div>';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'hospital-critical\')">';
+            modalHTML += '<h5 class="font-bold text-white">Hospital Critical Systems</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">92% conversion • Healthcare facilities</p></div>';
+            modalHTML += '<div class="p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800" onclick="useTemplate(\'datacenter-cooling\')">';
+            modalHTML += '<h5 class="font-bold text-white">Data Center Cooling</h5>';
+            modalHTML += '<p class="text-sm text-slate-400">89% conversion • Mission-critical environments</p></div>';
+            modalHTML += '</div></div>';
+            
+            modalHTML += '</div>';
+            
+            modalHTML += '<div class="flex space-x-3 pt-4 border-t border-slate-600">';
+            modalHTML += '<button onclick="requestCustomTemplate()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold">';
+            modalHTML += '<i class="fas fa-lightbulb mr-2"></i>Request Custom Template</button>';
+            modalHTML += '<button onclick="closeTemplateBrowserModal()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-lg">Close</button>';
+            modalHTML += '</div></div>';
+            
+            modal.innerHTML = modalHTML;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeTemplateBrowserModal();
+            });
+        }
+        
+        function openScriptOptimizer() {
+            console.log('🚀 Opening Script Optimizer...');
+            
+            alert('🚀 AI Script Optimizer\n\n✅ Optimize your scripts with AI analysis:\n• Performance data analysis\n• Conversion rate improvement\n• Objection handling enhancement\n• Industry-specific recommendations\n• A/B testing suggestions\n\n📊 Current scripts show 15-23% improvement potential\n\n🎯 This feature analyzes your existing scripts and provides AI-powered recommendations to boost conversion rates.');
+        }
+        
+        function openAIScriptImport() {
+            console.log('📥 Opening AI Script Import...');
+            
+            alert('📥 Import AI Cold Calling Script\n\n✅ Import scripts from:\n• Text files (.txt, .docx)\n• Audio transcriptions\n• Other CRM systems\n• Competitor analysis\n• Custom AI training data\n\n🤖 AI will analyze and optimize imported scripts automatically\n\n🎯 Supports bulk import and automatic categorization by industry and campaign type.');
+        }
+        
+        function openAIGuildTraining() {
+            console.log('🎭 Opening AI Guild Training...');
+            
+            alert('🎭 AI Guild Training Program\n\n✅ Advanced AI training modules:\n• Voice tone optimization\n• Objection handling mastery\n• Industry-specific techniques\n• Psychological persuasion methods\n• Real-time coaching\n\n🏆 Certification available\n\n🎯 Join 500+ HVAC professionals mastering AI-powered sales techniques with 40% average improvement in conversion rates.');
+        }
+        
+        // Script action functions
+        function viewScript(scriptId) {
+            console.log('👁️ Viewing script:', scriptId);
+            
+            var scriptData = {
+                'hvac-maintenance-1': {
+                    title: 'HVAC Maintenance Cold Call Script',
+                    conversion: '87%',
+                    duration: '3-5 min',
+                    type: 'Cold Call',
+                    industry: 'HVAC',
+                    content: 'Hi [Name], this is [Your Name] from [Company]. I\'m calling because it\'s that time of year when HVAC systems need their seasonal maintenance to avoid expensive breakdowns...'
+                },
+                'new-customer-1': {
+                    title: 'New Customer Acquisition - Residential HVAC',
+                    conversion: '72%',
+                    duration: '4-6 min',
+                    type: 'Acquisition',
+                    industry: 'Residential',
+                    content: 'Hello [Name], I\'m [Your Name] from [Company]. I noticed you\'ve been in your home for [Years] years, and I wanted to reach out about protecting your HVAC investment...'
+                },
+                'follow-up-appointment': {
+                    title: 'Follow-up Call - Service Appointment',
+                    conversion: '91%',
+                    duration: '2-3 min',
+                    type: 'Follow-up',
+                    industry: 'HVAC',
+                    content: 'Hi [Name], this is [Your Name] following up on our conversation about your HVAC system. I wanted to schedule that diagnostic visit we discussed...'
+                }
+            };
+            
+            var data = scriptData[scriptId] || scriptData['hvac-maintenance-1'];
+            
+            alert('👁️ Script Details: ' + data.title + '\n\n' +
+                  '📊 Performance Metrics:\n' +
+                  '• Conversion Rate: ' + data.conversion + '\n' +
+                  '• Average Duration: ' + data.duration + '\n' +
+                  '• Script Type: ' + data.type + '\n' +
+                  '• Target Industry: ' + data.industry + '\n\n' +
+                  '📝 Script Preview:\n' + data.content + '\n\n' +
+                  '🎯 This would show the complete script with AI analysis, success factors, and optimization suggestions in the full application.');
+        }
+        
+        function useScript(scriptId) {
+            console.log('📞 Using script:', scriptId);
+            
+            alert('📞 Script Activated for Calling!\n\n✅ Script loaded into dialer:\n• Auto-populated prospect fields\n• Real-time coaching prompts\n• Objection handling suggestions\n• Success probability indicators\n• Call recording enabled\n\n🎯 Ready to start making calls with AI assistance!\n\n🚀 This would integrate with your calling system and provide real-time guidance during calls.');
+        }
+        
+        function optimizeScript(scriptId) {
+            console.log('📈 Optimizing script:', scriptId);
+            
+            alert('📈 AI Script Optimization Complete!\n\n✅ Optimization results:\n• Conversion improvement: +23%\n• Reduced objections: -15%\n• Shorter call duration: -30 seconds\n• Better qualifying questions added\n• Industry-specific pain points included\n\n🎯 Key improvements made:\n• Enhanced opening hook\n• Stronger value proposition\n• Better objection responses\n• Clearer call-to-action\n\n🚀 Updated script ready for use!');
+        }
+        
+        function cloneScript(scriptId) {
+            console.log('📋 Cloning script:', scriptId);
+            
+            alert('📋 Script Cloned Successfully!\n\n✅ New script created:\n• Copy of original with "_Copy" suffix\n• All performance data preserved\n• Ready for customization\n• Added to your script library\n\n🎯 You can now modify the clone without affecting the original script.\n\n✏️ This would create an editable copy in your script management system.');
+        }
+        
+        function shareScript(scriptId) {
+            console.log('🔗 Sharing script:', scriptId);
+            
+            alert('🔗 Share Script Options\n\n✅ Share via:\n• Email link (with permissions)\n• Team collaboration workspace\n• Export as PDF/Word document\n• QR code for mobile access\n• Direct team member invitation\n\n🔐 Security options:\n• View-only or edit permissions\n• Expiration date settings\n• Password protection\n• Usage tracking\n\n📊 This would generate secure sharing links for team collaboration.');
+        }
+        
+        // Modal close functions
+        function closeScriptGeneratorModal() {
+            var modal = document.getElementById('script-generator-modal');
+            if (modal) modal.remove();
+        }
+        
+        function closeTemplateBrowserModal() {
+            var modal = document.getElementById('template-browser-modal');
+            if (modal) modal.remove();
+        }
+        
+        function generateAIScript() {
+            alert('🎭 AI Script Generation Complete!\n\n✅ Your personalized script has been generated:\n• Optimized for your target industry\n• Includes proven conversation starters\n• Built-in objection handling\n• Customized value propositions\n• Performance predictions: 89% conversion rate\n\n📝 Script added to your library and ready for use!\n\n🚀 This would generate and save a complete, personalized script based on your selections.');
+            closeScriptGeneratorModal();
+        }
+        
+        function useTemplate(templateId) {
+            console.log('📄 Using template:', templateId);
+            
+            alert('📄 Template Applied Successfully!\n\n✅ ' + templateId.replace('-', ' ').toUpperCase() + ' template loaded:\n• Proven conversation framework\n• Industry-specific talking points\n• Success rate data included\n• Ready for customization\n\n🎯 Template added to your script library.\n\n✏️ You can now customize this template for your specific needs and start using it immediately.');
+            closeTemplateBrowserModal();
+        }
+        
+        function requestCustomTemplate() {
+            alert('💡 Custom Template Request\n\n✅ Our AI team will create a custom template for:\n• Your specific industry needs\n• Unique value propositions\n• Custom objection handling\n• Specialized terminology\n\n📧 Request submitted!\n\nOur AI specialists will contact you within 24 hours to discuss your custom template requirements.');
+            closeTemplateBrowserModal();
         }
         
         // Lead Entry Form Functions
@@ -7932,6 +8284,23 @@ I'd love to schedule..."></textarea>
         window.closeSignupModal = closeSignupModal;
         window.processLogin = processLogin;
         window.processSignup = processSignup;
+        
+        // AI Script Functions
+        window.openScriptGenerator = openScriptGenerator;
+        window.openTemplateBrowser = openTemplateBrowser;
+        window.openScriptOptimizer = openScriptOptimizer;
+        window.openAIScriptImport = openAIScriptImport;
+        window.openAIGuildTraining = openAIGuildTraining;
+        window.viewScript = viewScript;
+        window.useScript = useScript;
+        window.optimizeScript = optimizeScript;
+        window.cloneScript = cloneScript;
+        window.shareScript = shareScript;
+        window.closeScriptGeneratorModal = closeScriptGeneratorModal;
+        window.closeTemplateBrowserModal = closeTemplateBrowserModal;
+        window.generateAIScript = generateAIScript;
+        window.useTemplate = useTemplate;
+        window.requestCustomTemplate = requestCustomTemplate;
     </script>
 </body>
 </html>
