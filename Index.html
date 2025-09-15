@@ -1635,10 +1635,10 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors">
+                                <button id="hvac-pause-btn" onclick="pauseVoiceCampaign('HVAC Maintenance Outreach')" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors">
                                     <i class="fas fa-pause mr-1"></i>Pause
                                 </button>
-                                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="monitorVoiceCampaign('HVAC Maintenance Outreach')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     <i class="fas fa-eye mr-1"></i>Monitor
                                 </button>
                             </div>
@@ -1653,10 +1653,10 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                                <button id="acquisition-resume-btn" onclick="resumeVoiceCampaign('New Customer Acquisition')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
                                     <i class="fas fa-play mr-1"></i>Resume
                                 </button>
-                                <button class="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="campaignSettings('New Customer Acquisition')" class="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
                                     <i class="fas fa-cog mr-1"></i>Settings
                                 </button>
                             </div>
@@ -10615,6 +10615,340 @@ I'd love to schedule..."></textarea>
                     }
                 }
             }
+        }
+        
+        // ACTIVE VOICE CAMPAIGN CONTROL FUNCTIONS
+        function pauseVoiceCampaign(campaignName) {
+            console.log('⏸️ Pausing voice campaign:', campaignName);
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: center; color: white; max-width: 500px; width: 100%; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="mb-6">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-pause text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Pause Campaign</h2>
+                    <p class="text-slate-300">${campaignName}</p>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-yellow-300 mb-3">⏸️ Campaign Will Be Paused</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 text-left">
+                        <li>• All active calls will be completed</li>
+                        <li>• No new calls will be initiated</li>
+                        <li>• Current progress will be saved</li>
+                        <li>• You can resume anytime</li>
+                    </ul>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="this.closest('[style*=\\"position: fixed\\"]').remove()" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        Cancel
+                    </button>
+                    <button onclick="confirmPauseCampaign('${campaignName}', this)" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white rounded-lg font-bold transition-all duration-300 shadow-lg">
+                        ⏸️ Pause Campaign
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function resumeVoiceCampaign(campaignName) {
+            console.log('▶️ Resuming voice campaign:', campaignName);
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: center; color: white; max-width: 500px; width: 100%; border: 1px solid rgba(34, 197, 94, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="mb-6">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-play text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Resume Campaign</h2>
+                    <p class="text-slate-300">${campaignName}</p>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-green-300 mb-3">▶️ Campaign Will Resume</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 text-left">
+                        <li>• Calling will restart immediately</li>
+                        <li>• AI agents will continue from where they left off</li>
+                        <li>• All saved progress will be restored</li>
+                        <li>• Real-time monitoring available</li>
+                    </ul>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="this.closest('[style*=\\"position: fixed\\"]').remove()" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        Cancel
+                    </button>
+                    <button onclick="confirmResumeCampaign('${campaignName}', this)" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg font-bold transition-all duration-300 shadow-lg">
+                        ▶️ Resume Campaign
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function monitorVoiceCampaign(campaignName) {
+            console.log('👁️ Opening campaign monitor for:', campaignName);
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: left; color: white; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-desktop text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">Campaign Monitor</h2>
+                    <p class="text-slate-300">${campaignName}</p>
+                </div>
+                
+                <!-- Live Stats -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-blue-400" id="live-calls">${campaignName.includes('HVAC') ? '47' : '23'}</div>
+                        <div class="text-sm text-slate-400">Active Calls</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-green-400" id="live-appointments">${campaignName.includes('HVAC') ? '12' : '8'}</div>
+                        <div class="text-sm text-slate-400">Appointments</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-yellow-400">87%</div>
+                        <div class="text-sm text-slate-400">Success Rate</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-purple-400">4m 23s</div>
+                        <div class="text-sm text-slate-400">Avg Duration</div>
+                    </div>
+                </div>
+                
+                <!-- Active Calls -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-blue-300 mb-4">📞 Active Calls</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-white font-medium">Sarah AI → Johnson HVAC</div>
+                                <div class="text-sm text-slate-400">Discussing maintenance package • 2m 15s</div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                <span class="text-green-400 text-sm">Live</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-800/50 rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-white font-medium">Danny AI → Martinez Property</div>
+                                <div class="text-sm text-slate-400">Follow-up call • 1m 43s</div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                                <span class="text-blue-400 text-sm">Active</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-800/50 rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-white font-medium">Sarah AI → Smith Residence</div>
+                                <div class="text-sm text-slate-400">Handling price objection • 3m 08s</div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                                <span class="text-yellow-400 text-sm">Objection</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="this.closest('[style*=\\"position: fixed\\"]').remove()" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        Close Monitor
+                    </button>
+                    <button onclick="openCampaignAnalytics('${campaignName}')" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-bold transition-all duration-300 shadow-lg">
+                        📊 View Analytics
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function campaignSettings(campaignName) {
+            console.log('⚙️ Opening campaign settings for:', campaignName);
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: left; color: white; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(100, 116, 139, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-slate-500 to-slate-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-cog text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-slate-400 to-slate-600 bg-clip-text text-transparent">Campaign Settings</h2>
+                    <p class="text-slate-300">${campaignName}</p>
+                </div>
+                
+                <!-- Settings Sections -->
+                <div class="space-y-6">
+                    <div class="bg-slate-800/50 rounded-lg p-6">
+                        <h3 class="font-semibold text-blue-300 mb-4">🎤 Voice Configuration</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Primary AI Voice</span>
+                                <select class="bg-slate-700 text-white px-3 py-2 rounded text-sm">
+                                    <option>Sarah (Sofia Vergara style)</option>
+                                    <option>Danny (Benicio Del Toro style)</option>
+                                </select>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Speaking Pace</span>
+                                <input type="range" min="0.7" max="1.3" step="0.1" value="1.0" class="w-24">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Accent Strength</span>
+                                <input type="range" min="1" max="10" value="6" class="w-24">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800/50 rounded-lg p-6">
+                        <h3 class="font-semibold text-green-300 mb-4">📞 Call Management</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Max Concurrent Calls</span>
+                                <input type="number" min="1" max="10" value="3" class="bg-slate-700 text-white px-3 py-2 rounded text-sm w-20">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Call Retry Attempts</span>
+                                <input type="number" min="0" max="5" value="2" class="bg-slate-700 text-white px-3 py-2 rounded text-sm w-20">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Hours of Operation</span>
+                                <select class="bg-slate-700 text-white px-3 py-2 rounded text-sm">
+                                    <option>9 AM - 5 PM (Business Hours)</option>
+                                    <option>8 AM - 8 PM (Extended Hours)</option>
+                                    <option>24/7 (Always On)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800/50 rounded-lg p-6">
+                        <h3 class="font-semibold text-purple-300 mb-4">🎯 Targeting & Scripts</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Primary Script</span>
+                                <select class="bg-slate-700 text-white px-3 py-2 rounded text-sm">
+                                    <option>${campaignName.includes('HVAC') ? 'HVAC Maintenance Script v2.1' : 'New Customer Acquisition Script v1.8'}</option>
+                                    <option>Custom Script Template</option>
+                                </select>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Objection Handling Level</span>
+                                <select class="bg-slate-700 text-white px-3 py-2 rounded text-sm">
+                                    <option>Standard</option>
+                                    <option>Aggressive</option>
+                                    <option>Gentle</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4 mt-8">
+                    <button onclick="this.closest('[style*=\\"position: fixed\\"]').remove()" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        Cancel
+                    </button>
+                    <button onclick="saveCampaignSettings('${campaignName}', this)" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-slate-500 to-slate-700 hover:from-slate-600 hover:to-slate-800 text-white rounded-lg font-bold transition-all duration-300 shadow-lg">
+                        💾 Save Settings
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function confirmPauseCampaign(campaignName, button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Pausing...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.closest('[style*="position: fixed"]').remove();
+                showNotification(`⏸️ ${campaignName} campaign has been paused successfully!`, 'success');
+                
+                // Update the campaign status in the UI
+                updateCampaignStatus(campaignName, 'paused');
+            }, 2000);
+        }
+        
+        function confirmResumeCampaign(campaignName, button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Resuming...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.closest('[style*="position: fixed"]').remove();
+                showNotification(`▶️ ${campaignName} campaign has been resumed successfully!`, 'success');
+                
+                // Update the campaign status in the UI
+                updateCampaignStatus(campaignName, 'active');
+            }, 2000);
+        }
+        
+        function saveCampaignSettings(campaignName, button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.closest('[style*="position: fixed"]').remove();
+                showNotification(`⚙️ ${campaignName} settings saved successfully!`, 'success');
+            }, 1500);
+        }
+        
+        function updateCampaignStatus(campaignName, status) {
+            // This would update the campaign status in the UI
+            // For now, just log the status change
+            console.log(`📊 Campaign status updated: ${campaignName} is now ${status}`);
+        }
+        
+        function openCampaignAnalytics(campaignName) {
+            // Close current modal and open analytics
+            document.querySelector('[style*="position: fixed"]').remove();
+            
+            setTimeout(() => {
+                showAnalyticsDashboard();
+            }, 300);
         }
         
         // SIMPLE VOICE BUTTON HANDLER - Direct onclick approach
