@@ -1509,190 +1509,137 @@
                     });
                 }
                 
-                // Function to show voice customizer
+                // Function to show voice customizer - FIXED FOR MOBILE
                 function showVoiceCustomizer(voiceType) {
                     console.log('⚙️ Opening customizer for:', voiceType);
                     
                     // Remove existing customizer
-                    const existing = document.getElementById('voice-customizer-modal');
-                    if (existing) existing.remove();
+                    try {
+                        var existing = document.getElementById('voice-customizer-modal');
+                        if (existing) existing.remove();
+                    } catch(e) { console.log('No existing modal to remove'); }
                     
-                    // Create customizer modal
-                    const custModal = document.createElement('div');
+                    // Simple approach - use innerHTML with escaped content
+                    var custModal = document.createElement('div');
                     custModal.id = 'voice-customizer-modal';
-                    custModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+                    custModal.style.position = 'fixed';
+                    custModal.style.top = '0';
+                    custModal.style.left = '0';
+                    custModal.style.width = '100%';
+                    custModal.style.height = '100%';
+                    custModal.style.background = 'rgba(0, 0, 0, 0.95)';
+                    custModal.style.zIndex = '9999999';
+                    custModal.style.display = 'flex';
+                    custModal.style.alignItems = 'center';
+                    custModal.style.justifyContent = 'center';
+                    custModal.style.padding = '20px';
                     
-                    const custContent = document.createElement('div');
-                    custContent.style.cssText = 'background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569;';
+                    var voiceName = voiceType === 'sarah' ? 'Sarah (Sofia Vergara Style)' : 'Danny (Benicio Del Toro Style)';
+                    var settings = voiceSettings[voiceType];
                     
-                    const voiceName = voiceType === 'sarah' ? 'Sarah (Sofia Vergara Style)' : 'Danny (Benicio Del Toro Style)';
-                    const settings = voiceSettings[voiceType];
-                    
-                    // Build customizer HTML using DOM elements for better compatibility
-                    var titleDiv = document.createElement('div');
-                    titleDiv.style.cssText = 'text-align: center; margin-bottom: 30px;';
-                    var titleH2 = document.createElement('h2');
-                    titleH2.style.cssText = 'margin: 0; color: #60a5fa; font-size: 24px;';
-                    titleH2.textContent = '⚙️ Customize ' + voiceName;
-                    titleDiv.appendChild(titleH2);
+                    // Build HTML safely
+                    var htmlContent = '<div style="background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569; position: relative;">';
+                    htmlContent += '<h2 style="margin: 0 0 30px 0; color: #60a5fa; font-size: 24px; text-align: center;">⚙️ Customize ' + voiceName + '</h2>';
                     
                     // Pace selector
-                    var paceDiv = document.createElement('div');
-                    paceDiv.style.cssText = 'margin: 20px 0;';
-                    var paceLabel = document.createElement('label');
-                    paceLabel.style.cssText = 'display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;';
-                    paceLabel.textContent = '🎵 Speaking Pace:';
-                    var paceSelect = document.createElement('select');
-                    paceSelect.id = 'pace-select';
-                    paceSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;';
+                    htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎵 Speaking Pace:</label>';
+                    htmlContent += '<select id="pace-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+                    htmlContent += '<option value="slow"' + (settings.pace === 'slow' ? ' selected' : '') + '>🐢 Slow &amp; Clear</option>';
+                    htmlContent += '<option value="normal"' + (settings.pace === 'normal' ? ' selected' : '') + '>⚡ Normal Pace</option>';
+                    htmlContent += '<option value="fast"' + (settings.pace === 'fast' ? ' selected' : '') + '>🚀 Fast &amp; Energetic</option>';
+                    htmlContent += '</select></div>';
                     
-                    var paceOptions = [
-                        {value: 'slow', text: '🐢 Slow & Clear'},
-                        {value: 'normal', text: '⚡ Normal Pace'},
-                        {value: 'fast', text: '🚀 Fast & Energetic'}
-                    ];
-                    paceOptions.forEach(function(opt) {
-                        var option = document.createElement('option');
-                        option.value = opt.value;
-                        option.textContent = opt.text;
-                        if (settings.pace === opt.value) option.selected = true;
-                        paceSelect.appendChild(option);
-                    });
-                    
-                    paceDiv.appendChild(paceLabel);
-                    paceDiv.appendChild(paceSelect);
-                    
-                    // Tone selector
-                    var toneDiv = document.createElement('div');
-                    toneDiv.style.cssText = 'margin: 20px 0;';
-                    var toneLabel = document.createElement('label');
-                    toneLabel.style.cssText = 'display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;';
-                    toneLabel.textContent = '🎭 Voice Tone:';
-                    var toneSelect = document.createElement('select');
-                    toneSelect.id = 'tone-select';
-                    toneSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;';
-                    
-                    var toneOptions = [
-                        {value: 'professional', text: '💼 Professional'},
-                        {value: 'friendly', text: '😊 Friendly'},
-                        {value: 'warm', text: '🤗 Warm & Caring'},
-                        {value: 'enthusiastic', text: '🎉 Enthusiastic'}
-                    ];
-                    toneOptions.forEach(function(opt) {
-                        var option = document.createElement('option');
-                        option.value = opt.value;
-                        option.textContent = opt.text;
-                        if (settings.tone === opt.value) option.selected = true;
-                        toneSelect.appendChild(option);
-                    });
-                    
-                    toneDiv.appendChild(toneLabel);
-                    toneDiv.appendChild(toneSelect);
+                    // Tone selector  
+                    htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎭 Voice Tone:</label>';
+                    htmlContent += '<select id="tone-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+                    htmlContent += '<option value="professional"' + (settings.tone === 'professional' ? ' selected' : '') + '>💼 Professional</option>';
+                    htmlContent += '<option value="friendly"' + (settings.tone === 'friendly' ? ' selected' : '') + '>😊 Friendly</option>';
+                    htmlContent += '<option value="warm"' + (settings.tone === 'warm' ? ' selected' : '') + '>🤗 Warm &amp; Caring</option>';
+                    htmlContent += '<option value="enthusiastic"' + (settings.tone === 'enthusiastic' ? ' selected' : '') + '>🎉 Enthusiastic</option>';
+                    htmlContent += '</select></div>';
                     
                     // Accent selector
-                    var accentDiv = document.createElement('div');
-                    accentDiv.style.cssText = 'margin: 20px 0;';
-                    var accentLabel = document.createElement('label');
-                    accentLabel.style.cssText = 'display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;';
-                    accentLabel.textContent = '🌴 Miami Accent Strength:';
-                    var accentSelect = document.createElement('select');
-                    accentSelect.id = 'accent-select';
-                    accentSelect.style.cssText = 'width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;';
-                    
-                    var accentOptions = [
-                        {value: 'subtle', text: '🌊 Subtle Miami Touch'},
-                        {value: 'moderate', text: '🏖️ Moderate Miami Accent'},
-                        {value: 'strong', text: '🎺 Strong Miami Flavor'}
-                    ];
-                    accentOptions.forEach(function(opt) {
-                        var option = document.createElement('option');
-                        option.value = opt.value;
-                        option.textContent = opt.text;
-                        var isSelected = settings.accent === opt.value || 
-                                        (opt.value === 'subtle' && (settings.accent === 'miami-subtle' || settings.accent === 'subtle')) ||
-                                        (opt.value === 'moderate' && (settings.accent === 'miami-latino' || settings.accent === 'moderate'));
-                        if (isSelected) option.selected = true;
-                        accentSelect.appendChild(option);
-                    });
-                    
-                    accentDiv.appendChild(accentLabel);
-                    accentDiv.appendChild(accentSelect);
+                    htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🌴 Miami Accent Strength:</label>';
+                    htmlContent += '<select id="accent-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+                    var subtleSelected = settings.accent === 'subtle' || settings.accent === 'miami-subtle';
+                    var moderateSelected = settings.accent === 'moderate' || settings.accent === 'miami-latino';
+                    var strongSelected = settings.accent === 'strong';
+                    htmlContent += '<option value="subtle"' + (subtleSelected ? ' selected' : '') + '>🌊 Subtle Miami Touch</option>';
+                    htmlContent += '<option value="moderate"' + (moderateSelected ? ' selected' : '') + '>🏖️ Moderate Miami Accent</option>';
+                    htmlContent += '<option value="strong"' + (strongSelected ? ' selected' : '') + '>🎺 Strong Miami Flavor</option>';
+                    htmlContent += '</select></div>';
                     
                     // Buttons
-                    var buttonsDiv = document.createElement('div');
-                    buttonsDiv.style.cssText = 'display: flex; gap: 15px; margin-top: 30px;';
-                    
-                    var testBtn = document.createElement('button');
-                    testBtn.id = 'test-custom-voice';
-                    testBtn.style.cssText = 'flex: 1; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;';
-                    testBtn.textContent = '🎤 Test Custom Voice';
-                    
-                    var saveBtn = document.createElement('button');
-                    saveBtn.id = 'save-voice-settings';
-                    saveBtn.style.cssText = 'flex: 1; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;';
-                    saveBtn.textContent = '✅ Save Settings';
-                    
-                    buttonsDiv.appendChild(testBtn);
-                    buttonsDiv.appendChild(saveBtn);
+                    htmlContent += '<div style="display: flex; gap: 15px; margin-top: 30px;">';
+                    htmlContent += '<button id="test-custom-voice-' + voiceType + '" onclick="testCustomVoice(\'' + voiceType + '\')" style="flex: 1; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">🎤 Test Custom Voice</button>';
+                    htmlContent += '<button id="save-voice-settings-' + voiceType + '" onclick="saveVoiceSettings(\'' + voiceType + '\')" style="flex: 1; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">✅ Save Settings</button>';
+                    htmlContent += '</div>';
                     
                     // Close button
-                    var closeBtn = document.createElement('button');
-                    closeBtn.style.cssText = 'position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;';
-                    closeBtn.textContent = '✕';
-                    closeBtn.onclick = function() {
-                        document.getElementById('voice-customizer-modal').remove();
-                    };
+                    htmlContent += '<button onclick="document.getElementById(\'voice-customizer-modal\').remove();" style="position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;">✕</button>';
+                    htmlContent += '</div>';
                     
-                    // Assemble all elements
-                    custContent.appendChild(titleDiv);
-                    custContent.appendChild(paceDiv);
-                    custContent.appendChild(toneDiv);
-                    custContent.appendChild(accentDiv);
-                    custContent.appendChild(buttonsDiv);
-                    custContent.appendChild(closeBtn);
-                    
-                    // Add event listeners
-                    custModal.appendChild(custContent);
+                    custModal.innerHTML = htmlContent;
                     document.body.appendChild(custModal);
+                }
+                
+                // Helper functions for voice customizer
+                function testCustomVoice(voiceType) {
+                    var paceSelect = document.getElementById('pace-select-' + voiceType);
+                    var toneSelect = document.getElementById('tone-select-' + voiceType);
+                    var accentSelect = document.getElementById('accent-select-' + voiceType);
+                    var testBtn = document.getElementById('test-custom-voice-' + voiceType);
                     
-                    // Test custom voice button event listener
-                    testBtn.onclick = function() {
-                        var pace = paceSelect.value;
-                        var tone = toneSelect.value; 
-                        var accent = accentSelect.value;
-                        
-                        var testText = voiceType === 'sarah' ? 
-                            'Hi there! This is Sarah with your customized voice settings. How does this sound for your HVAC campaigns?' :
-                            '¡Hola! Danny here with your custom voice. This is how I will sound with your new settings, amigo!';
-                            
-                        var requirements = tone + ' ' + (voiceType === 'sarah' ? 'female' : 'male') + ' voice with ' + accent + ' Miami accent, ' + pace + ' speaking pace. ' + (voiceType === 'sarah' ? 'Sofia Vergara' : 'Benicio Del Toro') + ' style personality.';
-                        
-                        this.textContent = '🎵 Testing...';
-                        var buttonRef = this;
-                        playAIVoice(testText, requirements, voiceType + '_custom_test.mp3', function() {
-                            buttonRef.textContent = '🎤 Test Custom Voice';
-                        });
+                    if (!paceSelect || !toneSelect || !accentSelect) {
+                        console.error('Voice customizer elements not found');
+                        return;
+                    }
+                    
+                    var pace = paceSelect.value;
+                    var tone = toneSelect.value;
+                    var accent = accentSelect.value;
+                    
+                    var testText = voiceType === 'sarah' ? 
+                        'Hi there! This is Sarah with your customized voice settings. How does this sound for your HVAC campaigns?' :
+                        '¡Hola! Danny here with your custom voice. This is how I will sound with your new settings, amigo!';
+                    
+                    var requirements = tone + ' ' + (voiceType === 'sarah' ? 'female' : 'male') + ' voice with ' + accent + ' Miami accent, ' + pace + ' speaking pace. ' + (voiceType === 'sarah' ? 'Sofia Vergara' : 'Benicio Del Toro') + ' style personality.';
+                    
+                    testBtn.textContent = '🎵 Testing...';
+                    playAIVoice(testText, requirements, voiceType + '_custom_test.mp3', function() {
+                        testBtn.textContent = '🎤 Test Custom Voice';
+                    });
+                }
+                
+                function saveVoiceSettings(voiceType) {
+                    var paceSelect = document.getElementById('pace-select-' + voiceType);
+                    var toneSelect = document.getElementById('tone-select-' + voiceType);
+                    var accentSelect = document.getElementById('accent-select-' + voiceType);
+                    
+                    if (!paceSelect || !toneSelect || !accentSelect) {
+                        console.error('Voice customizer elements not found');
+                        return;
+                    }
+                    
+                    voiceSettings[voiceType] = {
+                        pace: paceSelect.value,
+                        tone: toneSelect.value,
+                        accent: accentSelect.value
                     };
                     
-                    // Save settings button event listener
-                    saveBtn.onclick = function() {
-                        voiceSettings[voiceType] = {
-                            pace: paceSelect.value,
-                            tone: toneSelect.value,
-                            accent: accentSelect.value
-                        };
-                        
-                        // Save to localStorage for persistence
-                        try {
-                            localStorage.setItem('prospector_voice_settings', JSON.stringify(voiceSettings));
-                            console.log('✅ Voice settings saved to localStorage');
-                        } catch (e) {
-                            console.log('⚠️ Could not save to localStorage:', e);
-                        }
-                        
-                        alert('✅ Voice settings saved for ' + voiceName + '!\n\nPace: ' + voiceSettings[voiceType].pace + '\nTone: ' + voiceSettings[voiceType].tone + '\nAccent: ' + voiceSettings[voiceType].accent);
-                        custModal.remove();
-                    };
+                    // Save to localStorage for persistence
+                    try {
+                        localStorage.setItem('prospector_voice_settings', JSON.stringify(voiceSettings));
+                        console.log('✅ Voice settings saved to localStorage');
+                    } catch (e) {
+                        console.log('⚠️ Could not save to localStorage:', e);
+                    }
+                    
+                    var voiceName = voiceType === 'sarah' ? 'Sarah (Sofia Vergara Style)' : 'Danny (Benicio Del Toro Style)';
+                    alert('✅ Voice settings saved for ' + voiceName + '!\n\nPace: ' + voiceSettings[voiceType].pace + '\nTone: ' + voiceSettings[voiceType].tone + '\nAccent: ' + voiceSettings[voiceType].accent);
+                    
+                    var modal = document.getElementById('voice-customizer-modal');
+                    if (modal) modal.remove();
                 }
                 
                 // IMMEDIATE Voice Management Button Fix
