@@ -243,6 +243,22 @@
                 >
                     <i class="fas fa-stop mr-2"></i>🛑 EMERGENCY STOP
                 </button>
+                <div class="flex gap-2 mt-2">
+                    <button 
+                        onclick="muteAllAudio()" 
+                        class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded-lg font-semibold text-xs transition-colors"
+                        title="Mute all audio immediately"
+                    >
+                        🔇 MUTE
+                    </button>
+                    <button 
+                        onclick="showFloatingEmergencyStop()" 
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded-lg font-semibold text-xs transition-colors"
+                        title="Show floating emergency controls"
+                    >
+                        📍 FLOAT
+                    </button>
+                </div>
                 <p class="text-xs text-red-400 text-center mt-1 opacity-75">ESC, SPACEBAR, or Ctrl+Shift+S</p>
             </div>
             
@@ -5842,7 +5858,12 @@ I'd love to schedule..."></textarea>
             console.log('🚨 EMERGENCY STOP - NUCLEAR OPTION - Stopping EVERYTHING immediately');
             
             try {
+                // 0. IMMEDIATE MUTE - Stop sound instantly
+                console.log('🚨 Step 0: IMMEDIATE MUTE');
+                muteAllAudio();
+                
                 // 1. Call existing stop function first
+                console.log('🚨 Step 1: Calling existing stop function');
                 stopCurrentVoice();
                 
                 // 2. Stop speech synthesis API
@@ -8973,8 +8994,10 @@ I'd love to schedule..."></textarea>
         window.openAIScriptImport = openAIScriptImport;
         window.openAIGuildTraining = openAIGuildTraining;
         
-        // Emergency Stop Function
+        // Emergency Stop Functions
         window.emergencyStopAllVoices = emergencyStopAllVoices;
+        window.muteAllAudio = muteAllAudio;
+        window.showFloatingEmergencyStop = showFloatingEmergencyStop;
         window.viewScript = viewScript;
         window.useScript = useScript;
         window.optimizeScript = optimizeScript;
@@ -9037,6 +9060,21 @@ I'd love to schedule..."></textarea>
             #floating-stop-voice:hover {
                 box-shadow: 0 25px 50px rgba(239, 68, 68, 0.4);
             }
+            
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            
+            #floating-emergency-stop {
+                animation: pulse 2s infinite;
+            }
+            
+            #floating-emergency-stop button:hover {
+                transform: scale(1.1);
+                transition: transform 0.2s;
+            }
         `;
         var styleSheet = document.createElement('style');
         styleSheet.textContent = floatingStopCSS;
@@ -9070,14 +9108,45 @@ I'd love to schedule..."></textarea>
         window.Audio = function() {
             var audio = new originalAudio();
             activeAudioElements.push(audio);
-            console.log('🎵 New audio element created, total active:', activeAudioElements.length);
+            console.log('🎵 NEW AUDIO CREATED - Total active:', activeAudioElements.length);
+            console.log('🎵 Audio src will be:', arguments[0] || 'No src provided');
+            
+            // Show floating emergency stop when audio starts playing
+            audio.addEventListener('play', function() {
+                console.log('🎵 AUDIO STARTED PLAYING - Showing emergency stop button');
+                showFloatingEmergencyStop();
+                showNotification('🎵 Audio playing - Use emergency stop buttons to interrupt!', 'info');
+            });
             
             // Clean up when audio ends
             audio.addEventListener('ended', function() {
                 var index = activeAudioElements.indexOf(audio);
                 if (index > -1) {
                     activeAudioElements.splice(index, 1);
-                    console.log('🎵 Audio element removed, remaining:', activeAudioElements.length);
+                    console.log('🎵 Audio ended - Remaining:', activeAudioElements.length);
+                }
+                
+                // Remove floating stop if no more audio
+                if (activeAudioElements.length === 0) {
+                    var floatingStop = document.getElementById('floating-emergency-stop');
+                    if (floatingStop) {
+                        floatingStop.remove();
+                        console.log('🎵 All audio ended - Removed floating stop button');
+                    }
+                }
+            });
+            
+            // Track paused audio
+            audio.addEventListener('pause', function() {
+                console.log('🎵 Audio paused');
+            });
+            
+            // Track audio errors
+            audio.addEventListener('error', function(e) {
+                console.error('🎵 Audio error:', e);
+                var index = activeAudioElements.indexOf(audio);
+                if (index > -1) {
+                    activeAudioElements.splice(index, 1);
                 }
             });
             
@@ -9098,6 +9167,93 @@ I'd love to schedule..."></textarea>
                 }
             }
             activeAudioElements = []; // Clear the array
+        }
+        
+        // IMMEDIATE MUTE FUNCTION - mutes all audio instantly
+        function muteAllAudio() {
+            console.log('🔇 MUTING ALL AUDIO IMMEDIATELY');
+            
+            // Mute all tracked audio elements
+            for (var i = 0; i < activeAudioElements.length; i++) {
+                try {
+                    activeAudioElements[i].volume = 0;
+                    activeAudioElements[i].muted = true;
+                } catch (e) {
+                    console.log('⚠️ Could not mute audio ' + i);
+                }
+            }
+            
+            // Mute all audio elements on page
+            var allAudio = document.querySelectorAll('audio, video');
+            for (var j = 0; j < allAudio.length; j++) {
+                try {
+                    allAudio[j].volume = 0;
+                    allAudio[j].muted = true;
+                } catch (e) {
+                    console.log('⚠️ Could not mute element ' + j);
+                }
+            }
+            
+            showNotification('🔇 ALL AUDIO MUTED IMMEDIATELY', 'success');
+        }
+        
+        // Create floating emergency stop that appears during voice playback
+        function createFloatingEmergencyStop() {
+            var existingStop = document.getElementById('floating-emergency-stop');
+            if (existingStop) {
+                existingStop.remove();
+            }
+            
+            var floatingStop = document.createElement('div');
+            floatingStop.id = 'floating-emergency-stop';
+            floatingStop.innerHTML = `
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="emergencyStopAllVoices()" style="
+                        background: #dc2626; color: white; border: none; padding: 12px 16px; 
+                        border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
+                        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+                    ">
+                        🛑 STOP NOW
+                    </button>
+                    <button onclick="muteAllAudio()" style="
+                        background: #7c2d12; color: white; border: none; padding: 12px 16px; 
+                        border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
+                        box-shadow: 0 4px 15px rgba(124, 45, 18, 0.4);
+                    ">
+                        🔇 MUTE
+                    </button>
+                </div>
+            `;
+            
+            floatingStop.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 16px;
+                border-radius: 12px;
+                border: 2px solid #dc2626;
+                backdrop-filter: blur(10px);
+                animation: pulse 2s infinite;
+            `;
+            
+            document.body.appendChild(floatingStop);
+            
+            // Auto-remove after 30 seconds if still there
+            setTimeout(function() {
+                if (document.getElementById('floating-emergency-stop')) {
+                    document.getElementById('floating-emergency-stop').remove();
+                }
+            }, 30000);
+            
+            return floatingStop;
+        }
+        
+        // Show floating stop whenever voice starts
+        function showFloatingEmergencyStop() {
+            createFloatingEmergencyStop();
+            console.log('🚨 Floating emergency stop created - visible in top-right corner');
         }
     </script>
     
