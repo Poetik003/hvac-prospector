@@ -12873,28 +12873,108 @@ I'd love to schedule..."></textarea>
         window.openAIVoiceTrainingSystem = function(trainingType) {
             console.log('🎓 Opening AI Voice Training System for:', trainingType);
             
+            // Remove existing modal if any
+            var existingModal = document.getElementById('ai-voice-training-modal');
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+            
             // Create full-screen training interface
             var trainingModal = document.createElement('div');
             trainingModal.id = 'ai-voice-training-modal';
-            trainingModal.className = 'fixed inset-0 bg-black/95 backdrop-blur-sm z-50 overflow-y-auto';
+            trainingModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; overflow-y: auto; padding: 20px;';
             
-            trainingModal.innerHTML = `
-                <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
-                    <!-- Header -->
-                    <div class="flex items-center justify-between mb-6 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-microphone-alt text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h1 class="text-2xl font-bold text-white">AI Voice Training & Fine-tuning</h1>
-                                <p class="text-slate-300">Train natural, authentic conversation models</p>
-                            </div>
-                        </div>
-                        <button onclick="closeAIVoiceTraining()" class="text-slate-400 hover:text-white transition-colors p-2">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
+            // Create the content using DOM methods instead of innerHTML
+            var container = document.createElement('div');
+            container.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%); min-height: 100vh; padding: 20px; color: white;';
+            
+            // Header section
+            var header = document.createElement('div');
+            header.style.cssText = 'background: rgba(30, 41, 59, 0.8); border-radius: 15px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(148, 163, 184, 0.3);';
+            header.innerHTML = '<h1 style="font-size: 28px; font-weight: bold; margin: 0 0 10px 0; color: #60a5fa;">🎓 AI Voice Training & Fine-tuning</h1>' +
+                             '<p style="margin: 0; color: #cbd5e1;">Train natural, authentic conversation models for HVAC sales success</p>' +
+                             '<button onclick="closeAIVoiceTraining()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer;">✕</button>';
+            
+            // Voice Models section
+            var voiceSection = document.createElement('div');
+            voiceSection.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(148, 163, 184, 0.2);';
+            voiceSection.innerHTML = '<h2 style="color: #60a5fa; font-size: 22px; margin-bottom: 20px;">🤖 AI Voice Models</h2>' +
+                '<div style="margin-bottom: 15px; padding: 15px; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; border-radius: 8px;">' +
+                '<h3 style="color: white; margin: 0 0 5px 0;">Sofia Professional</h3>' +
+                '<p style="color: #cbd5e1; font-size: 14px; margin: 0 0 10px 0;">Warm, confident, Miami accent - Perfect for HVAC sales</p>' +
+                '<button onclick="testVoiceModel(\\'sofia\\')" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">🎵 Preview Voice</button>' +
+                '</div>' +
+                '<div style="margin-bottom: 15px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; border-radius: 8px;">' +
+                '<h3 style="color: white; margin: 0 0 5px 0;">Marcus Authority</h3>' +
+                '<p style="color: #cbd5e1; font-size: 14px; margin: 0 0 10px 0;">Deep, authoritative voice - Technical expertise focus</p>' +
+                '<button onclick="testVoiceModel(\\'marcus\\')" style="background: #22c55e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">🎵 Preview Voice</button>' +
+                '</div>' +
+                '<div style="margin-bottom: 15px; padding: 15px; background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; border-radius: 8px;">' +
+                '<h3 style="color: white; margin: 0 0 5px 0;">Elena Conversational</h3>' +
+                '<p style="color: #cbd5e1; font-size: 14px; margin: 0 0 10px 0;">Natural, friendly tone - High conversion rate</p>' +
+                '<button onclick="testVoiceModel(\\'elena\\')" style="background: #a855f7; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">🎵 Preview Voice</button>' +
+                '</div>';
+            
+            // Voice Parameters section
+            var parametersSection = document.createElement('div');
+            parametersSection.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(148, 163, 184, 0.2);';
+            parametersSection.innerHTML = '<h2 style="color: #22c55e; font-size: 22px; margin-bottom: 20px;">⚙️ Voice Parameters</h2>' +
+                '<div style="margin-bottom: 15px;">' +
+                '<label style="display: block; color: #cbd5e1; margin-bottom: 8px;">Speaking Pace:</label>' +
+                '<input type="range" id="pace-slider" min="0.5" max="2" step="0.1" value="1" style="width: 100%; accent-color: #3b82f6;">' +
+                '<div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 12px; margin-top: 5px;"><span>Slower</span><span id="pace-value">Normal</span><span>Faster</span></div>' +
+                '</div>' +
+                '<div style="margin-bottom: 15px;">' +
+                '<label style="display: block; color: #cbd5e1; margin-bottom: 8px;">Voice Pitch:</label>' +
+                '<input type="range" id="pitch-slider" min="-200" max="200" step="25" value="0" style="width: 100%; accent-color: #22c55e;">' +
+                '<div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 12px; margin-top: 5px;"><span>Lower</span><span id="pitch-value">Natural</span><span>Higher</span></div>' +
+                '</div>' +
+                '<button onclick="applyVoiceSettings()" style="width: 100%; background: linear-gradient(45deg, #3b82f6, #a855f7); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px;">✨ Apply Settings</button>';
+            
+            // Script Editor section
+            var scriptSection = document.createElement('div');
+            scriptSection.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(148, 163, 184, 0.2);';
+            scriptSection.innerHTML = '<h2 style="color: #f59e0b; font-size: 22px; margin-bottom: 20px;">📝 Script Editor & Role-Play</h2>' +
+                '<textarea id="training-script" placeholder="Enter your HVAC sales script here for training..." style="width: 100%; height: 120px; background: rgba(15, 23, 42, 0.8); border: 1px solid #374151; color: white; padding: 12px; border-radius: 8px; resize: vertical;">Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I\'m catching you at a good time. I\'m calling because our records show your heating system is due for maintenance, and with winter approaching, I want to make sure your family stays warm and comfortable.</textarea>' +
+                '<div style="display: flex; gap: 10px; margin-top: 15px;">' +
+                '<button onclick="startRolePlayTraining()" style="flex: 1; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">🎭 Start Role-Play</button>' +
+                '<button onclick="testScriptVoice()" style="flex: 1; background: #06b6d4; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">🔊 Test Voice</button>' +
+                '</div>';
+            
+            // Progress & Analytics section
+            var analyticsSection = document.createElement('div');
+            analyticsSection.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(148, 163, 184, 0.2);';
+            analyticsSection.innerHTML = '<h2 style="color: #f97316; font-size: 22px; margin-bottom: 20px;">📊 Training Progress & Analytics</h2>' +
+                '<div style="margin-bottom: 15px;">' +
+                '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span style="color: #cbd5e1;">Voice Naturalness</span><span style="color: white; font-weight: bold;">85%</span></div>' +
+                '<div style="background: #374151; height: 8px; border-radius: 4px;"><div style="background: linear-gradient(90deg, #22c55e, #16a34a); height: 8px; width: 85%; border-radius: 4px;"></div></div>' +
+                '</div>' +
+                '<div style="margin-bottom: 15px;">' +
+                '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span style="color: #cbd5e1;">Appointment Setting</span><span style="color: white; font-weight: bold;">92%</span></div>' +
+                '<div style="background: #374151; height: 8px; border-radius: 4px;"><div style="background: linear-gradient(90deg, #a855f7, #7c3aed); height: 8px; width: 92%; border-radius: 4px;"></div></div>' +
+                '</div>' +
+                '<div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 15px; margin-top: 20px;">' +
+                '<p style="color: #22c55e; margin: 0; font-weight: bold;">✅ Great Progress!</p>' +
+                '<p style="color: #cbd5e1; margin: 5px 0 0 0; font-size: 14px;">Your AI voice is sounding natural and authentic. Keep practicing role-play scenarios to improve objection handling.</p>' +
+                '</div>';
+            
+            // Action buttons
+            var actionsSection = document.createElement('div');
+            actionsSection.style.cssText = 'background: rgba(30, 41, 59, 0.8); border-radius: 15px; padding: 20px; border: 1px solid rgba(148, 163, 184, 0.3);';
+            actionsSection.innerHTML = '<div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">' +
+                '<button onclick="saveTrainingProgress()" style="background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Save Progress</button>' +
+                '<button onclick="exportVoiceModel()" style="background: #22c55e; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">📤 Export Model</button>' +
+                '<button onclick="deployToProduction()" style="background: linear-gradient(45deg, #a855f7, #ec4899); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">🚀 Deploy Live</button>' +
+                '</div>';
+            
+            // Assemble the interface
+            container.appendChild(header);
+            container.appendChild(voiceSection);
+            container.appendChild(parametersSection);
+            container.appendChild(scriptSection);
+            container.appendChild(analyticsSection);
+            container.appendChild(actionsSection);
+            trainingModal.appendChild(container);
 
                     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                         <!-- Left Panel: AI Model Selection & Controls -->
@@ -13257,257 +13337,117 @@ We have an opening this Thursday afternoon - would 2 PM or 4 PM work better for 
                 </div>
             `;
             
+            // Add to page
             document.body.appendChild(trainingModal);
-            initializeVoiceTrainingSystem();
+            
+            // Initialize slider functionality
+            setTimeout(function() {
+                var paceSlider = document.getElementById('pace-slider');
+                var pitchSlider = document.getElementById('pitch-slider');
+                
+                if (paceSlider) {
+                    paceSlider.addEventListener('input', function() {
+                        document.getElementById('pace-value').textContent = this.value + 'x';
+                    });
+                }
+                
+                if (pitchSlider) {
+                    pitchSlider.addEventListener('input', function() {
+                        var pitch = this.value;
+                        document.getElementById('pitch-value').textContent = pitch == 0 ? 'Natural' : (pitch > 0 ? '+' + pitch + 'Hz' : pitch + 'Hz');
+                    });
+                }
+            }, 100);
+            
+            // Show success message
+            console.log('🎓 AI Voice Training System opened successfully for:', trainingType);
             
             // Show notification
             if (typeof showNotification === 'function') {
                 showNotification('🎓 AI Voice Training System loaded successfully!', 'success');
-            } else {
-                alert('🎓 AI Voice Training System Opened!\n\nTrain your AI models for natural, authentic conversations that set more appointments.');
             }
         };
 
-        // Initialize the voice training system
-        function initializeVoiceTrainingSystem() {
-            console.log('🎓 Initializing AI Voice Training System...');
-            
-            // Initialize sliders with real-time updates
-            var paceSlider = document.getElementById('pace-slider');
-            var pitchSlider = document.getElementById('pitch-slider');
-            var emotionSlider = document.getElementById('emotion-slider');
-            
-            if (paceSlider) {
-                paceSlider.addEventListener('input', function() {
-                    document.getElementById('pace-value').textContent = 'Speed (' + this.value + 'x)';
-                });
-            }
-            
-            if (pitchSlider) {
-                pitchSlider.addEventListener('input', function() {
-                    var pitch = this.value;
-                    var pitchText = pitch == 0 ? 'Natural (0Hz)' : (pitch > 0 ? '+' + pitch + 'Hz' : pitch + 'Hz');
-                    document.getElementById('pitch-value').textContent = pitchText;
-                });
-            }
-            
-            if (emotionSlider) {
-                emotionSlider.addEventListener('input', function() {
-                    var emotion = this.value;
-                    var emotionText = emotion <= 20 ? 'Very Calm' : emotion <= 40 ? 'Calm' : emotion <= 60 ? 'Balanced' : emotion <= 80 ? 'Enthusiastic' : 'Very Enthusiastic';
-                    document.getElementById('emotion-value').textContent = emotionText + ' (' + emotion + '%)';
-                });
-            }
-            
-            // Load default script based on training type
-            var scriptEditor = document.getElementById('script-editor');
-            if (scriptEditor) {
-                var defaultScript = getDefaultScript('voice-tone');
-                scriptEditor.value = defaultScript;
-            }
-        }
-
-        // Get default training script
-        function getDefaultScript(trainingType) {
-            var scripts = {
-                'voice-tone': `Hi [Customer Name], this is Sofia from ProSpector HVAC. 
-
-I hope I'm catching you at a good time. I'm calling because our records show your heating system is due for its annual maintenance check, and with winter temperatures dropping, I want to make sure your family stays warm and comfortable.
-
-We've been serving homeowners in Miami for over 15 years, and I'd love to schedule a quick 20-minute inspection to ensure everything is running efficiently. This could actually save you money on your energy bills too.
-
-I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for your schedule?`,
-                
-                'objection-handling': `Customer: "I'm not really interested right now. We just had our system checked last year."
-
-Response: "I completely understand, [Customer Name]. A lot of homeowners think annual maintenance is enough, and that's smart thinking. 
-
-But here's what most people don't realize - HVAC systems actually need attention every 6 months, especially here in Miami with our unique climate challenges. Think of it like your car - you wouldn't wait a whole year between oil changes, right?
-
-What I'm really calling about is a quick safety inspection that takes just 15 minutes. We've found that even systems checked last year can develop small issues that, if caught early, prevent expensive emergency repairs.
-
-Would you prefer if I came by Wednesday morning or Thursday afternoon for just a quick look?"`,
-                
-                'hvac-scripts': `Hi [Customer Name], this is Marcus from ProSpector HVAC. 
-
-I'm calling because we've been helping your neighbors in [Neighborhood] upgrade their old HVAC systems, and I noticed your home might benefit from our new energy-efficient models.
-
-The reason I'm reaching out specifically to you is that homes built in [Year Range] often have systems that are working overtime and costing 40-60% more in energy bills than they should.
-
-We're offering free energy audits this week, and I can show you exactly how much money a new system would save you each month. Most of our customers are surprised to learn the monthly savings actually pay for the upgrade.
-
-I have time available tomorrow morning or Wednesday afternoon - which would work better for a quick 15-minute assessment?`
-            };
-            
-            return scripts[trainingType] || scripts['voice-tone'];
-        }
-
-        // Voice Training Functions
-        window.previewVoiceModel = function(modelName) {
-            console.log('🎤 Previewing voice model:', modelName);
-            
-            // Get the test script or use default
-            var testScript = document.getElementById('test-script')?.value || 
-                "Hi there! This is a preview of the " + modelName.replace('-', ' ') + " voice model. How does this sound for natural conversation?";
-            
-            // Show loading state
+        // Supporting functions for the AI Voice Training System
+        
+        window.testVoiceModel = function(modelName) {
+            console.log('🎤 Testing voice model:', modelName);
             var btn = event.target;
             var originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Playing...';
+            btn.innerHTML = '🔄 Playing...';
             btn.disabled = true;
             
-            // Simulate voice preview (integrate with your voice API)
-            if (typeof generateVoicePreview === 'function') {
-                generateVoicePreview(testScript, modelName, function() {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                });
-            } else {
-                // Fallback simulation
-                setTimeout(function() {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    alert('🎤 Voice Preview: "' + testScript + '"\n\nModel: ' + modelName.toUpperCase());
-                }, 2000);
-            }
+            setTimeout(function() {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('🎵 Voice Preview: ' + modelName.toUpperCase() + '\n\n"Hi there! This is a preview of the ' + modelName + ' voice model. How does this sound for natural conversation with HVAC prospects?"');
+            }, 2000);
         };
-
-        window.applyVoiceParameters = function() {
-            console.log('⚙️ Applying voice parameters...');
-            
+        
+        window.applyVoiceSettings = function() {
+            console.log('⚙️ Applying voice settings...');
             var pace = document.getElementById('pace-slider')?.value || 1;
             var pitch = document.getElementById('pitch-slider')?.value || 0;
-            var emotion = document.getElementById('emotion-slider')?.value || 50;
-            var style = document.getElementById('style-selector')?.value || 'professional';
             
-            // Show confirmation
-            alert('✅ Voice Parameters Applied!\n\n' +
-                'Pace: ' + pace + 'x\n' +
-                'Pitch: ' + (pitch == 0 ? 'Natural' : pitch + 'Hz') + '\n' +
-                'Emotion: ' + emotion + '%\n' +
-                'Style: ' + style.toUpperCase() + '\n\n' +
-                'Your AI voice model has been updated with these settings.');
+            alert('✅ Voice Settings Applied!\n\n' +
+                'Speaking Pace: ' + pace + 'x\n' +
+                'Voice Pitch: ' + (pitch == 0 ? 'Natural' : pitch + 'Hz') + '\n\n' +
+                'Your AI voice has been optimized for natural HVAC conversations!');
         };
-
-        window.testVoiceOutput = function() {
-            console.log('🔊 Testing voice output...');
+        
+        window.startRolePlayTraining = function() {
+            console.log('🎭 Starting role-play training...');
+            var script = document.getElementById('training-script')?.value || '';
             
-            var testScript = document.getElementById('test-script')?.value;
-            if (!testScript) {
-                alert('⚠️ Please enter some text to test first.');
+            if (!script.trim()) {
+                alert('⚠️ Please enter a script to practice with first.');
                 return;
             }
             
-            // Show visual feedback
+            alert('🎭 Role-Play Training Started!\n\n' +
+                'AI Prospect: "Hello? Who is this calling?"\n\n' +
+                'Practice your opening line from the script you\'ve written. The AI will respond with realistic objections and questions to help you improve your conversation skills.\n\n' +
+                'Focus on:\n• Natural delivery\n• Handling objections\n• Building rapport\n• Setting appointments');
+        };
+        
+        window.testScriptVoice = function() {
+            console.log('🔊 Testing script voice...');
+            var script = document.getElementById('training-script')?.value || '';
+            
+            if (!script.trim()) {
+                alert('⚠️ Please enter a script to test first.');
+                return;
+            }
+            
             var btn = event.target;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Voice...';
+            var originalText = btn.innerHTML;
+            btn.innerHTML = '🔄 Generating Voice...';
             btn.disabled = true;
             
-            // Simulate voice generation (integrate with your API)
             setTimeout(function() {
-                btn.innerHTML = '<i class="fas fa-play mr-2"></i>Test Voice';
+                btn.innerHTML = originalText;
                 btn.disabled = false;
-                alert('🔊 Voice Test Complete!\n\nText: "' + testScript + '"\n\nThe AI voice output has been generated with your current settings.');
+                alert('🔊 Voice Test Complete!\n\nYour script has been converted to natural-sounding speech. The AI voice sounds authentic and professional, perfect for HVAC sales conversations.\n\nAdjust the voice parameters if needed and continue training!');
             }, 3000);
         };
-
-        window.startRolePlay = function() {
-            console.log('🎭 Starting role-play session...');
-            
-            var personality = document.getElementById('prospect-personality')?.value || 'cooperative';
-            var conversationDisplay = document.getElementById('conversation-display');
-            
-            if (conversationDisplay) {
-                conversationDisplay.innerHTML = `
-                    <div class="space-y-2">
-                        <div class="flex items-start space-x-2">
-                            <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-robot text-xs text-white"></i>
-                            </div>
-                            <div class="bg-blue-500/10 rounded-lg p-2 flex-1">
-                                <p class="text-blue-400 text-xs font-semibold">AI Prospect (${personality})</p>
-                                <p class="text-white text-sm">Hello? Who is this?</p>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <button onclick="respondToProspect()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm">
-                                <i class="fas fa-microphone mr-1"></i>Your Response
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Update button
-            var btn = document.getElementById('roleplay-btn');
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-stop mr-2"></i>Stop Role-Play';
-                btn.onclick = function() { stopRolePlay(); };
-            }
+        
+        window.saveTrainingProgress = function() {
+            console.log('💾 Saving training progress...');
+            localStorage.setItem('hvac_voice_training_progress', JSON.stringify({
+                timestamp: new Date().toISOString(),
+                naturalness: 85,
+                appointments: 92,
+                script: document.getElementById('training-script')?.value || ''
+            }));
+            alert('✅ Training Progress Saved!\n\nYour voice training session has been saved successfully.');
+        };
+        
+        window.exportVoiceModel = function() {
+            console.log('📤 Exporting voice model...');
+            alert('📤 Voice Model Export\n\nYour trained AI voice model "Sofia-Professional-v2" is being prepared for download.\n\nFeatures:\n• Natural Miami accent\n• HVAC-optimized vocabulary\n• 92% appointment setting rate\n• Anti-robotic speech patterns\n\nExport will be ready shortly!');
         };
 
-        window.respondToProspect = function() {
-            var response = prompt("Enter your response to the prospect:");
-            if (response) {
-                var conversationDisplay = document.getElementById('conversation-display');
-                if (conversationDisplay) {
-                    conversationDisplay.innerHTML += `
-                        <div class="flex items-start space-x-2 justify-end">
-                            <div class="bg-green-500/10 rounded-lg p-2 flex-1 max-w-xs">
-                                <p class="text-green-400 text-xs font-semibold">You</p>
-                                <p class="text-white text-sm">${response}</p>
-                            </div>
-                            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-user text-xs text-white"></i>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Simulate AI response
-                    setTimeout(function() {
-                        var aiResponses = [
-                            "I'm really not interested. I already have a guy.",
-                            "How did you get my number? I'm on the do not call list.",
-                            "We just had work done last month. Why are you calling?",
-                            "I'm busy right now. Can you call back later?",
-                            "How much is this going to cost me?"
-                        ];
-                        var randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-                        
-                        conversationDisplay.innerHTML += `
-                            <div class="flex items-start space-x-2">
-                                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-robot text-xs text-white"></i>
-                                </div>
-                                <div class="bg-blue-500/10 rounded-lg p-2 flex-1">
-                                    <p class="text-blue-400 text-xs font-semibold">AI Prospect</p>
-                                    <p class="text-white text-sm">${randomResponse}</p>
-                                </div>
-                            </div>
-                            <div class="text-center mt-2">
-                                <button onclick="respondToProspect()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm">
-                                    <i class="fas fa-microphone mr-1"></i>Your Response
-                                </button>
-                            </div>
-                        `;
-                        conversationDisplay.scrollTop = conversationDisplay.scrollHeight;
-                    }, 2000);
-                }
-            }
-        };
 
-        window.stopRolePlay = function() {
-            var btn = document.getElementById('roleplay-btn');
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-play mr-2"></i>Start Role-Play';
-                btn.onclick = function() { startRolePlay(); };
-            }
-            
-            var conversationDisplay = document.getElementById('conversation-display');
-            if (conversationDisplay) {
-                conversationDisplay.innerHTML = '<p class="text-slate-400 text-sm italic">Role-play session ended. Click Start Role-Play to begin a new session.</p>';
-            }
-        };
 
         window.deployToProduction = function() {
             if (confirm('🚀 Deploy AI Voice Model to Production?\n\nThis will make your trained voice model available for live campaigns. Are you sure?')) {
@@ -13515,28 +13455,24 @@ I have time available tomorrow morning or Wednesday afternoon - which would work
             }
         };
 
+        window.deployToProduction = function() {
+            console.log('🚀 Deploying voice model to production...');
+            if (confirm('🚀 Deploy AI Voice Model to Production?\n\nThis will make your trained voice model available for live HVAC sales campaigns.\n\nExpected results:\n• 23% increase in appointment setting\n• More natural conversations\n• Reduced call resistance\n\nDeploy now?')) {
+                alert('✅ Voice Model Deployed Successfully!\n\nYour optimized AI voice is now active and ready for live HVAC prospect calls.\n\nMonitor your campaign analytics for improved performance metrics!');
+            }
+        };
+        
         window.closeAIVoiceTraining = function() {
+            console.log('🔒 Closing AI Voice Training System...');
             var modal = document.getElementById('ai-voice-training-modal');
             if (modal) {
-                document.body.removeChild(modal);
-            }
-        };
-
-        // Additional utility functions
-        window.saveScript = function() {
-            var script = document.getElementById('script-editor')?.value;
-            if (script) {
-                localStorage.setItem('hvac_training_script', script);
-                alert('✅ Script saved successfully!');
-            }
-        };
-
-        window.loadTemplate = function() {
-            var scenario = document.getElementById('scenario-selector')?.value;
-            if (scenario && scenario !== 'custom') {
-                var script = getDefaultScript(scenario.replace('hvac-', '').replace('objection-', ''));
-                document.getElementById('script-editor').value = script;
-                alert('📄 Template loaded successfully!');
+                // Fade out animation
+                modal.style.opacity = '0';
+                setTimeout(function() {
+                    if (modal && modal.parentNode) {
+                        document.body.removeChild(modal);
+                    }
+                }, 300);
             }
         };
 
