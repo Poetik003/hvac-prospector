@@ -1425,32 +1425,48 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 
                 const text = previewMessages[model] || `This is ${model} with customized voice settings.`;
                 
-                // Select different base voices based on customization settings for audible differences
+                // Select voice variations based on customization settings while maintaining consistency
                 let voiceName;
                 
+                // FIXED: Keep each voice model consistent - no more cross-voice switching
                 if (model === 'yeni') {
-                    if (accentStrength >= 75 || emotionalRange >= 80) {
-                        voiceName = 'yeni professional latina strong accent expressive'; // Triggers yeni with enhanced characteristics
+                    voiceName = 'yeni professional latina';
+                    // Add variation descriptors for audible differences within Yeni's voice
+                    if (accentStrength >= 75) {
+                        voiceName += ' strong miami accent expressive';
                     } else if (accentStrength <= 25) {
-                        voiceName = 'gabi friendly consultant neutral'; // Use gabi for neutral yeni
-                    } else {
-                        voiceName = 'yeni professional latina'; // Default yeni
+                        voiceName += ' neutral professional minimal accent';
+                    }
+                    if (emotionalRange >= 80) {
+                        voiceName += ' enthusiastic passionate energy';
+                    } else if (emotionalRange <= 30) {
+                        voiceName += ' calm measured reserved tone';
                     }
                 } else if (model === 'danny') {
+                    voiceName = 'danny bilingual specialist';
+                    // Add variation descriptors for audible differences within Danny's voice  
                     if (technicalVocab >= 75) {
-                        voiceName = 'pedro executive rodriguez authority'; // Use pedro for high-tech danny
+                        voiceName += ' technical authority expert level';
+                    } else if (technicalVocab <= 40) {
+                        voiceName += ' friendly approachable basic level';
+                    }
+                    if (accentStrength >= 75) {
+                        voiceName += ' strong latino bilingual accent';
                     } else if (accentStrength <= 30) {
-                        voiceName = 'gabi friendly consultant professional'; // Use gabi for neutral danny
-                    } else {
-                        voiceName = 'danny bilingual specialist'; // Default danny
+                        voiceName += ' subtle professional accent';
                     }
                 } else if (model === 'gabi') {
+                    voiceName = 'gabi friendly consultant';
+                    // Add variation descriptors for audible differences within Gabi's voice
                     if (emotionalRange >= 80) {
-                        voiceName = 'yeni professional latina expressive'; // Use yeni for high-emotion gabi
+                        voiceName += ' highly expressive enthusiastic';
                     } else if (emotionalRange <= 30) {
-                        voiceName = 'danny bilingual specialist reserved'; // Use danny for low-emotion gabi
-                    } else {
-                        voiceName = 'gabi friendly consultant'; // Default gabi
+                        voiceName += ' calm professional reserved';
+                    }
+                    if (accentStrength >= 75) {
+                        voiceName += ' strong miami latina warmth';
+                    } else if (accentStrength <= 25) {
+                        voiceName += ' neutral business professional';
                     }
                 }
                 
@@ -1519,20 +1535,22 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 if (data.success && data.audio_urls && data.audio_urls.length > 0) {
                     const audioUrl = data.audio_urls[0];
                     
-                    // Determine voice variation for user feedback
-                    let voiceVariation = 'Standard';
-                    if (voiceName.includes('strong') || voiceName.includes('expressive')) {
-                        voiceVariation = 'Enhanced Expressive';
+                    // Determine voice variation for user feedback - CONSISTENT model names
+                    let voiceVariation = `${model.toUpperCase()} Standard`;
+                    if (voiceName.includes('strong') && voiceName.includes('expressive')) {
+                        voiceVariation = `${model.toUpperCase()} Enhanced Expressive`;
+                    } else if (voiceName.includes('strong')) {
+                        voiceVariation = `${model.toUpperCase()} Strong Accent`;
                     } else if (voiceName.includes('neutral') || voiceName.includes('professional')) {
-                        voiceVariation = 'Professional Neutral';  
-                    } else if (voiceName.includes('authority') || voiceName.includes('executive')) {
-                        voiceVariation = 'Technical Authority';
-                    } else if (voiceName.includes('reserved')) {
-                        voiceVariation = 'Calm Professional';
+                        voiceVariation = `${model.toUpperCase()} Professional Neutral`;  
+                    } else if (voiceName.includes('authority') || voiceName.includes('technical')) {
+                        voiceVariation = `${model.toUpperCase()} Technical Authority`;
+                    } else if (voiceName.includes('reserved') || voiceName.includes('calm')) {
+                        voiceVariation = `${model.toUpperCase()} Calm Professional`;
                     }
                     
-                    // Show customization summary with voice variation
-                    const confirmPlay = confirm(`🎵 Customization Preview Ready!\n\nCustomized ${model.toUpperCase()} voice with:\n\n• Voice Variation: ${voiceVariation}\n• Accent Strength: ${accentStrength}%\n• Emotional Range: ${emotionalRange}%\n• Technical Vocabulary: ${technicalVocab}%\n• Speaking Rhythm: ${speakingRhythm}\n• Regional Variation: ${regionalVariation}\n• Sales Approach: ${salesApproach}\n\n🎧 You should hear noticeable differences!\nPlay customized voice preview now?`);
+                    // Show customization summary with CONSISTENT voice model confirmation
+                    const confirmPlay = confirm(`🎵 ${model.toUpperCase()} Customization Ready!\n\n✅ Voice Model: ${model.toUpperCase()} (CONSISTENT - no voice switching)\n• Voice Style: ${voiceVariation}\n• Accent Strength: ${accentStrength}%\n• Emotional Range: ${emotionalRange}%\n• Technical Vocabulary: ${technicalVocab}%\n• Speaking Rhythm: ${speakingRhythm}\n• Regional Variation: ${regionalVariation}\n• Sales Approach: ${salesApproach}\n\n🎧 You'll hear ${model.toUpperCase()}'s voice with these customizations!\nPlay ${model.toUpperCase()} voice preview now?`);
                     
                     if (confirmPlay) {
                         // Create and play customized audio
