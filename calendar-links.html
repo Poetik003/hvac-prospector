@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Links - No JavaScript</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto p-6 max-w-md">
+        <div class="bg-slate-800 rounded-2xl p-6 mb-6">
+            <h1 class="text-2xl font-bold text-center mb-2 gradient-text">Calendar Integration</h1>
+            <p class="text-slate-400 text-center text-sm">Pure HTML links - No JavaScript required</p>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- Google Calendar - Direct Link -->
+            <a href="https://accounts.google.com/signin" 
+               target="_blank"
+               class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-xl font-semibold text-center transition-colors">
+                <i class="fab fa-google mr-3"></i>Connect Google Calendar
+            </a>
+            
+            <!-- Microsoft Outlook - Direct Link -->
+            <a href="https://login.microsoftonline.com/" 
+               target="_blank"
+               class="block w-full bg-blue-800 hover:bg-blue-900 text-white py-4 px-6 rounded-xl font-semibold text-center transition-colors">
+                <i class="fab fa-microsoft mr-3"></i>Connect Outlook Calendar
+            </a>
+            
+            <!-- Google Calendar OAuth - Full URL -->
+            <a href="https://accounts.google.com/o/oauth2/auth?client_id=1234567890-abcdefghijklmnop.apps.googleusercontent.com&redirect_uri=https://prospector.pro/oauth/google/callback&scope=https://www.googleapis.com/auth/calendar&response_type=code&access_type=offline&prompt=consent&state=google-calendar-integration" 
+               target="_blank"
+               class="block w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl font-semibold text-center transition-colors">
+                <i class="fab fa-google mr-3"></i>Google Calendar OAuth
+            </a>
+            
+            <!-- Microsoft OAuth - Full URL -->
+            <a href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=12345678-1234-1234-1234-123456789012&response_type=code&redirect_uri=https://prospector.pro/oauth/microsoft/callback&scope=https://graph.microsoft.com/calendars.readwrite%20offline_access&response_mode=query&state=outlook-calendar-integration&prompt=consent" 
+               target="_blank"
+               class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 px-6 rounded-xl font-semibold text-center transition-colors">
+                <i class="fab fa-microsoft mr-3"></i>Microsoft OAuth
+            </a>
+            
+            <!-- Simple Test Links -->
+            <div class="bg-slate-700 rounded-xl p-4 mt-6">
+                <h3 class="text-lg font-bold mb-3">Test Links:</h3>
+                <div class="space-y-2">
+                    <a href="https://google.com" target="_blank" class="block text-blue-400 hover:text-blue-300">→ Google.com</a>
+                    <a href="https://microsoft.com" target="_blank" class="block text-blue-400 hover:text-blue-300">→ Microsoft.com</a>
+                    <a href="https://github.com" target="_blank" class="block text-blue-400 hover:text-blue-300">→ GitHub.com</a>
+                </div>
+            </div>
+            
+            <!-- No JavaScript message -->
+            <div class="bg-yellow-900/30 border border-yellow-500/30 rounded-lg p-4 mt-6">
+                <p class="text-yellow-300 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Pure HTML Links:</strong> These links use standard HTML &lt;a&gt; tags with no JavaScript. 
+                    If these don't work, there may be a browser restriction blocking external links.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</body>
+</html>

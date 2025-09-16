@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Function Test</title>
+</head>
+<body>
+    <h1>Function Test</h1>
+    <button onclick="testFunction()">Test showVoiceCustomizer</button>
+    <div id="result"></div>
+
+    <script>
+        function testFunction() {
+            const result = document.getElementById('result');
+            
+            if (typeof window.showVoiceCustomizer === 'function') {
+                result.innerHTML = '<p style="color: green;">✅ showVoiceCustomizer function exists!</p>';
+                try {
+                    window.showVoiceCustomizer('test');
+                } catch (e) {
+                    result.innerHTML += '<p style="color: red;">❌ Function exists but error: ' + e.message + '</p>';
+                }
+            } else {
+                result.innerHTML = '<p style="color: red;">❌ showVoiceCustomizer function NOT found</p>';
+                result.innerHTML += '<p>Available functions: ' + Object.keys(window).filter(k => k.includes('Voice')).join(', ') + '</p>';
+            }
+        }
+        
+        // Test if we can access the main page's functions
+        console.log('Test page loaded');
+        
+        // Add a simple showVoiceCustomizer for testing
+        window.showVoiceCustomizer = function(type) {
+            alert('✅ TEST WORKING! Voice: ' + type);
+        };
+    </script>
+</body>
+</html>

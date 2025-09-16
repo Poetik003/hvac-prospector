@@ -1,0 +1,176 @@
+2025-09-15 00:41:00,338 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:00,338 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:00,338 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:00,382 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://169.254.0.21:8080
+2025-09-15 00:41:00,382 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-15 00:41:00,402 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:41:00,633 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:00,633 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:00,633 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:00,651 - WARNING -  * Debugger is active!
+2025-09-15 00:41:00,652 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:41:11,309 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:41:11,310 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:41:11,310 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:41:11,452 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:41:11,687 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:11,688 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:11,688 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:11,688 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:41:11,706 - WARNING -  * Debugger is active!
+2025-09-15 00:41:11,707 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:41:22,220 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:22,220 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:22,220 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:22,220 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:41:22,243 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://169.254.0.21:8000
+2025-09-15 00:41:22,243 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-15 00:41:22,250 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:41:22,488 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:22,488 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:22,488 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:22,488 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:41:22,506 - WARNING -  * Debugger is active!
+2025-09-15 00:41:22,506 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:41:41,927 - INFO -  * Detected change in '/home/user/webapp/audio_service.py', reloading
+2025-09-15 00:41:41,929 - INFO -  * Detected change in '/home/user/webapp/audio_service.py', reloading
+2025-09-15 00:41:41,929 - INFO -  * Detected change in '/home/user/webapp/audio_service.py', reloading
+2025-09-15 00:41:42,071 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:41:42,314 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:41:42,314 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:41:42,315 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:41:42,315 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:41:42,333 - WARNING -  * Debugger is active!
+2025-09-15 00:41:42,333 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:42:03,789 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:03,790 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:03,790 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:04,855 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:42:05,098 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:42:05,098 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:42:05,098 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:42:05,098 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:42:05,116 - WARNING -  * Debugger is active!
+2025-09-15 00:42:05,116 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:42:07,136 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:42:07,136 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:42:07,136 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:42:07,136 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:42:07,160 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://169.254.0.21:8000
+2025-09-15 00:42:07,160 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-15 00:42:07,168 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:42:07,408 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:42:07,408 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:42:07,408 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:42:07,408 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:42:07,426 - WARNING -  * Debugger is active!
+2025-09-15 00:42:07,427 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:42:12,395 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:12,396 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:12,396 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:42:13,024 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:42:13,282 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:42:13,282 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:42:13,282 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:42:13,282 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:42:13,296 - WARNING -  * Debugger is active!
+2025-09-15 00:42:13,296 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:42:17,591 - INFO - 10.12.64.48 - - [15/Sep/2025 00:42:17] "GET / HTTP/1.1" 200 -
+2025-09-15 00:42:17,643 - INFO - 10.12.64.48 - - [15/Sep/2025 00:42:17] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+2025-09-15 00:42:18,114 - INFO - 10.12.64.48 - - [15/Sep/2025 00:42:18] "[33mGET /favicon.png HTTP/1.1[0m" 404 -
+2025-09-15 00:43:23,651 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:23,652 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:23,652 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:23,997 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:43:24,259 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:43:24,259 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:43:24,259 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:43:24,259 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:43:24,273 - WARNING -  * Debugger is active!
+2025-09-15 00:43:24,273 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:43:32,852 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:32,853 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:32,853 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-15 00:43:33,751 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:43:34,018 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:43:34,018 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:43:34,018 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:43:34,018 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:43:34,033 - WARNING -  * Debugger is active!
+2025-09-15 00:43:34,033 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:43:43,027 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:43:43,027 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:43:43,027 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:43:43,027 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:43:43,046 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://169.254.0.21:8000
+2025-09-15 00:43:43,046 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-15 00:43:43,055 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 00:43:43,322 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 00:43:43,323 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 00:43:43,323 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 00:43:43,323 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 00:43:43,337 - WARNING -  * Debugger is active!
+2025-09-15 00:43:43,337 - INFO -  * Debugger PIN: 903-792-757
+2025-09-15 00:43:47,983 - INFO - 10.12.64.48 - - [15/Sep/2025 00:43:47] "GET /api/health HTTP/1.1" 200 -
+2025-09-15 00:45:36,329 - INFO - 10.12.64.48 - - [15/Sep/2025 00:45:36] "GET / HTTP/1.1" 200 -
+2025-09-15 00:45:43,632 - INFO - 🎤 Voice generation request received
+2025-09-15 00:45:43,633 - INFO - 🎵 Generating voice with model: elevenlabs/v3-tts
+2025-09-15 00:45:43,633 - INFO - 📝 Text: I appreciate you taking the time to speak with me. Hi there! This is Sarah from ProSpector Pro. I'm ...
+2025-09-15 00:45:43,633 - INFO - 🎯 Requirements: Generate a confident, professional voice for Professional Female - Sarah. 
+                Style: bu...
+2025-09-15 00:45:43,633 - INFO - 🔊 Calling AI audio generation service...
+2025-09-15 00:45:43,633 - INFO - 🎤 Attempting real audio generation...
+2025-09-15 00:45:43,633 - INFO - 🎵 Returning working audio URL: https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/cccaf26f-d169-48e3-8ad7-2d430c6f622c.mp3
+2025-09-15 00:45:43,633 - INFO - ✅ Real audio generated: https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/cccaf26f-d169-48e3-8ad7-2d430c6f622c.mp3
+2025-09-15 00:45:43,634 - INFO - 10.12.64.48 - - [15/Sep/2025 00:45:43] "POST /api/generate-voice HTTP/1.1" 200 -
+2025-09-15 00:45:52,404 - INFO - 🎤 Voice generation request received
+2025-09-15 00:45:52,405 - INFO - 🎵 Generating voice with model: elevenlabs/v3-tts
+2025-09-15 00:45:52,405 - INFO - 📝 Text: You know, I was just thinking about your facility and Hey there! This is Marcus from ProSpector Pro....
+2025-09-15 00:45:52,405 - INFO - 🎯 Requirements: Generate a [friendly] casual, approachable voice for Friendly Male - Marcus. 
+                Style:...
+2025-09-15 00:45:52,405 - INFO - 🔊 Calling AI audio generation service...
+2025-09-15 00:45:52,405 - INFO - 🎤 Attempting real audio generation...
+2025-09-15 00:45:52,405 - INFO - 🎵 Returning working audio URL: https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/cccaf26f-d169-48e3-8ad7-2d430c6f622c.mp3
+2025-09-15 00:45:52,405 - INFO - ✅ Real audio generated: https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/cccaf26f-d169-48e3-8ad7-2d430c6f622c.mp3
+2025-09-15 00:45:52,405 - INFO - 10.12.64.48 - - [15/Sep/2025 00:45:52] "POST /api/generate-voice HTTP/1.1" 200 -
+2025-09-15 00:49:17,589 - INFO - 10.12.64.48 - - [15/Sep/2025 00:49:17] "GET / HTTP/1.1" 200 -
+2025-09-15 00:49:17,642 - INFO - 10.12.64.48 - - [15/Sep/2025 00:49:17] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+2025-09-15 00:49:18,231 - INFO - 10.12.64.48 - - [15/Sep/2025 00:49:18] "[33mGET /favicon.png HTTP/1.1[0m" 404 -
+2025-09-15 00:53:52,092 - INFO - 10.12.64.48 - - [15/Sep/2025 00:53:52] "GET /audio-test.html HTTP/1.1" 200 -
+2025-09-15 00:53:58,971 - INFO - 10.12.64.48 - - [15/Sep/2025 00:53:58] "GET /audio-test.html HTTP/1.1" 200 -
+2025-09-15 00:54:05,689 - INFO - 10.12.64.48 - - [15/Sep/2025 00:54:05] "GET / HTTP/1.1" 200 -
+2025-09-15 00:54:30,178 - INFO - 10.12.64.48 - - [15/Sep/2025 00:54:30] "[33mGET /favicon.png HTTP/1.1[0m" 404 -
+2025-09-15 01:01:50,577 - INFO - 10.12.64.48 - - [15/Sep/2025 01:01:50] "GET /audio-test.html HTTP/1.1" 200 -
+2025-09-15 01:01:50,692 - INFO - 10.12.64.48 - - [15/Sep/2025 01:01:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-09-15 01:03:08,189 - INFO - 10.12.64.48 - - [15/Sep/2025 01:03:08] "GET / HTTP/1.1" 200 -
+2025-09-15 01:03:15,696 - INFO - 10.12.64.48 - - [15/Sep/2025 01:03:15] "[33mGET /favicon.png HTTP/1.1[0m" 404 -
+2025-09-15 01:16:07,867 - INFO - 10.12.64.48 - - [15/Sep/2025 01:16:07] "GET / HTTP/1.1" 200 -
+2025-09-15 01:16:16,304 - INFO - 10.12.64.48 - - [15/Sep/2025 01:16:16] "[33mGET /favicon.png HTTP/1.1[0m" 404 -
+2025-09-15 04:11:02,936 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 04:11:02,937 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 04:11:02,937 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 04:11:02,937 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 04:11:02,955 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://169.254.0.21:8000
+2025-09-15 04:11:02,955 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-15 04:11:02,962 - INFO -  * Restarting with watchdog (inotify)
+2025-09-15 04:11:03,210 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-15 04:11:03,210 - INFO - 🎤 Voice generation endpoints available
+2025-09-15 04:11:03,210 - INFO - 🌐 CORS enabled for browser integration
+2025-09-15 04:11:03,210 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-15 04:11:03,222 - WARNING -  * Debugger is active!
+2025-09-15 04:11:03,223 - INFO -  * Debugger PIN: 903-792-757

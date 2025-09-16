@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar Debug Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <h1 class="text-2xl mb-6">Calendar Debug - Direct Test</h1>
+    
+    <div class="space-y-4 max-w-md">
+        <button id="connect-google-calendar-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors">
+            <i class="fab fa-google mr-2"></i>Connect Google Calendar
+        </button>
+        <button id="connect-outlook-btn" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 px-4 rounded-lg transition-colors">
+            <i class="fab fa-microsoft mr-2"></i>Connect Outlook
+        </button>
+        <button id="schedule-appointment-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors">
+            <i class="fas fa-calendar-plus mr-2"></i>Schedule New Appointment
+        </button>
+        
+        <button id="debug-init-btn" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-colors">
+            🔧 DEBUG: Initialize Calendar Buttons
+        </button>
+    </div>
+    
+    <div id="status" class="mt-6 p-4 bg-slate-800 rounded-lg">
+        <p>Status: Ready to test - Click DEBUG button first, then test calendar buttons</p>
+    </div>
+
+    <script>
+        console.log('🧪 Calendar Debug Test Started');
+        
+        function showStatus(message) {
+            document.getElementById('status').innerHTML = '<p>' + message + '</p>';
+            console.log('📝 ' + message);
+        }
+        
+        function showNotification(message, type) {
+            showStatus('[' + type.toUpperCase() + '] ' + message);
+        }
+        
+        // Exact same function as in the main app
+        function initializeCalendarButtons() {
+            console.log('🗓️ Initializing calendar buttons...');
+            
+            // Calendar Integration Buttons - Direct redirect to calendar services
+            var googleCalendarBtn = document.getElementById('connect-google-calendar-btn');
+            if (googleCalendarBtn) {
+                // Remove existing listeners to prevent duplicates
+                googleCalendarBtn.replaceWith(googleCalendarBtn.cloneNode(true));
+                googleCalendarBtn = document.getElementById('connect-google-calendar-btn');
+                
+                googleCalendarBtn.addEventListener('click', function() {
+                    console.log('📅 Connect Google Calendar clicked - redirecting to Google OAuth');
+                    showNotification('Redirecting to Google Calendar...', 'info');
+                    
+                    // Redirect directly to Google Calendar OAuth with realistic parameters
+                    var googleCalendarUrl = 'https://accounts.google.com/o/oauth2/auth?' +
+                        'client_id=1234567890-abcdefghijklmnop.apps.googleusercontent.com&' +
+                        'redirect_uri=https://prospector.pro/oauth/google/callback&' +
+                        'scope=https://www.googleapis.com/auth/calendar&' +
+                        'response_type=code&' +
+                        'access_type=offline&' +
+                        'prompt=consent&' +
+                        'state=google-calendar-integration';
+                    
+                    window.open(googleCalendarUrl, '_blank');
+                });
+                console.log('✅ Google Calendar button initialized');
+            }
+            
+            var outlookBtn = document.getElementById('connect-outlook-btn');
+            if (outlookBtn) {
+                // Remove existing listeners to prevent duplicates  
+                outlookBtn.replaceWith(outlookBtn.cloneNode(true));
+                outlookBtn = document.getElementById('connect-outlook-btn');
+                
+                outlookBtn.addEventListener('click', function() {
+                    console.log('📅 Connect Outlook clicked - redirecting to Microsoft OAuth');
+                    showNotification('Redirecting to Microsoft Outlook...', 'info');
+                    
+                    // Redirect directly to Microsoft OAuth with realistic parameters
+                    var outlookUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?' +
+                        'client_id=12345678-1234-1234-1234-123456789012&' +
+                        'response_type=code&' +
+                        'redirect_uri=https://prospector.pro/oauth/microsoft/callback&' +
+                        'scope=https://graph.microsoft.com/calendars.readwrite%20offline_access&' +
+                        'response_mode=query&' +
+                        'state=outlook-calendar-integration&' +
+                        'prompt=consent';
+                    
+                    window.open(outlookUrl, '_blank');
+                });
+                console.log('✅ Outlook button initialized');
+            }
+            
+            var scheduleAppointmentBtn = document.getElementById('schedule-appointment-btn');
+            if (scheduleAppointmentBtn) {
+                // Remove existing listeners to prevent duplicates
+                scheduleAppointmentBtn.replaceWith(scheduleAppointmentBtn.cloneNode(true));
+                scheduleAppointmentBtn = document.getElementById('schedule-appointment-btn');
+                
+                scheduleAppointmentBtn.addEventListener('click', function() {
+                    console.log('📅 Schedule New Appointment clicked');
+                    showNotification('Schedule Appointment clicked (would open modal)', 'success');
+                    alert('Schedule Appointment button works!');
+                });
+                console.log('✅ Schedule Appointment button initialized');
+            }
+            
+            console.log('✅ Calendar buttons initialized with direct OAuth redirects!');
+            showStatus('✅ All calendar buttons initialized! Try clicking them now.');
+        }
+        
+        // Debug button to manually initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            var debugBtn = document.getElementById('debug-init-btn');
+            if (debugBtn) {
+                debugBtn.addEventListener('click', function() {
+                    console.log('🔧 Manual calendar initialization triggered');
+                    showStatus('🔧 Running calendar initialization...');
+                    initializeCalendarButtons();
+                });
+            }
+            
+            showStatus('Ready! Click the DEBUG button to initialize calendar buttons, then test them.');
+        });
+    </script>
+</body>
+</html>

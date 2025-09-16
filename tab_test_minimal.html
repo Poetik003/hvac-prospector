@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Test - Minimal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-item.active { background-color: #3b82f6 !important; color: white !important; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-6">Tab Navigation Test</h1>
+        
+        <!-- Tab Navigation -->
+        <div class="flex space-x-2 mb-6">
+            <button class="nav-item px-4 py-2 bg-gray-700 text-white rounded hover:bg-blue-600 transition-colors" data-tab="dashboard">
+                Dashboard
+            </button>
+            <button class="nav-item px-4 py-2 bg-gray-700 text-white rounded hover:bg-blue-600 transition-colors" data-tab="aiactors">
+                AI Actors
+            </button>
+            <button class="nav-item px-4 py-2 bg-gray-700 text-white rounded hover:bg-blue-600 transition-colors" data-tab="integrations">
+                Integrations
+            </button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div id="dashboard-tab" class="tab-content active">
+            <h2 class="text-xl font-semibold mb-4">Dashboard Content</h2>
+            <p>This is the dashboard content.</p>
+        </div>
+        
+        <div id="aiactors-tab" class="tab-content">
+            <h2 class="text-xl font-semibold mb-4">AI Actors Content</h2>
+            <p>This is where voice previews would be accessible.</p>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded mt-4">Test Voice Preview</button>
+        </div>
+        
+        <div id="integrations-tab" class="tab-content">
+            <h2 class="text-xl font-semibold mb-4">Integrations Content</h2>
+            <p>This is the integrations content.</p>
+        </div>
+    </div>
+
+    <script>
+        console.log('🧪 Starting minimal tab test...');
+        
+        function switchTab(tabName) {
+            console.log('Switching to tab:', tabName);
+            
+            // Hide all content
+            var contents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+            
+            // Remove active from buttons
+            var buttons = document.querySelectorAll('.nav-item');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            // Show target tab
+            var target = document.getElementById(tabName + '-tab');
+            if (target) {
+                target.classList.add('active');
+                console.log('✅ Activated tab:', tabName);
+            } else {
+                console.error('❌ Tab not found:', tabName);
+            }
+            
+            // Activate button
+            var activeBtn = document.querySelector('[data-tab="' + tabName + '"]');
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                console.log('✅ Activated button for:', tabName);
+            } else {
+                console.error('❌ Button not found for:', tabName);
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM ready - initializing tabs...');
+            
+            // Setup tab buttons
+            var tabButtons = document.querySelectorAll('[data-tab]');
+            console.log('📋 Found', tabButtons.length, 'tab buttons');
+            
+            for (var i = 0; i < tabButtons.length; i++) {
+                var btn = tabButtons[i];
+                var tabName = btn.getAttribute('data-tab');
+                console.log('🔗 Setting up button for:', tabName);
+                
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    var name = this.getAttribute('data-tab');
+                    console.log('🖱️ Button clicked:', name);
+                    switchTab(name);
+                };
+            }
+            
+            // Set initial active tab
+            switchTab('dashboard');
+            console.log('✅ Tab system initialized successfully!');
+        });
+        
+        console.log('📜 Script loaded successfully');
+    </script>
+</body>
+</html>
