@@ -910,6 +910,43 @@
                         <p class="text-white text-sm mt-2">If this button shows an alert, JavaScript is working</p>
                     </div>
                     
+                    <!-- GLOBAL STOP BUTTON FOR VOICE PREVIEWS -->
+                    <div class="mb-4 p-4 bg-orange-600 rounded-lg text-center">
+                        <button onclick="
+                            // Stop all audio elements
+                            document.querySelectorAll('audio').forEach(function(audio) {
+                                audio.pause();
+                                audio.currentTime = 0;
+                            });
+                            
+                            // Reset all buttons to original state
+                            document.querySelectorAll('button').forEach(function(btn) {
+                                if (btn.innerHTML.includes('Speaking') || btn.innerHTML.includes('Playing') || btn.innerHTML.includes('Stop')) {
+                                    btn.innerHTML = btn.innerHTML.replace(/🎵.*?|🔊.*?|🛑.*?/g, '🔊');
+                                    btn.style.background = '#3b82f6';
+                                    btn.disabled = false;
+                                }
+                            });
+                            
+                            alert('🛑 ALL VOICE PREVIEWS STOPPED!');
+                        " class="px-6 py-3 bg-white text-orange-600 rounded-lg font-bold text-lg" style="
+                            font-size: 18px !important;
+                            padding: 15px 25px !important;
+                            background: white !important;
+                            color: #ea580c !important;
+                            border: 3px solid #ea580c !important;
+                            border-radius: 12px !important;
+                            font-weight: bold !important;
+                            cursor: pointer !important;
+                            z-index: 9999 !important;
+                            position: relative !important;
+                            pointer-events: auto !important;
+                        ">
+                            🛑 STOP ALL VOICE PREVIEWS
+                        </button>
+                        <p class="text-white text-sm mt-2">Click this button to stop any playing voice previews</p>
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div class="bg-slate-800/30 rounded-xl p-4">
                             <h4 class="text-white font-semibold mb-2">👩‍💼 Sarah from Miami</h4>
@@ -4651,15 +4688,22 @@ I'd love to schedule..."></textarea>
                                     cursor: pointer;
                                     font-weight: bold;
                                 ">▶️ Test Voice</button>
-                                <button onclick="alert('✅ BUTTON WORKS! Sarah Customize clicked!')" style="
+                                <button onclick="alert('✅ SARAH CUSTOMIZE WORKS!')" style="
                                     flex: 1;
-                                    background: #6b7280;
-                                    color: white;
-                                    border: none;
-                                    padding: 12px;
-                                    border-radius: 6px;
-                                    cursor: pointer;
-                                ">⚙️ Customize</button>
+                                    background: #dc2626 !important;
+                                    color: white !important;
+                                    border: none !important;
+                                    padding: 15px !important;
+                                    border-radius: 8px !important;
+                                    cursor: pointer !important;
+                                    font-weight: bold !important;
+                                    font-size: 16px !important;
+                                    z-index: 9999 !important;
+                                    position: relative !important;
+                                    pointer-events: auto !important;
+                                    -webkit-tap-highlight-color: rgba(255,0,0,0.3) !important;
+                                    touch-action: manipulation !important;
+                                " ontouchstart="this.style.background='#b91c1c'" ontouchend="this.style.background='#dc2626'">🚨 CUSTOMIZE</button>
                             </div>
                         </div>
                         
@@ -4687,15 +4731,22 @@ I'd love to schedule..."></textarea>
                                     cursor: pointer;
                                     font-weight: bold;
                                 ">▶️ Test Voice</button>
-                                <button onclick="alert('✅ BUTTON WORKS! Marcus Customize clicked!')" style="
+                                <button onclick="alert('✅ MARCUS CUSTOMIZE WORKS!')" style="
                                     flex: 1;
-                                    background: #6b7280;
-                                    color: white;
-                                    border: none;
-                                    padding: 12px;
-                                    border-radius: 6px;
-                                    cursor: pointer;
-                                ">⚙️ Customize</button>
+                                    background: #dc2626 !important;
+                                    color: white !important;
+                                    border: none !important;
+                                    padding: 15px !important;
+                                    border-radius: 8px !important;
+                                    cursor: pointer !important;
+                                    font-weight: bold !important;
+                                    font-size: 16px !important;
+                                    z-index: 9999 !important;
+                                    position: relative !important;
+                                    pointer-events: auto !important;
+                                    -webkit-tap-highlight-color: rgba(255,0,0,0.3) !important;
+                                    touch-action: manipulation !important;
+                                " ontouchstart="this.style.background='#b91c1c'" ontouchend="this.style.background='#dc2626'">🚨 CUSTOMIZE</button>
                             </div>
                         </div>
                     </div>
