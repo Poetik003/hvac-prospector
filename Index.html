@@ -1422,8 +1422,8 @@
                     });
                 }
                 
-                // Function to show voice customizer - FIXED FOR MOBILE
-                function showVoiceCustomizer(voiceType) {
+                // Function to show voice customizer - FIXED FOR MOBILE - GLOBAL SCOPE
+                window.showVoiceCustomizer = function(voiceType) {
                     console.log('⚙️ CUSTOMIZER FUNCTION CALLED for:', voiceType);
                     alert('🎯 CUSTOMIZE BUTTON CLICKED!\n\nVoice: ' + voiceType + '\n\nThis confirms the button is working!\n\nOpening customization modal...');
                     
@@ -13532,6 +13532,118 @@ We have an opening this Thursday afternoon - would 2 PM or 4 PM work better for 
             }
         };
 
+        // GLOBAL VOICE CUSTOMIZER FUNCTION - ACCESSIBLE TO ALL BUTTONS
+        window.showVoiceCustomizer = function(voiceType) {
+            console.log('⚙️ GLOBAL CUSTOMIZER FUNCTION CALLED for:', voiceType);
+            alert('🎯 CUSTOMIZE BUTTON WORKING!\n\nVoice: ' + voiceType.toUpperCase() + '\n\nCustomization modal opening...\n\nThis confirms the button is working correctly!');
+            
+            // Remove existing customizer
+            try {
+                var existing = document.getElementById('voice-customizer-modal');
+                if (existing) existing.remove();
+            } catch(e) { 
+                console.log('No existing modal to remove'); 
+            }
+            
+            // Create customization modal
+            var custModal = document.createElement('div');
+            custModal.id = 'voice-customizer-modal';
+            custModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            var voiceName;
+            if (voiceType === 'sarah') {
+                voiceName = 'Sarah from Miami (Sofia Vergara Style)';
+            } else if (voiceType === 'danny' || voiceType === 'marcus') {
+                voiceName = 'Marcus/Danny from Miami (Benicio Del Toro Style)';
+            } else {
+                voiceName = voiceType.toUpperCase() + ' Voice Model';
+            }
+            
+            // Build HTML content
+            var htmlContent = '<div style="background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569; position: relative;">';
+            htmlContent += '<h2 style="margin: 0 0 30px 0; color: #60a5fa; font-size: 24px; text-align: center;">⚙️ Customize ' + voiceName + '</h2>';
+            
+            // Pace selector
+            htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎵 Speaking Pace:</label>';
+            htmlContent += '<select id="pace-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+            htmlContent += '<option value="slow">🐢 Slow & Clear</option>';
+            htmlContent += '<option value="normal" selected>⚡ Normal Pace</option>';
+            htmlContent += '<option value="fast">🚀 Fast & Energetic</option>';
+            htmlContent += '</select></div>';
+            
+            // Tone selector  
+            htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🎭 Voice Tone:</label>';
+            htmlContent += '<select id="tone-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+            htmlContent += '<option value="professional">💼 Professional</option>';
+            htmlContent += '<option value="friendly" selected>😊 Friendly</option>';
+            htmlContent += '<option value="warm">🤗 Warm & Caring</option>';
+            htmlContent += '<option value="enthusiastic">🎉 Enthusiastic</option>';
+            htmlContent += '</select></div>';
+            
+            // Accent selector
+            htmlContent += '<div style="margin: 20px 0;"><label style="display: block; margin-bottom: 10px; font-weight: bold; color: #cbd5e1;">🌴 Miami Accent Strength:</label>';
+            htmlContent += '<select id="accent-select-' + voiceType + '" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #374151; color: white; font-size: 16px;">';
+            htmlContent += '<option value="subtle">🌊 Subtle Miami Touch</option>';
+            htmlContent += '<option value="moderate" selected>🏖️ Moderate Miami Accent</option>';
+            htmlContent += '<option value="strong">🎺 Strong Miami Flavor</option>';
+            htmlContent += '</select></div>';
+            
+            // Buttons
+            htmlContent += '<div style="display: flex; gap: 15px; margin-top: 30px;">';
+            htmlContent += '<button onclick="testCustomVoice(\'' + voiceType + '\')" style="flex: 1; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">🎤 Test Custom Voice</button>';
+            htmlContent += '<button onclick="saveVoiceSettings(\'' + voiceType + '\')" style="flex: 1; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">✅ Save Settings</button>';
+            htmlContent += '</div>';
+            
+            // Close button
+            htmlContent += '<button onclick="document.getElementById(\'voice-customizer-modal\').remove();" style="position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold;">✕</button>';
+            htmlContent += '</div>';
+            
+            custModal.innerHTML = htmlContent;
+            document.body.appendChild(custModal);
+        };
+        
+        // Test and save functions for the customizer
+        window.testCustomVoice = function(voiceType) {
+            console.log('🎤 Testing custom voice for:', voiceType);
+            var pace = document.getElementById('pace-select-' + voiceType)?.value || 'normal';
+            var tone = document.getElementById('tone-select-' + voiceType)?.value || 'friendly';
+            var accent = document.getElementById('accent-select-' + voiceType)?.value || 'moderate';
+            
+            alert('🎵 Testing Custom Voice: ' + voiceType.toUpperCase() + '\n\n' +
+                  'Settings:\n' +
+                  '• Pace: ' + pace + '\n' +
+                  '• Tone: ' + tone + '\n' +
+                  '• Accent: ' + accent + '\n\n' +
+                  'Your customized voice would now be playing...');
+        };
+        
+        window.saveVoiceSettings = function(voiceType) {
+            console.log('💾 Saving voice settings for:', voiceType);
+            var pace = document.getElementById('pace-select-' + voiceType)?.value || 'normal';
+            var tone = document.getElementById('tone-select-' + voiceType)?.value || 'friendly';
+            var accent = document.getElementById('accent-select-' + voiceType)?.value || 'moderate';
+            
+            // Save to localStorage
+            var settings = {
+                pace: pace,
+                tone: tone,
+                accent: accent,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('voice_settings_' + voiceType, JSON.stringify(settings));
+            
+            alert('✅ Voice Settings Saved!\n\n' +
+                  voiceType.toUpperCase() + ' voice customized:\n' +
+                  '• Pace: ' + pace + '\n' +
+                  '• Tone: ' + tone + '\n' +
+                  '• Accent: ' + accent + '\n\n' +
+                  'Settings will be used for all future voice generation.');
+            
+            // Close the modal
+            document.getElementById('voice-customizer-modal').remove();
+        };
+        
         console.log('✅ AI Voice Training & Fine-tuning System loaded successfully!');
     </script>
 
