@@ -697,7 +697,7 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                     }
                 });
                 
-                // Try to play with better mobile handling
+                // Try to play with better mobile handling - NO NEW TABS
                 try {
                     const playPromise = audio.play();
                     
@@ -709,21 +709,24 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                             .catch((playError) => {
                                 console.warn('⚠️ Autoplay blocked, providing manual option:', playError);
                                 
-                                // Mobile-friendly manual play option
+                                // Mobile-friendly manual play option - SAME PAGE ONLY
                                 resetButton();
                                 const userWantsToPlay = confirm(`🎧 ${model.toUpperCase()} Voice Preview Ready!\n\nYour browser requires user interaction to play audio.\n\nClick OK to hear the voice preview, or Cancel to skip.`);
                                 
                                 if (userWantsToPlay) {
-                                    // User clicked OK, try playing again
+                                    // User clicked OK, try playing again IN SAME PAGE
                                     btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Playing...';
                                     btn.disabled = true;
                                     
                                     audio.play().then(() => {
-                                        console.log('🎵 Manual play successful');
-                                    }).catch(() => {
-                                        // Final fallback - open in new tab
+                                        console.log('🎵 Manual play successful in same page');
+                                    }).catch((finalError) => {
+                                        // If still fails, just show audio controls for user to click
+                                        console.error('❌ Final play attempt failed:', finalError);
                                         resetButton();
-                                        window.open(audioUrl, '_blank');
+                                        
+                                        // Show user manual audio control instead of new tab
+                                        showManualAudioControl(audioUrl, model);
                                     });
                                 }
                             });
@@ -732,10 +735,10 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                     console.error('❌ Immediate play error:', immediateError);
                     resetButton();
                     
-                    // Direct link fallback
-                    const openLink = confirm(`🔊 Voice Preview Available!\n\nClick OK to open ${model.toUpperCase()} voice sample in new tab.`);
-                    if (openLink) {
-                        window.open(audioUrl, '_blank');
+                    // Show manual audio control instead of new tab
+                    const tryManual = confirm(`🔊 ${model.toUpperCase()} Voice Preview Available!\n\nClick OK to show audio controls, or Cancel to skip.`);
+                    if (tryManual) {
+                        showManualAudioControl(audioUrl, model);
                     }
                 }
                 
@@ -1683,6 +1686,44 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
         }
 
+        // Manual audio control - NO NEW TABS
+        function showManualAudioControl(audioUrl, model) {
+            // Create an inline audio element for user to control
+            const existingAudioDiv = document.getElementById('manual-audio-control');
+            if (existingAudioDiv) {
+                existingAudioDiv.remove();
+            }
+            
+            // Create audio control container
+            const audioDiv = document.createElement('div');
+            audioDiv.id = 'manual-audio-control';
+            audioDiv.className = 'fixed top-4 left-4 right-4 bg-blue-900/90 backdrop-blur border border-blue-500 rounded-lg p-4 z-50';
+            audioDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-white font-semibold">🎧 ${model.toUpperCase()} Voice Preview</h4>
+                    <button onclick="document.getElementById('manual-audio-control').remove()" class="text-white hover:text-red-400">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <audio controls class="w-full" autoplay>
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Your browser doesn't support audio playback.
+                </audio>
+                <p class="text-xs text-blue-200 mt-2">Click play button above to hear the voice preview</p>
+            `;
+            
+            document.body.appendChild(audioDiv);
+            
+            // Auto-remove after 30 seconds
+            setTimeout(() => {
+                if (document.getElementById('manual-audio-control')) {
+                    document.getElementById('manual-audio-control').remove();
+                }
+            }, 30000);
+            
+            console.log('✅ Manual audio control shown for', model);
+        }
+
         // DEBUG: Simple direct audio test function
         function testDirectAudio() {
             console.log('🔍 Testing direct audio playback...');
@@ -1709,7 +1750,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 });
                 audio.addEventListener('error', (e) => {
                     console.error('❌ Audio error:', e);
-                    alert(`Audio Error: ${e.message || 'Unknown error'}\n\nURL: ${testUrl}`);
+                    alert(`Audio Error: ${e.message || 'Unknown error'}\n\nShowing manual controls...`);
+                    showManualAudioControl(testUrl, 'DEBUG');
                 });
                 
                 // Try to play
@@ -1723,7 +1765,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                         })
                         .catch((error) => {
                             console.error('❌ Play promise rejected:', error);
-                            alert(`❌ Autoplay Blocked!\n\nError: ${error.message}\n\nTry clicking the button again after this alert.`);
+                            alert(`❌ Autoplay Blocked!\n\nError: ${error.message}\n\nShowing manual controls...`);
+                            showManualAudioControl(testUrl, 'DEBUG');
                         });
                 }
             } catch (error) {
