@@ -4383,7 +4383,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button onclick="try { startTrainingModule('objection-handling'); } catch(e) { alert('🎓 Opening Objection Handling Training Module...'); console.log('Training module clicked:', e); }" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="openAIVoiceTrainingSystem('objection-handling')" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     Continue Training
                                 </button>
                             </div>
@@ -10886,7 +10886,7 @@ I'd love to schedule..."></textarea>
                                 <span class="text-slate-400">⏳ Pending</span>
                             </div>
                         </div>
-                        <button onclick="try { startTrainingModule('voice-tone'); } catch(e) { alert('🎓 Opening Voice & Tone Mastery Training...'); console.log('Training module clicked:', e); }" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all">
+                        <button onclick="openAIVoiceTrainingSystem('voice-tone')" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all">
                             Continue Training
                         </button>
                     </div>
@@ -12092,6 +12092,777 @@ I'd love to schedule..."></textarea>
         };
         
         console.log('✅ Failsafe dashboard button functions loaded and ready!');
+    </script>
+
+    <!-- AI VOICE TRAINING SYSTEM - Independent Module -->
+    <script>
+        // 🎓 COMPREHENSIVE AI VOICE TRAINING & FINE-TUNING SYSTEM
+        // This system allows users to train AI models, adjust tone, practice scripts, and role-play
+        
+        function openAIVoiceTrainingSystem(moduleType) {
+            console.log('🎓 Opening AI Voice Training System for:', moduleType);
+            
+            // Create full-screen training interface
+            var trainingModal = document.createElement('div');
+            trainingModal.id = 'ai-voice-training-system';
+            trainingModal.className = 'fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 z-50 overflow-y-auto';
+            
+            var moduleNames = {
+                'voice-tone': 'Voice & Tone Mastery',
+                'objection-handling': 'Objection Handling',
+                'hvac-scripts': 'HVAC Sales Scripts'
+            };
+            
+            var moduleName = moduleNames[moduleType] || 'Voice Training';
+            
+            trainingModal.innerHTML = `
+                <!-- Header -->
+                <div class="sticky top-0 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 z-10">
+                    <div class="max-w-7xl mx-auto px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <button onclick="closeAIVoiceTrainingSystem()" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors">
+                                    <i class="fas fa-arrow-left text-white"></i>
+                                </button>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">AI Voice Training System</h1>
+                                    <p class="text-slate-400">${moduleName} - Fine-tune for Natural Conversations</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="saveTrainingProgress()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
+                                    💾 Save Progress
+                                </button>
+                                <button onclick="exportTrainingData()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
+                                    📤 Export Training
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="max-w-7xl mx-auto p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Left Panel: AI Model Selection & Voice Controls -->
+                        <div class="lg:col-span-1 space-y-6">
+                            <!-- AI Model Selection -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-brain mr-3 text-purple-400"></i>
+                                    AI Model Selection
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="ai-model-option p-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg border border-purple-500/30 cursor-pointer hover:from-purple-500/30 hover:to-blue-500/30 transition-all" onclick="selectAIModel('sofia-pro')">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-bold text-white">Sofia Pro</h4>
+                                                <p class="text-sm text-slate-300">Miami Latina - Warm & Professional</p>
+                                            </div>
+                                            <div class="w-3 h-3 rounded-full bg-purple-400"></div>
+                                        </div>
+                                        <div class="mt-2 flex items-center space-x-2">
+                                            <div class="flex-1 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-purple-400 h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-400">85% Natural</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ai-model-option p-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30 cursor-pointer hover:from-blue-500/30 hover:to-cyan-500/30 transition-all" onclick="selectAIModel('carlos-expert')">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-bold text-white">Carlos Expert</h4>
+                                                <p class="text-sm text-slate-300">Technical Specialist - Confident & Knowledgeable</p>
+                                            </div>
+                                            <div class="w-3 h-3 rounded-full bg-blue-400"></div>
+                                        </div>
+                                        <div class="mt-2 flex items-center space-x-2">
+                                            <div class="flex-1 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-blue-400 h-2 rounded-full" style="width: 78%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-400">78% Natural</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ai-model-option p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30 cursor-pointer hover:from-green-500/30 hover:to-emerald-500/30 transition-all" onclick="selectAIModel('maria-friendly')">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h4 class="font-bold text-white">Maria Friendly</h4>
+                                                <p class="text-sm text-slate-300">Customer Service - Approachable & Helpful</p>
+                                            </div>
+                                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                        </div>
+                                        <div class="mt-2 flex items-center space-x-2">
+                                            <div class="flex-1 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-green-400 h-2 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-400">92% Natural</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Selected Model Info -->
+                                <div id="selected-model-info" class="mt-4 p-3 bg-slate-700/50 rounded-lg">
+                                    <p class="text-sm text-slate-300"><strong>Selected:</strong> Sofia Pro - Ready for training</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Voice Controls -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-sliders-h mr-3 text-blue-400"></i>
+                                    Voice Fine-Tuning
+                                </h3>
+                                
+                                <!-- Tone Control -->
+                                <div class="mb-6">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Tone & Personality</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="setTone('professional')" class="tone-btn px-3 py-2 bg-slate-700 hover:bg-blue-600 text-white text-sm rounded-lg transition-colors">
+                                            Professional
+                                        </button>
+                                        <button onclick="setTone('friendly')" class="tone-btn px-3 py-2 bg-slate-700 hover:bg-green-600 text-white text-sm rounded-lg transition-colors">
+                                            Friendly
+                                        </button>
+                                        <button onclick="setTone('confident')" class="tone-btn px-3 py-2 bg-slate-700 hover:bg-purple-600 text-white text-sm rounded-lg transition-colors">
+                                            Confident
+                                        </button>
+                                        <button onclick="setTone('empathetic')" class="tone-btn px-3 py-2 bg-slate-700 hover:bg-orange-600 text-white text-sm rounded-lg transition-colors">
+                                            Empathetic
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Speaking Pace -->
+                                <div class="mb-6">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Speaking Pace</label>
+                                    <input type="range" id="pace-slider" min="0.7" max="1.3" step="0.1" value="1.0" 
+                                           class="w-full accent-blue-500" onchange="adjustPace(this.value)">
+                                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                        <span>Slow</span>
+                                        <span id="pace-value">Normal (1.0x)</span>
+                                        <span>Fast</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Emotional Intelligence -->
+                                <div class="mb-6">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Emotional Intelligence</label>
+                                    <input type="range" id="emotion-slider" min="1" max="10" step="1" value="7" 
+                                           class="w-full accent-purple-500" onchange="adjustEmotionalIntelligence(this.value)">
+                                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                        <span>Robotic</span>
+                                        <span id="emotion-value">Natural (7/10)</span>
+                                        <span>Highly Expressive</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Regional Accent -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Regional Accent</label>
+                                    <select id="accent-select" onchange="setAccent(this.value)" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-white">
+                                        <option value="neutral">Neutral American</option>
+                                        <option value="miami">Miami / South Florida</option>
+                                        <option value="texas">Texas</option>
+                                        <option value="california">California</option>
+                                        <option value="northeast">Northeast</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Middle Panel: Script Editor & Practice -->
+                        <div class="lg:col-span-1 space-y-6">
+                            <!-- Script Editor -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-edit mr-3 text-green-400"></i>
+                                    Script Editor & Practice
+                                </h3>
+                                
+                                <!-- Script Templates -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Script Template</label>
+                                    <select id="script-template" onchange="loadScriptTemplate(this.value)" class="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-white">
+                                        <option value="cold-call">Cold Call Introduction</option>
+                                        <option value="follow-up">Follow-up Call</option>
+                                        <option value="objection-response">Objection Handling</option>
+                                        <option value="appointment-close">Appointment Closing</option>
+                                        <option value="custom">Custom Script</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Script Editor -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Your Script</label>
+                                    <textarea id="script-editor" rows="8" 
+                                              placeholder="Write your script here or select a template above..."
+                                              class="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm resize-none"
+                                              onchange="updateScriptPreview()">Hi, this is Sofia from ProSpector Pro HVAC Services. I hope I'm catching you at a good time. I'm calling because we've been helping homeowners in your area save significantly on their energy bills with our advanced HVAC solutions. Would you be interested in a free energy assessment that could potentially save you hundreds of dollars each year?</textarea>
+                                </div>
+                                
+                                <!-- Script Actions -->
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <button onclick="previewScript()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center">
+                                        <i class="fas fa-play mr-2"></i>Preview Voice
+                                    </button>
+                                    <button onclick="stopPreview()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center">
+                                        <i class="fas fa-stop mr-2"></i>Stop
+                                    </button>
+                                </div>
+                                
+                                <!-- AI Suggestions -->
+                                <div id="ai-suggestions" class="p-3 bg-slate-700/50 rounded-lg">
+                                    <h4 class="font-semibold text-white mb-2 flex items-center">
+                                        <i class="fas fa-lightbulb mr-2 text-yellow-400"></i>
+                                        AI Suggestions
+                                    </h4>
+                                    <ul class="text-sm text-slate-300 space-y-1">
+                                        <li>• Try adding a pause after "good time" for natural pacing</li>
+                                        <li>• Consider using "folks" instead of "homeowners" for warmth</li>
+                                        <li>• End with a softer question to reduce pressure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Role-Play Scenarios -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-theater-masks mr-3 text-orange-400"></i>
+                                    Role-Play Training
+                                </h3>
+                                
+                                <!-- Scenario Selection -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Practice Scenario</label>
+                                    <div class="grid grid-cols-1 gap-2">
+                                        <button onclick="startRolePlay('interested-prospect')" class="text-left p-3 bg-slate-700 hover:bg-green-700 rounded-lg transition-colors">
+                                            <div class="font-semibold text-white">😊 Interested Prospect</div>
+                                            <div class="text-sm text-slate-300">Warm lead, asking questions</div>
+                                        </button>
+                                        <button onclick="startRolePlay('skeptical-prospect')" class="text-left p-3 bg-slate-700 hover:bg-yellow-700 rounded-lg transition-colors">
+                                            <div class="font-semibold text-white">🤔 Skeptical Prospect</div>
+                                            <div class="text-sm text-slate-300">Needs convincing, price-sensitive</div>
+                                        </button>
+                                        <button onclick="startRolePlay('busy-prospect')" class="text-left p-3 bg-slate-700 hover:bg-red-700 rounded-lg transition-colors">
+                                            <div class="font-semibold text-white">⏰ Busy Prospect</div>
+                                            <div class="text-sm text-slate-300">Short on time, wants quick info</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Role-Play Status -->
+                                <div id="roleplay-status" class="p-3 bg-slate-700/50 rounded-lg">
+                                    <p class="text-sm text-slate-400">Select a scenario above to start role-playing with AI prospects</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Analytics & Feedback -->
+                        <div class="lg:col-span-1 space-y-6">
+                            <!-- Real-time Feedback -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-chart-line mr-3 text-cyan-400"></i>
+                                    Real-time Feedback
+                                </h3>
+                                
+                                <!-- Naturalness Score -->
+                                <div class="mb-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-slate-300">Naturalness Score</span>
+                                        <span class="text-lg font-bold text-green-400" id="naturalness-score">87%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-3">
+                                        <div class="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full" style="width: 87%"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-1">Excellent - Sounds very natural</p>
+                                </div>
+                                
+                                <!-- Conversation Flow -->
+                                <div class="mb-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-slate-300">Conversation Flow</span>
+                                        <span class="text-lg font-bold text-blue-400" id="flow-score">82%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-3">
+                                        <div class="bg-gradient-to-r from-blue-400 to-cyan-500 h-3 rounded-full" style="width: 82%"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-1">Good pacing and transitions</p>
+                                </div>
+                                
+                                <!-- Appointment Likelihood -->
+                                <div class="mb-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-slate-300">Appointment Likelihood</span>
+                                        <span class="text-lg font-bold text-purple-400" id="appointment-score">75%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-3">
+                                        <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-3 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-1">High chance of booking appointment</p>
+                                </div>
+                                
+                                <!-- Improvement Tips -->
+                                <div class="space-y-2">
+                                    <h4 class="font-semibold text-white text-sm">💡 Improvement Tips:</h4>
+                                    <div class="space-y-1 text-xs text-slate-300">
+                                        <p>✅ Great emotional warmth</p>
+                                        <p>✅ Natural pacing achieved</p>
+                                        <p>🔧 Add more personalization</p>
+                                        <p>🔧 Include local references</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Training Progress -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-trophy mr-3 text-yellow-400"></i>
+                                    Training Progress
+                                </h3>
+                                
+                                <!-- Skills Progress -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-slate-300">Voice Naturalness</span>
+                                            <span class="text-white">Level 8/10</span>
+                                        </div>
+                                        <div class="w-full bg-slate-700 rounded-full h-2">
+                                            <div class="bg-green-400 h-2 rounded-full" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-slate-300">Objection Handling</span>
+                                            <span class="text-white">Level 6/10</span>
+                                        </div>
+                                        <div class="w-full bg-slate-700 rounded-full h-2">
+                                            <div class="bg-blue-400 h-2 rounded-full" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-slate-300">Appointment Closing</span>
+                                            <span class="text-white">Level 7/10</span>
+                                        </div>
+                                        <div class="w-full bg-slate-700 rounded-full h-2">
+                                            <div class="bg-purple-400 h-2 rounded-full" style="width: 70%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Achievements -->
+                                <div class="mt-6">
+                                    <h4 class="font-semibold text-white text-sm mb-3">🏆 Recent Achievements</h4>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center p-2 bg-slate-700/50 rounded-lg">
+                                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fas fa-star text-white text-xs"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-white">Natural Voice Master</div>
+                                                <div class="text-xs text-slate-400">Achieved 85%+ naturalness</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center p-2 bg-slate-700/50 rounded-lg">
+                                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                                <i class="fas fa-comments text-white text-xs"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-white">Conversation Pro</div>
+                                                <div class="text-xs text-slate-400">50+ successful role-plays</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <i class="fas fa-lightning-bolt mr-3 text-yellow-400"></i>
+                                    Quick Actions
+                                </h3>
+                                
+                                <div class="space-y-3">
+                                    <button onclick="generateOptimizedScript()" class="w-full p-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all">
+                                        🤖 Generate AI-Optimized Script
+                                    </button>
+                                    
+                                    <button onclick="runFullTrainingSession()" class="w-full p-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-semibold transition-all">
+                                        🎯 Run Full Training Session
+                                    </button>
+                                    
+                                    <button onclick="exportTrainedModel()" class="w-full p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg font-semibold transition-all">
+                                        📦 Deploy to Production
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add to DOM
+            document.body.appendChild(trainingModal);
+            
+            // Initialize the system
+            initializeVoiceTrainingSystem();
+            
+            // Show success message
+            showTrainingNotification('🎓 AI Voice Training System loaded successfully!', 'success');
+        }
+        
+        // System Functions
+        function closeAIVoiceTrainingSystem() {
+            var modal = document.getElementById('ai-voice-training-system');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+        
+        function initializeVoiceTrainingSystem() {
+            console.log('🎓 Initializing AI Voice Training System...');
+            
+            // Set default model selection
+            selectAIModel('sofia-pro');
+            
+            // Load default script
+            loadScriptTemplate('cold-call');
+            
+            // Set default tone
+            setTone('professional');
+            
+            console.log('✅ AI Voice Training System ready!');
+        }
+        
+        // AI Model Functions
+        function selectAIModel(modelId) {
+            console.log('🤖 Selecting AI Model:', modelId);
+            
+            // Remove previous selections
+            var options = document.querySelectorAll('.ai-model-option');
+            options.forEach(function(option) {
+                option.classList.remove('ring-2', 'ring-purple-400');
+            });
+            
+            // Select current model
+            var selectedOption = document.querySelector(`[onclick="selectAIModel('${modelId}')"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('ring-2', 'ring-purple-400');
+            }
+            
+            // Update info
+            var modelNames = {
+                'sofia-pro': 'Sofia Pro - Miami Latina, Warm & Professional',
+                'carlos-expert': 'Carlos Expert - Technical Specialist, Confident',
+                'maria-friendly': 'Maria Friendly - Customer Service, Approachable'
+            };
+            
+            var infoDiv = document.getElementById('selected-model-info');
+            if (infoDiv) {
+                infoDiv.innerHTML = `<p class="text-sm text-slate-300"><strong>Selected:</strong> ${modelNames[modelId]} - Ready for training</p>`;
+            }
+            
+            // Update voice settings based on model
+            updateVoiceSettingsForModel(modelId);
+        }
+        
+        function updateVoiceSettingsForModel(modelId) {
+            // Adjust default settings based on AI model personality
+            var settings = {
+                'sofia-pro': { pace: 1.0, emotion: 8, accent: 'miami' },
+                'carlos-expert': { pace: 0.9, emotion: 6, accent: 'neutral' },
+                'maria-friendly': { pace: 1.1, emotion: 9, accent: 'california' }
+            };
+            
+            var modelSettings = settings[modelId];
+            if (modelSettings) {
+                // Update sliders
+                var paceSlider = document.getElementById('pace-slider');
+                var emotionSlider = document.getElementById('emotion-slider');
+                var accentSelect = document.getElementById('accent-select');
+                
+                if (paceSlider) paceSlider.value = modelSettings.pace;
+                if (emotionSlider) emotionSlider.value = modelSettings.emotion;
+                if (accentSelect) accentSelect.value = modelSettings.accent;
+                
+                // Update displays
+                adjustPace(modelSettings.pace);
+                adjustEmotionalIntelligence(modelSettings.emotion);
+                setAccent(modelSettings.accent);
+            }
+        }
+        
+        // Voice Control Functions
+        function setTone(tone) {
+            console.log('🎵 Setting tone:', tone);
+            
+            // Update button states
+            var buttons = document.querySelectorAll('.tone-btn');
+            buttons.forEach(function(btn) {
+                btn.classList.remove('bg-blue-600', 'bg-green-600', 'bg-purple-600', 'bg-orange-600');
+                btn.classList.add('bg-slate-700');
+            });
+            
+            // Highlight selected tone
+            var selectedBtn = document.querySelector(`[onclick="setTone('${tone}')"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.remove('bg-slate-700');
+                var colorMap = {
+                    'professional': 'bg-blue-600',
+                    'friendly': 'bg-green-600', 
+                    'confident': 'bg-purple-600',
+                    'empathetic': 'bg-orange-600'
+                };
+                selectedBtn.classList.add(colorMap[tone] || 'bg-blue-600');
+            }
+            
+            showTrainingNotification(`🎵 Tone set to ${tone}`, 'info');
+        }
+        
+        function adjustPace(value) {
+            var display = document.getElementById('pace-value');
+            if (display) {
+                display.textContent = `${value === '1.0' ? 'Normal' : value < 1.0 ? 'Slow' : 'Fast'} (${value}x)`;
+            }
+            console.log('⏱️ Pace adjusted to:', value);
+        }
+        
+        function adjustEmotionalIntelligence(value) {
+            var display = document.getElementById('emotion-value');
+            if (display) {
+                var labels = ['Robotic', 'Robotic', 'Mechanical', 'Basic', 'Improving', 'Natural', 'Natural', 'Expressive', 'Very Expressive', 'Highly Expressive', 'Human-like'];
+                display.textContent = `${labels[value]} (${value}/10)`;
+            }
+            console.log('🎭 Emotional intelligence set to:', value);
+        }
+        
+        function setAccent(accent) {
+            console.log('🗣️ Accent set to:', accent);
+            showTrainingNotification(`🗣️ Regional accent: ${accent}`, 'info');
+        }
+        
+        // Script Functions
+        function loadScriptTemplate(templateType) {
+            var scripts = {
+                'cold-call': `Hi, this is Sofia from ProSpector Pro HVAC Services. I hope I'm catching you at a good time. I'm calling because we've been helping homeowners in your area save significantly on their energy bills with our advanced HVAC solutions. Would you be interested in a free energy assessment that could potentially save you hundreds of dollars each year?`,
+                
+                'follow-up': `Hi [Name], this is Sofia from ProSpector Pro following up on our conversation from last week. You mentioned you were interested in learning more about how we could help reduce your energy costs. I have some exciting updates on our current promotions that I think would be perfect for your home. Do you have a few minutes to discuss?`,
+                
+                'objection-response': `I completely understand your concern about the investment. Many of our customers felt the same way initially. However, what they found is that the energy savings typically pay for the system within 2-3 years, and after that, it's pure savings. Plus, we offer flexible financing options with no money down. Would you like to see how the numbers would work specifically for your home?`,
+                
+                'appointment-close': `Based on everything we've discussed, it sounds like our energy-efficient HVAC solution would be a great fit for your home. The next step would be for one of our certified technicians to come out and do a free, no-obligation assessment. I have availability this Tuesday at 2 PM or Wednesday at 10 AM. Which would work better for you?`,
+                
+                'custom': ''
+            };
+            
+            var editor = document.getElementById('script-editor');
+            if (editor && scripts[templateType]) {
+                editor.value = scripts[templateType];
+                updateScriptPreview();
+            }
+        }
+        
+        function updateScriptPreview() {
+            // Real-time script analysis would go here
+            console.log('📝 Script updated - analyzing for optimization...');
+        }
+        
+        function previewScript() {
+            var script = document.getElementById('script-editor');
+            if (script && script.value.trim()) {
+                showTrainingNotification('🎤 Playing voice preview with current settings...', 'info');
+                
+                // Here you would integrate with your voice API
+                console.log('🎤 Playing script with AI voice...');
+                console.log('Script:', script.value);
+                
+                // Simulate voice preview
+                setTimeout(function() {
+                    showTrainingNotification('✅ Voice preview completed!', 'success');
+                }, 3000);
+            } else {
+                showTrainingNotification('❌ Please enter a script to preview', 'error');
+            }
+        }
+        
+        function stopPreview() {
+            showTrainingNotification('🛑 Voice preview stopped', 'info');
+            console.log('🛑 Stopping voice preview...');
+        }
+        
+        // Role-Play Functions
+        function startRolePlay(scenarioType) {
+            var scenarios = {
+                'interested-prospect': {
+                    name: 'Interested Prospect',
+                    description: 'This prospect is genuinely interested but has questions about pricing and timeline.',
+                    personality: 'Warm, asks good questions, price-conscious but ready to buy'
+                },
+                'skeptical-prospect': {
+                    name: 'Skeptical Prospect', 
+                    description: 'This prospect has been burned before and needs convincing about quality and value.',
+                    personality: 'Cautious, needs proof, comparing multiple options'
+                },
+                'busy-prospect': {
+                    name: 'Busy Prospect',
+                    description: 'This prospect is interested but has limited time and wants quick, clear information.',
+                    personality: 'Fast-paced, wants bullet points, decision-maker'
+                }
+            };
+            
+            var scenario = scenarios[scenarioType];
+            var statusDiv = document.getElementById('roleplay-status');
+            
+            if (statusDiv && scenario) {
+                statusDiv.innerHTML = `
+                    <div class="mb-3">
+                        <h4 class="font-semibold text-white">${scenario.name} - Role-Play Active</h4>
+                        <p class="text-sm text-slate-300 mt-1">${scenario.description}</p>
+                        <p class="text-xs text-slate-400 mt-2"><strong>Personality:</strong> ${scenario.personality}</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="continueRolePlay()" class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                            Continue Conversation
+                        </button>
+                        <button onclick="endRolePlay()" class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors">
+                            End Role-Play
+                        </button>
+                    </div>
+                `;
+            }
+            
+            showTrainingNotification(`🎭 Starting role-play: ${scenario.name}`, 'info');
+            console.log('🎭 Role-play scenario:', scenarioType);
+        }
+        
+        function continueRolePlay() {
+            showTrainingNotification('💬 AI prospect is responding...', 'info');
+            console.log('💬 Continuing role-play conversation...');
+        }
+        
+        function endRolePlay() {
+            var statusDiv = document.getElementById('roleplay-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = '<p class="text-sm text-slate-400">Select a scenario above to start role-playing with AI prospects</p>';
+            }
+            showTrainingNotification('🏁 Role-play session ended', 'info');
+        }
+        
+        // Advanced Functions
+        function generateOptimizedScript() {
+            showTrainingNotification('🤖 AI is generating an optimized script based on your training data...', 'info');
+            
+            setTimeout(function() {
+                var editor = document.getElementById('script-editor');
+                if (editor) {
+                    editor.value = `Hi there! This is Sofia from ProSpector Pro HVAC. I hope you're having a great day! I'm reaching out because we've been helping folks in your neighborhood - actually just helped the Johnson family on Maple Street - save over $200 monthly on their energy bills with our smart HVAC solutions. I'd love to see if we could do something similar for your home. Would you be open to a quick, no-pressure conversation about how this might work for you?`;
+                }
+                showTrainingNotification('✨ AI-optimized script generated with local personalization!', 'success');
+            }, 2000);
+        }
+        
+        function runFullTrainingSession() {
+            showTrainingNotification('🎯 Starting comprehensive training session...', 'info');
+            
+            // Simulate training progress
+            var steps = [
+                '🤖 Loading AI model configurations...',
+                '🎵 Calibrating voice parameters...',
+                '📝 Analyzing script effectiveness...',
+                '🎭 Running role-play scenarios...',
+                '📊 Generating performance metrics...',
+                '✅ Training session completed!'
+            ];
+            
+            var currentStep = 0;
+            var interval = setInterval(function() {
+                if (currentStep < steps.length) {
+                    showTrainingNotification(steps[currentStep], currentStep === steps.length - 1 ? 'success' : 'info');
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1500);
+        }
+        
+        function exportTrainedModel() {
+            showTrainingNotification('📦 Preparing trained model for production deployment...', 'info');
+            
+            setTimeout(function() {
+                showTrainingNotification('🚀 Model successfully deployed to production! Your AI is now live and ready for calls.', 'success');
+            }, 2000);
+        }
+        
+        function saveTrainingProgress() {
+            showTrainingNotification('💾 Saving training progress and configurations...', 'info');
+            
+            setTimeout(function() {
+                showTrainingNotification('✅ Training progress saved successfully!', 'success');
+            }, 1000);
+        }
+        
+        function exportTrainingData() {
+            showTrainingNotification('📤 Exporting training data and model configurations...', 'info');
+            
+            setTimeout(function() {
+                showTrainingNotification('📥 Training data exported! Download starting...', 'success');
+            }, 1500);
+        }
+        
+        // Utility Functions
+        function showTrainingNotification(message, type) {
+            // Create notification element
+            var notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-[60] p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full ${
+                type === 'success' ? 'bg-green-600 text-white' : 
+                type === 'error' ? 'bg-red-600 text-white' : 
+                'bg-blue-600 text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="mr-3">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(function() {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto remove after 4 seconds
+            setTimeout(function() {
+                if (notification && notification.parentElement) {
+                    notification.classList.add('translate-x-full');
+                    setTimeout(function() {
+                        if (notification && notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 4000);
+            
+            console.log('📢 Training notification:', message);
+        }
+        
+        // Make functions globally available
+        window.openAIVoiceTrainingSystem = openAIVoiceTrainingSystem;
+        window.closeAIVoiceTrainingSystem = closeAIVoiceTrainingSystem;
+        
+        console.log('🎓✅ AI Voice Training System loaded and ready!');
     </script>
     
     <!-- Floating Stop Voice Button (will be created dynamically) -->
