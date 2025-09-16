@@ -135,7 +135,7 @@
                                 <button onclick="event.stopPropagation(); previewVoice('yeni')" class="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-play mr-1"></i>Preview
                                 </button>
-                                <button onclick="event.stopPropagation(); customizeVoice('yeni')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
+                                <button onclick="event.stopPropagation(); event.preventDefault(); customizeVoice('yeni')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-cog"></i>
                                 </button>
                             </div>
@@ -151,7 +151,7 @@
                                 <button onclick="event.stopPropagation(); previewVoice('danny')" class="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-play mr-1"></i>Preview
                                 </button>
-                                <button onclick="event.stopPropagation(); customizeVoice('danny')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
+                                <button onclick="event.stopPropagation(); event.preventDefault(); customizeVoice('danny')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-cog"></i>
                                 </button>
                             </div>
@@ -167,7 +167,7 @@
                                 <button onclick="event.stopPropagation(); previewVoice('gabi')" class="flex-1 py-2 px-3 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-play mr-1"></i>Preview
                                 </button>
-                                <button onclick="event.stopPropagation(); customizeVoice('gabi')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
+                                <button onclick="event.stopPropagation(); event.preventDefault(); customizeVoice('gabi')" class="py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors mobile-friendly">
                                     <i class="fas fa-cog"></i>
                                 </button>
                             </div>
@@ -544,13 +544,39 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
             
             // Add global audio stop capability
             document.addEventListener('keydown', function(e) {
-                // Press Escape to stop any playing audio
-                if (e.key === 'Escape' && window.currentAudio) {
-                    window.currentAudio.pause();
-                    window.currentAudio = null;
-                    console.log('⏹️ Audio stopped by user (Escape key)');
+                // Press Escape to stop any playing audio or close modals
+                if (e.key === 'Escape') {
+                    if (window.currentAudio) {
+                        window.currentAudio.pause();
+                        window.currentAudio = null;
+                        console.log('⏹️ Audio stopped by user (Escape key)');
+                    }
+                    // Close customization modal if open
+                    const modal = document.getElementById('voice-customization-modal');
+                    if (modal) {
+                        closeCustomizationModal();
+                    }
                 }
             });
+            
+            // Enhanced mobile button handling
+            setTimeout(() => {
+                const settingsButtons = document.querySelectorAll('button[onclick*="customizeVoice"]');
+                settingsButtons.forEach(btn => {
+                    // Add additional event listeners for mobile compatibility
+                    btn.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                        console.log('👆 Settings button touched');
+                    });
+                    
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        console.log('⚙️ Settings button clicked');
+                    });
+                });
+                console.log('✅ Enhanced mobile settings button handlers attached');
+            }, 500);
             
             // Set focus on script editor for immediate use
             document.getElementById('script-editor').focus();
@@ -707,7 +733,141 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
 
         function customizeVoice(model) {
             console.log('⚙️ Customizing voice:', model);
-            alert(`🔧 Voice Customization: ${model.toUpperCase()}\n\nOpening advanced voice parameters for fine-tuning:\n\n• Accent strength\n• Speaking rhythm\n• Emotional range\n• Regional variations\n• Industry-specific vocabulary\n\nUse the sliders on the left to adjust these settings.`);
+            
+            // Remove existing customization modal if any
+            const existingModal = document.getElementById('voice-customization-modal');
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+            
+            // Create customization modal
+            const modal = document.createElement('div');
+            modal.id = 'voice-customization-modal';
+            modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+            
+            const modelNames = {
+                'yeni': 'Yeni Professional',
+                'danny': 'Danny Authority',
+                'gabi': 'Gabi Conversational'
+            };
+            
+            const modelName = modelNames[model] || model.toUpperCase();
+            
+            modal.innerHTML = `
+                <div class="glass-effect rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-white flex items-center">
+                            <i class="fas fa-cog mr-3 text-blue-400"></i>
+                            Customize ${modelName}
+                        </h3>
+                        <button onclick="closeCustomizationModal()" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Voice Characteristics -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                <i class="fas fa-microphone mr-2 text-green-400"></i>
+                                Voice Characteristics
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Accent Strength</label>
+                                    <input type="range" id="accent-strength" min="0" max="100" value="50" 
+                                           class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                        <span>Subtle</span>
+                                        <span id="accent-value" class="text-blue-400">50%</span>
+                                        <span>Strong</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Speaking Rhythm</label>
+                                    <select id="speaking-rhythm" class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2">
+                                        <option value="steady">Steady & Consistent</option>
+                                        <option value="dynamic">Dynamic & Varied</option>
+                                        <option value="measured">Measured & Deliberate</option>
+                                        <option value="flowing">Flowing & Natural</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Emotional Range</label>
+                                    <input type="range" id="emotional-range" min="0" max="100" value="70" 
+                                           class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                        <span>Reserved</span>
+                                        <span id="emotion-range-value" class="text-purple-400">70%</span>
+                                        <span>Expressive</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Regional Variation</label>
+                                    <select id="regional-variation" class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2">
+                                        <option value="miami">Miami, Florida</option>
+                                        <option value="southwest">Southwest US</option>
+                                        <option value="neutral">Neutral American</option>
+                                        <option value="international">International Business</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- HVAC Industry Settings -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                <i class="fas fa-tools mr-2 text-orange-400"></i>
+                                HVAC Industry Specialization
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Technical Vocabulary</label>
+                                    <input type="range" id="technical-vocab" min="0" max="100" value="60" 
+                                           class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                        <span>Basic</span>
+                                        <span id="tech-vocab-value" class="text-orange-400">60%</span>
+                                        <span>Expert</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-2">Sales Approach</label>
+                                    <select id="sales-approach" class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2">
+                                        <option value="consultative">Consultative & Educational</option>
+                                        <option value="direct">Direct & Efficient</option>
+                                        <option value="relationship">Relationship-Focused</option>
+                                        <option value="solution">Solution-Oriented</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preview & Actions -->
+                        <div class="border-t border-slate-600 pt-6">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button onclick="previewCustomization('${model}')" 
+                                    class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-play mr-2"></i>Preview Changes
+                                </button>
+                                <button onclick="saveCustomization('${model}')" 
+                                    class="flex-1 py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-save mr-2"></i>Save Settings
+                                </button>
+                                <button onclick="resetToDefault('${model}')" 
+                                    class="py-3 px-4 border border-slate-600 text-slate-400 hover:text-white hover:border-slate-500 rounded-lg transition-colors">
+                                    <i class="fas fa-undo mr-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Initialize sliders
+            initializeCustomizationSliders();
         }
 
         function createNewModel() {
@@ -1160,6 +1320,113 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     hideLoading();
                     alert(`✅ Deployment Successful!\n\nYour AI voice model is now LIVE and ready for prospect calls!\n\n🎯 Monitor your campaign dashboard for:\n• Increased appointment rates\n• Improved call quality\n• Higher customer satisfaction\n\nGet ready for more successful HVAC sales!`);
                 }, 4000);
+            }
+        }
+
+        // Voice Customization Functions
+        function closeCustomizationModal() {
+            const modal = document.getElementById('voice-customization-modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+        
+        function initializeCustomizationSliders() {
+            const accentSlider = document.getElementById('accent-strength');
+            const emotionSlider = document.getElementById('emotional-range');
+            const techVocabSlider = document.getElementById('technical-vocab');
+            
+            if (accentSlider) {
+                accentSlider.addEventListener('input', function() {
+                    document.getElementById('accent-value').textContent = this.value + '%';
+                });
+            }
+            
+            if (emotionSlider) {
+                emotionSlider.addEventListener('input', function() {
+                    document.getElementById('emotion-range-value').textContent = this.value + '%';
+                });
+            }
+            
+            if (techVocabSlider) {
+                techVocabSlider.addEventListener('input', function() {
+                    document.getElementById('tech-vocab-value').textContent = this.value + '%';
+                });
+            }
+        }
+        
+        function previewCustomization(model) {
+            console.log('🎵 Previewing customization for:', model);
+            
+            // Get current settings
+            const accentStrength = document.getElementById('accent-strength')?.value || 50;
+            const emotionalRange = document.getElementById('emotional-range')?.value || 70;
+            const technicalVocab = document.getElementById('technical-vocab')?.value || 60;
+            const speakingRhythm = document.getElementById('speaking-rhythm')?.value || 'steady';
+            const regionalVariation = document.getElementById('regional-variation')?.value || 'miami';
+            const salesApproach = document.getElementById('sales-approach')?.value || 'consultative';
+            
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                alert(`🎵 Customization Preview Complete!\n\nCustomized ${model.toUpperCase()} voice with:\n\n• Accent Strength: ${accentStrength}%\n• Emotional Range: ${emotionalRange}%\n• Technical Vocabulary: ${technicalVocab}%\n• Speaking Rhythm: ${speakingRhythm}\n• Regional Variation: ${regionalVariation}\n• Sales Approach: ${salesApproach}\n\nThis preview would play with your customized settings!`);
+            }, 2000);
+        }
+        
+        function saveCustomization(model) {
+            console.log('💾 Saving customization for:', model);
+            
+            const settings = {
+                accentStrength: document.getElementById('accent-strength')?.value || 50,
+                emotionalRange: document.getElementById('emotional-range')?.value || 70,
+                technicalVocab: document.getElementById('technical-vocab')?.value || 60,
+                speakingRhythm: document.getElementById('speaking-rhythm')?.value || 'steady',
+                regionalVariation: document.getElementById('regional-variation')?.value || 'miami',
+                salesApproach: document.getElementById('sales-approach')?.value || 'consultative'
+            };
+            
+            // Save to localStorage
+            localStorage.setItem(`voice_settings_${model}`, JSON.stringify(settings));
+            
+            showSuccess(`Voice settings saved successfully for ${model.toUpperCase()}!\n\nYour customizations will be applied to all future voice generation and training sessions.`);
+            
+            closeCustomizationModal();
+        }
+        
+        function resetToDefault(model) {
+            if (confirm(`Reset ${model.toUpperCase()} voice settings to default?\n\nThis will remove all customizations and restore the original voice characteristics.`)) {
+                // Reset sliders and selects to default values
+                const accentSlider = document.getElementById('accent-strength');
+                const emotionSlider = document.getElementById('emotional-range');  
+                const techVocabSlider = document.getElementById('technical-vocab');
+                
+                if (accentSlider) {
+                    accentSlider.value = 50;
+                    document.getElementById('accent-value').textContent = '50%';
+                }
+                if (emotionSlider) {
+                    emotionSlider.value = 70;
+                    document.getElementById('emotion-range-value').textContent = '70%';
+                }
+                if (techVocabSlider) {
+                    techVocabSlider.value = 60;
+                    document.getElementById('tech-vocab-value').textContent = '60%';
+                }
+                
+                // Reset selects
+                const speakingRhythm = document.getElementById('speaking-rhythm');
+                const regionalVariation = document.getElementById('regional-variation');
+                const salesApproach = document.getElementById('sales-approach');
+                
+                if (speakingRhythm) speakingRhythm.value = 'steady';
+                if (regionalVariation) regionalVariation.value = 'miami';
+                if (salesApproach) salesApproach.value = 'consultative';
+                
+                // Remove from localStorage
+                localStorage.removeItem(`voice_settings_${model}`);
+                
+                showSuccess(`${model.toUpperCase()} voice settings reset to default!`);
             }
         }
 
