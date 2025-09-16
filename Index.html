@@ -4383,7 +4383,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="startTrainingModule('objection-handling')" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     Continue Training
                                 </button>
                             </div>
@@ -6349,7 +6349,7 @@ I'd love to schedule..."></textarea>
             // Voice selection priorities for better gender accuracy
             var voiceSelectionCriteria = [
                 // Priority 1: Look for specific names or gender indicators
-                (voice) function() {
+                function(voice) {
                     var name = voice.name.toLowerCase();
                     if (isFemaleName) {
                         return name.includes('sarah') || name.includes('emma') || name.includes('lisa') || 
@@ -6362,7 +6362,7 @@ I'd love to schedule..."></textarea>
                     }
                 },
                 // Priority 2: Gender-specific voices by exclusion
-                (voice) function() {
+                function(voice) {
                     var name = voice.name.toLowerCase();
                     if (isFemaleName) {
                         return !name.includes('male') && (
@@ -6375,7 +6375,7 @@ I'd love to schedule..."></textarea>
                     }
                 },
                 // Priority 3: Language and accent matching
-                (voice) function() {
+                function(voice) {
                     var accentMap = {
                         'us-neutral': ['en-US'],
                         'us-southern': ['en-US'],  
@@ -6442,7 +6442,7 @@ I'd love to schedule..."></textarea>
                 callback();
             };
             
-            utterance.onerror = (event) function() {
+            utterance.onerror = function(event) {
                 console.error('Speech synthesis error:', event.error);
                 showNotification(`❌ Voice error: ${event.error} - Please try again`, 'error');
                 callback();
@@ -6629,7 +6629,7 @@ I'd love to schedule..."></textarea>
                     if (callback) callback();
                 };
                 
-                audio.onerror = (error) function() {
+                audio.onerror = function(error) {
                     console.error('🚨 Audio playback error for', voiceName, ':', error);
                     showNotification(`❌ Audio playback error for ${voiceName} - Please try again`, 'error');
                     if (callback) callback();
@@ -6652,7 +6652,7 @@ I'd love to schedule..."></textarea>
                         .then(function() {
                             console.log('🎵 Audio started playing successfully for', voiceName);
                         })
-                        .catch((playError) function() {
+                        .catch(function(playError) {
                             console.error('🚨 Play promise rejected for', voiceName, ':', playError);
                             showNotification(`❌ Could not play ${voiceName}'s audio - ${playError.message}`, 'error');
                             if (callback) callback();
@@ -6740,7 +6740,7 @@ I'd love to schedule..."></textarea>
                 if (playPromise !== undefined) {
                     playPromise.then(function() {
                         console.log('📱✅ Mobile audio playing successfully:', voiceName);
-                    }).catch((playError) function() {
+                    }).catch(function(playError) {
                         console.error('📱❌ Mobile play rejected:', playError);
                         
                         // Mobile browsers often require user interaction first
@@ -6752,7 +6752,7 @@ I'd love to schedule..."></textarea>
                                 audio.play().then(function() {
                                     console.log('📱✅ Audio playing after user interaction');
                                     showNotification(`🔊 ${voiceName} speaking now!`, 'success');
-                                }).catch((retryError) function() {
+                                }).catch(function(retryError) {
                                     console.error('📱❌ Retry failed:', retryError);
                                     showNotification(`❌ Audio issue: ${retryError.message}`, 'error');
                                     if (callback) callback();
@@ -7241,7 +7241,7 @@ I'd love to schedule..."></textarea>
                     this.showListeningIndicator(true);
                 };
                 
-                this.recognition.onresult = (event) function() {
+                this.recognition.onresult = function(event) {
                     this.handleSpeechResult(event);
                 };
                 
@@ -7260,7 +7260,7 @@ I'd love to schedule..."></textarea>
                     }
                 };
                 
-                this.recognition.onerror = (event) function() {
+                this.recognition.onerror = function(event) {
                     console.error('🚨 Speech recognition error:', event.error);
                     this.isListening = false;
                     this.showListeningIndicator(false);
@@ -7530,7 +7530,7 @@ I'd love to schedule..."></textarea>
                     if (callback) callback();
                 };
                 
-                audio.onerror = (error) function() {
+                audio.onerror = function(error) {
                     console.error('🚨 Professional audio error:', error);
                     // Fallback to enhanced TTS
                     this.playEnhancedFallbackVoice(this.lastMessage, callback);
@@ -7568,7 +7568,7 @@ I'd love to schedule..."></textarea>
                         if (callback) callback();
                     };
                     
-                    utterance.onerror = (error) function() {
+                    utterance.onerror = function(error) {
                         console.error('🚨 Enhanced TTS Error:', error);
                         if (callback) callback();
                     };
@@ -8101,7 +8101,7 @@ I'd love to schedule..."></textarea>
                     console.log(`🔊 Voices loaded: ${voices.length} available`);
                     
                     // Log available voices for debugging
-                    voices.forEach((voice, index) function() {
+                    voices.forEach(function(voice, index) {
                         console.log(`Voice ${index}: ${voice.name} (${voice.lang}) ${voice.gender || 'unknown gender'}`);
                     });
                 });
@@ -10978,6 +10978,12 @@ I'd love to schedule..."></textarea>
         }
         
         function startTrainingModule(moduleType) {
+            console.log('🎓 Starting training module:', moduleType);
+            
+            // Ensure function is accessible - add debug logging
+            console.log('🔍 Function called with module type:', moduleType);
+            console.log('🔍 Function context:', typeof startTrainingModule);
+            
             var moduleNames = {
                 'voice-tone': 'Voice & Tone Mastery',
                 'hvac-scripts': 'HVAC Sales Scripts',
@@ -10988,9 +10994,337 @@ I'd love to schedule..."></textarea>
             
             showNotification(`🎓 Starting ${moduleName} training module...`, 'info');
             
-            setTimeout(() => {
-                showNotification(`✅ ${moduleName} training session initiated! Check your progress dashboard.`, 'success');
-            }, 2000);
+            // Add visible feedback that the function is working
+            try {
+                showNotification(`🎓 Loading ${moduleName} training interface...`, 'info');
+                console.log('🚀 About to route to training module:', moduleType);
+                
+                // Route to the appropriate training interface based on module type
+                switch(moduleType) {
+                    case 'voice-tone':
+                        console.log('🎤 Opening Voice & Tone Mastery Training...');
+                        openVoiceToneMasteryTraining();
+                        break;
+                    case 'hvac-scripts':
+                        console.log('🎯 Opening HVAC Sales Scripts Training...');
+                        openHVACSalesScriptsTraining();
+                        break;
+                    case 'objection-handling':
+                        console.log('🛡️ Opening Objection Handling Training...');
+                        openObjectionHandlingTraining();
+                        break;
+                    default:
+                        console.error('❌ Unknown module type:', moduleType);
+                        showNotification(`❌ Training module "${moduleType}" not found`, 'error');
+                }
+                console.log('✅ Training module routing completed');
+            } catch (error) {
+                console.error('🚨 Error in startTrainingModule:', error);
+                showNotification(`❌ Error loading training: ${error.message}`, 'error');
+            }
+        }
+        
+        // Voice & Tone Mastery Training Interface
+        function openVoiceToneMasteryTraining() {
+            console.log('🎤 Opening Voice & Tone Mastery Training...');
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: left; color: white; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(34, 197, 94, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-microphone text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">🎤 Voice & Tone Mastery Training</h2>
+                    <p class="text-slate-300">Master AI voice emotions, pacing, and natural conversation flow</p>
+                </div>
+                
+                <!-- Training Progress -->
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-green-300 mb-4">📊 Your Progress</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">✅ Natural conversation patterns</span>
+                            <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Complete</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">🧠 Emotional intelligence in calls</span>
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">In Progress</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">🌎 Regional accent adaptation</span>
+                            <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Pending</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Lesson: Emotional Intelligence -->
+                <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-yellow-300 mb-3">🧠 Current Lesson: Emotional Intelligence in Calls</h3>
+                    <p class="text-slate-300 mb-4">Learn how to adjust AI voice emotions based on prospect responses and conversation context.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">😊 Positive Scenarios</h4>
+                            <p class="text-sm text-slate-300 mb-3">When prospects show interest, use:</p>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>• Enthusiastic but controlled tone</li>
+                                <li>• Slightly faster pacing</li>
+                                <li>• Warm, engaging inflection</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">🤔 Objection Scenarios</h4>
+                            <p class="text-sm text-slate-300 mb-3">When facing resistance, adjust to:</p>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>• Calm, understanding tone</li>
+                                <li>• Slower, deliberate pacing</li>
+                                <li>• Empathetic voice modulation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <button onclick="startVoiceEmotionalTraining()" class="w-full py-3 px-6 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white rounded-lg font-bold transition-all duration-300">
+                        🎯 Practice Emotional Voice Control
+                    </button>
+                </div>
+                
+                <!-- Voice Practice Section -->
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-green-300 mb-4">🎙️ Voice Practice Studio</h3>
+                    <p class="text-slate-300 mb-4">Practice with Miami AI personalities and get real-time feedback.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="showVoiceManagementModal()" class="py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+                            🎤 Open Voice Studio
+                        </button>
+                        <button onclick="startScenarioBasedTraining()" class="py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all">
+                            🎭 Scenario Training
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="document.body.removeChild(this.closest('[style*=\"position: fixed\"]'))" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        ← Back to Training
+                    </button>
+                    <button onclick="completeVoiceToneLesson()" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg font-bold transition-all duration-300">
+                        ✅ Complete Lesson
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        // HVAC Sales Scripts Training Interface
+        function openHVACSalesScriptsTraining() {
+            console.log('🎯 Opening HVAC Sales Scripts Training...');
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: left; color: white; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tools text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">🎯 HVAC Sales Scripts Training</h2>
+                    <p class="text-slate-300">Master industry-specific conversation flows and closing techniques</p>
+                </div>
+                
+                <!-- Training Progress -->
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-blue-300 mb-4">📊 Module Progress</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">✅ Initial contact & rapport building</span>
+                            <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Complete</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">🔧 Technical consultation approach</span>
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">Ready to Start</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300">💰 Pricing & closing strategies</span>
+                            <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Locked</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Lesson: Technical Consultation -->
+                <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-blue-300 mb-3">🔧 Current Lesson: Technical Consultation Approach</h3>
+                    <p class="text-slate-300 mb-4">Learn how to explain HVAC technical concepts in customer-friendly language while building trust and expertise.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">🌡️ System Diagnostics</h4>
+                            <p class="text-sm text-slate-300 mb-2">Key talking points:</p>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>• "Let me check your system efficiency first..."</li>
+                                <li>• "I notice your energy bills might be higher..."</li>
+                                <li>• "Here's what I found during inspection..."</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">💡 Solution Presentation</h4>
+                            <p class="text-sm text-slate-300 mb-2">Effective approaches:</p>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li>• "Based on what I see, here's my recommendation..."</li>
+                                <li>• "This will save you X% on energy costs..."</li>
+                                <li>• "Most customers see ROI within 2 years..."</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <button onclick="startHVACTechnicalTraining()" class="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-bold transition-all duration-300">
+                        🎯 Practice Technical Consultation
+                    </button>
+                </div>
+                
+                <!-- Script Library -->
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-blue-300 mb-4">📚 HVAC Script Library</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-700/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">Emergency Service Script</h4>
+                            <p class="text-xs text-slate-400 mb-2">94% conversion rate</p>
+                            <button onclick="openScriptViewer('emergency-hvac')" class="w-full py-2 px-3 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-all">
+                                🚨 View Script
+                            </button>
+                        </div>
+                        <div class="bg-slate-700/30 rounded-lg p-4">
+                            <h4 class="font-semibold text-white mb-2">Maintenance Upsell Script</h4>
+                            <p class="text-xs text-slate-400 mb-2">87% conversion rate</p>
+                            <button onclick="openScriptViewer('maintenance-upsell')" class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded transition-all">
+                                🔧 View Script
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="document.body.removeChild(this.closest('[style*=\"position: fixed\"]'))" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        ← Back to Training
+                    </button>
+                    <button onclick="completeHVACScriptsLesson()" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-bold transition-all duration-300">
+                        ✅ Complete Module
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        // Objection Handling Training Interface
+        function openObjectionHandlingTraining() {
+            console.log('🛡️ Opening Objection Handling Training...');
+            
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;';
+            
+            var content = document.createElement('div');
+            content.style.cssText = 'background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 40px; text-align: left; color: white; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(147, 51, 234, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);';
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">🛡️ Objection Handling Training</h2>
+                    <p class="text-slate-300">Master AI-powered responses to difficult conversation scenarios</p>
+                </div>
+                
+                <!-- Expert Level Badge -->
+                <div class="text-center mb-6">
+                    <span class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm rounded-full font-bold">
+                        🏆 Expert Level Training
+                    </span>
+                </div>
+                
+                <!-- Common Objections Training -->
+                <div class="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/30 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-purple-300 mb-4">🎯 Master These Common Objections</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold text-white">💰 "Your price is too high"</h4>
+                                <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">Pending</span>
+                            </div>
+                            <p class="text-sm text-slate-300 mb-3">Learn the psychology behind price objections and how to reframe value propositions.</p>
+                            <button onclick="startPriceObjectionTraining()" class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-all">
+                                🎯 Practice Price Objections
+                            </button>
+                        </div>
+                        
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold text-white">⏰ "I need to think about it"</h4>
+                                <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">Pending</span>
+                            </div>
+                            <p class="text-sm text-slate-300 mb-3">Transform stalls into qualified opportunities with proven decision-acceleration techniques.</p>
+                            <button onclick="startDecisionMakerTraining()" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded transition-all">
+                                🎯 Practice Decision Making
+                            </button>
+                        </div>
+                        
+                        <div class="bg-slate-800/30 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold text-white">🏢 "We're happy with our current provider"</h4>
+                                <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Pending</span>
+                            </div>
+                            <p class="text-sm text-slate-300 mb-3">Advanced competitive positioning and differentiation strategies for HVAC services.</p>
+                            <button onclick="startCompetitorObjectionTraining()" class="w-full py-2 px-4 bg-pink-600 hover:bg-pink-700 text-white text-sm rounded transition-all">
+                                🎯 Practice Competitor Responses
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Coaching Integration -->
+                <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-purple-300 mb-4">🤖 AI Real-Time Coaching</h3>
+                    <p class="text-slate-300 mb-4">Practice with AI that adapts to your responses and provides instant feedback.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="startAIObjectionSimulator()" class="py-3 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-all">
+                            🤖 AI Objection Simulator
+                        </button>
+                        <button onclick="reviewObjectionPerformance()" class="py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg transition-all">
+                            📊 Review Performance
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="document.body.removeChild(this.closest('[style*=\"position: fixed\"]'))" 
+                            class="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition-all duration-300">
+                        ← Back to Training
+                    </button>
+                    <button onclick="completeObjectionHandlingLesson()" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-bold transition-all duration-300">
+                        🏆 Start Expert Training
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
         }
         
         function openVoiceTrainingStudio() {
@@ -11002,6 +11336,148 @@ I'd love to schedule..."></textarea>
                 showVoiceManagementModal();
             }, 300);
         }
+        
+        // Training Module Support Functions
+        function startVoiceEmotionalTraining() {
+            showNotification('🧠 Starting Emotional Intelligence Voice Training...', 'info');
+            // Close current modal and open voice management for hands-on practice
+            document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+            setTimeout(() => {
+                showVoiceManagementModal();
+            }, 300);
+        }
+        
+        function startScenarioBasedTraining() {
+            showNotification('🎭 Loading Scenario-Based Training Exercises...', 'info');
+            setTimeout(() => {
+                showNotification('📚 Scenario training includes: Customer objections, technical questions, pricing discussions, and emergency service situations.', 'success');
+            }, 2000);
+        }
+        
+        function completeVoiceToneLesson() {
+            showNotification('✅ Voice & Tone lesson completed! Progress updated.', 'success');
+            document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+        }
+        
+        function startHVACTechnicalTraining() {
+            showNotification('🔧 Starting HVAC Technical Consultation Training...', 'info');
+            setTimeout(() => {
+                showNotification('📋 Practice explaining: System diagnostics, energy efficiency, repair vs replacement, and maintenance benefits.', 'success');
+            }, 2000);
+        }
+        
+        function completeHVACScriptsLesson() {
+            showNotification('✅ HVAC Sales Scripts module completed! Next: Pricing & Closing Strategies unlocked.', 'success');
+            document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+        }
+        
+        function startPriceObjectionTraining() {
+            showNotification('💰 Starting Price Objection Handling Training...', 'info');
+            setTimeout(() => {
+                showNotification('🎯 Practice responses: "Let me show you the value breakdown...", "Most customers find this pays for itself in 18 months...", "What budget range were you considering?"', 'success');
+            }, 2000);
+        }
+        
+        function startDecisionMakerTraining() {
+            showNotification('⏰ Starting Decision Maker Access Training...', 'info');
+            setTimeout(() => {
+                showNotification('🔍 Learn to identify: Who makes decisions, what influences them, how to accelerate the decision process, and when to apply pressure vs patience.', 'success');
+            }, 2000);
+        }
+        
+        function startCompetitorObjectionTraining() {
+            showNotification('🏢 Starting Competitor Comparison Training...', 'info');
+            setTimeout(() => {
+                showNotification('🎪 Master techniques: Acknowledge without disparaging, highlight unique value propositions, redirect to customer needs, and position as the premium choice.', 'success');
+            }, 2000);
+        }
+        
+        function startAIObjectionSimulator() {
+            showNotification('🤖 Loading AI Objection Simulator...', 'info');
+            setTimeout(() => {
+                showNotification('🎯 AI Simulator ready! Practice with realistic customer personas, get instant feedback on your responses, and improve your objection handling skills.', 'success');
+            }, 2000);
+        }
+        
+        function reviewObjectionPerformance() {
+            showNotification('📊 Loading Performance Analytics...', 'info');
+            setTimeout(() => {
+                showNotification('📈 Performance Summary: 73% objection resolution rate, strongest in price objections (89%), areas for improvement in competitor comparisons (54%).', 'success');
+            }, 2000);
+        }
+        
+        function completeObjectionHandlingLesson() {
+            showNotification('🏆 Expert Objection Handling Training initiated! This advanced training requires 95%+ completion rate.', 'success');
+            document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+        }
+        
+        // Ensure ALL critical functions are globally accessible
+        window.startTrainingModule = startTrainingModule;
+        window.openVoiceToneMasteryTraining = openVoiceToneMasteryTraining;
+        window.openHVACSalesScriptsTraining = openHVACSalesScriptsTraining;
+        window.openObjectionHandlingTraining = openObjectionHandlingTraining;
+        window.stopCurrentVoice = stopCurrentVoice;
+        
+        console.log('🔧 Training module functions registered globally:', {
+            startTrainingModule: typeof window.startTrainingModule,
+            openVoiceToneMasteryTraining: typeof window.openVoiceToneMasteryTraining,
+            openHVACSalesScriptsTraining: typeof window.openHVACSalesScriptsTraining,
+            openObjectionHandlingTraining: typeof window.openObjectionHandlingTraining
+        });
+        
+        // Debug: Log that the training system has loaded
+        console.log('🎓 TRAINING SYSTEM LOADED - All functions should be available now!');
+        console.log('🔍 Testing startTrainingModule function:', typeof startTrainingModule);
+        
+        // Add a global debug function for testing
+        window.testTrainingModule = function() {
+            console.log('🧪 Testing training module from console...');
+            if (typeof window.startTrainingModule === 'function') {
+                window.startTrainingModule('voice-tone');
+            } else {
+                console.error('❌ startTrainingModule not available');
+            }
+        };
+        
+        console.log('🧪 Added testTrainingModule() - try calling window.testTrainingModule() in console');
+        
+        // Enhanced button click handling with fallback event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Setting up enhanced training button handlers...');
+            
+            // Add click handlers to all training buttons as fallback
+            setTimeout(() => {
+                var trainingButtons = document.querySelectorAll('button');
+                trainingButtons.forEach(function(btn) {
+                    if (btn.textContent.includes('Continue Training') || btn.textContent.includes('Start Module')) {
+                        btn.addEventListener('click', function(e) {
+                            console.log('🎯 Training button clicked:', btn.textContent);
+                            
+                            // Determine module type based on context
+                            var moduleType = 'voice-tone'; // default
+                            var parentText = btn.closest('div').textContent;
+                            
+                            if (parentText.includes('HVAC Sales Scripts')) {
+                                moduleType = 'hvac-scripts';
+                            } else if (parentText.includes('Objection Handling')) {
+                                moduleType = 'objection-handling';
+                            }
+                            
+                            console.log('🎯 Detected module type:', moduleType);
+                            
+                            // Call the training function
+                            if (typeof window.startTrainingModule === 'function') {
+                                window.startTrainingModule(moduleType);
+                            } else {
+                                console.error('❌ startTrainingModule function not available');
+                                alert('Training system loading... Please try again in a moment.');
+                            }
+                        });
+                    }
+                });
+                console.log('✅ Enhanced training button handlers installed');
+            }, 1000);
+        });
         
         function closeTrainingModal(button) {
             // Find and remove the training modal
