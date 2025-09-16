@@ -19,11 +19,10 @@ app.use(express.static('.'));
 app.use('/api', createProxyMiddleware({
     target: 'http://localhost:8000',
     changeOrigin: true,
-    pathRewrite: {
-        '^/api': '' // Remove /api prefix when forwarding to Flask
-    },
+    // Don't remove /api prefix - Flask expects /api/generate-voice
     onProxyReq: (proxyReq, req, res) => {
-        console.log('🔄 Proxying API request:', req.method, req.url);
+        console.log('🔄 Proxying API request:', req.method, req.originalUrl);
+        console.log('🎯 Target URL:', `http://localhost:8000${req.originalUrl}`);
     },
     onError: (err, req, res) => {
         console.error('❌ Proxy error:', err.message);

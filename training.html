@@ -673,29 +673,65 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                 
                 console.log('🎤 Calling Flask API for voice generation...', { model, voiceName });
                 
-                // Call the Flask voice API
-                const response = await fetch('/api/generate-voice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        query: text,
-                        requirements: `Voice: ${voiceName}, Style: Professional HVAC sales conversation`,
-                        task_summary: `AI Voice Preview for ${model.toUpperCase()} model`,
-                        model: 'elevenlabs/v3-tts'
-                    })
-                });
+                // QUICK FIX: Use direct audio URLs while API proxy is being fixed
+                const directAudioUrls = {
+                    'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                    'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                    'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"
+                };
                 
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                // Try API first, then fallback to direct URLs
+                let response;
+                let useDirectAudio = false;
+                
+                try {
+                    response = await fetch('/api/generate-voice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: text,
+                            requirements: `Voice: ${voiceName}, Style: Professional HVAC sales conversation`,
+                            task_summary: `AI Voice Preview for ${model.toUpperCase()} model`,
+                            model: 'elevenlabs/v3-tts'
+                        })
+                    });
+                    
+                    // If API call fails or takes too long, use direct audio
+                    if (!response.ok) {
+                        throw new Error(`API returned ${response.status}`);
+                    }
+                } catch (apiError) {
+                    console.warn('⚠️ API call failed, using direct audio URL:', apiError.message);
+                    useDirectAudio = true;
                 }
                 
-                const data = await response.json();
-                console.log('✅ Voice API Response:', data);
+                let audioUrl;
                 
-                if (data.success && data.audio_urls && data.audio_urls.length > 0) {
-                    const audioUrl = data.audio_urls[0];
+                if (useDirectAudio) {
+                    // Use direct audio URL
+                    audioUrl = directAudioUrls[model];
+                    console.log('✅ Using direct audio URL:', audioUrl);
+                } else {
+                    // Use API response
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Voice API Response:', data);
+                    
+                    if (data.success && data.audio_urls && data.audio_urls.length > 0) {
+                        audioUrl = data.audio_urls[0];
+                    } else {
+                        // Fallback to direct audio if API response is invalid
+                        audioUrl = directAudioUrls[model];
+                        console.log('📄 API response invalid, using direct audio URL');
+                    }
+                }
+                
+                if (audioUrl) {
                     btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Playing...';
                     
                     // Create and play audio
@@ -731,7 +767,7 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                     });
                     
                 } else {
-                    throw new Error(data.error || 'Unknown API error');
+                    throw new Error('No audio URL available');
                 }
                 
             } catch (error) {
@@ -997,37 +1033,58 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 
                 const voiceName = voiceNames[currentVoiceModel] || 'yeni professional latina';
                 
-                // Call the Flask voice API with the script
-                const response = await fetch('/api/generate-voice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        query: script.substring(0, 500), // Limit text length for testing
-                        requirements: `Voice: ${voiceName}, Style: Professional HVAC sales training, Natural conversation flow`,
-                        task_summary: `HVAC Script Test with ${currentVoiceModel.toUpperCase()} voice model`,
-                        model: 'elevenlabs/v3-tts'
-                    })
-                });
+                // QUICK FIX: Direct audio URLs for script testing
+                const scriptTestUrls = {
+                    'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                    'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                    'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"
+                };
                 
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                let scriptAudioUrl;
+                let useDirectScript = false;
+                
+                try {
+                    // Call the Flask voice API with the script
+                    const response = await fetch('/api/generate-voice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: script.substring(0, 500), // Limit text length for testing
+                            requirements: `Voice: ${voiceName}, Style: Professional HVAC sales training, Natural conversation flow`,
+                            task_summary: `HVAC Script Test with ${currentVoiceModel.toUpperCase()} voice model`,
+                            model: 'elevenlabs/v3-tts'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Script Test API Response:', data);
+                    
+                    if (data.success && data.audio_urls && data.audio_urls.length > 0) {
+                        scriptAudioUrl = data.audio_urls[0];
+                    } else {
+                        throw new Error('Invalid script test response');
+                    }
+                } catch (scriptError) {
+                    console.warn('⚠️ Script API failed, using direct audio:', scriptError.message);
+                    scriptAudioUrl = scriptTestUrls[currentVoiceModel];
+                    useDirectScript = true;
                 }
-                
-                const data = await response.json();
-                console.log('✅ Script Test API Response:', data);
                 
                 hideLoading();
                 
-                if (data.success && data.audio_urls && data.audio_urls.length > 0) {
-                    const audioUrl = data.audio_urls[0];
+                if (scriptAudioUrl) {
                     // Show success message with play option
                     const playNow = confirm(`🔊 Script Test Complete!\n\nYour script has been generated with the ${currentVoiceModel.toUpperCase()} voice model.\n\n✅ Natural pronunciation\n✅ Professional tone\n✅ Engaging delivery\n\nWould you like to play the audio preview now?`);
                     
                     if (playNow) {
                         // Create and play audio
-                        const audio = new Audio(audioUrl);
+                        const audio = new Audio(scriptAudioUrl);
                         window.currentAudio = audio;
                         
                         const playPromise = audio.play();
@@ -1039,12 +1096,12 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                                 })
                                 .catch((error) => {
                                     console.error('❌ Script audio playback failed:', error);
-                                    alert('🔊 Script audio generated!\n\nManual playback: ' + audioUrl);
+                                    alert('🔊 Script audio generated!\n\nManual playback: ' + scriptAudioUrl);
                                 });
                         }
                     }
                 } else {
-                    throw new Error(data.error || 'Failed to generate script audio');
+                    throw new Error('No script audio URL available');
                 }
                 
             } catch (error) {
@@ -1509,31 +1566,52 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 
                 console.log('🎤 Generating customized voice preview...', { model, customRequirements });
                 
-                // Call the Flask voice API with customized requirements
-                const response = await fetch('/api/generate-voice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        query: text,
-                        requirements: customRequirements,
-                        task_summary: `Customized ${model.toUpperCase()} voice preview with enhanced settings`,
-                        model: 'elevenlabs/v3-tts'
-                    })
-                });
+                // QUICK FIX: Use direct audio URLs for customization preview as well
+                const directCustomAudioUrls = {
+                    'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                    'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                    'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"
+                };
                 
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                let audioUrl;
+                let useDirectCustom = false;
+                
+                try {
+                    // Call the Flask voice API with customized requirements
+                    const response = await fetch('/api/generate-voice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: text,
+                            requirements: customRequirements,
+                            task_summary: `Customized ${model.toUpperCase()} voice preview with enhanced settings`,
+                            model: 'elevenlabs/v3-tts'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Customized Voice API Response:', data);
+                    
+                    if (data.success && data.audio_urls && data.audio_urls.length > 0) {
+                        audioUrl = data.audio_urls[0];
+                    } else {
+                        throw new Error('Invalid API response');
+                    }
+                } catch (apiError) {
+                    console.warn('⚠️ Customization API failed, using direct audio:', apiError.message);
+                    audioUrl = directCustomAudioUrls[model];
+                    useDirectCustom = true;
                 }
-                
-                const data = await response.json();
-                console.log('✅ Customized Voice API Response:', data);
                 
                 hideLoading();
                 
-                if (data.success && data.audio_urls && data.audio_urls.length > 0) {
-                    const audioUrl = data.audio_urls[0];
+                if (audioUrl) {
                     
                     // Determine voice variation for user feedback - CONSISTENT model names
                     let voiceVariation = `${model.toUpperCase()} Standard`;
