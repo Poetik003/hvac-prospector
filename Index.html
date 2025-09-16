@@ -13908,5 +13908,33 @@ We have an opening this Thursday afternoon - would 2 PM or 4 PM work better for 
         console.log('✅ Main Voice Controls System loaded successfully!');
     </script>
 
+    <!-- ISOLATED VOICE CONTROLS FIX - SEPARATE SCRIPT TAG -->
+    <script>
+        console.log('🚀 ISOLATED: Voice controls script starting...');
+        
+        // Test that this script runs
+        setTimeout(() => {
+            console.log('🔍 ISOLATED: Checking for buttons...');
+            const sarahBtn = document.getElementById('sarah-customize-main');
+            const dannyBtn = document.getElementById('danny-customize-main');
+            console.log('🔍 ISOLATED: Sarah button:', sarahBtn);
+            console.log('🔍 ISOLATED: Danny button:', dannyBtn);
+            
+            if (sarahBtn) {
+                console.log('✅ ISOLATED: Adding Sarah button listener');
+                sarahBtn.onclick = function() {
+                    alert('✅ SARAH CUSTOMIZE WORKS! (Isolated script)');
+                };
+            }
+            
+            if (dannyBtn) {
+                console.log('✅ ISOLATED: Adding Danny button listener');
+                dannyBtn.onclick = function() {
+                    alert('✅ DANNY CUSTOMIZE WORKS! (Isolated script)');
+                };
+            }
+        }, 1000);
+    </script>
+
 </body>
 </html>
