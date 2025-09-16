@@ -230,9 +230,14 @@
                             </select>
                         </div>
                         
-                        <button onclick="applyParameters()" class="w-full btn-gradient py-3 px-4 rounded-lg font-bold transition-all mobile-friendly">
-                            <i class="fas fa-magic mr-2"></i>Apply Settings
-                        </button>
+                        <div class="flex space-x-3">
+                            <button onclick="applyParameters()" class="flex-1 btn-gradient py-3 px-4 rounded-lg font-bold transition-all mobile-friendly">
+                                <i class="fas fa-magic mr-2"></i>Apply Settings
+                            </button>
+                            <button onclick="stopAllAudio()" class="py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all mobile-friendly">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -534,6 +539,19 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
             startSessionTimer();
             loadDefaultScript();
             
+            // Initialize audio management
+            window.currentAudio = null;
+            
+            // Add global audio stop capability
+            document.addEventListener('keydown', function(e) {
+                // Press Escape to stop any playing audio
+                if (e.key === 'Escape' && window.currentAudio) {
+                    window.currentAudio.pause();
+                    window.currentAudio = null;
+                    console.log('⏹️ Audio stopped by user (Escape key)');
+                }
+            });
+            
             // Set focus on script editor for immediate use
             document.getElementById('script-editor').focus();
         });
@@ -584,17 +602,20 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
             showSuccess(`Voice model "${model.toUpperCase()}" selected successfully!`);
         }
 
-        function previewVoice(model) {
+        async function previewVoice(model) {
             console.log('🎵 Previewing voice:', model);
             const btn = event.target;
             const originalText = btn.innerHTML;
             
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Playing...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Generating...';
             btn.disabled = true;
             
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+            try {
+                // Stop any currently playing audio
+                if (window.currentAudio) {
+                    window.currentAudio.pause();
+                    window.currentAudio = null;
+                }
                 
                 const messages = {
                     'sofia': 'Hi there! This is Sofia from ProSpector HVAC. I have a warm, professional voice with a subtle Miami accent that puts customers at ease.',
@@ -602,8 +623,86 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                     'elena': 'Hello! I\'m Elena from ProSpector HVAC. My conversational style creates natural connections and has a 92% appointment setting rate.'
                 };
                 
-                alert(`🎵 Voice Preview: ${model.toUpperCase()}\n\n"${messages[model]}"\n\nHow does this voice sound for your HVAC sales calls?`);
-            }, 2000);
+                const voiceNames = {
+                    'sofia': 'Sofia Vergara',
+                    'marcus': 'Benicio Del Toro', 
+                    'elena': 'Elena Rodriguez'
+                };
+                
+                const text = messages[model];
+                const voiceName = voiceNames[model];
+                
+                console.log('🎤 Calling Flask API for voice generation...', { model, voiceName });
+                
+                // Call the Flask voice API
+                const response = await fetch('/api/generate-voice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: text,
+                        requirements: `Voice: ${voiceName}, Style: Professional HVAC sales conversation`,
+                        task_summary: `AI Voice Preview for ${model.toUpperCase()} model`,
+                        model: 'elevenlabs/v3-tts'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Voice API Response:', data);
+                
+                if (data.success && data.audio_urls && data.audio_urls.length > 0) {
+                    const audioUrl = data.audio_urls[0];
+                    btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Playing...';
+                    
+                    // Create and play audio
+                    const audio = new Audio(audioUrl);
+                    window.currentAudio = audio;
+                    
+                    // Handle mobile autoplay restrictions
+                    const playPromise = audio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then(() => {
+                                console.log('🎵 Audio playing successfully');
+                            })
+                            .catch((error) => {
+                                console.error('❌ Audio playback failed:', error);
+                                alert('🔊 Audio Generated!\n\nClick here to play the voice preview:\n\n' + audioUrl);
+                            });
+                    }
+                    
+                    // Reset button when audio ends
+                    audio.addEventListener('ended', () => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        window.currentAudio = null;
+                    });
+                    
+                    audio.addEventListener('error', (e) => {
+                        console.error('❌ Audio error:', e);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        alert('🔊 Voice preview generated but playback failed. Check your audio settings.');
+                    });
+                    
+                } else {
+                    throw new Error(data.error || 'Unknown API error');
+                }
+                
+            } catch (error) {
+                console.error('❌ Voice preview error:', error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                // Show error with fallback message
+                alert(`⚠️ Voice Preview Error\n\nCouldn't generate voice preview: ${error.message}\n\nFallback Preview: "${messages[model] || 'Voice sample text'}"`);
+            }
         }
 
         function customizeVoice(model) {
@@ -700,7 +799,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             loadScenario();
         }
 
-        function testScript() {
+        async function testScript() {
             const script = document.getElementById('script-editor').value;
             if (!script.trim()) {
                 alert('⚠️ Please enter a script to test.');
@@ -708,12 +807,78 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             showLoading();
-            console.log('🔊 Testing script with current voice model');
+            console.log('🔊 Testing script with current voice model:', currentVoiceModel);
             
-            setTimeout(() => {
+            try {
+                // Stop any currently playing audio
+                if (window.currentAudio) {
+                    window.currentAudio.pause();
+                    window.currentAudio = null;
+                }
+                
+                const voiceNames = {
+                    'sofia': 'Sofia Vergara',
+                    'marcus': 'Benicio Del Toro', 
+                    'elena': 'Elena Rodriguez'
+                };
+                
+                const voiceName = voiceNames[currentVoiceModel] || 'Sofia Vergara';
+                
+                // Call the Flask voice API with the script
+                const response = await fetch('/api/generate-voice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: script.substring(0, 500), // Limit text length for testing
+                        requirements: `Voice: ${voiceName}, Style: Professional HVAC sales training, Natural conversation flow`,
+                        task_summary: `HVAC Script Test with ${currentVoiceModel.toUpperCase()} voice model`,
+                        model: 'elevenlabs/v3-tts'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Script Test API Response:', data);
+                
                 hideLoading();
-                alert(`🔊 Script Test Complete!\n\nYour script sounds natural and professional with the ${currentVoiceModel.toUpperCase()} voice model.\n\nKey strengths:\n• Clear pronunciation\n• Natural pacing\n• Engaging tone\n• Professional delivery\n\nReady for role-play training!`);
-            }, 3000);
+                
+                if (data.success && data.audio_urls && data.audio_urls.length > 0) {
+                    const audioUrl = data.audio_urls[0];
+                    // Show success message with play option
+                    const playNow = confirm(`🔊 Script Test Complete!\n\nYour script has been generated with the ${currentVoiceModel.toUpperCase()} voice model.\n\n✅ Natural pronunciation\n✅ Professional tone\n✅ Engaging delivery\n\nWould you like to play the audio preview now?`);
+                    
+                    if (playNow) {
+                        // Create and play audio
+                        const audio = new Audio(audioUrl);
+                        window.currentAudio = audio;
+                        
+                        const playPromise = audio.play();
+                        
+                        if (playPromise !== undefined) {
+                            playPromise
+                                .then(() => {
+                                    console.log('🎵 Script test audio playing');
+                                })
+                                .catch((error) => {
+                                    console.error('❌ Script audio playback failed:', error);
+                                    alert('🔊 Script audio generated!\n\nManual playback: ' + audioUrl);
+                                });
+                        }
+                    }
+                } else {
+                    throw new Error(data.error || 'Failed to generate script audio');
+                }
+                
+            } catch (error) {
+                console.error('❌ Script test error:', error);
+                hideLoading();
+                alert(`⚠️ Script Test Error\n\nCouldn't generate script audio: ${error.message}\n\nYour script looks good for training though!`);
+            }
         }
 
         // Role-Play Functions
@@ -848,6 +1013,31 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 trainingData.trainingScore = Math.min(10, trainingData.trainingScore + 0.1);
                 updateMetrics();
             }, 3000);
+        }
+
+        // Audio Management Functions
+        function stopAllAudio() {
+            if (window.currentAudio) {
+                window.currentAudio.pause();
+                window.currentAudio.currentTime = 0;
+                window.currentAudio = null;
+                console.log('⏹️ All audio stopped by user');
+                
+                // Reset any playing buttons
+                document.querySelectorAll('button').forEach(btn => {
+                    if (btn.innerHTML.includes('Playing...') || btn.innerHTML.includes('fa-spinner')) {
+                        // Reset preview buttons
+                        if (btn.innerHTML.includes('Playing...')) {
+                            btn.innerHTML = '<i class="fas fa-play mr-1"></i>Preview';
+                            btn.disabled = false;
+                        }
+                    }
+                });
+                
+                showSuccess('🔇 Audio playback stopped successfully!');
+            } else {
+                alert('ℹ️ No audio currently playing.');
+            }
         }
 
         // Utility Functions
