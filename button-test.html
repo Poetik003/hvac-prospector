@@ -1,102 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <title>Button Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Diagnostic Test</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            background: #1e293b; 
+            color: white; 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+        }
+        button { 
+            padding: 15px 20px; 
+            margin: 10px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            background: #3b82f6;
+            color: white;
+        }
+        .test-button {
+            background: #10b981;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white p-4">
-    <div class="max-w-md mx-auto space-y-4">
-        <h1 class="text-xl font-bold mb-4">🔧 Button Diagnostic Test</h1>
-        
-        <div id="log" class="bg-slate-800 p-3 rounded text-xs h-32 overflow-y-auto">
-            <p>Test log will appear here...</p>
-        </div>
-        
-        <!-- Test 1: Basic Alert -->
-        <button onclick="alert('TEST 1 WORKS!'); log('Test 1: Basic alert works');" 
-                class="w-full bg-red-600 p-3 rounded text-white">
-            TEST 1: Basic Alert
-        </button>
-        
-        <!-- Test 2: Console Log -->
-        <button onclick="console.log('TEST 2 WORKS!'); log('Test 2: Console log works');" 
-                class="w-full bg-orange-600 p-3 rounded text-white">
-            TEST 2: Console Log
-        </button>
-        
-        <!-- Test 3: Simple Window Open -->
-        <button onclick="log('Test 3: Attempting window.open...'); try { window.open('https://google.com', '_blank'); log('Test 3: window.open SUCCESS'); } catch(e) { log('Test 3: ERROR - ' + e.message); }" 
-                class="w-full bg-yellow-600 p-3 rounded text-white">
-            TEST 3: Window Open (Google)
-        </button>
-        
-        <!-- Test 4: Same as calendar buttons -->
-        <button onclick="log('Test 4: Calendar button test...'); alert('Calendar button clicked!'); window.open('https://accounts.google.com/signin', '_blank');" 
-                class="w-full bg-blue-600 p-3 rounded text-white">
-            TEST 4: Google Calendar (Exact Copy)
-        </button>
-        
-        <!-- Test 5: Touch Event -->
-        <button ontouchstart="log('Test 5: Touch detected');" onclick="log('Test 5: Click detected'); alert('Touch/Click works!');" 
-                class="w-full bg-green-600 p-3 rounded text-white">
-            TEST 5: Touch/Click Detection
-        </button>
-        
-        <!-- Test 6: JavaScript Event Listener -->
-        <button id="test6" class="w-full bg-purple-600 p-3 rounded text-white">
-            TEST 6: JavaScript Event Listener
-        </button>
-        
-        <!-- Test 7: Link instead of button -->
-        <a href="https://google.com" target="_blank" onclick="log('Test 7: Link clicked');" 
-           class="block w-full bg-indigo-600 p-3 rounded text-white text-center">
-            TEST 7: Link Instead of Button
-        </a>
-        
-        <div class="bg-slate-800 p-3 rounded text-sm">
-            <p><strong>Instructions:</strong></p>
-            <p>1. Try each test button in order</p>
-            <p>2. Check if alerts appear</p>
-            <p>3. Check if new tabs open</p>
-            <p>4. Watch the log above</p>
-        </div>
-    </div>
+<body>
+    <h1>🧪 Button Functionality Test</h1>
+    
+    <h2>Test 1: Simple Alert</h2>
+    <button onclick="alert('✅ Simple button works!')">Test Simple Alert</button>
+    
+    <h2>Test 2: Console Log</h2>
+    <button onclick="console.log('✅ Console log works'); alert('Check browser console')">Test Console Log</button>
+    
+    <h2>Test 3: showVoiceCustomizer Function</h2>
+    <button onclick="testShowVoiceCustomizer('sarah')" class="test-button">Test Sarah Customize</button>
+    <button onclick="testShowVoiceCustomizer('danny')" class="test-button">Test Danny Customize</button>
+    
+    <h2>Test 4: Direct Function Call</h2>
+    <button onclick="if(window.showVoiceCustomizer) { window.showVoiceCustomizer('test'); } else { alert('❌ showVoiceCustomizer function not found'); }">Test Direct Call</button>
+    
+    <h2>Test 5: Touch Events</h2>
+    <button ontouchstart="alert('👆 Touch start works')" ontouchend="alert('👆 Touch end works')" onclick="alert('👆 Click works')">Test Touch/Click</button>
 
     <script>
-        function log(message) {
-            var logDiv = document.getElementById('log');
-            var timestamp = new Date().toLocaleTimeString();
-            logDiv.innerHTML += '<br>[' + timestamp + '] ' + message;
-            logDiv.scrollTop = logDiv.scrollHeight;
-            console.log('[DIAGNOSTIC] ' + message);
+        console.log('🧪 Button test page loaded');
+        
+        // Test function
+        function testShowVoiceCustomizer(voiceType) {
+            console.log('🎯 Test function called for:', voiceType);
+            alert('🎯 Test Function Works!\n\nVoice: ' + voiceType + '\n\nNow testing if showVoiceCustomizer exists...');
+            
+            if (typeof window.showVoiceCustomizer === 'function') {
+                alert('✅ showVoiceCustomizer function exists! Calling it now...');
+                window.showVoiceCustomizer(voiceType);
+            } else {
+                alert('❌ showVoiceCustomizer function NOT found in window object\n\nThis is the problem!');
+            }
         }
         
-        // Test 6 - JavaScript Event Listener
-        document.addEventListener('DOMContentLoaded', function() {
-            var test6Btn = document.getElementById('test6');
-            if (test6Btn) {
-                test6Btn.addEventListener('click', function() {
-                    log('Test 6: JavaScript event listener works!');
-                    alert('JavaScript event listener works!');
-                    try {
-                        window.open('https://microsoft.com', '_blank');
-                        log('Test 6: window.open SUCCESS via JavaScript');
-                    } catch(e) {
-                        log('Test 6: window.open ERROR - ' + e.message);
-                    }
-                });
-                log('Test 6: Event listener attached successfully');
-            }
-            
-            log('Page loaded - Ready for testing!');
-        });
+        // Global function test
+        window.showVoiceCustomizer = function(voiceType) {
+            alert('🎉 WORKING! Global showVoiceCustomizer called for: ' + voiceType);
+        };
         
-        // Detect user agent
-        log('User Agent: ' + navigator.userAgent);
-        log('Touch support: ' + ('ontouchstart' in window));
-        log('Mobile: ' + /Mobi|Android/i.test(navigator.userAgent));
+        console.log('✅ Test functions loaded');
+        
+        // Check if we're on mobile
+        if ('ontouchstart' in window) {
+            console.log('📱 Mobile device detected');
+            document.body.innerHTML += '<p style="color: #22c55e;">📱 Mobile device detected - touch events should work</p>';
+        } else {
+            console.log('🖥️ Desktop device detected');
+            document.body.innerHTML += '<p style="color: #22c55e;">🖥️ Desktop device detected - click events should work</p>';
+        }
     </script>
 </body>
 </html>
