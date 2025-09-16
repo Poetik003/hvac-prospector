@@ -1403,7 +1403,6 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     'gabi': 'gabi friendly consultant'
                 };
                 
-                const text = messages[model];
                 let voiceName = voiceNames[model];
                 
                 // Check for saved customization settings and apply them
@@ -1420,7 +1419,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 }
                 
                 // Create detailed requirements incorporating all customization settings
-                const customRequirements = `Voice: ${baseVoiceName}, 
+                const customRequirements = `Voice: ${voiceName}, 
                     Accent Strength: ${accentStrength}% ${regionalVariation} accent, 
                     Emotional Range: ${emotionalRange}% expressiveness (${emotionalRange > 75 ? 'very expressive' : emotionalRange > 50 ? 'moderately expressive' : 'reserved'}),
                     Technical Level: ${technicalVocab}% HVAC expertise (${technicalVocab > 75 ? 'expert level' : technicalVocab > 50 ? 'intermediate' : 'basic'}),
