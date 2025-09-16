@@ -958,7 +958,7 @@
                                 <span>Ready for campaigns</span>
                             </div>
                             <div class="flex gap-2">
-                                <button id="sarah-preview-main" class="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                                <button id="sarah-preview-main" onclick="playVoiceInline('sarah', 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3', this)" class="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
                                     🔊 Hear Sarah
                                 </button>
                                 <button id="sarah-customize-main" onclick="alert('✅ SARAH CUSTOMIZE WORKS! Opening voice settings...'); showVoiceCustomization('sarah');" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
@@ -976,7 +976,7 @@
                                 <span>Ready for campaigns</span>
                             </div>
                             <div class="flex gap-2">
-                                <button id="danny-preview-main" class="flex-1 bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                                <button id="danny-preview-main" onclick="playVoiceInline('marcus', 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3', this)" class="flex-1 bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
                                     🔊 Hear Danny
                                 </button>
                                 <button id="danny-customize-main" onclick="alert('✅ DANNY CUSTOMIZE WORKS! Opening voice settings...'); showVoiceCustomization('danny');" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
@@ -986,12 +986,14 @@
                         </div>
                     </div>
                     
-                    <!-- Main Voice Control Center -->
-                    <div class="bg-red-600/20 rounded-xl p-4 mb-4 border border-red-500/50 text-center">
-                        <button id="main-stop-all" onclick="alert('🛑 STOPPING ALL VOICES!'); if(window.GlobalAudioManager && window.GlobalAudioManager.stopAll) { window.GlobalAudioManager.stopAll(); }" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-bold text-lg text-white transition-colors">
+                    <!-- PROMINENT STOP BUTTON - HIGHLY VISIBLE -->
+                    <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-6 mb-6 border-4 border-red-400 text-center shadow-2xl">
+                        <h3 class="text-white text-xl font-bold mb-3">🎵 Voice Playback Controls</h3>
+                        <button id="main-stop-all" onclick="stopAllVoicesInline(); alert('🛑 ALL VOICES STOPPED!');" class="bg-white text-red-600 px-8 py-4 rounded-2xl font-black text-2xl hover:bg-gray-100 transition-all transform hover:scale-105 border-4 border-red-600 shadow-lg">
                             🛑 STOP ALL VOICES
                         </button>
-                        <p class="mt-2 text-red-200 text-sm">Click to stop any playing voice previews</p>
+                        <p class="mt-3 text-red-100 font-semibold">Click this BIG button to stop any playing voice previews!</p>
+                        <p class="mt-1 text-red-200 text-sm">Works for all voice playback in the application</p>
                     </div>
                     
                     <button id="manage-voices-btn-featured" onclick="
@@ -1554,6 +1556,82 @@
                     
                     var modal = document.getElementById('voice-customizer-modal');
                     if (modal) modal.remove();
+                }
+                
+                // INLINE VOICE PLAYBACK SYSTEM - Works with onclick handlers
+                var currentInlineAudio = null;
+                
+                function playVoiceInline(voiceName, audioUrl, buttonElement) {
+                    console.log('🎤 Playing voice inline:', voiceName, audioUrl);
+                    
+                    // Stop any current audio
+                    stopAllVoicesInline();
+                    
+                    // Update button to show loading
+                    var originalText = buttonElement.textContent;
+                    buttonElement.textContent = '🔄 Loading...';
+                    buttonElement.style.background = '#f59e0b';
+                    
+                    // Create and play audio
+                    currentInlineAudio = new Audio(audioUrl);
+                    
+                    currentInlineAudio.addEventListener('loadeddata', function() {
+                        buttonElement.textContent = '🔊 Playing ' + voiceName + '...';
+                        buttonElement.style.background = '#dc2626';
+                    });
+                    
+                    currentInlineAudio.addEventListener('ended', function() {
+                        buttonElement.textContent = originalText;
+                        buttonElement.style.background = voiceName === 'sarah' ? '#2563eb' : '#059669';
+                        currentInlineAudio = null;
+                    });
+                    
+                    currentInlineAudio.addEventListener('error', function() {
+                        buttonElement.textContent = '❌ Error';
+                        buttonElement.style.background = '#dc2626';
+                        setTimeout(function() {
+                            buttonElement.textContent = originalText;
+                            buttonElement.style.background = voiceName === 'sarah' ? '#2563eb' : '#059669';
+                        }, 2000);
+                    });
+                    
+                    currentInlineAudio.play().catch(function(e) {
+                        console.error('Audio play failed:', e);
+                        buttonElement.textContent = '⚠️ Click to play';
+                        setTimeout(function() {
+                            buttonElement.textContent = originalText;
+                            buttonElement.style.background = voiceName === 'sarah' ? '#2563eb' : '#059669';
+                        }, 2000);
+                    });
+                }
+                
+                function stopAllVoicesInline() {
+                    console.log('🛑 Stopping all inline voices...');
+                    
+                    if (currentInlineAudio) {
+                        currentInlineAudio.pause();
+                        currentInlineAudio.currentTime = 0;
+                        currentInlineAudio = null;
+                    }
+                    
+                    // Reset all preview buttons
+                    var sarahBtn = document.getElementById('sarah-preview-main');
+                    var dannyBtn = document.getElementById('danny-preview-main');
+                    
+                    if (sarahBtn) {
+                        sarahBtn.textContent = '🔊 Hear Sarah';
+                        sarahBtn.style.background = '#2563eb';
+                    }
+                    
+                    if (dannyBtn) {
+                        dannyBtn.textContent = '🔊 Hear Danny';
+                        dannyBtn.style.background = '#059669';
+                    }
+                    
+                    // Also stop GlobalAudioManager if available
+                    if (window.GlobalAudioManager && window.GlobalAudioManager.stopAll) {
+                        window.GlobalAudioManager.stopAll();
+                    }
                 }
                 
                 // NEW: Simple Voice Customization Function for Inline Buttons
