@@ -4383,7 +4383,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button onclick="openAIVoiceTrainingSystem('objection-handling')" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="window.open('training.html', '_blank')" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     Continue Training
                                 </button>
                             </div>
@@ -4394,7 +4394,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Not Started</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master the art of closing calls and scheduling appointments</p>
-                                <button class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="window.open('training.html', '_blank')" class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
                                     Start Training
                                 </button>
                             </div>
@@ -10886,7 +10886,7 @@ I'd love to schedule..."></textarea>
                                 <span class="text-slate-400">⏳ Pending</span>
                             </div>
                         </div>
-                        <button onclick="openAIVoiceTrainingSystem('voice-tone')" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all">
+                        <button onclick="window.open('training.html', '_blank')" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all">
                             Continue Training
                         </button>
                     </div>
@@ -11465,13 +11465,9 @@ I'd love to schedule..."></textarea>
                             
                             console.log('🎯 Detected module type:', moduleType);
                             
-                            // Call the training function
-                            if (typeof window.startTrainingModule === 'function') {
-                                window.startTrainingModule(moduleType);
-                            } else {
-                                console.error('❌ startTrainingModule function not available');
-                                alert('Training system loading... Please try again in a moment.');
-                            }
+                            // Redirect to dedicated training page
+                            console.log('🎓 Redirecting to AI Voice Training page...');
+                            window.open('training.html', '_blank');
                         });
                     }
                 });
