@@ -1448,8 +1448,15 @@
                     custModal.style.justifyContent = 'center';
                     custModal.style.padding = '20px';
                     
-                    var voiceName = voiceType === 'sarah' ? 'Sarah (Sofia Vergara Style)' : 'Danny (Benicio Del Toro Style)';
-                    var settings = voiceSettings[voiceType];
+                    var voiceName;
+                    if (voiceType === 'sarah') {
+                        voiceName = 'Sarah from Miami (Sofia Vergara Style)';
+                    } else if (voiceType === 'danny' || voiceType === 'marcus') {
+                        voiceName = 'Marcus/Danny from Miami (Benicio Del Toro Style)';
+                    } else {
+                        voiceName = voiceType.toUpperCase() + ' Voice Model';
+                    }
+                    var settings = voiceSettings[voiceType] || {pace: 'normal', tone: 'friendly', accent: 'miami-latino'};
                     
                     // Build HTML safely
                     var htmlContent = '<div style="background: #1e293b; border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; color: white; border: 3px solid #475569; position: relative;">';
@@ -4716,7 +4723,7 @@ I'd love to schedule..."></textarea>
                                     cursor: pointer;
                                     font-weight: bold;
                                 ">▶️ Test Voice</button>
-                                <button onclick="alert('Sarah Voice Customizer\\n\\n• Adjust speaking pace\\n• Modify accent strength\\n• Set conversation style\\n• Configure personality traits\\n\\nFeature available in next update!')" style="
+                                <button onclick="showVoiceCustomizer('sarah')" style="
                                     flex: 1;
                                     background: #6b7280;
                                     color: white;
@@ -4752,7 +4759,7 @@ I'd love to schedule..."></textarea>
                                     cursor: pointer;
                                     font-weight: bold;
                                 ">▶️ Test Voice</button>
-                                <button onclick="alert('Danny Voice Customizer\\n\\n• Bilingual mode settings\\n• Community conversation style\\n• Adjust friendliness level\\n• Set technical knowledge depth\\n\\nFeature available in next update!')" style="
+                                <button onclick="showVoiceCustomizer('danny')" style="
                                     flex: 1;
                                     background: #6b7280;
                                     color: white;
