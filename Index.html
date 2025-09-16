@@ -947,23 +947,51 @@
                         <p class="text-white text-sm mt-2">Click this button to stop any playing voice previews</p>
                     </div>
                     
+                    <!-- AI Voice Profiles - WORKING VERSION -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="bg-slate-800/30 rounded-xl p-4">
+                        <!-- Sarah Profile -->
+                        <div class="bg-slate-800/30 rounded-xl p-4 border border-blue-500/30">
                             <h4 class="text-white font-semibold mb-2">👩‍💼 Sarah from Miami</h4>
                             <p class="text-slate-400 text-sm mb-3">Professional female voice • Sofia Vergara style warmth • Perfect for B2B calls</p>
-                            <div class="flex items-center text-xs text-green-400">
+                            <div class="flex items-center text-xs text-green-400 mb-3">
                                 <i class="fas fa-check-circle mr-1"></i>
                                 <span>Ready for campaigns</span>
                             </div>
+                            <div class="flex gap-2">
+                                <button id="sarah-preview-main" class="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                                    🔊 Hear Sarah
+                                </button>
+                                <button id="sarah-customize-main" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
+                                    ⚙️ Customize
+                                </button>
+                            </div>
                         </div>
-                        <div class="bg-slate-800/30 rounded-xl p-4">
+                        
+                        <!-- Danny Profile -->  
+                        <div class="bg-slate-800/30 rounded-xl p-4 border border-green-500/30">
                             <h4 class="text-white font-semibold mb-2">👨‍🔧 Danny from Miami</h4>
                             <p class="text-slate-400 text-sm mb-3">Friendly male voice • Benicio Del Toro smooth style • Great for community outreach</p>
-                            <div class="flex items-center text-xs text-green-400">
+                            <div class="flex items-center text-xs text-green-400 mb-3">
                                 <i class="fas fa-check-circle mr-1"></i>
                                 <span>Ready for campaigns</span>
                             </div>
+                            <div class="flex gap-2">
+                                <button id="danny-preview-main" class="flex-1 bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                                    🔊 Hear Danny
+                                </button>
+                                <button id="danny-customize-main" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
+                                    ⚙️ Customize
+                                </button>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- Main Voice Control Center -->
+                    <div class="bg-red-600/20 rounded-xl p-4 mb-4 border border-red-500/50 text-center">
+                        <button id="main-stop-all" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-bold text-lg text-white transition-colors">
+                            🛑 STOP ALL VOICES
+                        </button>
+                        <p class="mt-2 text-red-200 text-sm">Click to stop any playing voice previews</p>
                     </div>
                     
                     <button id="manage-voices-btn-featured" onclick="
@@ -13624,6 +13652,253 @@ We have an opening this Thursday afternoon - would 2 PM or 4 PM work better for 
         };
         
         console.log('✅ AI Voice Training & Fine-tuning System loaded successfully!');
+        
+        // ========================================
+        // WORKING VOICE CONTROLS SYSTEM - FINAL FIX
+        // ========================================
+        
+        // Global variables for voice system
+        let mainCurrentAudio = null;
+        let mainCurrentVoice = '';
+        
+        // Voice audio URLs - using the working ones from the backend
+        const mainVoiceUrls = {
+            sarah: "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+            danny: "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3"
+        };
+        
+        // Stop all main voice audio
+        function stopAllMainAudio() {
+            console.log('🛑 Stopping all main audio...');
+            if (mainCurrentAudio) {
+                mainCurrentAudio.pause();
+                mainCurrentAudio.currentTime = 0;
+                mainCurrentAudio = null;
+            }
+            
+            // Reset all buttons
+            const sarahBtn = document.getElementById('sarah-preview-main');
+            const dannyBtn = document.getElementById('danny-preview-main');
+            
+            if (sarahBtn) {
+                sarahBtn.textContent = '🔊 Hear Sarah';
+                sarahBtn.className = sarahBtn.className.replace('bg-red-600', 'bg-blue-600');
+            }
+            
+            if (dannyBtn) {
+                dannyBtn.textContent = '🔊 Hear Danny';
+                dannyBtn.className = dannyBtn.className.replace('bg-red-600', 'bg-green-600');
+            }
+        }
+        
+        // Play voice preview
+        function playMainVoice(voiceName) {
+            console.log('🎤 Playing main voice:', voiceName);
+            stopAllMainAudio();
+            
+            const button = document.getElementById(`${voiceName}-preview-main`);
+            if (!button) {
+                console.error('❌ Button not found:', `${voiceName}-preview-main`);
+                return;
+            }
+            
+            button.textContent = `🔄 Loading ${voiceName}...`;
+            
+            mainCurrentAudio = new Audio(mainVoiceUrls[voiceName]);
+            mainCurrentVoice = voiceName;
+            
+            mainCurrentAudio.addEventListener('loadeddata', () => {
+                button.textContent = `🔊 Playing ${voiceName}...`;
+                button.className = button.className.replace(voiceName === 'sarah' ? 'bg-blue-600' : 'bg-green-600', 'bg-red-600');
+            });
+            
+            mainCurrentAudio.addEventListener('ended', () => {
+                console.log('🏁 Main voice playback ended');
+                stopAllMainAudio();
+            });
+            
+            mainCurrentAudio.addEventListener('error', (e) => {
+                console.error('❌ Main voice error:', e);
+                button.textContent = `❌ Error loading ${voiceName}`;
+                setTimeout(() => {
+                    button.textContent = `🔊 Hear ${voiceName}`;
+                }, 2000);
+            });
+            
+            mainCurrentAudio.play().catch(e => {
+                console.error('Audio play failed:', e);
+                button.textContent = `⚠️ Click to play ${voiceName}`;
+            });
+        }
+        
+        // Show customization modal
+        function showMainCustomization(voiceName) {
+            console.log('⚙️ Showing main customization for:', voiceName);
+            
+            // First stop any playing audio
+            stopAllMainAudio();
+            
+            // Create modal
+            const existingModal = document.getElementById('main-customization-modal');
+            if (existingModal) existingModal.remove();
+            
+            const modal = document.createElement('div');
+            modal.id = 'main-customization-modal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50';
+            
+            modal.innerHTML = `
+                <div class="bg-slate-800 rounded-2xl p-8 max-w-md w-full relative">
+                    <button onclick="document.getElementById('main-customization-modal').remove()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    
+                    <h3 class="text-2xl font-bold mb-6 text-center text-white">⚙️ Customize ${voiceName === 'sarah' ? 'Sarah' : 'Danny'} Voice</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-white">🎵 Speaking Pace</label>
+                            <select id="main-pace" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white">
+                                <option value="slow">🐢 Slow & Clear</option>
+                                <option value="normal" selected>⚡ Normal Pace</option>
+                                <option value="fast">🚀 Fast & Energetic</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-white">🎭 Voice Tone</label>
+                            <select id="main-tone" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white">
+                                <option value="professional">💼 Professional</option>
+                                <option value="friendly" selected>😊 Friendly</option>
+                                <option value="warm">🤗 Warm & Caring</option>
+                                <option value="enthusiastic">🎉 Enthusiastic</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-white">🌴 Miami Accent</label>
+                            <select id="main-accent" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white">
+                                <option value="subtle">🌊 Subtle</option>
+                                <option value="moderate" selected>🏖️ Moderate</option>
+                                <option value="strong">🎺 Strong</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-8">
+                        <button onclick="testMainCustomizedVoice('${voiceName}')" class="flex-1 bg-green-600 hover:bg-green-700 px-4 py-3 rounded-lg font-semibold text-white">
+                            🎤 Test Voice
+                        </button>
+                        <button onclick="saveMainVoiceSettings('${voiceName}')" class="flex-1 bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded-lg font-semibold text-white">
+                            ✅ Save
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // Test customized voice
+        function testMainCustomizedVoice(voiceName) {
+            const pace = document.getElementById('main-pace').value;
+            const tone = document.getElementById('main-tone').value;
+            const accent = document.getElementById('main-accent').value;
+            
+            alert(`🎤 Testing ${voiceName} voice with:\\n• Pace: ${pace}\\n• Tone: ${tone}\\n• Accent: ${accent}\\n\\nIn a real implementation, this would play the customized voice.`);
+        }
+        
+        // Save voice settings
+        function saveMainVoiceSettings(voiceName) {
+            const settings = {
+                pace: document.getElementById('main-pace').value,
+                tone: document.getElementById('main-tone').value,
+                accent: document.getElementById('main-accent').value
+            };
+            
+            localStorage.setItem(`main_voice_settings_${voiceName}`, JSON.stringify(settings));
+            alert(`✅ ${voiceName === 'sarah' ? 'Sarah' : 'Danny'} voice settings saved!`);
+            document.getElementById('main-customization-modal').remove();
+        }
+        
+        // Initialize main voice controls when DOM is ready
+        function initMainVoiceControls() {
+            console.log('🎤 Initializing main voice controls...');
+            
+            // Voice preview buttons
+            const sarahBtn = document.getElementById('sarah-preview-main');
+            const dannyBtn = document.getElementById('danny-preview-main');
+            const sarahCustomBtn = document.getElementById('sarah-customize-main');
+            const dannyCustomBtn = document.getElementById('danny-customize-main');
+            
+            if (sarahBtn) {
+                sarahBtn.addEventListener('click', () => playMainVoice('sarah'));
+                console.log('✅ Sarah preview button initialized');
+            } else {
+                console.error('❌ Sarah preview button not found');
+            }
+            
+            if (dannyBtn) {
+                dannyBtn.addEventListener('click', () => playMainVoice('danny'));
+                console.log('✅ Danny preview button initialized');
+            } else {
+                console.error('❌ Danny preview button not found');
+            }
+            
+            if (sarahCustomBtn) {
+                sarahCustomBtn.addEventListener('click', () => showMainCustomization('sarah'));
+                console.log('✅ Sarah customize button initialized');
+            } else {
+                console.error('❌ Sarah customize button not found');
+            }
+            
+            if (dannyCustomBtn) {
+                dannyCustomBtn.addEventListener('click', () => showMainCustomization('danny'));
+                console.log('✅ Danny customize button initialized');
+            } else {
+                console.error('❌ Danny customize button not found');
+            }
+            
+            // Initialize the main stop button
+            const mainStopBtn = document.getElementById('main-stop-all');
+            if (mainStopBtn) {
+                mainStopBtn.addEventListener('click', () => {
+                    stopAllMainAudio();
+                    // Also trigger the global audio manager if available
+                    if (window.GlobalAudioManager && window.GlobalAudioManager.stopAll) {
+                        window.GlobalAudioManager.stopAll();
+                    }
+                    console.log('🛑 All voices stopped via main stop button');
+                });
+                console.log('✅ Main stop button initialized');
+            }
+            
+            // Update the global STOP button to also handle main audio
+            const globalStopBtn = document.querySelector('button[onclick*="STOP ALL VOICE PREVIEWS"]');
+            if (globalStopBtn) {
+                const originalOnclick = globalStopBtn.getAttribute('onclick');
+                globalStopBtn.setAttribute('onclick', originalOnclick + ' stopAllMainAudio();');
+                console.log('✅ Updated global stop button to handle main audio');
+            }
+            
+            console.log('✅ Main voice controls initialized successfully!');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMainVoiceControls);
+        } else {
+            // DOM is already ready
+            initMainVoiceControls();
+        }
+        
+        // Also make functions available globally for debugging
+        window.playMainVoice = playMainVoice;
+        window.stopAllMainAudio = stopAllMainAudio;
+        window.showMainCustomization = showMainCustomization;
+        
+        console.log('✅ Main Voice Controls System loaded successfully!');
     </script>
 
 </body>
