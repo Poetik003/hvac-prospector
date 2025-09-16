@@ -1024,13 +1024,39 @@
                             sarahBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             sarahBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
                             
-                            // Create Sarah customize button
+                            // Create Sarah customize button - ENHANCED FOR MOBILE
                             var sarahCustomBtn = document.createElement('div');
-                            sarahCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
+                            sarahCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; -webkit-tap-highlight-color: transparent; touch-action: manipulation;';
                             sarahCustomBtn.textContent = '⚙️ CUSTOMIZE SARAH';
-                            sarahCustomBtn.onclick = function() {
+                            
+                            // Multiple event handlers for maximum compatibility
+                            sarahCustomBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Sarah customize button clicked (onclick)');
                                 showVoiceCustomizer('sarah');
                             };
+                            
+                            sarahCustomBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Sarah customize button clicked (addEventListener)');
+                                showVoiceCustomizer('sarah');
+                            });
+                            
+                            sarahCustomBtn.addEventListener('touchstart', function(e) {
+                                console.log('👆 Sarah customize button touched');
+                                this.style.transform = 'scale(0.98)';
+                            });
+                            
+                            sarahCustomBtn.addEventListener('touchend', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Sarah customize button touch released');
+                                this.style.transform = 'scale(1)';
+                                showVoiceCustomizer('sarah');
+                            });
+                            
                             sarahCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             sarahCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
                             
@@ -1113,13 +1139,39 @@
                             dannyBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             dannyBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
                             
-                            // Create Danny customize button
+                            // Create Danny customize button - ENHANCED FOR MOBILE
                             var dannyCustomBtn = document.createElement('div');
-                            dannyCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;';
+                            dannyCustomBtn.style.cssText = 'background: linear-gradient(135deg, #6b7280, #374151); color: white; padding: 20px; margin: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; -webkit-tap-highlight-color: transparent; touch-action: manipulation;';
                             dannyCustomBtn.textContent = '⚙️ CUSTOMIZE DANNY';
-                            dannyCustomBtn.onclick = function() {
+                            
+                            // Multiple event handlers for maximum compatibility
+                            dannyCustomBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Danny customize button clicked (onclick)');
                                 showVoiceCustomizer('danny');
                             };
+                            
+                            dannyCustomBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Danny customize button clicked (addEventListener)');
+                                showVoiceCustomizer('danny');
+                            });
+                            
+                            dannyCustomBtn.addEventListener('touchstart', function(e) {
+                                console.log('👆 Danny customize button touched');
+                                this.style.transform = 'scale(0.98)';
+                            });
+                            
+                            dannyCustomBtn.addEventListener('touchend', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                console.log('🎯 Danny customize button touch released');
+                                this.style.transform = 'scale(1)';
+                                showVoiceCustomizer('danny');
+                            });
+                            
                             dannyCustomBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
                             dannyCustomBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
                             
@@ -1372,7 +1424,8 @@
                 
                 // Function to show voice customizer - FIXED FOR MOBILE
                 function showVoiceCustomizer(voiceType) {
-                    console.log('⚙️ Opening customizer for:', voiceType);
+                    console.log('⚙️ CUSTOMIZER FUNCTION CALLED for:', voiceType);
+                    alert('🎯 CUSTOMIZE BUTTON CLICKED!\n\nVoice: ' + voiceType + '\n\nThis confirms the button is working!\n\nOpening customization modal...');
                     
                     // Remove existing customizer
                     try {
