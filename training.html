@@ -1388,22 +1388,71 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     window.currentAudio = null;
                 }
                 
-                // Create customized preview message
-                const previewMessages = {
-                    'yeni': `Hi! I'm Yeni from ProSpector HVAC. This is how I sound with your customized settings - ${accentStrength}% accent strength, ${emotionalRange}% emotional range, and ${salesApproach} approach.`,
-                    'danny': `Good day! I'm Danny from ProSpector HVAC. With these customized settings, I have ${accentStrength}% accent, ${technicalVocab}% technical vocabulary, and ${speakingRhythm} speaking rhythm.`,
-                    'gabi': `Hello! I'm Gabi from ProSpector HVAC. My customized voice has ${emotionalRange}% expressiveness, ${regionalVariation} regional variation, and ${salesApproach} sales approach.`
-                };
+                // Create customized preview message with dramatic differences based on settings
+                let previewMessages = {};
+                
+                // Create different text content based on accent strength
+                if (accentStrength >= 75) {
+                    previewMessages = {
+                        'yeni': `¡Hola! Soy Yeni de ProSpector HVAC. Mi acento Latino es muy fuerte - ${accentStrength}% - perfect for Miami customers who love authentic Spanish flavor in business conversations.`,
+                        'danny': `¡Buenos días! This is Danny from ProSpector HVAC. My strong Latino accent at ${accentStrength}% brings authentic bilingual charm and technical expertise to every conversation, ¿sí?`,
+                        'gabi': `¡Hola amigo! I'm Gabi from ProSpector HVAC. With my ${accentStrength}% accent strength, I bring that genuine Miami Latina warmth that makes customers feel como familia.`
+                    };
+                } else if (accentStrength >= 50) {
+                    previewMessages = {
+                        'yeni': `Hi there! I'm Yeni from ProSpector HVAC. With ${accentStrength}% accent, I have that perfect Miami flavor - not too strong, not too subtle - just right for professional HVAC sales.`,
+                        'danny': `Good day! Danny here from ProSpector HVAC. My ${accentStrength}% bilingual accent brings the right balance of technical authority and Latino community connection.`,
+                        'gabi': `Hello! I'm Gabi from ProSpector HVAC. My ${accentStrength}% accent gives me that friendly Miami touch that helps customers trust our HVAC expertise.`
+                    };
+                } else {
+                    previewMessages = {
+                        'yeni': `Hello. This is Yeni from ProSpector HVAC. With only ${accentStrength}% accent, I sound very neutral and professional - perfect for corporate clients who prefer minimal regional characteristics.`,
+                        'danny': `Good morning. Danny from ProSpector HVAC speaking. At ${accentStrength}% accent strength, I maintain technical authority with subtle Latino warmth.`,
+                        'gabi': `Hi. Gabi from ProSpector HVAC. With ${accentStrength}% accent, I provide clear, neutral communication focused on HVAC solutions and efficiency.`
+                    };
+                }
+                
+                // Modify message based on emotional range
+                if (emotionalRange >= 80) {
+                    Object.keys(previewMessages).forEach(key => {
+                        previewMessages[key] += ` ¡I'm SO excited to help you with HVAC! My ${emotionalRange}% emotional energy brings enthusiasm and passion to every customer interaction!`;
+                    });
+                } else if (emotionalRange <= 30) {
+                    Object.keys(previewMessages).forEach(key => {
+                        previewMessages[key] += ` With ${emotionalRange}% emotional range, I maintain calm, measured professionalism in all HVAC consultations.`;
+                    });
+                }
                 
                 const text = previewMessages[model] || `This is ${model} with customized voice settings.`;
                 
-                const voiceNames = {
-                    'yeni': 'yeni professional latina',
-                    'danny': 'danny bilingual specialist', 
-                    'gabi': 'gabi friendly consultant'
-                };
+                // Select different base voices based on customization settings for audible differences
+                let voiceName;
                 
-                let voiceName = voiceNames[model];
+                if (model === 'yeni') {
+                    if (accentStrength >= 75 || emotionalRange >= 80) {
+                        voiceName = 'yeni professional latina strong accent expressive'; // Triggers yeni with enhanced characteristics
+                    } else if (accentStrength <= 25) {
+                        voiceName = 'gabi friendly consultant neutral'; // Use gabi for neutral yeni
+                    } else {
+                        voiceName = 'yeni professional latina'; // Default yeni
+                    }
+                } else if (model === 'danny') {
+                    if (technicalVocab >= 75) {
+                        voiceName = 'pedro executive rodriguez authority'; // Use pedro for high-tech danny
+                    } else if (accentStrength <= 30) {
+                        voiceName = 'gabi friendly consultant professional'; // Use gabi for neutral danny
+                    } else {
+                        voiceName = 'danny bilingual specialist'; // Default danny
+                    }
+                } else if (model === 'gabi') {
+                    if (emotionalRange >= 80) {
+                        voiceName = 'yeni professional latina expressive'; // Use yeni for high-emotion gabi
+                    } else if (emotionalRange <= 30) {
+                        voiceName = 'danny bilingual specialist reserved'; // Use danny for low-emotion gabi
+                    } else {
+                        voiceName = 'gabi friendly consultant'; // Default gabi
+                    }
+                }
                 
                 // Check for saved customization settings and apply them
                 const savedSettings = localStorage.getItem(`voice_settings_${model}`);
@@ -1418,14 +1467,29 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     }
                 }
                 
-                // Create detailed requirements incorporating all customization settings
-                const customRequirements = `Voice: ${voiceName}, 
-                    Accent Strength: ${accentStrength}% ${regionalVariation} accent, 
-                    Emotional Range: ${emotionalRange}% expressiveness (${emotionalRange > 75 ? 'very expressive' : emotionalRange > 50 ? 'moderately expressive' : 'reserved'}),
-                    Technical Level: ${technicalVocab}% HVAC expertise (${technicalVocab > 75 ? 'expert level' : technicalVocab > 50 ? 'intermediate' : 'basic'}),
-                    Speaking Style: ${speakingRhythm} rhythm with ${salesApproach} sales approach,
-                    Regional Focus: ${regionalVariation} characteristics,
-                    Customization Preview: Enhanced professional HVAC voice`;
+                // Create enhanced requirements to trigger different voice behaviors
+                let customRequirements = `Voice: ${voiceName}`;
+                
+                // Add specific trigger words based on settings
+                if (accentStrength >= 75) {
+                    customRequirements += ', strong latino accent, bilingual community charm';
+                } else if (accentStrength <= 25) {
+                    customRequirements += ', neutral professional tone, minimal accent';
+                }
+                
+                if (emotionalRange >= 80) {
+                    customRequirements += ', enthusiastic expressive energy, passionate delivery';
+                } else if (emotionalRange <= 30) {
+                    customRequirements += ', calm measured professional tone, reserved delivery';
+                }
+                
+                if (technicalVocab >= 75) {
+                    customRequirements += ', expert technical authority, advanced HVAC terminology';
+                } else if (technicalVocab <= 40) {
+                    customRequirements += ', basic friendly approach, simple explanations';
+                }
+                
+                customRequirements += `, ${regionalVariation} regional characteristics, ${salesApproach} sales style, ${speakingRhythm} speaking rhythm`;
                 
                 console.log('🎤 Generating customized voice preview...', { model, customRequirements });
                 
@@ -1455,8 +1519,20 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 if (data.success && data.audio_urls && data.audio_urls.length > 0) {
                     const audioUrl = data.audio_urls[0];
                     
-                    // Show customization summary
-                    const confirmPlay = confirm(`🎵 Customization Preview Ready!\n\nCustomized ${model.toUpperCase()} voice with:\n\n• Accent Strength: ${accentStrength}%\n• Emotional Range: ${emotionalRange}%\n• Technical Vocabulary: ${technicalVocab}%\n• Speaking Rhythm: ${speakingRhythm}\n• Regional Variation: ${regionalVariation}\n• Sales Approach: ${salesApproach}\n\nPlay customized voice preview now?`);
+                    // Determine voice variation for user feedback
+                    let voiceVariation = 'Standard';
+                    if (voiceName.includes('strong') || voiceName.includes('expressive')) {
+                        voiceVariation = 'Enhanced Expressive';
+                    } else if (voiceName.includes('neutral') || voiceName.includes('professional')) {
+                        voiceVariation = 'Professional Neutral';  
+                    } else if (voiceName.includes('authority') || voiceName.includes('executive')) {
+                        voiceVariation = 'Technical Authority';
+                    } else if (voiceName.includes('reserved')) {
+                        voiceVariation = 'Calm Professional';
+                    }
+                    
+                    // Show customization summary with voice variation
+                    const confirmPlay = confirm(`🎵 Customization Preview Ready!\n\nCustomized ${model.toUpperCase()} voice with:\n\n• Voice Variation: ${voiceVariation}\n• Accent Strength: ${accentStrength}%\n• Emotional Range: ${emotionalRange}%\n• Technical Vocabulary: ${technicalVocab}%\n• Speaking Rhythm: ${speakingRhythm}\n• Regional Variation: ${regionalVariation}\n• Sales Approach: ${salesApproach}\n\n🎧 You should hear noticeable differences!\nPlay customized voice preview now?`);
                     
                     if (confirmPlay) {
                         // Create and play customized audio
