@@ -13825,6 +13825,13 @@ We have an opening this Thursday afternoon - would 2 PM or 4 PM work better for 
         // Initialize main voice controls when DOM is ready
         function initMainVoiceControls() {
             console.log('🎤 Initializing main voice controls...');
+            console.log('🔍 DEBUG: Checking if elements exist...');
+            
+            // Debug: Check if elements exist
+            const sarahBtn = document.getElementById('sarah-preview-main');
+            const sarahCustomBtn = document.getElementById('sarah-customize-main');
+            console.log('🔍 Sarah preview button:', sarahBtn);
+            console.log('🔍 Sarah customize button:', sarahCustomBtn);
             
             // Voice preview buttons
             const sarahBtn = document.getElementById('sarah-preview-main');
