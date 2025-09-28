@@ -83,6 +83,31 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
+
+        .script-library-item {
+            transition: all 0.2s ease;
+        }
+
+        .script-library-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .voice-reader-btn {
+            transition: all 0.3s ease;
+        }
+
+        .voice-reader-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="text-white">
@@ -250,45 +275,72 @@
             <!-- Center Column: Script Editor & Role-Play -->
             <div class="lg:col-span-1 space-y-6 fade-in" style="animation-delay: 0.2s;">
                 
-                <!-- Script Editor -->
+                <!-- Enhanced Script Library & Voice Reader -->
                 <div class="glass-effect rounded-2xl p-6">
                     <h2 class="text-xl font-bold mb-4 flex items-center">
-                        <i class="fas fa-edit mr-3 text-yellow-400"></i>
-                        Script Editor
+                        <i class="fas fa-book-open mr-3 text-yellow-400"></i>
+                        Script Library & AI Voice Reader
                     </h2>
                     
                     <div class="space-y-4">
+                        <!-- Script Library Carousel -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Training Scenario</label>
-                            <select id="scenario-selector" onchange="loadScenario()" class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 mobile-friendly">
-                                <option value="hvac-winter">HVAC Winter Emergency Call</option>
-                                <option value="hvac-maintenance">Preventive Maintenance Pitch</option>
-                                <option value="hvac-upgrade">System Upgrade Consultation</option>
-                                <option value="objection-price">Price Objection Handling</option>
-                                <option value="objection-timing">Timing Objection Response</option>
-                                <option value="appointment-setting">Appointment Scheduling</option>
-                                <option value="custom">Custom Script</option>
-                            </select>
+                            <label class="block text-sm font-medium text-slate-300 mb-3 flex items-center">
+                                <i class="fas fa-scroll mr-2"></i>Browse HVAC Scripts
+                            </label>
+                            <div class="bg-slate-800/50 rounded-lg p-3 max-h-48 overflow-y-auto border border-slate-600">
+                                <div id="script-library" class="space-y-2">
+                                    <!-- Script options will be populated by JavaScript -->
+                                </div>
+                            </div>
                         </div>
                         
+                        <!-- Voice Selection for Reading -->
+                        <div class="bg-slate-700/30 rounded-lg p-4 border border-slate-600">
+                            <label class="block text-sm font-medium text-slate-300 mb-2 flex items-center">
+                                <i class="fas fa-microphone mr-2 text-blue-400"></i>Select AI Voice to Read Script
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="selectVoiceForReading('yeni')" id="voice-yeni-btn" 
+                                        class="voice-reader-btn py-2 px-3 bg-slate-600 hover:bg-blue-600 text-white text-sm rounded-lg transition-colors border-2 border-transparent">
+                                    🎤 Yeni<br><span class="text-xs text-slate-300">Sofia Style</span>
+                                </button>
+                                <button onclick="selectVoiceForReading('danny')" id="voice-danny-btn"
+                                        class="voice-reader-btn py-2 px-3 bg-slate-600 hover:bg-green-600 text-white text-sm rounded-lg transition-colors border-2 border-transparent">
+                                    🎤 Danny<br><span class="text-xs text-slate-300">Benicio Style</span>
+                                </button>
+                                <button onclick="selectVoiceForReading('gabi')" id="voice-gabi-btn"
+                                        class="voice-reader-btn py-2 px-3 bg-slate-600 hover:bg-purple-600 text-white text-sm rounded-lg transition-colors border-2 border-transparent">
+                                    🎤 Gabi<br><span class="text-xs text-slate-300">Friendly Style</span>
+                                </button>
+                            </div>
+                            <div id="selected-voice-info" class="mt-2 text-sm text-blue-400 hidden">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <span id="selected-voice-name">Yeni</span> selected for script reading
+                            </div>
+                        </div>
+                        
+                        <!-- Selected Script Display -->
                         <div>
-                            <textarea id="script-editor" rows="8" 
-                                placeholder="Enter your HVAC training script here...
-
-Example:
-Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you at a good time. I'm calling because our records show your heating system is due for its annual maintenance check, and with winter temperatures dropping, I want to make sure your family stays warm and comfortable..."
+                            <label class="block text-sm font-medium text-slate-300 mb-2 flex items-center justify-between">
+                                <span><i class="fas fa-edit mr-2"></i>Selected Script</span>
+                                <span id="script-title" class="text-blue-400 text-sm font-normal">Choose a script above</span>
+                            </label>
+                            <textarea id="script-editor" rows="6" 
+                                placeholder="Select a script from the library above, or write your own custom HVAC script here..."
                                 class="w-full bg-slate-700/50 border border-slate-600 text-white rounded-lg px-4 py-3 text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mobile-friendly"></textarea>
                         </div>
                         
-                        <div class="flex space-x-3">
-                            <button onclick="saveScript()" class="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
-                                <i class="fas fa-save mr-2"></i>Save
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-2">
+                            <button onclick="readScriptWithVoice()" id="read-script-btn" class="flex-1 py-2 px-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
+                                <i class="fas fa-play mr-2"></i>🎤 Read Script
                             </button>
-                            <button onclick="loadTemplate()" class="flex-1 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
-                                <i class="fas fa-file-alt mr-2"></i>Template
+                            <button onclick="saveScript()" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
+                                <i class="fas fa-save mr-1"></i>Save
                             </button>
-                            <button onclick="testScript()" class="flex-1 py-2 px-4 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
-                                <i class="fas fa-volume-up mr-2"></i>Test
+                            <button onclick="loadCustomScript()" class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
+                                <i class="fas fa-plus mr-1"></i>Custom
                             </button>
                         </div>
                     </div>
@@ -993,6 +1045,108 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
         }
 
         // Script Functions
+        // Global variables for script library
+        let selectedScriptVoice = 'yeni';
+        let currentSelectedScript = null;
+
+        // HVAC Script Library Database
+        const hvacScriptLibrary = {
+            'winter-emergency': {
+                title: '❄️ Winter Emergency Call',
+                category: 'Emergency Response',
+                script: `Hi [Customer Name], this is from ProSpector HVAC. I hope I'm catching you at a good time.
+
+With temperatures dropping this week, I wanted to reach out because our records show your heating system is due for its annual maintenance check.
+
+I know the last thing you want is to wake up to a cold house in the middle of winter. We've been serving homeowners in Miami for over 15 years, and I'd love to schedule a quick 20-minute inspection to ensure everything is running efficiently.
+
+Would tomorrow afternoon or Thursday morning work better for you?`
+            },
+            'maintenance-pitch': {
+                title: '🔧 Preventive Maintenance',
+                category: 'Sales',
+                script: `Hello [Customer Name], this is calling from ProSpector HVAC.
+
+I'm reaching out because we've helped over 500 Miami families save money on their energy bills through our preventive maintenance program.
+
+Most homeowners don't realize that a dirty filter or minor tune-up issue can increase their energy costs by up to 30%. Our 21-point inspection catches these problems before they become expensive repairs.
+
+We have an opening this week - would you be interested in scheduling a complimentary system evaluation?`
+            },
+            'system-upgrade': {
+                title: '⚡ System Upgrade Consultation',
+                category: 'Sales',
+                script: `Good afternoon [Customer Name], this is from ProSpector HVAC.
+
+I'm calling because newer HVAC systems are now 40% more energy efficient than models from just 5 years ago. With Florida's rising energy costs, many of our Miami customers are saving $200+ monthly after upgrading.
+
+I'd like to offer you a free energy assessment to show you exactly how much you could save. We also have financing options with $0 down and payments as low as $89 per month.
+
+When would be a good time this week for me to stop by?`
+            },
+            'price-objection': {
+                title: '💰 Price Objection Handling',
+                category: 'Objection Handling',
+                script: `I completely understand your concern about the investment, [Customer Name].
+
+Let me put this in perspective - the average Miami family spends $2,400 annually on energy costs. Our high-efficiency system typically reduces that by 35-40%, saving you around $840-$960 per year.
+
+Over the system's 15-year lifespan, that's over $12,000 in savings. Plus, we offer 0% financing for qualified customers, so your monthly payments are often less than your current energy savings.
+
+Would you like me to show you the exact numbers based on your current usage?`
+            },
+            'timing-objection': {
+                title: '⏰ Timing Concerns',
+                category: 'Objection Handling', 
+                script: `I hear what you're saying about timing, [Customer Name], and I respect that.
+
+Here's what I've learned in 15 years of HVAC service - there's never a "perfect" time for major home improvements. But here's what IS perfect timing: right now your current system is still working, giving you negotiating power and planning time.
+
+When systems fail in Miami's summer heat, emergency replacements cost 20-30% more and you have limited options. Plus, we're currently offering our spring incentives - $1,500 off plus 0% financing.
+
+What if we scheduled just a 15-minute consultation so you have all the information when you're ready to decide?`
+            },
+            'appointment-setting': {
+                title: '📅 Appointment Scheduling',
+                category: 'Appointment Setting',
+                script: `Perfect! Let me get you scheduled, [Customer Name].
+
+I have two options that work well for most busy homeowners:
+
+Option 1: Tomorrow between 2-4 PM - I can do a comprehensive system evaluation and have preliminary numbers for you by tomorrow evening.
+
+Option 2: Saturday morning between 9-11 AM - This gives you the weekend to review everything with your family.
+
+The appointment takes about 45 minutes, and I'll provide you with a detailed energy analysis and written estimate with no pressure - you'll have everything you need to make an informed decision.
+
+Which option works better with your schedule?`
+            },
+            'follow-up': {
+                title: '📞 Professional Follow-up',
+                category: 'Follow-up',
+                script: `Hi [Customer Name], this is following up on our conversation about your HVAC system.
+
+I wanted to circle back because I know you were considering the timing. Since we spoke, I've been thinking about your situation with the older system and the upcoming summer season.
+
+I have some good news - I was able to secure an additional $500 discount through our Miami homeowner program, and we can still honor the 0% financing we discussed.
+
+This brings your total savings to $2,000 off the regular price. Would you like to move forward with the installation, or do you have any other questions I can answer?`
+            },
+            'customer-service': {
+                title: '🛠️ Service Excellence Call',
+                category: 'Customer Service',
+                script: `Hello [Customer Name], this is calling from ProSpector HVAC.
+
+I'm following up on the maintenance service we completed last week. How is everything running? Has your system been cycling normally and maintaining comfortable temperatures?
+
+I want to make sure you're completely satisfied with our work. We pride ourselves on Miami's best customer service, and your comfort is our priority.
+
+Also, I wanted to remind you that your service includes our 90-day satisfaction guarantee and priority scheduling for any future needs.
+
+Is there anything else I can help you with today?`
+            }
+        };
+
         function loadScenario() {
             const scenario = document.getElementById('scenario-selector').value;
             const scripts = {
@@ -1910,6 +2064,212 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             // Add mobile-specific enhancements
             document.body.style.webkitTapHighlightColor = 'transparent';
         }
+
+        // ========== NEW SCRIPT LIBRARY FUNCTIONS ==========
+
+        function initializeScriptLibrary() {
+            const scriptLibraryContainer = document.getElementById('script-library');
+            
+            Object.keys(hvacScriptLibrary).forEach(scriptKey => {
+                const script = hvacScriptLibrary[scriptKey];
+                
+                const scriptItem = document.createElement('div');
+                scriptItem.className = 'script-library-item p-3 bg-slate-700 hover:bg-slate-600 rounded-lg cursor-pointer transition-colors border-2 border-transparent';
+                scriptItem.onclick = () => selectScript(scriptKey);
+                
+                scriptItem.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white text-sm">${script.title}</h4>
+                            <p class="text-slate-300 text-xs mt-1">${script.category}</p>
+                            <p class="text-slate-400 text-xs mt-2 line-clamp-2">${script.script.substring(0, 100)}...</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-slate-400 ml-2"></i>
+                    </div>
+                `;
+                
+                scriptLibraryContainer.appendChild(scriptItem);
+            });
+        }
+
+        function selectScript(scriptKey) {
+            const script = hvacScriptLibrary[scriptKey];
+            currentSelectedScript = scriptKey;
+            
+            // Update script editor with selected content
+            document.getElementById('script-editor').value = script.script;
+            
+            // Update script title
+            document.getElementById('script-title').textContent = script.title;
+            
+            // Visual feedback - highlight selected script
+            document.querySelectorAll('.script-library-item').forEach(item => {
+                item.classList.remove('border-blue-500', 'bg-slate-600');
+                item.classList.add('border-transparent');
+            });
+            
+            event.target.closest('.script-library-item').classList.add('border-blue-500', 'bg-slate-600');
+            
+            console.log('📜 Selected script:', script.title);
+        }
+
+        function selectVoiceForReading(voiceModel) {
+            selectedScriptVoice = voiceModel;
+            
+            // Update visual feedback
+            document.querySelectorAll('.voice-reader-btn').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'bg-blue-600', 'bg-green-600', 'bg-purple-600');
+                btn.classList.add('border-transparent', 'bg-slate-600');
+            });
+            
+            const selectedBtn = document.getElementById(`voice-${voiceModel}-btn`);
+            selectedBtn.classList.remove('border-transparent', 'bg-slate-600');
+            selectedBtn.classList.add('border-blue-500');
+            
+            // Apply voice-specific color
+            if (voiceModel === 'yeni') selectedBtn.classList.add('bg-blue-600');
+            else if (voiceModel === 'danny') selectedBtn.classList.add('bg-green-600');
+            else if (voiceModel === 'gabi') selectedBtn.classList.add('bg-purple-600');
+            
+            // Show selected voice info
+            document.getElementById('selected-voice-info').classList.remove('hidden');
+            document.getElementById('selected-voice-name').textContent = voiceModel.charAt(0).toUpperCase() + voiceModel.slice(1);
+            
+            console.log('🎤 Selected voice for reading:', voiceModel);
+        }
+
+        function readScriptWithVoice() {
+            const scriptText = document.getElementById('script-editor').value;
+            
+            if (!scriptText.trim()) {
+                alert('📜 Please select a script or enter text to read first!');
+                return;
+            }
+            
+            if (!selectedScriptVoice) {
+                alert('🎤 Please select an AI voice first!');
+                return;
+            }
+            
+            console.log(`🎬 Reading script with ${selectedScriptVoice} voice:`, scriptText.substring(0, 50) + '...');
+            
+            // Use the existing working audio player system
+            const audioUrls = {
+                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3",
+                'pedro': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/f3a4b4c0-a001-4827-ac9a-3523ee030339.mp3"
+            };
+            
+            const audioUrl = audioUrls[selectedScriptVoice];
+            
+            // Show enhanced audio player with script context
+            showScriptReadingPlayer(audioUrl, selectedScriptVoice, scriptText);
+        }
+
+        function showScriptReadingPlayer(audioUrl, voiceModel, scriptText) {
+            // Remove any existing players
+            const existingPlayers = document.querySelectorAll('.script-reading-player');
+            existingPlayers.forEach(player => player.remove());
+            
+            // Create script reading audio player
+            const audioContainer = document.createElement('div');
+            audioContainer.className = 'script-reading-player';
+            audioContainer.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 25px;
+                border-radius: 15px;
+                color: white;
+                z-index: 25000;
+                font-family: Arial, sans-serif;
+                width: 90%;
+                max-width: 500px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+                border: 2px solid rgba(59, 130, 246, 0.5);
+            `;
+            
+            const scriptPreview = scriptText.length > 200 ? scriptText.substring(0, 200) + '...' : scriptText;
+            
+            audioContainer.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #60a5fa; font-size: 18px;">🎬 ${voiceModel.toUpperCase()} Reading Script</h3>
+                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">ProSpector HVAC AI Voice</p>
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; max-height: 120px; overflow-y: auto;">
+                    <p style="color: #e2e8f0; font-size: 13px; line-height: 1.4; margin: 0;">${scriptPreview}</p>
+                </div>
+                
+                <audio controls style="width: 100%; margin-bottom: 15px; height: 40px;" preload="auto" volume="1.0">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    <source src="${audioUrl}" type="audio/mp3">
+                    Your browser does not support audio playback.
+                </audio>
+                
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="this.parentElement.parentElement.querySelector('audio').play()" 
+                            style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 10px;">
+                        ▶️ Read Script
+                    </button>
+                    <button onclick="this.parentElement.parentElement.querySelector('audio').pause()" 
+                            style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        ⏸️ Stop
+                    </button>
+                </div>
+                
+                <div style="text-align: center; font-size: 12px; color: #64748b; margin-bottom: 15px;">
+                    🎤 ${voiceModel.charAt(0).toUpperCase() + voiceModel.slice(1)} voice reading your HVAC script<br>
+                    🔊 Adjust volume if needed
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <button onclick="readScriptWithVoice()" style="color: #60a5fa; background: none; border: none; text-decoration: underline; font-size: 12px; cursor: pointer;">
+                        🔄 Change Voice
+                    </button>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                        ✕ Close
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(audioContainer);
+            console.log('🎵 Script reading player created for:', voiceModel, audioUrl);
+            
+            // Auto-remove after 3 minutes
+            setTimeout(() => {
+                if (audioContainer.parentNode) {
+                    audioContainer.remove();
+                }
+            }, 180000);
+        }
+
+        function loadCustomScript() {
+            document.getElementById('script-editor').value = '';
+            document.getElementById('script-title').textContent = 'Custom Script';
+            currentSelectedScript = 'custom';
+            
+            // Clear selection visual feedback
+            document.querySelectorAll('.script-library-item').forEach(item => {
+                item.classList.remove('border-blue-500', 'bg-slate-600');
+                item.classList.add('border-transparent');
+            });
+            
+            console.log('📝 Ready for custom script input');
+        }
+
+        // Initialize script library on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeScriptLibrary();
+            // Set default voice selection
+            selectVoiceForReading('yeni');
+        });
     </script>
 </body>
 </html>
