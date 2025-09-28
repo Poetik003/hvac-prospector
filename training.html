@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Training & Fine-tuning - ProSpector Pro</title>
+    <title>AI Voice Training & Fine-tuning - ProSpector Pro v2.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- Cache busting for latest updates -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <style>
         body {
@@ -277,9 +281,12 @@
                 
                 <!-- Enhanced Script Library & Voice Reader -->
                 <div class="glass-effect rounded-2xl p-6">
-                    <h2 class="text-xl font-bold mb-4 flex items-center">
-                        <i class="fas fa-book-open mr-3 text-yellow-400"></i>
-                        Script Library & AI Voice Reader
+                    <h2 class="text-xl font-bold mb-4 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-book-open mr-3 text-yellow-400"></i>
+                            Script Library & AI Voice Reader
+                        </div>
+                        <span class="text-xs bg-green-600 text-white px-2 py-1 rounded-full">v2.1 NEW</span>
                     </h2>
                     
                     <div class="space-y-4">
@@ -2266,9 +2273,39 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
 
         // Initialize script library on page load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Script Library v2.1...');
+            
+            // Check if elements exist
+            const scriptLibraryContainer = document.getElementById('script-library');
+            if (!scriptLibraryContainer) {
+                console.error('❌ Script library container not found! Old HTML may be cached.');
+                // Force page reload to get latest HTML
+                setTimeout(() => {
+                    console.log('🔄 Forcing page reload to get latest version...');
+                    window.location.reload(true);
+                }, 2000);
+                return;
+            }
+            
+            console.log('✅ Script library container found, initializing...');
             initializeScriptLibrary();
+            
             // Set default voice selection
             selectVoiceForReading('yeni');
+            
+            console.log('🎉 Script Library v2.1 initialized successfully!');
+        });
+        
+        // Backup initialization for immediate load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const scriptLibraryContainer = document.getElementById('script-library');
+                if (scriptLibraryContainer && scriptLibraryContainer.children.length === 0) {
+                    console.log('🔄 Backup initialization: Initializing script library...');
+                    initializeScriptLibrary();
+                    selectVoiceForReading('yeni');
+                }
+            }, 1000);
         });
     </script>
 </body>
