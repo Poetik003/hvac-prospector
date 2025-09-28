@@ -1078,6 +1078,11 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 
                 const voiceName = voiceNames[currentVoiceModel] || 'yeni professional latina';
                 
+                // Declare selectedModel at function scope to avoid undefined errors
+                let selectedModel = currentVoiceModel;
+                let hasCustomSettings = false;
+                let voiceSettings = {};
+                
                 // FAST: Direct audio URLs for script testing with all voice options
                 const scriptTestUrls = {
                     'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
@@ -1092,8 +1097,6 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 try {
                     // Get saved voice settings for current model
                     const savedSettings = localStorage.getItem(`voice_settings_${currentVoiceModel}`);
-                    let voiceSettings = {};
-                    let hasCustomSettings = false;
                     
                     if (savedSettings) {
                         try {
@@ -1108,7 +1111,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     }
                     
                     // FAST APPROACH: Use static URLs with smart voice selection based on settings
-                    let selectedModel = currentVoiceModel;
+                    selectedModel = currentVoiceModel;
                     
                     if (hasCustomSettings) {
                         const salesApproach = voiceSettings.salesApproach;
