@@ -4525,9 +4525,12 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Completed</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master professional tone and optimal speaking pace for cold calls</p>
-                                <button onclick="alert('📚 Opening Training Review...'); setTimeout(function(){ window.open('training.html?mode=review', '_blank') || (window.location.href='training.html?mode=review'); }, 500);" class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
-                                    Review Training
-                                </button>
+                                <form action="training.html" method="get" target="_blank" class="w-full">
+                                    <input type="hidden" name="mode" value="review">
+                                    <button type="submit" class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                                        📚 Review Training
+                                    </button>
+                                </form>
                             </div>
                             
                             <div class="bg-slate-700/30 rounded-xl p-4">
@@ -4536,9 +4539,12 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button onclick="alert('🔄 Continuing Training Session...'); setTimeout(function(){ window.open('training.html?mode=continue', '_blank') || (window.location.href='training.html?mode=continue'); }, 500);" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
-                                    Continue Training
-                                </button>
+                                <form action="training.html" method="get" target="_blank" class="w-full">
+                                    <input type="hidden" name="mode" value="continue">
+                                    <button type="submit" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                        🔄 Continue Training
+                                    </button>
+                                </form>
                             </div>
                             
                             <div class="bg-slate-700/30 rounded-xl p-4">
@@ -4547,9 +4553,12 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Not Started</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master the art of closing calls and scheduling appointments</p>
-                                <button onclick="alert('🚀 Starting Training Module...'); setTimeout(function(){ window.open('training.html?mode=start', '_blank') || (window.location.href='training.html?mode=start'); }, 500);" class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
-                                    Start Training
-                                </button>
+                                <form action="training.html" method="get" target="_blank" class="w-full">
+                                    <input type="hidden" name="mode" value="start">
+                                    <button type="submit" class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
+                                        🚀 Start Training
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         
@@ -4595,25 +4604,18 @@ I'd love to schedule..."></textarea>
                         </div>
                     </div>
                     
-                    <!-- SIMPLE TRAINING ACCESS - GUARANTEED TO WORK -->
-                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-4">
-                        <h6 class="text-yellow-400 font-bold mb-2">🎯 Quick Training Access</h6>
-                        <p class="text-sm text-slate-400 mb-3">If buttons above don't work, use these direct links:</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <a href="training.html?mode=review" target="_blank" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-center text-sm rounded block">📚 Review</a>
-                            <a href="training.html?mode=continue" target="_blank" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center text-sm rounded block">🔄 Continue</a>
-                            <a href="training.html?mode=start" target="_blank" class="px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-center text-sm rounded block">🚀 Start</a>
-                            <a href="training.html?mode=roleplay" target="_blank" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-center text-sm rounded block">🎭 Role-Play</a>
-                        </div>
-                    </div>
+
                     
                     <div class="flex space-x-3">
                         <button class="close-training-modal flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
                             Close
                         </button>
-                        <button onclick="alert('🎭 Opening Role-Play Training...'); setTimeout(function(){ if(typeof openRolePlayModal === 'function'){ openRolePlayModal(); } else { window.open('training.html?mode=roleplay', '_blank') || (window.location.href='training.html?mode=roleplay'); } }, 500);" class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
-                            <i class="fas fa-play mr-2"></i>Start Practice Call
-                        </button>
+                        <form action="training.html" method="get" target="_blank" class="flex-1">
+                            <input type="hidden" name="mode" value="roleplay">
+                            <button type="submit" class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
+                                <i class="fas fa-play mr-2"></i>🎭 Start Practice Call
+                            </button>
+                        </form>
                     </div>
                 </div>
             `;
