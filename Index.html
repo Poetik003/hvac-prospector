@@ -4525,7 +4525,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Completed</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master professional tone and optimal speaking pace for cold calls</p>
-                                <button class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="alert('📚 Opening Training Review...'); setTimeout(function(){ window.open('training.html?mode=review', '_blank') || (window.location.href='training.html?mode=review'); }, 500);" class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
                                     Review Training
                                 </button>
                             </div>
@@ -4536,7 +4536,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="alert('🔄 Continuing Training Session...'); setTimeout(function(){ window.open('training.html?mode=continue', '_blank') || (window.location.href='training.html?mode=continue'); }, 500);" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     Continue Training
                                 </button>
                             </div>
@@ -4547,7 +4547,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Not Started</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master the art of closing calls and scheduling appointments</p>
-                                <button class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
+                                <button onclick="alert('🚀 Starting Training Module...'); setTimeout(function(){ window.open('training.html?mode=start', '_blank') || (window.location.href='training.html?mode=start'); }, 500);" class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
                                     Start Training
                                 </button>
                             </div>
@@ -4595,11 +4595,23 @@ I'd love to schedule..."></textarea>
                         </div>
                     </div>
                     
+                    <!-- SIMPLE TRAINING ACCESS - GUARANTEED TO WORK -->
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-4">
+                        <h6 class="text-yellow-400 font-bold mb-2">🎯 Quick Training Access</h6>
+                        <p class="text-sm text-slate-400 mb-3">If buttons above don't work, use these direct links:</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="training.html?mode=review" target="_blank" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-center text-sm rounded block">📚 Review</a>
+                            <a href="training.html?mode=continue" target="_blank" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center text-sm rounded block">🔄 Continue</a>
+                            <a href="training.html?mode=start" target="_blank" class="px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-center text-sm rounded block">🚀 Start</a>
+                            <a href="training.html?mode=roleplay" target="_blank" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-center text-sm rounded block">🎭 Role-Play</a>
+                        </div>
+                    </div>
+                    
                     <div class="flex space-x-3">
                         <button class="close-training-modal flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
                             Close
                         </button>
-                        <button class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
+                        <button onclick="alert('🎭 Opening Role-Play Training...'); setTimeout(function(){ if(typeof openRolePlayModal === 'function'){ openRolePlayModal(); } else { window.open('training.html?mode=roleplay', '_blank') || (window.location.href='training.html?mode=roleplay'); } }, 500);" class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
                             <i class="fas fa-play mr-2"></i>Start Practice Call
                         </button>
                     </div>
@@ -4621,39 +4633,7 @@ I'd love to schedule..."></textarea>
                 }
             });
             
-            // Add training button event listeners
-            var reviewBtn = modal.querySelector('button:contains("Review Training")');
-            var continueBtn = modal.querySelector('button:contains("Continue Training")');  
-            var startBtn = modal.querySelector('button:contains("Start Training")');
-            var practiceBtn = modal.querySelector('button:contains("Start Practice Call")');
-            
-            // Since :contains() doesn't work in querySelector, let's find buttons by text content
-            var allButtons = modal.querySelectorAll('button');
-            allButtons.forEach(function(btn) {
-                var text = btn.textContent.trim();
-                
-                if (text === 'Review Training') {
-                    btn.addEventListener('click', function() {
-                        alert('📚 Opening Training Review...');
-                        openTrainingPage('review');
-                    });
-                } else if (text === 'Continue Training') {
-                    btn.addEventListener('click', function() {
-                        alert('🔄 Continuing Training Session...');
-                        openTrainingPage('continue');
-                    });
-                } else if (text === 'Start Training') {
-                    btn.addEventListener('click', function() {
-                        alert('🚀 Starting Training Module...');
-                        openTrainingPage('start');
-                    });
-                } else if (text === 'Start Practice Call') {
-                    btn.addEventListener('click', function() {
-                        alert('🎯 Starting Role-Play Session...');
-                        openRolePlayModal();
-                    });
-                }
-            });
+            // Training buttons now use direct onclick handlers in HTML template for better mobile compatibility
         }
         
         // Training Navigation Helper
