@@ -1,0 +1,88 @@
+[build]
+  # Build command (not needed for static HTML app)
+  command = "echo 'ProSpector Pro HVAC App - Static Deployment Ready'"
+  
+  # Directory to deploy (current directory)
+  publish = "."
+  
+  # Node.js version for build environment
+  environment = { NODE_VERSION = "18" }
+
+# Redirect rules for single-page app behavior
+[[redirects]]
+  from = "/training"
+  to = "/training.html"
+  status = 200
+
+[[redirects]]
+  from = "/direct-training"
+  to = "/direct-training.html"
+  status = 200
+
+# Main app redirect
+[[redirects]]
+  from = "/app"
+  to = "/Index.html"
+  status = 200
+
+# Default fallback
+[[redirects]]
+  from = "/*"
+  to = "/Index.html"
+  status = 200
+
+# Headers for better performance and security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Performance headers
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Audio files headers for CORS
+[[headers]]
+  for = "*.mp3"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=31536000"
+
+# API proxying (for development - you may need external API server for production)
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-flask-api-server.herokuapp.com/api/:splat"
+  status = 200
+  force = true
+
+# Form handling (if you add contact forms later)
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+# Environment variables (you can set these in Netlify UI)
+[build.environment]
+  # Add any environment variables your app needs
+  NODE_ENV = "production"
