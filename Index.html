@@ -4525,7 +4525,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Completed</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master professional tone and optimal speaking pace for cold calls</p>
-                                <button onclick="alert('📚 Opening Training Review...'); try { window.open('training.html', '_blank'); } catch(e) { window.location.href = 'training.html'; }" class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                                <button class="w-full py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
                                     Review Training
                                 </button>
                             </div>
@@ -4536,7 +4536,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">In Progress</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Advanced techniques for handling common objections effectively</p>
-                                <button onclick="alert('🔄 Continuing Training Session...'); try { window.open('training.html', '_blank'); } catch(e) { window.location.href = 'training.html'; }" class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                                <button class="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                     Continue Training
                                 </button>
                             </div>
@@ -4547,7 +4547,7 @@ I'd love to schedule..."></textarea>
                                     <span class="px-2 py-1 bg-slate-500/20 text-slate-400 text-xs rounded-full">Not Started</span>
                                 </div>
                                 <p class="text-sm text-slate-400 mb-3">Master the art of closing calls and scheduling appointments</p>
-                                <button onclick="alert('🚀 Starting Training Module...'); try { window.open('training.html', '_blank'); } catch(e) { window.location.href = 'training.html'; }" class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
+                                <button class="w-full py-2 px-3 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors">
                                     Start Training
                                 </button>
                             </div>
@@ -4599,7 +4599,7 @@ I'd love to schedule..."></textarea>
                         <button class="close-training-modal flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
                             Close
                         </button>
-                        <button onclick="alert('🎯 Starting Practice Call Session...'); try { window.open('training.html', '_blank'); } catch(e) { window.location.href = 'training.html'; }" class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
+                        <button class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors">
                             <i class="fas fa-play mr-2"></i>Start Practice Call
                         </button>
                     </div>
@@ -4620,6 +4620,318 @@ I'd love to schedule..."></textarea>
                     document.body.removeChild(modal);
                 }
             });
+            
+            // Add training button event listeners
+            var reviewBtn = modal.querySelector('button:contains("Review Training")');
+            var continueBtn = modal.querySelector('button:contains("Continue Training")');  
+            var startBtn = modal.querySelector('button:contains("Start Training")');
+            var practiceBtn = modal.querySelector('button:contains("Start Practice Call")');
+            
+            // Since :contains() doesn't work in querySelector, let's find buttons by text content
+            var allButtons = modal.querySelectorAll('button');
+            allButtons.forEach(function(btn) {
+                var text = btn.textContent.trim();
+                
+                if (text === 'Review Training') {
+                    btn.addEventListener('click', function() {
+                        alert('📚 Opening Training Review...');
+                        openTrainingPage('review');
+                    });
+                } else if (text === 'Continue Training') {
+                    btn.addEventListener('click', function() {
+                        alert('🔄 Continuing Training Session...');
+                        openTrainingPage('continue');
+                    });
+                } else if (text === 'Start Training') {
+                    btn.addEventListener('click', function() {
+                        alert('🚀 Starting Training Module...');
+                        openTrainingPage('start');
+                    });
+                } else if (text === 'Start Practice Call') {
+                    btn.addEventListener('click', function() {
+                        alert('🎯 Starting Role-Play Session...');
+                        openRolePlayModal();
+                    });
+                }
+            });
+        }
+        
+        // Training Navigation Helper
+        function openTrainingPage(mode) {
+            try {
+                // Try opening in new tab first
+                var url = 'training.html?mode=' + mode;
+                window.open(url, '_blank');
+            } catch (e) {
+                // Fallback to same page navigation
+                window.location.href = 'training.html?mode=' + mode;
+            }
+        }
+        
+        // NEW: Role-Play Training with Multiple Voices
+        function openRolePlayModal() {
+            console.log('🎭 Opening Role-Play Training Session');
+            
+            var existingModal = document.getElementById('roleplay-modal');
+            if (existingModal) existingModal.remove();
+            
+            var modal = document.createElement('div');
+            modal.id = 'roleplay-modal';
+            modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 w-full max-w-4xl mx-auto border border-slate-600 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">🎭 Live Role-Play Training</h3>
+                        <button onclick="document.getElementById('roleplay-modal').remove();" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-6 p-4 bg-blue-500/10 rounded-xl border border-blue-500/30">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-microphone text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">Interactive Conversation Training</h4>
+                                <p class="text-sm text-slate-400">Practice real HVAC sales scenarios with AI voices responding as customers</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Voice Selection -->
+                        <div class="space-y-4">
+                            <h5 class="text-lg font-bold text-white">🎤 Choose Your Training Voice</h5>
+                            
+                            <div class="space-y-3">
+                                <div class="bg-slate-700/30 rounded-xl p-4 border border-blue-500/30 cursor-pointer hover:border-blue-400/50 transition-colors" onclick="selectTrainingVoice('sarah')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h6 class="font-bold text-white">👩‍💼 Sarah (Professional)</h6>
+                                            <p class="text-sm text-slate-400">Sofia Vergara style - Perfect for B2B calls</p>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); playRolePlayVoice('sarah')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded">
+                                            🔊 Preview
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-slate-700/30 rounded-xl p-4 border border-green-500/30 cursor-pointer hover:border-green-400/50 transition-colors" onclick="selectTrainingVoice('marcus')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h6 class="font-bold text-white">👨‍🔧 Marcus (Community)</h6>
+                                            <p class="text-sm text-slate-400">Benicio Del Toro style - Great for residential</p>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); playRolePlayVoice('marcus')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded">
+                                            🔊 Preview
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-slate-700/30 rounded-xl p-4 border border-purple-500/30 cursor-pointer hover:border-purple-400/50 transition-colors" onclick="selectTrainingVoice('elena')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h6 class="font-bold text-white">👩‍🏫 Elena (Expert)</h6>
+                                            <p class="text-sm text-slate-400">Technical specialist - Complex installations</p>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); playRolePlayVoice('elena')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded">
+                                            🔊 Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Scenario Selection -->
+                        <div class="space-y-4">
+                            <h5 class="text-lg font-bold text-white">🎯 Training Scenarios</h5>
+                            
+                            <div class="space-y-3">
+                                <div class="bg-slate-700/30 rounded-xl p-4 cursor-pointer hover:bg-slate-700/50 transition-colors" onclick="startRolePlayScenario('cold-call')">
+                                    <h6 class="font-bold text-green-400 mb-1">❄️ Cold Call Practice</h6>
+                                    <p class="text-sm text-slate-400 mb-2">Initial contact with homeowner who needs HVAC service</p>
+                                    <div class="text-xs text-slate-500">Difficulty: Beginner • Duration: 5-8 minutes</div>
+                                </div>
+                                
+                                <div class="bg-slate-700/30 rounded-xl p-4 cursor-pointer hover:bg-slate-700/50 transition-colors" onclick="startRolePlayScenario('objection-handling')">
+                                    <h6 class="font-bold text-yellow-400 mb-1">🛡️ Objection Handling</h6>
+                                    <p class="text-sm text-slate-400 mb-2">Customer has price concerns and competitor quotes</p>
+                                    <div class="text-xs text-slate-500">Difficulty: Intermediate • Duration: 8-12 minutes</div>
+                                </div>
+                                
+                                <div class="bg-slate-700/30 rounded-xl p-4 cursor-pointer hover:bg-slate-700/50 transition-colors" onclick="startRolePlayScenario('emergency-call')">
+                                    <h6 class="font-bold text-red-400 mb-1">🚨 Emergency Repair Call</h6>
+                                    <p class="text-sm text-slate-400 mb-2">AC broken in Miami heat - urgent appointment needed</p>
+                                    <div class="text-xs text-slate-500">Difficulty: Advanced • Duration: 10-15 minutes</div>
+                                </div>
+                                
+                                <div class="bg-slate-700/30 rounded-xl p-4 cursor-pointer hover:bg-slate-700/50 transition-colors" onclick="startRolePlayScenario('upsell')">
+                                    <h6 class="font-bold text-purple-400 mb-1">📈 Upselling Training</h6>
+                                    <p class="text-sm text-slate-400 mb-2">Maintenance visit - opportunity for system upgrade</p>
+                                    <div class="text-xs text-slate-500">Difficulty: Expert • Duration: 12-18 minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Selected Voice & Scenario Display -->
+                    <div id="roleplay-selection" class="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl p-4 mb-6 border border-indigo-500/30 hidden">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h6 class="font-bold text-white mb-1">Ready for Training</h6>
+                                <p id="selection-details" class="text-sm text-slate-400"></p>
+                            </div>
+                            <button onclick="startConversationTraining()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-bold transition-all">
+                                🎬 Start Conversation
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="document.getElementById('roleplay-modal').remove();" class="flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                            Close
+                        </button>
+                        <button onclick="showRolePlayTips()" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-lightbulb mr-2"></i>Training Tips
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // Role-Play Helper Functions
+        var selectedVoice = null;
+        var selectedScenario = null;
+        
+        function selectTrainingVoice(voice) {
+            selectedVoice = voice;
+            console.log('🎤 Selected voice:', voice);
+            
+            // Update visual selection
+            var voiceCards = document.querySelectorAll('#roleplay-modal .cursor-pointer');
+            voiceCards.forEach(card => {
+                if (card.onclick && card.onclick.toString().includes(voice)) {
+                    card.style.background = 'rgba(59, 130, 246, 0.2)';
+                    card.style.borderColor = '#3b82f6';
+                } else if (card.onclick && card.onclick.toString().includes('selectTrainingVoice')) {
+                    card.style.background = 'rgba(51, 65, 85, 0.3)';
+                    card.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+                }
+            });
+            
+            checkReadyToStart();
+        }
+        
+        function startRolePlayScenario(scenario) {
+            selectedScenario = scenario;
+            console.log('🎯 Selected scenario:', scenario);
+            
+            // Update visual selection
+            var scenarioCards = document.querySelectorAll('#roleplay-modal .cursor-pointer');
+            scenarioCards.forEach(card => {
+                if (card.onclick && card.onclick.toString().includes(scenario)) {
+                    card.style.background = 'rgba(34, 197, 94, 0.2)';
+                } else if (card.onclick && card.onclick.toString().includes('startRolePlayScenario')) {
+                    card.style.background = 'rgba(51, 65, 85, 0.3)';
+                }
+            });
+            
+            checkReadyToStart();
+        }
+        
+        function checkReadyToStart() {
+            if (selectedVoice && selectedScenario) {
+                var selectionDiv = document.getElementById('roleplay-selection');
+                var detailsP = document.getElementById('selection-details');
+                
+                if (selectionDiv && detailsP) {
+                    selectionDiv.classList.remove('hidden');
+                    
+                    var voiceNames = {
+                        'sarah': 'Sarah (Professional)',
+                        'marcus': 'Marcus (Community)', 
+                        'elena': 'Elena (Expert)'
+                    };
+                    
+                    var scenarioNames = {
+                        'cold-call': 'Cold Call Practice',
+                        'objection-handling': 'Objection Handling',
+                        'emergency-call': 'Emergency Repair Call',
+                        'upsell': 'Upselling Training'
+                    };
+                    
+                    detailsP.textContent = `Voice: ${voiceNames[selectedVoice]} | Scenario: ${scenarioNames[selectedScenario]}`;
+                }
+            }
+        }
+        
+        function playRolePlayVoice(voice) {
+            console.log('🔊 Playing role-play voice preview:', voice);
+            
+            var voiceUrls = {
+                'sarah': 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3',
+                'marcus': 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3',
+                'elena': 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3'
+            };
+            
+            if (window.currentInlineAudio) {
+                window.currentInlineAudio.pause();
+            }
+            
+            window.currentInlineAudio = new Audio(voiceUrls[voice]);
+            window.currentInlineAudio.play().catch(e => {
+                console.log('Audio play failed:', e);
+                alert('🎤 ' + voice + ' voice preview ready! (Click to enable audio)');
+            });
+        }
+        
+        function startConversationTraining() {
+            console.log('🎬 Starting conversation training with', selectedVoice, selectedScenario);
+            
+            alert(`🎬 Starting Role-Play Session!
+
+Voice: ${selectedVoice}
+Scenario: ${selectedScenario}
+
+You will now engage in a realistic HVAC sales conversation. The AI will respond as a customer using your selected voice. Practice your pitch, handle objections, and close the deal!
+
+Ready to begin?`);
+            
+            // Close role-play modal and open conversation interface
+            document.getElementById('roleplay-modal').remove();
+            
+            // Navigate to training page with role-play parameters
+            try {
+                window.open(`training.html?mode=roleplay&voice=${selectedVoice}&scenario=${selectedScenario}`, '_blank');
+            } catch (e) {
+                window.location.href = `training.html?mode=roleplay&voice=${selectedVoice}&scenario=${selectedScenario}`;
+            }
+        }
+        
+        function showRolePlayTips() {
+            alert(`🎯 Role-Play Training Tips:
+
+📞 PREPARATION:
+• Review common HVAC terminology
+• Practice your opening pitch  
+• Have objection responses ready
+
+🎭 DURING CONVERSATION:
+• Listen actively to customer responses
+• Use their name frequently
+• Ask qualifying questions
+• Handle objections with empathy
+
+🏆 SUCCESS METRICS:
+• Build rapport quickly (first 30 seconds)
+• Identify customer pain points
+• Present value, not just price
+• Close with specific next steps
+
+💡 PRO TIP: The AI will respond based on real customer behavior patterns. Treat this like a real sales call!`);
         }
         
         // SIMPLIFIED Voice Management Modal - Guaranteed to work
