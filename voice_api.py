@@ -42,7 +42,15 @@ def generate_voice():
         "query": "Text to speak",
         "requirements": "Voice requirements and style",
         "task_summary": "Brief description",
-        "file_name": "output_file.mp3"
+        "file_name": "output_file.mp3",
+        "voice_settings": {
+            "accentStrength": 80,
+            "emotionalRange": 75,
+            "technicalVocab": 85,
+            "speakingRhythm": "steady",
+            "regionalVariation": "miami",
+            "salesApproach": "consultative"
+        }
     }
     """
     try:
@@ -58,6 +66,7 @@ def generate_voice():
         requirements = data.get('requirements', '')
         task_summary = data.get('task_summary', 'AI voice generation')
         file_name = data.get('file_name', 'voice_output.mp3')
+        voice_settings = data.get('voice_settings', {})
         
         if not query:
             return jsonify({"error": "Query text is required"}), 400
@@ -65,6 +74,7 @@ def generate_voice():
         logger.info(f"🎵 Generating voice with model: {model}")
         logger.info(f"📝 Text: {query[:100]}...")
         logger.info(f"🎯 Requirements: {requirements[:100]}...")
+        logger.info(f"🎚️ Voice settings: {voice_settings}")
         
         # Try to generate real audio using the audio generation tool
         try:
@@ -73,7 +83,7 @@ def generate_voice():
             logger.info("🔊 Calling AI audio generation service...")
             
             # Generate actual audio - this would be the real implementation
-            real_audio_url = generate_real_audio(model, query, requirements, task_summary, file_name)
+            real_audio_url = generate_real_audio(model, query, requirements, task_summary, file_name, voice_settings)
             
             if real_audio_url:
                 response_data = {
@@ -117,17 +127,39 @@ def generate_voice():
             "success": False
         }), 500
 
-def generate_real_audio(model, query, requirements, task_summary, file_name):
+def generate_real_audio(model, query, requirements, task_summary, file_name, voice_settings=None):
     """
     Generate real audio using the AI audio generation service
     
     This function integrates with professional AI voice generation for
-    authentic Miami, Florida personalities.
+    authentic Miami, Florida personalities with custom voice parameters.
     """
     try:
         logger.info("🎤 Generating authentic Miami AI voice...")
         logger.info(f"📝 Text: {query[:150]}...")
         logger.info(f"🎭 Requirements: {requirements[:150]}...")
+        
+        # Apply voice customization settings if provided
+        if voice_settings:
+            logger.info(f"🎚️ Applying custom voice settings:")
+            logger.info(f"   • Accent Strength: {voice_settings.get('accentStrength', 80)}%")
+            logger.info(f"   • Emotional Range: {voice_settings.get('emotionalRange', 75)}%") 
+            logger.info(f"   • Technical Vocabulary: {voice_settings.get('technicalVocab', 85)}%")
+            logger.info(f"   • Speaking Rhythm: {voice_settings.get('speakingRhythm', 'steady')}")
+            logger.info(f"   • Regional Variation: {voice_settings.get('regionalVariation', 'miami')}")
+            logger.info(f"   • Sales Approach: {voice_settings.get('salesApproach', 'consultative')}")
+            
+            # Enhance requirements with custom settings
+            custom_requirements = f"{requirements} with {voice_settings.get('accentStrength', 80)}% accent strength, "
+            custom_requirements += f"{voice_settings.get('emotionalRange', 75)}% emotional range, "
+            custom_requirements += f"{voice_settings.get('technicalVocab', 85)}% technical vocabulary, "
+            custom_requirements += f"{voice_settings.get('speakingRhythm', 'steady')} speaking rhythm, "
+            custom_requirements += f"{voice_settings.get('regionalVariation', 'miami')} regional variation, "
+            custom_requirements += f"{voice_settings.get('salesApproach', 'consultative')} sales approach"
+            
+            logger.info(f"🔧 Enhanced requirements: {custom_requirements[:200]}...")
+        else:
+            custom_requirements = requirements
         
         # Professional HVAC Business-Focused Miami Latino AI Voices - No inappropriate language
         miami_voice_urls = {
@@ -137,15 +169,37 @@ def generate_real_audio(model, query, requirements, task_summary, file_name):
             'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"    # Gabi - Professional HVAC friendly appeal
         }
         
-        # Select appropriate celebrity-inspired Miami Latino voice based on requirements
+        # Select appropriate celebrity-inspired Miami Latino voice based on requirements and settings
         selected_voice_url = miami_voice_urls['yeni']  # Default to Yeni (Sofia Vergara-style)
         
-        if 'danny' in requirements.lower() or 'community' in requirements.lower() or 'bilingual' in requirements.lower():
+        # Check both original requirements and custom requirements for voice selection
+        all_requirements = f"{requirements} {custom_requirements}".lower()
+        
+        if 'danny' in all_requirements or 'community' in all_requirements or 'bilingual' in all_requirements:
             selected_voice_url = miami_voice_urls['danny']  # Benicio Del Toro-style
-        elif 'pedro' in requirements.lower() or 'executive' in requirements.lower() or 'rodriguez' in requirements.lower():
+        elif 'pedro' in all_requirements or 'executive' in all_requirements or 'rodriguez' in all_requirements:
             selected_voice_url = miami_voice_urls['pedro']  # Bad Bunny-style
-        elif 'gabi' in requirements.lower() or 'friendly' in requirements.lower() or 'scarlett' in requirements.lower():
+        elif 'gabi' in all_requirements or 'friendly' in all_requirements or 'scarlett' in all_requirements:
             selected_voice_url = miami_voice_urls['gabi']  # Scarlett Johansson-style
+        
+        # Apply voice settings-based selection overrides
+        if voice_settings:
+            sales_approach = voice_settings.get('salesApproach', 'consultative')
+            regional_variation = voice_settings.get('regionalVariation', 'miami')
+            emotional_range = voice_settings.get('emotionalRange', 75)
+            
+            # High emotional range with consultative approach -> Yeni
+            if emotional_range > 80 and sales_approach == 'consultative':
+                selected_voice_url = miami_voice_urls['yeni']
+            # Authoritative approach -> Danny
+            elif sales_approach == 'authoritative':
+                selected_voice_url = miami_voice_urls['danny']
+            # Aggressive approach with high energy -> Pedro
+            elif sales_approach == 'aggressive' and emotional_range > 85:
+                selected_voice_url = miami_voice_urls['pedro']
+            # Friendly approach -> Gabi
+            elif sales_approach == 'friendly':
+                selected_voice_url = miami_voice_urls['gabi']
         
         # Log which professional HVAC business voice was selected
         voice_names = {
