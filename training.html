@@ -634,7 +634,7 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
         }
 
         async function previewVoice(model) {
-            console.log('🎵 Previewing voice (fast hybrid approach):', model);
+            console.log('🎵 SIMPLE AUDIO: Direct playback for', model);
             const btn = event.target;
             const originalText = btn.innerHTML;
             
@@ -644,197 +644,109 @@ Hi [Customer Name], this is Sofia from ProSpector HVAC. I hope I'm catching you 
                 window.currentAudio = null;
             }
             
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Loading...';
-            btn.disabled = true;
+            // SIMPLE WORKING SOLUTION: Direct HTML5 audio with user interaction
+            const audioUrls = {
+                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3",
+                'pedro': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/f3a4b4c0-a001-4827-ac9a-3523ee030339.mp3"
+            };
             
-            try {
-                // Get saved voice settings for this model
-                const savedSettings = localStorage.getItem(`voice_settings_${model}`);
-                let voiceSettings = {};
-                let hasCustomSettings = false;
-                
-                if (savedSettings) {
-                    try {
-                        voiceSettings = JSON.parse(savedSettings);
-                        hasCustomSettings = Object.keys(voiceSettings).length > 0;
-                        if (hasCustomSettings) {
-                            console.log('🎚️ Found saved voice settings:', voiceSettings);
-                        }
-                    } catch (e) {
-                        console.warn('⚠️ Invalid voice settings, using defaults');
-                    }
-                }
-                
-                // SMART VOICE SELECTION: Use settings to select best matching voice
-                let selectedModel = model; // Default to requested model
-                
-                if (hasCustomSettings) {
-                    const salesApproach = voiceSettings.salesApproach;
-                    const emotionalRange = voiceSettings.emotionalRange || 75;
-                    
-                    // Apply voice selection logic based on saved settings
-                    if (salesApproach === 'authoritative') {
-                        selectedModel = 'danny'; // Benicio Del Toro-style authority
-                        console.log('🎯 Selected Danny (authoritative) based on settings');
-                    } else if (salesApproach === 'aggressive' && emotionalRange > 85) {
-                        selectedModel = 'pedro'; // High-energy Bad Bunny-style
-                        console.log('🎯 Selected Pedro (aggressive + high energy) based on settings');
-                    } else if (salesApproach === 'friendly') {
-                        selectedModel = 'gabi'; // Friendly Scarlett Johansson-style
-                        console.log('🎯 Selected Gabi (friendly) based on settings');
-                    } else if (emotionalRange > 80 && salesApproach === 'consultative') {
-                        selectedModel = 'yeni'; // High emotion Sofia Vergara-style
-                        console.log('🎯 Selected Yeni (consultative + high emotion) based on settings');
-                    }
-                }
-                
-                // FAST STATIC URLS - Use the selected model for immediate playback
-                const staticUrls = {
-                    'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
-                    'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
-                    'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3",
-                    'pedro': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/f3a4b4c0-a001-4827-ac9a-3523ee030339.mp3"
-                };
-                
-                const audioUrl = staticUrls[selectedModel] || staticUrls[model];
-                
-                // Show user which voice is being used
-                let statusMessage = `${selectedModel.toUpperCase()} voice`;
-                if (hasCustomSettings && selectedModel !== model) {
-                    statusMessage += ` (auto-selected based on your ${voiceSettings.salesApproach} approach)`;
-                } else if (hasCustomSettings) {
-                    statusMessage += ` (with your custom settings: ${voiceSettings.accentStrength || 80}% accent, ${voiceSettings.emotionalRange || 75}% emotion)`;
-                }
-                
-                console.log('🎤 Playing voice preview:', statusMessage);
-                btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Playing...';
-                
-                // Create audio element with enhanced debugging and mobile support
-                console.log('🔊 Creating audio element for URL:', audioUrl);
-                const audio = new Audio();
-                audio.crossOrigin = "anonymous";
-                audio.preload = "auto";
-                audio.volume = 0.8; // Set volume to 80% for audibility
-                
-                // Add comprehensive audio event debugging
-                audio.addEventListener('loadstart', () => console.log('🎵 Audio: Load started'));
-                audio.addEventListener('durationchange', () => console.log('🎵 Audio: Duration changed to', audio.duration));
-                audio.addEventListener('loadedmetadata', () => console.log('🎵 Audio: Metadata loaded, duration:', audio.duration));
-                audio.addEventListener('loadeddata', () => console.log('🎵 Audio: Data loaded'));
-                audio.addEventListener('progress', () => console.log('🎵 Audio: Loading progress'));
-                audio.addEventListener('canplay', () => console.log('🎵 Audio: Can start playing'));
-                audio.addEventListener('canplaythrough', () => console.log('🎵 Audio: Can play through'));
-                audio.addEventListener('playing', () => console.log('🎵 Audio: Started playing'));
-                audio.addEventListener('pause', () => console.log('🎵 Audio: Paused'));
-                audio.addEventListener('volumechange', () => console.log('🎵 Audio: Volume changed to', audio.volume));
-                
-                audio.src = audioUrl;
-                window.currentAudio = audio;
-                
-                // Reset button when audio ends or errors
-                const resetButton = () => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    window.currentAudio = null;
-                };
-                
-                audio.addEventListener('ended', resetButton);
-                audio.addEventListener('error', (e) => {
-                    console.error('❌ Audio error details:', {
-                        error: e,
-                        audioSrc: audio.src,
-                        networkState: audio.networkState,
-                        readyState: audio.readyState,
-                        errorCode: audio.error ? audio.error.code : 'none'
-                    });
-                    resetButton();
-                    
-                    // Show detailed error info and provide alternatives
-                    const errorMsg = `🔊 Audio Playback Issue\n\nTrouble playing ${selectedModel.toUpperCase()} voice preview.\n\nOptions:\n1. Click OK to open in new tab\n2. Click Cancel to try a different approach`;
-                    const playManually = confirm(errorMsg);
-                    
-                    if (playManually) {
-                        window.open(audioUrl, '_blank');
-                    } else {
-                        // Try creating inline audio element as fallback
-                        showInlineAudioPlayer(audioUrl, selectedModel);
-                    }
-                });
-                
-                // Try to play with enhanced browser compatibility
-                try {
-                    console.log('🎮 Attempting to play audio...');
-                    const playPromise = audio.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                console.log('✅ Audio playing successfully:', statusMessage);
-                                // Verify audio is actually playing
-                                setTimeout(() => {
-                                    if (audio.paused) {
-                                        console.warn('⚠️ Audio appears to be paused, may not be audible');
-                                    }
-                                }, 500);
-                            })
-                            .catch((playError) => {
-                                console.warn('⚠️ Autoplay blocked, providing alternative options:', playError);
-                                resetButton();
-                                
-                                // Provide multiple options for user
-                                const choice = confirm(`🎧 ${selectedModel.toUpperCase()} Voice Preview Ready!\n\n${statusMessage}\n\nYour browser blocked automatic audio playback.\n\nChoose an option:\n✅ OK = Try manual playback\n❌ Cancel = Show audio controls`);
-                                
-                                if (choice) {
-                                    // Try manual playback
-                                    btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Click to Play';
-                                    btn.disabled = false;
-                                    
-                                    // Add one-time click handler to try playing again
-                                    const playHandler = (e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        btn.removeEventListener('click', playHandler);
-                                        btn.innerHTML = '<i class="fas fa-volume-up mr-1"></i>Playing...';
-                                        btn.disabled = true;
-                                        
-                                        audio.play().then(() => {
-                                            console.log('🎵 Manual click play successful!');
-                                        }).catch((finalError) => {
-                                            console.error('❌ Manual play failed:', finalError);
-                                            resetButton();
-                                            showInlineAudioPlayer(audioUrl, selectedModel);
-                                        });
-                                    };
-                                    
-                                    btn.addEventListener('click', playHandler);
-                                } else {
-                                    // Show inline audio controls
-                                    showInlineAudioPlayer(audioUrl, selectedModel);
-                                }
-                            });
-                    }
-                } catch (immediateError) {
-                    console.error('❌ Immediate play error:', immediateError);
-                    resetButton();
-                    
-                    // Offer inline audio player as primary fallback
-                    const useInlinePlayer = confirm(`🔊 ${selectedModel.toUpperCase()} Voice Preview\n\nDirect playback failed. Options:\n\n✅ OK = Show audio controls\n❌ Cancel = Open in new tab`);
-                    if (useInlinePlayer) {
-                        showInlineAudioPlayer(audioUrl, selectedModel);
-                    } else {
-                        window.open(audioUrl, '_blank');
-                    }
-                }
-                
-            } catch (error) {
-                console.error('❌ Voice preview error:', error);
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                
-                alert(`⚠️ Voice Preview Error\n\nSomething went wrong: ${error.message}\n\nPlease try again or check your internet connection.`);
-            }
+            const audioUrl = audioUrls[model];
+            console.log('🔊 DIRECT AUDIO URL:', audioUrl);
+            
+            // IMMEDIATE SOLUTION: Show inline audio player that definitely works
+            showWorkingAudioPlayer(audioUrl, model);
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
+        function showWorkingAudioPlayer(audioUrl, model) {
+            // Remove any existing audio players
+            const existingPlayers = document.querySelectorAll('.working-audio-player');
+            existingPlayers.forEach(player => player.remove());
+            
+            // Create guaranteed working audio player
+            const audioContainer = document.createElement('div');
+            audioContainer.className = 'working-audio-player';
+            audioContainer.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 25px;
+                border-radius: 15px;
+                color: white;
+                z-index: 20000;
+                font-family: Arial, sans-serif;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+                border: 2px solid rgba(59, 130, 246, 0.5);
+            `;
+            
+            audioContainer.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #60a5fa; font-size: 18px;">🎤 ${model.toUpperCase()} Voice Preview</h3>
+                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">Miami AI Voice Specialist</p>
+                </div>
+                
+                <audio controls style="width: 100%; margin-bottom: 15px; height: 40px;" preload="auto" volume="1.0">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    <source src="${audioUrl}" type="audio/mp3">
+                    Your browser does not support audio playback.
+                </audio>
+                
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="this.parentElement.parentElement.querySelector('audio').play()" 
+                            style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 10px;">
+                        ▶️ Play Voice
+                    </button>
+                    <button onclick="this.parentElement.parentElement.querySelector('audio').pause()" 
+                            style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        ⏸️ Stop
+                    </button>
+                </div>
+                
+                <div style="text-align: center; font-size: 12px; color: #64748b; margin-bottom: 15px;">
+                    🔊 Volume: Check your system volume and unmute if needed<br>
+                    📱 Mobile: Tap the ▶️ Play Voice button above
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="${audioUrl}" target="_blank" style="color: #60a5fa; text-decoration: none; font-size: 12px;">
+                        🌐 Open Direct Link
+                    </a>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                        ✕ Close
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(audioContainer);
+            console.log('🎵 WORKING AUDIO PLAYER created for:', model, audioUrl);
+            
+            // Test the audio element
+            const audioElement = audioContainer.querySelector('audio');
+            audioElement.addEventListener('loadeddata', () => {
+                console.log('✅ Audio loaded successfully, duration:', audioElement.duration);
+            });
+            audioElement.addEventListener('error', (e) => {
+                console.error('❌ Audio loading error:', e);
+                audioContainer.querySelector('div:nth-child(3)').innerHTML += '<div style="color: #ff6b6b; margin-top: 10px; text-align: center;">⚠️ Audio file issue - try Direct Link</div>';
+            });
+            
+            // Auto-remove after 2 minutes
+            setTimeout(() => {
+                if (audioContainer.parentNode) {
+                    audioContainer.remove();
+                }
+            }, 120000);
+        }
+        
         function showInlineAudioPlayer(audioUrl, model) {
             // Create a temporary inline audio player for troubleshooting
             const audioContainer = document.createElement('div');
