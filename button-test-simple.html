@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Button Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            background: #1a1a1a; 
+            color: white; 
+            font-family: Arial, sans-serif; 
+            padding: 20px;
+        }
+        .test-form {
+            background: #333;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #444;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Training Button Test</h1>
+    <p>Testing if basic forms work on your device:</p>
+
+    <div class="test-form">
+        <h3>Test 1: Direct Link</h3>
+        <a href="training.html" target="_blank" style="display: block; padding: 15px; background: blue; color: white; text-decoration: none; text-align: center; border-radius: 5px;">
+            Click Here - Direct Link to Training
+        </a>
+        <div class="status">Should open training.html in new tab</div>
+    </div>
+
+    <div class="test-form">
+        <h3>Test 2: Simple Form</h3>
+        <form action="training.html" method="get" target="_blank">
+            <button type="submit">Submit Form to Training</button>
+        </form>
+        <div class="status">Should submit to training.html in new tab</div>
+    </div>
+
+    <div class="test-form">
+        <h3>Test 3: Form with Parameters</h3>
+        <form action="training.html" method="get" target="_blank">
+            <input type="hidden" name="mode" value="test">
+            <button type="submit">Submit with Parameters</button>
+        </form>
+        <div class="status">Should open training.html?mode=test</div>
+    </div>
+
+    <div class="test-form">
+        <h3>Test 4: Same Page Navigation</h3>
+        <form action="training.html" method="get">
+            <button type="submit">Navigate Same Page</button>
+        </form>
+        <div class="status">Should navigate to training.html in same tab</div>
+    </div>
+
+    <script>
+        console.log('🔧 Button test page loaded');
+        console.log('Current URL:', window.location.href);
+    </script>
+</body>
+</html>

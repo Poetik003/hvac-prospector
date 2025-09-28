@@ -3793,10 +3793,14 @@ I'd love to schedule..."></textarea>
         }
         
         function openAiVoiceTrainingSession() {
-            console.log('🎓 Opening AI Voice Training Session');
+            console.log('🎓 Opening AI Voice Training Session - Direct Access');
             
-            // Show AI voice training modal
-            showAiVoiceTrainingModal();
+            // Direct navigation to working training page
+            try {
+                window.open('direct-training.html', '_blank');
+            } catch (e) {
+                window.location.href = 'direct-training.html';
+            }
         }
         
         // Campaign Management Functions

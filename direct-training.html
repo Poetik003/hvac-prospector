@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Training Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="text-white p-6 min-h-screen">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">🎓 AI Voice Training Access</h1>
+        
+        <div class="bg-slate-800 rounded-xl p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">📚 Tone & Pacing (Completed)</h2>
+            <p class="text-slate-400 mb-4">Master professional tone and optimal speaking pace for cold calls</p>
+            <a href="training.html?mode=review" class="block w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white text-center rounded-lg font-semibold transition-colors">
+                📚 Review Training
+            </a>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">🛡️ Objection Handling (In Progress)</h2>
+            <p class="text-slate-400 mb-4">Advanced techniques for handling common objections effectively</p>
+            <a href="training.html?mode=continue" class="block w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg font-semibold transition-colors">
+                🔄 Continue Training
+            </a>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">🎯 Closing Techniques (Not Started)</h2>
+            <p class="text-slate-400 mb-4">Master the art of closing calls and scheduling appointments</p>
+            <a href="training.html?mode=start" class="block w-full py-3 px-4 bg-slate-600 hover:bg-slate-700 text-white text-center rounded-lg font-semibold transition-colors">
+                🚀 Start Training
+            </a>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">🎭 Role-Play Training</h2>
+            <p class="text-slate-100 mb-4">Interactive conversation practice with AI customers</p>
+            <a href="training.html?mode=roleplay" class="block w-full py-3 px-4 bg-white text-purple-600 text-center rounded-lg font-bold transition-colors hover:bg-gray-100">
+                🎭 Start Role-Play Session
+            </a>
+        </div>
+
+        <div class="text-center">
+            <a href="javascript:window.close()" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg">
+                Close
+            </a>
+        </div>
+    </div>
+
+    <script>
+        console.log('🎓 Direct training access page loaded');
+        
+        // Test if training.html loads
+        function testTraining() {
+            fetch('training.html')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ training.html is accessible');
+                    } else {
+                        console.log('❌ training.html returned:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ training.html error:', error);
+                });
+        }
+        
+        testTraining();
+    </script>
+</body>
+</html>
