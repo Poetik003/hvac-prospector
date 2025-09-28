@@ -2145,7 +2145,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('🎤 Selected voice for reading:', voiceModel);
         }
 
-        function readScriptWithVoice() {
+        async function readScriptWithVoice() {
             const scriptText = document.getElementById('script-editor').value;
             
             if (!scriptText.trim()) {
@@ -2158,23 +2158,108 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 return;
             }
             
-            console.log(`🎬 Reading script with ${selectedScriptVoice} voice:`, scriptText.substring(0, 50) + '...');
+            console.log(`🎬 Processing script with ${selectedScriptVoice} voice...`);
+            console.log(`📝 Script text (${scriptText.length} chars):`, scriptText.substring(0, 100) + '...');
             
-            // Use the existing working audio player system
-            const audioUrls = {
-                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
-                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
-                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3",
-                'pedro': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/f3a4b4c0-a001-4827-ac9a-3523ee030339.mp3"
-            };
+            // Show processing indicator
+            const readBtn = document.getElementById('read-script-btn');
+            const originalBtnText = readBtn.innerHTML;
+            readBtn.innerHTML = '<i class="fas fa-cog fa-spin mr-2"></i>🎤 Generating Voice...';
+            readBtn.disabled = true;
             
-            const audioUrl = audioUrls[selectedScriptVoice];
-            
-            // Show enhanced audio player with script context
-            showScriptReadingPlayer(audioUrl, selectedScriptVoice, scriptText);
+            try {
+                // Get saved voice settings for enhanced generation
+                const savedSettings = localStorage.getItem(`voice_settings_${selectedScriptVoice}`);
+                let voiceSettings = {};
+                
+                if (savedSettings) {
+                    try {
+                        voiceSettings = JSON.parse(savedSettings);
+                        console.log('🎚️ Using saved voice settings:', voiceSettings);
+                    } catch (e) {
+                        console.warn('⚠️ Invalid voice settings, using defaults');
+                    }
+                }
+                
+                // Create enhanced requirements based on selected voice and script content
+                let requirements = `Voice: ${selectedScriptVoice} Professional HVAC Sales Specialist reading a sales script`;
+                
+                // Add voice personality requirements
+                if (selectedScriptVoice === 'yeni') {
+                    requirements += ', Warm Sofia Vergara-style Miami Latina accent, consultative and friendly';
+                } else if (selectedScriptVoice === 'danny') {
+                    requirements += ', Authoritative Benicio Del Toro-style deep voice, professional and confident';
+                } else if (selectedScriptVoice === 'gabi') {
+                    requirements += ', Friendly conversational tone, approachable and engaging';
+                }
+                
+                // Apply saved settings if available
+                if (voiceSettings.accentStrength) {
+                    requirements += `, ${voiceSettings.accentStrength}% Miami Latino accent intensity`;
+                }
+                if (voiceSettings.emotionalRange) {
+                    requirements += `, ${voiceSettings.emotionalRange}% emotional expressiveness`;
+                }
+                if (voiceSettings.speakingRhythm) {
+                    requirements += `, ${voiceSettings.speakingRhythm} speaking rhythm`;
+                }
+                
+                console.log('🎯 Enhanced voice requirements:', requirements);
+                
+                // Call the voice API with the actual script text
+                const response = await fetch('/api/generate-voice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: scriptText.substring(0, 800), // Limit for API processing
+                        requirements: requirements,
+                        task_summary: `HVAC Script Reading with ${selectedScriptVoice.toUpperCase()} voice`,
+                        model: 'elevenlabs/v3-tts',
+                        voice_settings: voiceSettings
+                    })
+                });
+                
+                let audioUrl = null;
+                let apiSuccess = false;
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('🎤 Voice API Response:', result);
+                    
+                    if (result.success && result.audio_urls && result.audio_urls.length > 0) {
+                        audioUrl = result.audio_urls[0];
+                        apiSuccess = true;
+                        console.log('✅ Generated custom voice for script:', audioUrl);
+                    }
+                }
+                
+                // Fallback to static audio if API fails
+                if (!apiSuccess) {
+                    console.log('⚠️ API generation failed, using demonstration audio');
+                    const fallbackUrls = {
+                        'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
+                        'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
+                        'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"
+                    };
+                    audioUrl = fallbackUrls[selectedScriptVoice];
+                }
+                
+                // Show enhanced audio player with script context
+                showScriptReadingPlayer(audioUrl, selectedScriptVoice, scriptText, apiSuccess);
+                
+            } catch (error) {
+                console.error('❌ Script reading error:', error);
+                alert('⚠️ Error generating voice for script. Please try again.');
+            } finally {
+                // Reset button
+                readBtn.innerHTML = originalBtnText;
+                readBtn.disabled = false;
+            }
         }
 
-        function showScriptReadingPlayer(audioUrl, voiceModel, scriptText) {
+        function showScriptReadingPlayer(audioUrl, voiceModel, scriptText, isCustomGenerated = false) {
             // Remove any existing players
             const existingPlayers = document.querySelectorAll('.script-reading-player');
             existingPlayers.forEach(player => player.remove());
@@ -2206,7 +2291,10 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             audioContainer.innerHTML = `
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h3 style="margin: 0; color: #60a5fa; font-size: 18px;">🎬 ${voiceModel.toUpperCase()} Reading Script</h3>
-                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">ProSpector HVAC AI Voice</p>
+                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">
+                        ${isCustomGenerated ? '✨ Custom Generated Voice' : '🎭 Demonstration Voice'} 
+                    </p>
+                    ${!isCustomGenerated ? '<p style="margin: 0; color: #f59e0b; font-size: 12px;">Note: Using sample audio - full script generation in development</p>' : ''}
                 </div>
                 
                 <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; max-height: 120px; overflow-y: auto;">
@@ -2221,12 +2309,16 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 
                 <div style="text-align: center; margin-bottom: 15px;">
                     <button onclick="this.parentElement.parentElement.querySelector('audio').play()" 
-                            style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 10px;">
-                        ▶️ Read Script
+                            style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 8px;">
+                        ▶️ AI Voice
                     </button>
                     <button onclick="this.parentElement.parentElement.querySelector('audio').pause()" 
-                            style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 8px;">
                         ⏸️ Stop
+                    </button>
+                    <button onclick="speakScriptText('${scriptText.replace(/'/g, "\\'")}')" 
+                            style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                        📢 Read Text
                     </button>
                 </div>
                 
@@ -2269,6 +2361,74 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             });
             
             console.log('📝 Ready for custom script input');
+        }
+
+        function speakScriptText(scriptText) {
+            // Stop any existing speech
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+            
+            if (!scriptText || !scriptText.trim()) {
+                alert('No script text to read!');
+                return;
+            }
+            
+            console.log('📢 Reading script with browser TTS:', scriptText.substring(0, 50) + '...');
+            
+            // Create speech synthesis utterance
+            const utterance = new SpeechSynthesisUtterance(scriptText);
+            
+            // Configure voice based on selected AI voice
+            const voices = window.speechSynthesis.getVoices();
+            let preferredVoice = null;
+            
+            // Try to find appropriate voice based on selected AI voice
+            if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
+                // Look for female voice
+                preferredVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('female') || 
+                    voice.name.toLowerCase().includes('samantha') ||
+                    voice.name.toLowerCase().includes('victoria') ||
+                    voice.name.toLowerCase().includes('karen')
+                );
+            } else if (selectedScriptVoice === 'danny') {
+                // Look for male voice
+                preferredVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('male') || 
+                    voice.name.toLowerCase().includes('alex') ||
+                    voice.name.toLowerCase().includes('daniel') ||
+                    voice.name.toLowerCase().includes('david')
+                );
+            }
+            
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+                console.log('🎤 Using voice:', preferredVoice.name);
+            }
+            
+            // Configure speech settings
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 1.0; // Lower for Danny
+            utterance.volume = 0.8;
+            
+            // Event handlers
+            utterance.onstart = () => {
+                console.log('🗣️ Started reading script with TTS');
+            };
+            
+            utterance.onend = () => {
+                console.log('✅ Finished reading script');
+            };
+            
+            utterance.onerror = (error) => {
+                console.error('❌ TTS Error:', error);
+                alert('Error reading script with text-to-speech');
+            };
+            
+            // Start speaking
+            window.speechSynthesis.speak(utterance);
         }
 
         // Initialize script library on page load
