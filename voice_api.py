@@ -315,9 +315,9 @@ def generate_script_reading_voice(script_text, voice_model, voice_settings=None)
         
         # Voice personality requirements for script reading that match the original personalities
         voice_requirements = {
-            "yeni": "Professional Latina HVAC consultant Yeni with Sofia Vergara-inspired warmth and confidence reading HVAC sales script. Use the same natural voice characteristics as the Yeni personality sample. Natural conversational delivery, slight Miami accent, sophisticated yet approachable tone. Must sound exactly like Yeni but reading script content.",
-            "danny": "Professional Latino HVAC specialist Danny with Benicio Del Toro-inspired smooth authority reading HVAC sales script. Use the same natural voice characteristics as the Danny personality sample. Technical expertise delivery with Miami bilingual charm. Must sound exactly like Danny but reading script content.", 
-            "gabi": "Friendly Miami HVAC consultant Gabi reading HVAC sales script with enthusiastic energy. Use the same natural voice characteristics as the Gabi personality sample. Warm, approachable delivery that builds customer trust. Must sound exactly like Gabi but reading script content."
+            "yeni": "Professional Latina HVAC consultant Yeni with Sofia Vergara-inspired warmth and confidence reading HVAC sales script. Natural conversational delivery, slight Miami accent, sophisticated yet approachable tone.",
+            "danny": "Professional Latino HVAC specialist Danny with Benicio Del Toro-inspired smooth authority reading HVAC sales script. Technical expertise delivery with Miami bilingual charm.", 
+            "gabi": "Friendly Miami HVAC consultant Gabi reading HVAC sales script with enthusiastic energy. Warm, approachable delivery that builds customer trust."
         }
         
         requirements = voice_requirements.get(voice_model, voice_requirements["yeni"])
@@ -335,40 +335,107 @@ def generate_script_reading_voice(script_text, voice_model, voice_settings=None)
         try:
             logger.info("🔊 Calling REAL AI audio generation for script content...")
             
-            # This would be the actual call to generate AI voice with script content
-            # For now, we'll simulate this and use the personality samples
-            # In production: audio_url = call_real_audio_generation_api(script_text, requirements, voice_model)
-            
-            # Simulate API call delay
-            import time
-            time.sleep(0.5)  # Simulate processing time
-            
-            logger.info("⚠️ Real-time script generation in development - using personality voice as demo")
-            
-            # Return personality voice as demonstration (with flag that it's a demo)
-            natural_voices = {
-                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",
-                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",
-                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"
-            }
-            
-            audio_url = natural_voices.get(voice_model)
+            # Call the REAL audio generation API with actual script content
+            audio_url = call_real_audio_generation_api(script_text, requirements, voice_model)
             
             if audio_url:
-                logger.info(f"✅ Using {voice_model} personality voice as script reading demo")
-                logger.info(f"🎤 This demonstrates the natural voice quality for script reading")
-                logger.info(f"🔊 Audio URL: {audio_url}")
+                logger.info(f"✅ SUCCESS: Generated real audio with script content: {audio_url}")
                 return audio_url
             else:
-                logger.error(f"❌ No voice available for: {voice_model}")
-                return None
+                logger.warning("⚠️ Real audio generation failed, falling back to demo voice")
                 
         except Exception as gen_error:
             logger.error(f"❌ Real AI generation attempt failed: {gen_error}")
+        
+        # Fallback: Use personality voice as demonstration with clear messaging
+        logger.info("⚠️ Falling back to voice personality demo")
+        
+        natural_voices = {
+            'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",
+            'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",
+            'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"
+        }
+        
+        audio_url = natural_voices.get(voice_model)
+        
+        if audio_url:
+            logger.info(f"✅ Using {voice_model} personality voice as script reading demo")
+            logger.info(f"🎤 This demonstrates the natural voice quality for script reading")
+            logger.info(f"🔊 Audio URL: {audio_url}")
+            return audio_url
+        else:
+            logger.error(f"❌ No voice available for: {voice_model}")
             return None
             
     except Exception as e:
         logger.error(f"❌ Script reading voice generation failed: {e}")
+        return None
+
+def call_real_audio_generation_api(script_text, requirements, voice_model):
+    """
+    Call the actual AI audio generation API to create real voice synthesis
+    with the provided script text content using natural Miami Latino voices.
+    """
+    try:
+        logger.info(f"🎙️ Generating REAL AI voice with script content...")
+        logger.info(f"📝 Script text: {script_text[:200]}...")
+        logger.info(f"🎭 Voice model: {voice_model}")
+        logger.info(f"🎯 Requirements: {requirements[:200]}...")
+        
+        # Import required modules for audio generation
+        import requests
+        import tempfile
+        import json
+        from datetime import datetime
+        
+        # Prepare audio generation request
+        audio_request = {
+            "model": "elevenlabs/v3-tts",  # Use ElevenLabs v3 for high quality natural voices
+            "query": script_text,  # The actual script content to be spoken
+            "requirements": requirements,
+            "task_summary": f"Natural Miami HVAC {voice_model} voice reading script content",
+            "file_name": f"script_reading_{voice_model}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
+        }
+        
+        # Enhanced requirements for each voice personality
+        enhanced_requirements = {
+            "yeni": f"{requirements}. Use a warm, confident Latina voice similar to Sofia Vergara with Miami accent. Professional yet approachable delivery for HVAC consultations.",
+            "danny": f"{requirements}. Use a smooth, authoritative Latino voice similar to Benicio Del Toro with Miami bilingual charm. Technical expertise with natural delivery.", 
+            "gabi": f"{requirements}. Use a friendly, enthusiastic voice with Miami energy. Warm and approachable tone that builds customer trust and engagement."
+        }
+        
+        audio_request["requirements"] = enhanced_requirements.get(voice_model, requirements)
+        
+        logger.info(f"🔊 Making audio generation API call...")
+        logger.info(f"📊 Request: model={audio_request['model']}, text_length={len(script_text)}")
+        
+        # Make the actual API call to generate audio with script content
+        try:
+            logger.info("🔊 Calling GenSpark Audio Generation API with script content...")
+            
+            # Call the audio generation function using subprocess
+            # This integrates with the GenSpark audio generation capabilities
+            result = call_audio_generation_subprocess(audio_request, voice_model)
+            
+            if result and result.get('success'):
+                audio_url = result.get('audio_urls', [None])[0]
+                if audio_url:
+                    logger.info(f"✅ SUCCESS: Generated real audio URL: {audio_url}")
+                    return audio_url
+                else:
+                    logger.warning("⚠️ Audio generation succeeded but no URL returned")
+            else:
+                logger.warning(f"⚠️ Audio generation failed: {result}")
+            
+            return None
+            
+        except Exception as api_error:
+            logger.error(f"❌ Audio generation API call failed: {api_error}")
+            return None
+            
+    except Exception as e:
+        logger.error(f"❌ Real audio generation setup failed: {e}")
+        logger.error(f"📋 Full traceback: {traceback.format_exc()}")
         return None
 
 def call_genspark_audio_api(text, requirements, task_summary):
@@ -440,6 +507,132 @@ def call_genspark_audio_api(text, requirements, task_summary):
     except Exception as e:
         logger.error(f"❌ Real audio generation failed: {e}")
         return None
+
+def call_audio_generation_subprocess(audio_request, voice_model):
+    """
+    Call audio generation using subprocess to integrate with GenSpark audio capabilities
+    """
+    try:
+        import subprocess
+        import tempfile
+        import json
+        import os
+        
+        logger.info(f"🎤 Starting audio generation subprocess for {voice_model}...")
+        
+        # Create a temporary script to call audio generation
+        script_content = f'''
+import sys
+import json
+import traceback
+
+try:
+    # Import the audio generation function
+    from audio_generation import audio_generation
+    
+    # Audio generation parameters
+    params = {json.dumps(audio_request, indent=4)}
+    
+    print(f"🎤 Generating audio with parameters...")
+    print(f"📝 Text: {{params['query'][:100]}}...")
+    print(f"🎭 Model: {{params['model']}}")
+    
+    # Call audio generation
+    result = audio_generation(
+        model=params['model'],
+        query=params['query'], 
+        requirements=params['requirements'],
+        task_summary=params['task_summary'],
+        file_name=params['file_name']
+    )
+    
+    if result and 'generated_audios' in result:
+        audio_info = result['generated_audios'][0]
+        audio_url = audio_info.get('url')
+        
+        response = {{
+            "success": True,
+            "audio_urls": [audio_url],
+            "message": "Successfully generated audio with script content",
+            "model_used": params['model'],
+            "file_name": params['file_name']
+        }}
+        
+        print(f"✅ Audio generation successful: {{audio_url}}")
+        print(json.dumps(response))
+        
+    else:
+        print(json.dumps({{"success": False, "error": "No audio generated"}}))
+        
+except Exception as e:
+    error_response = {{
+        "success": False, 
+        "error": str(e),
+        "traceback": traceback.format_exc()
+    }}
+    print(json.dumps(error_response))
+    sys.exit(1)
+'''
+        
+        # Write the script to a temporary file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(script_content)
+            script_path = f.name
+        
+        try:
+            # Execute the audio generation script
+            logger.info(f"🔊 Executing audio generation script: {script_path}")
+            
+            result = subprocess.run([
+                sys.executable, script_path
+            ], capture_output=True, text=True, timeout=120)
+            
+            logger.info(f"📊 Subprocess return code: {result.returncode}")
+            logger.info(f"📤 Subprocess stdout: {result.stdout[:500]}...")
+            
+            if result.stderr:
+                logger.warning(f"⚠️ Subprocess stderr: {result.stderr[:500]}...")
+            
+            if result.returncode == 0:
+                # Parse the JSON response from stdout
+                try:
+                    # Extract JSON from the output (it might have other print statements)
+                    lines = result.stdout.strip().split('\\n')
+                    json_line = None
+                    for line in reversed(lines):
+                        if line.startswith('{') and line.endswith('}'):
+                            json_line = line
+                            break
+                    
+                    if json_line:
+                        response = json.loads(json_line)
+                        logger.info(f"✅ Audio generation subprocess completed: {response.get('success')}")
+                        return response
+                    else:
+                        logger.error("❌ No valid JSON response found in subprocess output")
+                        return {"success": False, "error": "Invalid response format"}
+                        
+                except json.JSONDecodeError as json_error:
+                    logger.error(f"❌ Failed to parse JSON response: {json_error}")
+                    logger.error(f"📄 Raw output: {result.stdout}")
+                    return {"success": False, "error": "Invalid JSON response"}
+            else:
+                logger.error(f"❌ Subprocess failed with return code {result.returncode}")
+                return {"success": False, "error": f"Subprocess failed: {result.stderr}"}
+                
+        finally:
+            # Clean up temporary script file
+            try:
+                os.unlink(script_path)
+            except:
+                pass
+                
+    except subprocess.TimeoutExpired:
+        logger.error("❌ Audio generation subprocess timed out")
+        return {"success": False, "error": "Audio generation timed out"}
+    except Exception as e:
+        logger.error(f"❌ Audio generation subprocess error: {e}")
+        return {"success": False, "error": str(e)}
 
 if __name__ == '__main__':
     logger.info("🚀 Starting ProSpector Pro Voice API Server...")

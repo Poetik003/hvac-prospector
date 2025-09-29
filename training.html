@@ -4343,66 +4343,116 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 if ('speechSynthesis' in window) {
                     const directUtterance = new SpeechSynthesisUtterance(scriptText);
                     
-                    // Configure voice to match selected AI voice personality
-                    const availableVoices = speechSynthesis.getVoices();
-                    let selectedVoice = null;
-                    
-                    console.log(`🎤 Configuring TTS for ${selectedScriptVoice} personality`);
-                    
-                    // Enhanced voice selection matching AI voice personality
-                    if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
-                        // Female voice selection - prioritize natural sounding voices
-                        selectedVoice = availableVoices.find(voice => 
-                            voice.name.toLowerCase().includes('samantha') ||
-                            voice.name.toLowerCase().includes('karen') ||
-                            voice.name.toLowerCase().includes('victoria') ||
-                            voice.name.toLowerCase().includes('fiona') ||
-                            voice.name.toLowerCase().includes('female') ||
-                            voice.name.toLowerCase().includes('zoe')
-                        ) || availableVoices.find(voice => voice.lang.includes('en-US') && voice.name.toLowerCase().includes('female'));
-                    } else if (selectedScriptVoice === 'danny') {
-                        // Male voice selection - prioritize authoritative voices
-                        selectedVoice = availableVoices.find(voice => 
-                            voice.name.toLowerCase().includes('alex') ||
-                            voice.name.toLowerCase().includes('daniel') ||
-                            voice.name.toLowerCase().includes('david') ||
-                            voice.name.toLowerCase().includes('male') ||
-                            voice.name.toLowerCase().includes('tom')
-                        ) || availableVoices.find(voice => voice.lang.includes('en-US') && voice.name.toLowerCase().includes('male'));
-                    }
-                    
-                    if (selectedVoice) {
-                        directUtterance.voice = selectedVoice;
-                        console.log('🎤 Using enhanced voice for direct reading:', selectedVoice.name);
-                    } else {
-                        // Fallback to any English voice
-                        const fallbackVoice = availableVoices.find(voice => voice.lang.includes('en-US')) || availableVoices[0];
-                        if (fallbackVoice) {
-                            directUtterance.voice = fallbackVoice;
-                            console.log('🎤 Using fallback voice:', fallbackVoice.name);
+                    // Enhanced voice loading and selection function
+                    const processWithVoices = () => {
+                        const availableVoices = speechSynthesis.getVoices();
+                        console.log('🎤 Available voices:', availableVoices.length);
+                        console.log('🎤 Voice names:', availableVoices.map(v => v.name).slice(0, 10));
+                        console.log(`🎤 Configuring TTS for ${selectedScriptVoice} personality`);
+                        
+                        let selectedVoice = null;
+                        
+                        // Enhanced voice selection matching AI voice personality
+                        if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
+                            // Female voice selection - prioritize natural sounding voices
+                            selectedVoice = availableVoices.find(voice => {
+                                const nameLower = voice.name.toLowerCase();
+                                return nameLower.includes('samantha') ||
+                                       nameLower.includes('karen') ||
+                                       nameLower.includes('victoria') ||
+                                       nameLower.includes('fiona') ||
+                                       nameLower.includes('allison') ||
+                                       nameLower.includes('ava') ||
+                                       nameLower.includes('zoe') ||
+                                       nameLower.includes('susan') ||
+                                       (voice.lang.includes('en-US') && nameLower.includes('female'));
+                            });
+                            
+                            // If no specific female voice found, try any US English female voice
+                            if (!selectedVoice) {
+                                selectedVoice = availableVoices.find(voice => 
+                                    voice.lang.includes('en-US') && 
+                                    (voice.name.toLowerCase().includes('female') || 
+                                     voice.localService === false)
+                                );
+                            }
+                        } else if (selectedScriptVoice === 'danny') {
+                            // Male voice selection - prioritize authoritative voices
+                            selectedVoice = availableVoices.find(voice => {
+                                const nameLower = voice.name.toLowerCase();
+                                return nameLower.includes('alex') ||
+                                       nameLower.includes('daniel') ||
+                                       nameLower.includes('david') ||
+                                       nameLower.includes('tom') ||
+                                       nameLower.includes('fred') ||
+                                       nameLower.includes('ralph') ||
+                                       (voice.lang.includes('en-US') && nameLower.includes('male'));
+                            });
+                            
+                            // If no specific male voice found, try any US English male voice  
+                            if (!selectedVoice) {
+                                selectedVoice = availableVoices.find(voice => 
+                                    voice.lang.includes('en-US') && 
+                                    (voice.name.toLowerCase().includes('male') || 
+                                     voice.localService === false)
+                                );
+                            }
                         }
+                        
+                        // Final fallback to best available voice
+                        if (!selectedVoice) {
+                            selectedVoice = availableVoices.find(voice => voice.lang.includes('en-US')) || 
+                                          availableVoices.find(voice => voice.lang.includes('en')) ||
+                                          availableVoices[0];
+                        }
+                        
+                        if (selectedVoice) {
+                            directUtterance.voice = selectedVoice;
+                            console.log('🎤 Using enhanced voice for direct reading:', selectedVoice.name, selectedVoice.lang);
+                        } else {
+                            console.log('🎤 No voice selected, using default');
+                        }
+                        
+                        // Configure natural speech parameters based on selected voice personality
+                        directUtterance.rate = 0.85;  // Natural conversational pace
+                        directUtterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 
+                                               selectedScriptVoice === 'yeni' ? 1.1 : 1.0;  // Match personality
+                        directUtterance.volume = 0.95;
+                        
+                        directUtterance.onend = () => {
+                            console.log('🎤 Speech finished successfully');
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        };
+                        
+                        directUtterance.onerror = (event) => {
+                            console.error('🎤 Speech synthesis error:', event.error);
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                            alert('❌ Speech synthesis failed. Please try Smart Voice instead.');
+                        };
+                        
+                        console.log('🎙️ Starting to speak with enhanced voice settings');
+                        window.speechSynthesis.speak(directUtterance);
+                    };
+                    
+                    // Ensure voices are loaded (some browsers load them asynchronously)
+                    const availableVoices = speechSynthesis.getVoices();
+                    if (availableVoices.length > 0) {
+                        // Voices already loaded
+                        processWithVoices();
+                    } else {
+                        // Wait for voices to load
+                        console.log('🎤 Waiting for voices to load...');
+                        speechSynthesis.addEventListener('voiceschanged', processWithVoices, { once: true });
+                        // Fallback timeout in case voiceschanged doesn't fire
+                        setTimeout(() => {
+                            console.log('🎤 Timeout reached, processing with available voices');
+                            processWithVoices();
+                        }, 1500);
                     }
-                    
-                    // Configure natural speech parameters based on selected voice
-                    directUtterance.rate = 0.85;  // Natural conversational pace
-                    directUtterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 
-                                           selectedScriptVoice === 'yeni' ? 1.1 : 1.0;  // Match personality
-                    directUtterance.volume = 0.95;
-                    
-                    directUtterance.onend = () => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    };
-                    
-                    directUtterance.onerror = () => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                        alert('❌ Speech synthesis failed. Please try Smart Voice instead.');
-                    };
-                    
-                    window.speechSynthesis.speak(directUtterance);
                 } else {
-                    throw new Error('Speech synthesis not supported');
+                    throw new Error('Speech synthesis not supported in this browser');
                 }
             } catch (error) {
                 console.error('❌ Direct reading error:', error);
