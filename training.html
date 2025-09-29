@@ -2949,6 +2949,11 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         function startRolePlay() {
             console.log('🎭 Starting role-play session...');
             
+            // Reset response tracking for new session
+            usedResponses = [];
+            responseCount = 0;
+            console.log('🔄 Reset role-play response tracking');
+            
             const personality = document.getElementById('prospect-personality').value;
             const conversationDisplay = document.getElementById('conversation-display');
             
@@ -3050,6 +3055,10 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }, 1000);
         }
 
+        // Track used responses to prevent repetition
+        let usedResponses = [];
+        let responseCount = 0;
+
         function generateProspectResponse(userResponse) {
             const responses = [
                 "That sounds interesting, but I'm concerned about the cost. What are we talking about price-wise?",
@@ -3058,10 +3067,37 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 "We just had work done last year. I don't think we need anything right now.",
                 "Can you send me information by email instead? I don't like making decisions on the phone.",
                 "What kind of warranty do you offer? I've been burned before.",
-                "That makes sense. What would be the next step if I'm interested?"
+                "That makes sense. What would be the next step if I'm interested?",
+                "I need to think about this. Can you call me back next week?",
+                "How long have you been in business? I want to work with an established company.",
+                "What makes your service better than the big chain companies?"
             ];
             
-            return responses[Math.floor(Math.random() * responses.length)];
+            // Reset used responses if we've used them all
+            if (usedResponses.length >= responses.length) {
+                usedResponses = [];
+            }
+            
+            // Find available responses (not recently used)
+            const availableResponses = responses.filter((response, index) => 
+                !usedResponses.includes(index)
+            );
+            
+            // If no available responses, use all responses (shouldn't happen with reset logic)
+            const responsePool = availableResponses.length > 0 ? availableResponses : responses;
+            
+            // Select random response from available pool
+            const selectedResponse = responsePool[Math.floor(Math.random() * responsePool.length)];
+            
+            // Track this response as used
+            const selectedIndex = responses.indexOf(selectedResponse);
+            usedResponses.push(selectedIndex);
+            responseCount++;
+            
+            console.log(`🎭 Role-play response ${responseCount}: Selected response ${selectedIndex + 1}/${responses.length}`);
+            console.log(`📝 Used responses: [${usedResponses.map(i => i + 1).join(', ')}]`);
+            
+            return selectedResponse;
         }
 
         function analyzePerformance() {
