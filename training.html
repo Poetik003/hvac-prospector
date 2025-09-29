@@ -483,6 +483,91 @@
                             </div>
                         </div>
                         
+                        <!-- Lead Entry System for Outbound Cold Calling -->
+                        <div id="lead-entry-section" style="display: none;">
+                            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/50 rounded-lg p-4">
+                                <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center">
+                                    <i class="fas fa-phone-alt mr-2"></i>
+                                    Outbound Lead Information
+                                </h3>
+                                
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <!-- Lead Name -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Contact Name</label>
+                                        <input type="text" id="lead-name" placeholder="e.g., John Smith" 
+                                            class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
+                                            value="Michael Johnson">
+                                    </div>
+                                    
+                                    <!-- Lead Title -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Title/Role</label>
+                                        <input type="text" id="lead-title" placeholder="e.g., Facility Manager" 
+                                            class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
+                                            value="Facility Manager">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <!-- Company Name -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Company</label>
+                                        <input type="text" id="lead-company" placeholder="e.g., Miami Medical Center" 
+                                            class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
+                                            value="Sunrise Medical Center">
+                                    </div>
+                                    
+                                    <!-- Industry Type -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Industry/Facility</label>
+                                        <select id="lead-industry" class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly">
+                                            <option value="healthcare">Healthcare/Medical</option>
+                                            <option value="office">Office Building</option>
+                                            <option value="retail">Retail/Shopping</option>
+                                            <option value="restaurant">Restaurant/Food Service</option>
+                                            <option value="manufacturing">Manufacturing/Warehouse</option>
+                                            <option value="education">School/University</option>
+                                            <option value="hotel">Hotel/Hospitality</option>
+                                            <option value="residential">Multi-Family Residential</option>
+                                            <option value="government">Government/Municipal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <!-- Lead Phone Number -->
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
+                                    <input type="tel" id="lead-phone" placeholder="(305) 555-0123" 
+                                        class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
+                                        value="(305) 555-7890">
+                                </div>
+                                
+                                <!-- Call Priority/Urgency -->
+                                <div class="mb-3">
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Lead Priority</label>
+                                    <select id="lead-priority" class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly">
+                                        <option value="hot">🔥 Hot Lead - Recent Inquiry</option>
+                                        <option value="warm">🌡️ Warm Lead - Showed Interest</option>
+                                        <option value="cold">❄️ Cold Lead - First Contact</option>
+                                        <option value="referral">👥 Referral - From Existing Customer</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Additional Notes -->
+                                <div class="mb-3">
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Special Notes (Optional)</label>
+                                    <textarea id="lead-notes" placeholder="e.g., HVAC system is 15+ years old, mentioned high energy bills..." 
+                                        class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly resize-none"
+                                        rows="2"></textarea>
+                                </div>
+                                
+                                <div class="text-xs text-slate-400 italic">
+                                    💡 AI will personalize the call script based on name, industry, and priority level
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="grid grid-cols-2 gap-3">
                             <button onclick="startRolePlay()" id="roleplay-btn" 
                                 class="py-3 px-4 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white rounded-lg font-bold transition-all mobile-friendly">
@@ -3035,16 +3120,23 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             const aiVoiceSection = document.getElementById('ai-voice-section');
             const personalityLabel = document.getElementById('personality-label');
             
+            // Get lead entry section
+            const leadEntrySection = document.getElementById('lead-entry-section');
+            
             if (mode === 'prospect') {
                 // Reverse mode: You are the prospect, AI calls you
                 personalityLabel.textContent = 'Your Prospect Personality';
                 aiVoiceSection.style.display = 'block';
+                leadEntrySection.style.display = 'block';
                 document.getElementById('roleplay-btn').innerHTML = '<i class="fas fa-phone-alt mr-2"></i>Receive AI Call';
+                console.log('🎭 Mode: You as Prospect - AI will call you using lead info');
             } else {
                 // Normal mode: You are the sales rep
                 personalityLabel.textContent = 'Prospect Personality';
                 aiVoiceSection.style.display = 'none';
+                leadEntrySection.style.display = 'none';
                 document.getElementById('roleplay-btn').innerHTML = '<i class="fas fa-play mr-2"></i>Start Role-Play';
+                console.log('🎭 Mode: You as Sales Rep - You call prospect');
             }
         }
         
@@ -3132,11 +3224,30 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('🎭 Reverse Role-Play: You are the Prospect');
             console.log('🎤 AI Voice:', selectedAIVoice.toUpperCase(), 'will call you');
             
-            // AI sales rep greetings based on selected voice
+            // Get lead information from the form
+            const leadInfo = {
+                name: document.getElementById('lead-name').value || 'there',
+                title: document.getElementById('lead-title').value || '',
+                company: document.getElementById('lead-company').value || 'your facility',
+                industry: document.getElementById('lead-industry').value || 'office',
+                phone: document.getElementById('lead-phone').value || '',
+                priority: document.getElementById('lead-priority').value || 'cold',
+                notes: document.getElementById('lead-notes').value || ''
+            };
+            
+            console.log('📋 Lead Info:', leadInfo);
+            
+            // Generate personalized opening script based on lead info
+            const personalizedScript = getPersonalizedScript(leadInfo, 'opening');
+            
+            // Store lead info for use in rebuttals
+            window.currentLeadInfo = leadInfo;
+            
+            // All AI voices use the same personalized script based on lead info
             const aiGreetings = {
-                'yeni': `🌴 Hello! This is Yeni from ProSpector HVAC. I hope I'm catching you at a good time! I'm calling because we've been helping families in your area save hundreds on their energy bills with our maintenance program.`,
-                'danny': `🔧 Good afternoon, this is Danny from ProSpector HVAC. I'm reaching out because newer HVAC systems are significantly more efficient than older models, and I wanted to see if we could help you reduce your monthly energy costs.`,
-                'gabi': `☀️ Hi there! This is Gabi from ProSpector HVAC! I hope you're having a great day. I'm calling because we have some exciting opportunities to help homeowners like yourself save money on air conditioning costs.`
+                'yeni': personalizedScript,
+                'danny': personalizedScript,
+                'gabi': personalizedScript
             };
             
             const aiGreeting = aiGreetings[selectedAIVoice];
@@ -3157,9 +3268,9 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                             <div class="text-green-400 text-2xl">📱</div>
                             <div>
                                 <p class="text-green-400 font-bold text-sm">INCOMING CALL</p>
-                                <p class="text-white font-semibold">${callerInfo.name}</p>
+                                <p class="text-white font-semibold">HVAC Services</p>
                                 <p class="text-green-300 text-sm">${callerInfo.number}</p>
-                                <p class="text-gray-400 text-xs">${callerInfo.business} • ${callerInfo.location}</p>
+                                <p class="text-gray-400 text-xs">${callerInfo.location} • Business Line</p>
                             </div>
                         </div>
                     </div>
@@ -3190,14 +3301,20 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             try {
                 console.log(`🎤 Playing ${voiceModel} AI voice greeting...`);
                 
-                // Get the greeting text based on voice
-                const greetingScripts = {
-                    'yeni': "Hello! This is Yeni from ProSpector HVAC. I hope I'm catching you at a good time! I'm calling because we've been helping families in your area save hundreds on their energy bills with our maintenance program.",
-                    'danny': "Good afternoon, this is Danny from ProSpector HVAC. I'm reaching out because newer HVAC systems are significantly more efficient than older models, and I wanted to see if we could help you reduce your monthly energy costs.", 
-                    'gabi': "Hi there! This is Gabi from ProSpector HVAC! I hope you're having a great day. I'm calling because we have some exciting opportunities to help homeowners like yourself save money on air conditioning costs."
-                };
-                
-                const greetingText = greetingScripts[voiceModel];
+                // Use personalized script if lead info available, otherwise use default
+                let greetingText;
+                if (window.currentLeadInfo) {
+                    greetingText = getPersonalizedScript(window.currentLeadInfo, 'opening');
+                    console.log('🎯 Using personalized greeting based on lead info');
+                } else {
+                    // Fallback to generic greetings
+                    const greetingScripts = {
+                        'yeni': "Hello! This is Yeni from ProSpector HVAC. I hope I'm catching you at a good time! I'm calling because we've been helping facilities in your area save hundreds on their energy bills with our maintenance program.",
+                        'danny': "Good afternoon, this is Danny from ProSpector HVAC. I'm reaching out because newer HVAC systems are significantly more efficient than older models, and I wanted to see if we could help you reduce your monthly energy costs.", 
+                        'gabi': "Hi there! This is Gabi from ProSpector HVAC! I hope you're having a great day. I'm calling because we have some exciting opportunities to help businesses like yourself save money on air conditioning costs."
+                    };
+                    greetingText = greetingScripts[voiceModel];
+                }
                 
                 // Use the existing Smart Voice API to generate the greeting
                 const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
@@ -3363,16 +3480,22 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         }
         
         function generateSalesRepResponse(prospectResponse, prospectPersonality) {
-            // Simple AI sales rep responses for the reverse role-play
-            const responses = [
-                "That's a great point! Let me address your concern by sharing how we've helped other families in your situation...",
-                "I completely understand where you're coming from. Here's what makes our approach different...",
-                "I appreciate your honesty! Many customers tell me the same thing initially. What if I could show you...",
-                "That's exactly why I'm calling! We specialize in helping homeowners who are in your exact situation...",
-                "I hear that concern often, and it's totally valid. Let me share a quick success story from your neighbor..."
-            ];
-            
-            return responses[Math.floor(Math.random() * responses.length)];
+            // Use intelligent rebuttal system with lead information
+            if (window.currentLeadInfo) {
+                console.log('🧠 Generating intelligent rebuttal for:', prospectResponse);
+                return generateIntelligentRebuttal(prospectResponse, window.currentLeadInfo);
+            } else {
+                // Fallback to generic responses if no lead info
+                const responses = [
+                    "That's a great point! Let me address your concern by sharing how we've helped other facilities in your situation...",
+                    "I completely understand where you're coming from. Here's what makes our approach different...",
+                    "I appreciate your honesty! Many customers tell me the same thing initially. What if I could show you...",
+                    "That's exactly why I'm calling! We specialize in helping businesses who are in your exact situation...",
+                    "I hear that concern often, and it's totally valid. Let me share a quick success story from a similar client..."
+                ];
+                
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
         }
         
         async function playAISalesRepResponse(responseText, voiceModel) {
@@ -3470,6 +3593,171 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             } else {
                 return `📞 ${phoneData.number}`;
             }
+        }
+
+        // ========== INDUSTRY-SPECIFIC SCRIPT SYSTEM ==========
+        
+        // Industry-specific opening scripts with dynamic personalization
+        const industryScripts = {
+            healthcare: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm calling because healthcare facilities like {company} have been seeing significant energy cost reductions - sometimes 30-40% - with our specialized HVAC maintenance programs designed for medical environments.",
+                pain_points: ["Patient comfort critical", "24/7 operation requirements", "Air quality regulations", "Energy costs", "Equipment reliability"],
+                benefits: ["Improved patient comfort", "Regulatory compliance", "Reduced downtime", "Lower energy bills", "Medical-grade air quality"],
+                urgency: "With flu season approaching, ensuring your HVAC system is operating at peak efficiency is crucial for patient and staff health."
+            },
+            office: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm reaching out because office buildings like {company} are seeing some impressive results with our commercial HVAC optimization - we're talking about 25-35% energy savings while improving employee comfort.",
+                pain_points: ["High energy costs", "Employee comfort complaints", "Productivity issues", "Maintenance costs", "Aging equipment"],
+                benefits: ["Lower utility bills", "Happier employees", "Increased productivity", "Reduced maintenance", "Modern efficiency"],
+                urgency: "With energy rates continuing to climb, the sooner we optimize your system, the more money you'll save this year."
+            },
+            retail: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm calling because retail locations like {company} have been achieving remarkable results with our HVAC solutions - better customer comfort and 20-30% lower energy costs.",
+                pain_points: ["Customer comfort", "High energy bills", "Seasonal demand", "Equipment breakdowns", "Operating costs"],
+                benefits: ["Enhanced customer experience", "Lower energy costs", "Reliable operation", "Better climate control", "Improved sales environment"],
+                urgency: "With the busy shopping season coming up, ensuring your customers are comfortable while keeping costs down is critical for your bottom line."
+            },
+            restaurant: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm reaching out because restaurants like {company} have been seeing fantastic results with our specialized food service HVAC solutions - better kitchen ventilation and significant energy savings.",
+                pain_points: ["Kitchen heat management", "Customer dining comfort", "High energy costs", "Equipment reliability", "Health code compliance"],
+                benefits: ["Better kitchen environment", "Comfortable dining areas", "Lower energy bills", "Reliable operation", "Health code compliance"],
+                urgency: "With health inspections and peak dining seasons, having a reliable HVAC system isn't just about comfort - it's about compliance and profitability."
+            },
+            manufacturing: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm calling because manufacturing facilities like {company} have been achieving impressive results with our industrial HVAC solutions - better worker safety, improved air quality, and 25-40% energy savings.",
+                pain_points: ["Worker safety", "Air quality", "Equipment protection", "Energy costs", "Production environment"],
+                benefits: ["Safer work environment", "Better air quality", "Equipment protection", "Lower energy costs", "Improved productivity"],
+                urgency: "With OSHA requirements and rising energy costs, optimizing your HVAC system isn't just smart business - it's essential for compliance and profitability."
+            },
+            education: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm reaching out because schools like {company} have been seeing excellent results with our educational facility HVAC programs - better learning environments and significant budget savings.",
+                pain_points: ["Student comfort", "Budget constraints", "Air quality", "Seasonal demands", "Aging infrastructure"],
+                benefits: ["Better learning environment", "Budget savings", "Improved air quality", "Reliable operation", "Long-term efficiency"],
+                urgency: "With tight education budgets and the need for optimal learning conditions, every dollar saved on energy can go directly back to student programs."
+            },
+            hotel: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm calling because hospitality properties like {company} have been achieving outstanding guest satisfaction improvements and 20-35% energy cost reductions with our hotel HVAC solutions.",
+                pain_points: ["Guest comfort", "Energy costs", "Maintenance issues", "Seasonal demands", "Reputation management"],
+                benefits: ["Enhanced guest experience", "Lower operating costs", "Reliable comfort", "Better reviews", "Increased bookings"],
+                urgency: "With online reviews being so critical to your business, ensuring every guest has a comfortable stay while controlling costs is essential for your reputation and profitability."
+            },
+            residential: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm reaching out because property managers like you at {company} have been seeing impressive results with our multi-family HVAC solutions - happier tenants, fewer complaints, and lower energy costs.",
+                pain_points: ["Tenant satisfaction", "Maintenance calls", "Energy costs", "System reliability", "Resident retention"],
+                benefits: ["Happier tenants", "Fewer service calls", "Lower energy bills", "Reliable comfort", "Better retention"],
+                urgency: "With tenant satisfaction being so important for retention and rent stability, ensuring reliable HVAC performance is crucial for your property's success."
+            },
+            government: {
+                opening: "Hi {name}, this is {voice_name} from {business_name}. I'm calling because government facilities like {company} have been achieving significant taxpayer savings and improved public service environments with our municipal HVAC solutions.",
+                pain_points: ["Budget accountability", "Public service quality", "Energy efficiency", "Compliance requirements", "Taxpayer value"],
+                benefits: ["Taxpayer savings", "Better service environment", "Energy efficiency", "Regulatory compliance", "Public value"],
+                urgency: "With budget cycles and public accountability, demonstrating efficient use of taxpayer dollars while improving service quality is always a priority."
+            }
+        };
+
+        // Comprehensive rebuttal system for AI responses
+        const rebuttals = {
+            price_objection: [
+                "I completely understand {name}, and that's exactly why I'm calling. Most {industry} facilities actually save more money than they spend with our program. What if I could show you how {company} could save 30% on energy costs starting next month?",
+                "{name}, I hear that a lot, and it makes perfect sense. But here's the thing - the cost of NOT maintaining your HVAC system properly is usually 3-4 times higher than our preventive program. Can I share what happened to a similar {industry} facility last summer?",
+                "I appreciate your honesty {name}. Most {industry} managers tell me the same thing initially. But what if this actually put money back in your budget? Would you be interested in seeing how much {company} could save in the first 90 days?"
+            ],
+            timing_objection: [
+                "{name}, I totally understand timing is important. But here's the reality - HVAC problems don't wait for good timing. What if we could prevent an emergency breakdown during your busiest season? That alone would be worth the conversation, don't you think?",
+                "I hear that {name}, and that's exactly why this is perfect timing. Most {industry} facilities see their biggest energy usage during peak seasons. Starting now means {company} saves money when you need it most. Can I explain how this works?",
+                "That's interesting {name}, because most of our {industry} clients say the same thing. But they're usually glad they didn't wait when they see their first month's energy savings. What if this could actually improve your timing by preventing unexpected issues?"
+            ],
+            authority_objection: [
+                "{name}, I completely understand. Many {industry} facilities have multiple decision-makers. Who else would you recommend I speak with about improving {company}'s energy efficiency and comfort?",
+                "That makes sense {name}. In my experience with {industry} facilities, it's usually a team decision. Would you be the person to bring this opportunity to their attention, or should I speak with someone else?",
+                "I appreciate that {name}. Most successful {industry} managers like yourself are part of the decision-making process. What role do you play in evaluating cost-saving opportunities for {company}?"
+            ],
+            not_interested: [
+                "{name}, I hear that, and I'm not here to pressure you. But can I ask - what would it take for {company} to be interested in saving 25-30% on energy costs while improving comfort?",
+                "Fair enough {name}. Most {industry} managers aren't interested until they realize the impact. If {company} could save thousands on energy costs this year, would that change your perspective?",
+                "I understand {name}, and I respect that. But before I go, can I ask - if there was no risk and guaranteed savings, would improving {company}'s HVAC efficiency be worth a conversation?"
+            ],
+            callback_request: [
+                "{name}, I'd be happy to call back. Just so I'm prepared when we talk, what specific concerns does {company} have with your current HVAC system?",
+                "Absolutely {name}, I can call back. When would be better, and what would you like me to focus on regarding {company}'s energy costs and comfort?",
+                "Of course {name}. Before I call back, help me understand - what would make a conversation about {company}'s HVAC efficiency valuable for you?"
+            ]
+        };
+
+        // Get personalized script based on lead information
+        function getPersonalizedScript(leadInfo, scriptType = 'opening') {
+            const industry = leadInfo.industry || 'office';
+            const template = industryScripts[industry] || industryScripts.office;
+            
+            let script = template[scriptType] || template.opening;
+            
+            // Dynamic personalization replacements
+            script = script.replace(/{name}/g, leadInfo.name || 'there');
+            script = script.replace(/{company}/g, leadInfo.company || 'your facility');
+            script = script.replace(/{industry}/g, getIndustryDisplayName(industry));
+            script = script.replace(/{voice_name}/g, getVoiceDisplayName(selectedAIVoice));
+            script = script.replace(/{business_name}/g, aiVoicePhoneNumbers[selectedAIVoice].businessName);
+            
+            console.log(`📞 Generated ${scriptType} script for ${industry}:`, script);
+            return script;
+        }
+        
+        // Get display-friendly industry name
+        function getIndustryDisplayName(industry) {
+            const displayNames = {
+                healthcare: 'healthcare',
+                office: 'office',
+                retail: 'retail', 
+                restaurant: 'restaurant',
+                manufacturing: 'manufacturing',
+                education: 'educational',
+                hotel: 'hospitality',
+                residential: 'multi-family residential',
+                government: 'government'
+            };
+            return displayNames[industry] || 'commercial';
+        }
+        
+        // Get voice display name for scripts
+        function getVoiceDisplayName(voice) {
+            const names = {
+                'yeni': 'Yeni',
+                'danny': 'Danny', 
+                'gabi': 'Gabi'
+            };
+            return names[voice] || 'Yeni';
+        }
+        
+        // Generate intelligent rebuttal based on prospect response
+        function generateIntelligentRebuttal(prospectResponse, leadInfo) {
+            const response = prospectResponse.toLowerCase();
+            const name = leadInfo.name || 'there';
+            const company = leadInfo.company || 'your facility';
+            const industry = leadInfo.industry || 'office';
+            
+            let rebuttalType = 'not_interested'; // default
+            
+            // Intelligent response classification
+            if (response.includes('cost') || response.includes('expensive') || response.includes('money') || response.includes('budget')) {
+                rebuttalType = 'price_objection';
+            } else if (response.includes('time') || response.includes('busy') || response.includes('later') || response.includes('not now')) {
+                rebuttalType = 'timing_objection';
+            } else if (response.includes('decision') || response.includes('boss') || response.includes('manager') || response.includes('not up to me')) {
+                rebuttalType = 'authority_objection';
+            } else if (response.includes('call back') || response.includes('callback') || response.includes('next week')) {
+                rebuttalType = 'callback_request';
+            }
+            
+            const rebuttalOptions = rebuttals[rebuttalType];
+            let rebuttal = rebuttalOptions[Math.floor(Math.random() * rebuttalOptions.length)];
+            
+            // Personalize rebuttal
+            rebuttal = rebuttal.replace(/{name}/g, name);
+            rebuttal = rebuttal.replace(/{company}/g, company);
+            rebuttal = rebuttal.replace(/{industry}/g, getIndustryDisplayName(industry));
+            
+            console.log(`🧠 Generated intelligent ${rebuttalType} rebuttal:`, rebuttal);
+            return rebuttal;
         }
 
         // ========== MISSING ACTION BUTTON FUNCTIONS ==========
