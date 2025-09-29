@@ -2853,15 +2853,15 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 window.speechSynthesis.cancel();
             }
             
-            const utterance = new SpeechSynthesisUtterance(previewText);
+            const previewUtterance = new SpeechSynthesisUtterance(previewText);
             
             // Apply customization to TTS
-            utterance.rate = settings.speakingRhythm === 'energetic' ? 1.1 : 
+            previewUtterance.rate = settings.speakingRhythm === 'energetic' ? 1.1 : 
                            settings.speakingRhythm === 'calming' ? 0.8 : 0.9;
-            utterance.pitch = voiceModel === 'danny' ? 0.7 : 1.0;
-            utterance.volume = 0.8;
+            previewUtterance.pitch = voiceModel === 'danny' ? 0.7 : 1.0;
+            previewUtterance.volume = 0.8;
             
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(previewUtterance);
             
             // Show feedback
             alert('🎵 Preview playing with your custom settings!');
@@ -3295,7 +3295,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }, 1000);
             
             // Auto-remove notification after reading completes
-            const utterance = window.speechSynthesis.getUtterances ? 
+            const currentUtterance = window.speechSynthesis.getUtterances ? 
                              window.speechSynthesis.getUtterances()[0] : null;
             
             setTimeout(() => {
@@ -3379,7 +3379,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log(`📝 Full script content (${scriptText.length} chars):`, scriptText);
             
             // Create enhanced TTS that reads the ACTUAL script content
-            const utterance = new SpeechSynthesisUtterance(scriptText);
+            const scriptUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice to match personality as closely as possible
             const voices = window.speechSynthesis.getVoices();
@@ -3406,36 +3406,36 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             if (selectedVoice) {
-                utterance.voice = selectedVoice;
+                scriptUtterance.voice = selectedVoice;
                 console.log('🎤 Using enhanced voice for script reading:', selectedVoice.name);
             } else {
                 console.log('🎤 Using default voice for script reading');
             }
             
             // Enhanced natural speaking parameters
-            utterance.rate = 0.85;  // Natural conversational pace
-            utterance.pitch = selectedScriptVoice === 'danny' ? 0.75 : 
+            scriptUtterance.rate = 0.85;  // Natural conversational pace
+            scriptUtterance.pitch = selectedScriptVoice === 'danny' ? 0.75 : 
                              selectedScriptVoice === 'yeni' ? 1.1 : 1.0;  // Match personality
-            utterance.volume = 0.9;
+            scriptUtterance.volume = 0.9;
             
             // Event handlers for feedback
-            utterance.onstart = () => {
+            scriptUtterance.onstart = () => {
                 console.log('🗣️ STARTED reading actual script content');
                 console.log('📖 Script being read:', scriptText.substring(0, 150) + '...');
             };
             
-            utterance.onend = () => {
+            scriptUtterance.onend = () => {
                 console.log('✅ FINISHED reading actual script content');
             };
             
-            utterance.onerror = (e) => {
+            scriptUtterance.onerror = (e) => {
                 console.error('❌ Script reading error:', e);
                 alert('Error reading script with text-to-speech');
             };
             
             // Start speaking the ACTUAL script content
             console.log('🎙️ Starting to speak actual script content now...');
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(scriptUtterance);
             
             return; // Skip the old code below
             
@@ -3444,7 +3444,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log(`📝 Full script length: ${scriptText.length} characters`);
             
             // Create speech synthesis utterance
-            const utterance = new SpeechSynthesisUtterance(scriptText);
+            const ttsUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice based on selected AI voice
             const voices = window.speechSynthesis.getVoices();
@@ -3470,31 +3470,31 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             if (preferredVoice) {
-                utterance.voice = preferredVoice;
+                ttsUtterance.voice = preferredVoice;
                 console.log('🎤 Using voice:', preferredVoice.name);
             }
             
             // Configure speech settings
-            utterance.rate = 0.85; // Natural pace
-            utterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 1.0; // Lower for Danny
-            utterance.volume = 0.8;
+            ttsUtterance.rate = 0.85; // Natural pace
+            ttsUtterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 1.0; // Lower for Danny
+            ttsUtterance.volume = 0.8;
             
             // Event handlers
-            utterance.onstart = () => {
+            ttsUtterance.onstart = () => {
                 console.log('🗣️ Started reading script with TTS');
             };
             
-            utterance.onend = () => {
+            ttsUtterance.onend = () => {
                 console.log('✅ Finished reading script');
             };
             
-            utterance.onerror = (error) => {
+            ttsUtterance.onerror = (error) => {
                 console.error('❌ TTS Error:', error);
                 alert('Error reading script with text-to-speech');
             };
             
             // Start speaking
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(ttsUtterance);
         }
 
         // Enhanced Voice Experience: Personality + Script Reading with Natural AI Voices
@@ -4147,7 +4147,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('📢 Creating TTS for ACTUAL script content...');
             
             // Create enhanced TTS for actual script reading
-            const utterance = new SpeechSynthesisUtterance(scriptText);
+            const voiceUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice to match the selected personality
             const voices = window.speechSynthesis.getVoices();
@@ -4172,24 +4172,24 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             if (selectedVoice) {
-                utterance.voice = selectedVoice;
+                voiceUtterance.voice = selectedVoice;
                 console.log('🎤 Using voice for script reading:', selectedVoice.name);
             } else {
                 console.log('🎤 Using default voice for script reading');
             }
             
             // Configure natural speech parameters to match personality
-            utterance.rate = 0.82;  // Slightly slower for clarity
-            utterance.pitch = voiceModel === 'danny' ? 0.75 : voiceModel === 'yeni' ? 1.1 : 1.0;
-            utterance.volume = 0.95;
+            voiceUtterance.rate = 0.82;  // Slightly slower for clarity
+            voiceUtterance.pitch = voiceModel === 'danny' ? 0.75 : voiceModel === 'yeni' ? 1.1 : 1.0;
+            voiceUtterance.volume = 0.95;
             
             // Event handlers
-            utterance.onstart = () => {
+            voiceUtterance.onstart = () => {
                 console.log('🗣️ STARTED reading actual script with', voiceModel, 'voice characteristics');
                 console.log('📖 Reading script text:', scriptText.substring(0, 100) + '...');
             };
             
-            utterance.onend = () => {
+            voiceUtterance.onend = () => {
                 console.log('✅ FINISHED reading actual script content');
                 if (readBtn) {
                     readBtn.innerHTML = '🎤 Read Script Again';
@@ -4197,7 +4197,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 }
             };
             
-            utterance.onerror = (e) => {
+            voiceUtterance.onerror = (e) => {
                 console.error('❌ Script reading error:', e);
                 if (readBtn) {
                     readBtn.innerHTML = '🎤 Read This Script Now';
@@ -4208,7 +4208,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             
             // Start reading the actual script content
             console.log('🎙️ Starting to read script content NOW with', voiceModel, 'voice...');
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(voiceUtterance);
         }
         
         // Get saved voice settings for a voice model
@@ -4430,12 +4430,12 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             try {
                 // Use Web Speech API for immediate reading
                 if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(scriptText);
+                    const directUtterance = new SpeechSynthesisUtterance(scriptText);
                     
                     // Configure voice settings
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.0;
-                    utterance.volume = 1.0;
+                    directUtterance.rate = 0.9;
+                    directUtterance.pitch = 1.0;
+                    directUtterance.volume = 1.0;
                     
                     // Try to use a natural voice
                     const voices = speechSynthesis.getVoices();
@@ -4447,21 +4447,21 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     );
                     
                     if (preferredVoice) {
-                        utterance.voice = preferredVoice;
+                        directUtterance.voice = preferredVoice;
                     }
                     
-                    utterance.onend = () => {
+                    directUtterance.onend = () => {
                         btn.innerHTML = originalText;
                         btn.disabled = false;
                     };
                     
-                    utterance.onerror = () => {
+                    directUtterance.onerror = () => {
                         btn.innerHTML = originalText;
                         btn.disabled = false;
                         alert('❌ Speech synthesis failed. Please try Smart Voice instead.');
                     };
                     
-                    window.speechSynthesis.speak(utterance);
+                    window.speechSynthesis.speak(directUtterance);
                 } else {
                     throw new Error('Speech synthesis not supported');
                 }
