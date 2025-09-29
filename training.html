@@ -6,10 +6,12 @@
     <title>AI Voice Training & Fine-tuning - ProSpector Pro v2.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <!-- Cache busting for latest updates -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <!-- FORCE CACHE REFRESH - Version 3.0 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="version" content="3.0-script-reading-fix">
+    <meta name="last-updated" content="2025-09-28T23:55:00Z">
     
     <style>
         body {
@@ -605,6 +607,11 @@
             modulesComplete: 12,
             trainingScore: 8.7
         };
+
+        // DIAGNOSTIC: Verify latest version is loading
+        console.log('🔥 TRAINING.HTML v3.0 - SCRIPT READING FIX LOADED');
+        console.log('📅 Last Updated: 2025-09-28T23:55:00Z');
+        console.log('🎯 Features: readScriptDirectly(), enhanced TTS fallback, dual button system');
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
