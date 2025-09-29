@@ -3239,7 +3239,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         }
 
         function speakScriptText(scriptText) {
-            console.log('📢 Enhanced Natural Voice Script Reading Called');
+            console.log('📢 READING ACTUAL SCRIPT CONTENT with natural voice');
             
             // Stop any existing speech/audio
             stopAllAudio();
@@ -3249,11 +3249,69 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 return;
             }
             
-            // Use the enhanced natural voice reading function
-            console.log(`🎤 Reading with enhanced natural ${selectedScriptVoice} voice:`, scriptText.substring(0, 50) + '...');
-            readScriptWithNaturalVoice(selectedScriptVoice, scriptText);
+            console.log(`🎤 ACTUALLY READING SCRIPT with ${selectedScriptVoice} voice:`, scriptText.substring(0, 100) + '...');
+            console.log(`📝 Full script content (${scriptText.length} chars):`, scriptText);
             
-            return; // Skip the old robotic TTS code below
+            // Create enhanced TTS that reads the ACTUAL script content
+            const utterance = new SpeechSynthesisUtterance(scriptText);
+            
+            // Configure voice to match personality as closely as possible
+            const voices = window.speechSynthesis.getVoices();
+            let selectedVoice = null;
+            
+            // Enhanced voice selection for natural delivery
+            if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
+                // Female voice selection - prioritize natural sounding voices
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('samantha') ||
+                    voice.name.toLowerCase().includes('karen') ||
+                    voice.name.toLowerCase().includes('victoria') ||
+                    voice.name.toLowerCase().includes('fiona') ||
+                    voice.name.toLowerCase().includes('female')
+                ) || voices.find(voice => voice.name.toLowerCase().includes('en-us')) || voices[0];
+            } else if (selectedScriptVoice === 'danny') {
+                // Male voice selection - prioritize authoritative voices
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('alex') ||
+                    voice.name.toLowerCase().includes('daniel') ||
+                    voice.name.toLowerCase().includes('david') ||
+                    voice.name.toLowerCase().includes('male')
+                ) || voices.find(voice => voice.name.toLowerCase().includes('en-us')) || voices[0];
+            }
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log('🎤 Using enhanced voice for script reading:', selectedVoice.name);
+            } else {
+                console.log('🎤 Using default voice for script reading');
+            }
+            
+            // Enhanced natural speaking parameters
+            utterance.rate = 0.85;  // Natural conversational pace
+            utterance.pitch = selectedScriptVoice === 'danny' ? 0.75 : 
+                             selectedScriptVoice === 'yeni' ? 1.1 : 1.0;  // Match personality
+            utterance.volume = 0.9;
+            
+            // Event handlers for feedback
+            utterance.onstart = () => {
+                console.log('🗣️ STARTED reading actual script content');
+                console.log('📖 Script being read:', scriptText.substring(0, 150) + '...');
+            };
+            
+            utterance.onend = () => {
+                console.log('✅ FINISHED reading actual script content');
+            };
+            
+            utterance.onerror = (e) => {
+                console.error('❌ Script reading error:', e);
+                alert('Error reading script with text-to-speech');
+            };
+            
+            // Start speaking the ACTUAL script content
+            console.log('🎙️ Starting to speak actual script content now...');
+            window.speechSynthesis.speak(utterance);
+            
+            return; // Skip the old code below
             
             // OLD ROBOTIC TTS CODE (kept for reference but not used)
             console.log(`📢 Reading script with browser TTS (${selectedScriptVoice} voice):`, scriptText.substring(0, 50) + '...');
@@ -3644,23 +3702,21 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }, 180000);
         }
         
-        // Demonstrate script reading with same natural voice as personality
+        // ACTUALLY read script content with enhanced TTS matching voice personality
         function demonstrateScriptReading(voiceModel, scriptText) {
-            console.log('📢 Demonstrating script reading with natural', voiceModel, 'voice');
+            console.log('📢 ACTUALLY reading script content with', voiceModel, 'voice characteristics');
+            console.log('📖 Script to read:', scriptText.substring(0, 100) + '...');
             
             stopAllAudio();
             
-            // Natural AI voice URLs (same as personality)
-            const naturalVoiceUrls = {
-                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",
-                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",
-                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"
-            };
+            if (!scriptText || !scriptText.trim()) {
+                alert('No script content to read!');
+                return;
+            }
             
-            const voiceUrl = naturalVoiceUrls[voiceModel];
             const scriptPreview = scriptText.length > 300 ? scriptText.substring(0, 300) + '...' : scriptText;
             
-            // Create demonstration modal
+            // Create ACTUAL script reading interface
             const demoContainer = document.createElement('div');
             demoContainer.className = 'script-reading-demo';
             demoContainer.style.cssText = `
@@ -3677,6 +3733,13 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 padding: 20px;
                 box-sizing: border-box;
             `;
+            
+            // Use the complete function to create the interface
+            completeScriptReadingDemo(demoContainer, voiceModel, scriptText);
+            
+            document.body.appendChild(demoContainer);
+            console.log('✅ ACTUAL script reading interface created - ready to read script content');
+        }
             
             demoContainer.innerHTML = `
                 <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 30px; color: white; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #10b981; box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
@@ -3864,6 +3927,155 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         // Inline script reading demonstration
         function demonstrateScriptReadingInline() {
             alert('Script Reading Voice:\n\nWhen ' + selectedScriptVoice + ' reads your scripts, she uses the exact same natural AI voice you just heard in the personality introduction.\n\nThis ensures consistent, professional, non-robotic delivery throughout your HVAC sales conversations.\n\nThe voice maintains the same Miami accent, warmth, and personality - creating an authentic customer experience.');
+        }
+        
+        // Complete the demonstrateScriptReading function
+        function completeScriptReadingDemo(demoContainer, voiceModel, scriptText) {
+            // Create ACTUAL script reading interface
+            demoContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 30px; color: white; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #10b981; box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; color: #10b981; font-size: 24px;">📖 ${voiceModel.toUpperCase()} Reading Your Script</h2>
+                        <p style="margin: 10px 0 5px 0; color: #94a3b8; font-size: 16px;">
+                            ${voiceModel} will now read your actual selected script content
+                        </p>
+                        <p style="margin: 0; color: #10b981; font-size: 14px; font-weight: bold;">
+                            🎤 Enhanced TTS with ${voiceModel}'s Natural Voice Characteristics
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                        <h3 style="color: #f59e0b; margin: 0 0 15px 0; font-size: 16px;">📄 Script Being Read:</h3>
+                        <div style="color: #e2e8f0; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 4px solid #10b981;">
+                            ${scriptText}
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <button id="read-script-btn-${voiceModel}" onclick="readActualScriptContent('${voiceModel}', \`${scriptText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
+                                style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-size: 18px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                            🎤 Read This Script Now
+                        </button>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <button onclick="stopAllAudio()" 
+                                    style="background: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                                ⏹️ Stop Reading
+                            </button>
+                            <button onclick="customizeVoice('${voiceModel}')" 
+                                    style="background: #6366f1; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                                ⚙️ Voice Settings
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #3b82f6;">
+                        <h4 style="margin: 0 0 8px 0; color: #60a5fa; font-size: 16px;">🎯 What You'll Hear</h4>
+                        <p style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.5;">
+                            <strong>Actual Script Reading:</strong> ${voiceModel} will read every word of your selected script.<br>
+                            <strong>Voice Style:</strong> Enhanced text-to-speech configured to match ${voiceModel}'s natural ${voiceModel === 'yeni' ? 'Sofia Vergara-style warmth' : voiceModel === 'danny' ? 'Benicio Del Toro-style authority' : 'enthusiastic Miami energy'}.<br>
+                            <strong>Result:</strong> Professional HVAC script delivery with ${voiceModel}'s personality characteristics.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: #64748b; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                            ✕ Close Script Reader
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Function to read the actual script content with voice matching
+        function readActualScriptContent(voiceModel, scriptText) {
+            console.log('🎤 READING ACTUAL SCRIPT CONTENT with', voiceModel, 'voice');
+            console.log('📖 Full script content to read:', scriptText);
+            
+            // Update button to show reading status
+            const readBtn = document.getElementById(`read-script-btn-${voiceModel}`);
+            if (readBtn) {
+                readBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">🗣️</span> Reading Script...';
+                readBtn.disabled = true;
+            }
+            
+            // Stop any existing audio
+            stopAllAudio();
+            
+            if (!scriptText || !scriptText.trim()) {
+                alert('No script content available to read!');
+                if (readBtn) {
+                    readBtn.innerHTML = '🎤 Read This Script Now';
+                    readBtn.disabled = false;
+                }
+                return;
+            }
+            
+            console.log('📢 Creating TTS for ACTUAL script content...');
+            
+            // Create enhanced TTS for actual script reading
+            const utterance = new SpeechSynthesisUtterance(scriptText);
+            
+            // Configure voice to match the selected personality
+            const voices = window.speechSynthesis.getVoices();
+            let selectedVoice = null;
+            
+            if (voiceModel === 'yeni' || voiceModel === 'gabi') {
+                // Female voice for Yeni and Gabi
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('samantha') ||
+                    voice.name.toLowerCase().includes('karen') ||
+                    voice.name.toLowerCase().includes('victoria') ||
+                    voice.name.toLowerCase().includes('female')
+                );
+            } else if (voiceModel === 'danny') {
+                // Male voice for Danny
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('alex') ||
+                    voice.name.toLowerCase().includes('daniel') ||
+                    voice.name.toLowerCase().includes('david') ||
+                    voice.name.toLowerCase().includes('male')
+                );
+            }
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log('🎤 Using voice for script reading:', selectedVoice.name);
+            } else {
+                console.log('🎤 Using default voice for script reading');
+            }
+            
+            // Configure natural speech parameters to match personality
+            utterance.rate = 0.82;  // Slightly slower for clarity
+            utterance.pitch = voiceModel === 'danny' ? 0.75 : voiceModel === 'yeni' ? 1.1 : 1.0;
+            utterance.volume = 0.95;
+            
+            // Event handlers
+            utterance.onstart = () => {
+                console.log('🗣️ STARTED reading actual script with', voiceModel, 'voice characteristics');
+                console.log('📖 Reading script text:', scriptText.substring(0, 100) + '...');
+            };
+            
+            utterance.onend = () => {
+                console.log('✅ FINISHED reading actual script content');
+                if (readBtn) {
+                    readBtn.innerHTML = '🎤 Read Script Again';
+                    readBtn.disabled = false;
+                }
+            };
+            
+            utterance.onerror = (e) => {
+                console.error('❌ Script reading error:', e);
+                if (readBtn) {
+                    readBtn.innerHTML = '🎤 Read This Script Now';
+                    readBtn.disabled = false;
+                }
+                alert('Error reading script. Please try again.');
+            };
+            
+            // Start reading the actual script content
+            console.log('🎙️ Starting to read script content NOW with', voiceModel, 'voice...');
+            window.speechSynthesis.speak(utterance);
         }
         
         // Get saved voice settings for a voice model
