@@ -538,7 +538,7 @@
                                 <div class="mb-3">
                                     <!-- Lead Phone Number -->
                                     <label class="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
-                                    <input type="tel" id="lead-phone" placeholder="(305) 555-0123" 
+                                    <input type="tel" id="lead-phone" placeholder="(786) 614-4925" 
                                         class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
                                         value="(305) 555-7890">
                                 </div>
@@ -591,7 +591,7 @@
                             
                             <div class="mb-3">
                                 <label class="block text-xs font-medium text-slate-300 mb-1">Your Phone Number (AI will call you)</label>
-                                <input type="tel" id="your-phone-number" placeholder="(305) 555-1234" 
+                                <input type="tel" id="your-phone-number" placeholder="(786) 614-4925" 
                                     class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
                                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
                                 <p class="text-xs text-slate-400 mt-1">📞 AI will call this number using your lead information</p>
@@ -4603,12 +4603,14 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('📞 Real call record generated:', callRecord.id);
         }
         
-        // Enhanced phone number auto-formatting - (786) 614-4926 format
+        // Enhanced phone number auto-formatting - (786) 614-4925 format for ALL phone fields
         document.addEventListener('DOMContentLoaded', () => {
-            const phoneInput = document.getElementById('your-phone-number');
-            if (phoneInput) {
+            // Phone formatting function
+            function setupPhoneFormatting(phoneInput, placeholder = '(786) 614-4925') {
+                if (!phoneInput) return;
+                
                 // Set initial placeholder
-                phoneInput.placeholder = '(786) 614-4926';
+                phoneInput.placeholder = placeholder;
                 
                 phoneInput.addEventListener('input', (e) => {
                     // Remove all non-digits
@@ -4657,6 +4659,15 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     }
                 });
             }
+            
+            // Apply formatting to all phone number fields
+            const yourPhoneInput = document.getElementById('your-phone-number');
+            const leadPhoneInput = document.getElementById('lead-phone');
+            
+            setupPhoneFormatting(yourPhoneInput, '(786) 614-4925');
+            setupPhoneFormatting(leadPhoneInput, '(786) 614-4925');
+            
+            console.log('📱 Enhanced phone formatting applied to all phone fields');
         });
 
         // ========== MISSING ACTION BUTTON FUNCTIONS ==========
