@@ -343,8 +343,8 @@
                         <!-- Action Buttons -->
                         <div class="space-y-2">
                             <div class="flex space-x-2">
-                                <button onclick="readScriptWithVoice()" id="read-script-btn" class="flex-1 py-2 px-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
-                                    <i class="fas fa-robot mr-2"></i>🎤 AI Voice
+                                <button onclick="readScriptWithVoice()" id="read-script-btn" class="flex-1 py-2 px-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-colors mobile-friendly" title="Attempts AI voice generation, reads actual script content">
+                                    <i class="fas fa-magic mr-2"></i>🎤 Smart Voice
                                 </button>
                                 <button onclick="readScriptDirectly()" id="direct-read-btn" class="flex-1 py-2 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-semibold transition-colors mobile-friendly">
                                     <i class="fas fa-volume-up mr-2"></i>📢 Read Now
@@ -2175,14 +2175,23 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 return;
             }
             
-            console.log(`🎬 Processing script with ${selectedScriptVoice} voice...`);
+            console.log(`🎬 Smart Voice: ${selectedScriptVoice} personality + script content...`);
             console.log(`📝 Script text (${scriptText.length} chars):`, scriptText.substring(0, 100) + '...');
             
             // Show processing indicator
             const readBtn = document.getElementById('read-script-btn');
             const originalBtnText = readBtn.innerHTML;
-            readBtn.innerHTML = '<i class="fas fa-cog fa-spin mr-2"></i>🎤 Generating Voice...';
+            readBtn.innerHTML = '<i class="fas fa-cog fa-spin mr-2"></i>🎤 Processing...';
             readBtn.disabled = true;
+            
+            // Create enhanced experience: Voice personality introduction + Script reading
+            showVoicePersonalityAndScript(selectedScriptVoice, scriptText);
+            
+            // Reset button
+            setTimeout(() => {
+                readBtn.innerHTML = originalBtnText;
+                readBtn.disabled = false;
+            }, 2000);
             
             try {
                 // Get saved voice settings for enhanced generation
@@ -2270,9 +2279,9 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     }
                 }
                 
-                // CRITICAL FIX: Always read the actual script content
+                // ENHANCED: Prioritize actual script reading over demo audio
                 if (!apiSuccess) {
-                    console.log('⚠️ API generation failed, using browser TTS to read actual script');
+                    console.log('⚠️ AI voice generation not available, using enhanced TTS for actual script content');
                     
                     // Use browser text-to-speech to read the ACTUAL script content
                     speakScriptText(scriptText);
