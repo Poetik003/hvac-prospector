@@ -300,3 +300,78 @@ werkzeug.exceptions.ClientDisconnected: 400 Bad Request: The browser (or proxy) 
 2025-09-28 23:45:51,185 - INFO - 127.0.0.1 - - [28/Sep/2025 23:45:51] "[35m[1mPOST /api/generate-voice HTTP/1.1[0m" 500 -
 2025-09-28 23:45:51,186 - INFO - 127.0.0.1 - - [28/Sep/2025 23:45:51] "[35m[1mPOST /api/generate-voice HTTP/1.1[0m" 500 -
 2025-09-28 23:45:51,188 - INFO - 127.0.0.1 - - [28/Sep/2025 23:45:51] "[35m[1mPOST /api/generate-voice HTTP/1.1[0m" 500 -
+2025-09-29 02:37:40,411 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:40,411 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:40,412 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:40,413 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:41,375 - INFO -  * Restarting with watchdog (inotify)
+2025-09-29 02:37:41,741 - INFO - 🚀 Starting ProSpector Pro Voice API Server...
+2025-09-29 02:37:41,741 - INFO - 🎤 Voice generation endpoints available
+2025-09-29 02:37:41,741 - INFO - 🌐 CORS enabled for browser integration
+2025-09-29 02:37:41,741 - INFO - 🌐 Also serving static files for ProSpector Pro app
+2025-09-29 02:37:41,775 - WARNING -  * Debugger is active!
+2025-09-29 02:37:41,778 - INFO -  * Debugger PIN: 961-301-114
+2025-09-29 02:37:47,579 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:47,580 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:47,581 - INFO -  * Detected change in '/home/user/webapp/voice_api.py', reloading
+2025-09-29 02:37:48,427 - INFO -  * Restarting with watchdog (inotify)
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 19, in <module>
+    from audio_generation import audio_generation
+ModuleNotFoundError: No module named 'audio_generation'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 22, in <module>
+    logger.warning(f"⚠️ Audio generation module not available: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 19, in <module>
+    from audio_generation import audio_generation
+ModuleNotFoundError: No module named 'audio_generation'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 22, in <module>
+    logger.warning(f"⚠️ Audio generation module not available: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 19, in <module>
+    from audio_generation import audio_generation
+ModuleNotFoundError: No module named 'audio_generation'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 22, in <module>
+    logger.warning(f"⚠️ Audio generation module not available: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 19, in <module>
+    from audio_generation import audio_generation
+ModuleNotFoundError: No module named 'audio_generation'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 22, in <module>
+    logger.warning(f"⚠️ Audio generation module not available: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 19, in <module>
+    from audio_generation import audio_generation
+ModuleNotFoundError: No module named 'audio_generation'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/webapp/voice_api.py", line 22, in <module>
+    logger.warning(f"⚠️ Audio generation module not available: {e}")
+    ^^^^^^
+NameError: name 'logger' is not defined

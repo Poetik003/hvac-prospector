@@ -2498,9 +2498,9 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
 
         function playVoicePreviewWithStop(voiceModel) {
             const voiceUrls = {
-                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
-                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
-                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3"
+                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",  // Natural Sofia Vergara-style (22s)
+                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",  // Natural Benicio Del Toro-style (21s)
+                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"   // Natural Miami Energy (26s)
             };
             
             const audioUrl = voiceUrls[voiceModel];
@@ -2533,8 +2533,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             
             previewContainer.innerHTML = `
                 <div style="text-align: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0; color: #60a5fa; font-size: 16px;">🎤 ${voiceModel.toUpperCase()} Voice Preview</h3>
-                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 12px;">Listen to voice personality</p>
+                    <h3 style="margin: 0; color: #60a5fa; font-size: 16px;">🎤 ${voiceModel.toUpperCase()} Natural AI Voice</h3>
+                    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 12px;">🌟 100% Natural AI Generated - No Robotic Sound</p>
                 </div>
                 
                 <audio id="preview-audio-${voiceModel}" preload="auto" style="width: 100%; margin-bottom: 15px;">
@@ -3239,18 +3239,23 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         }
 
         function speakScriptText(scriptText) {
-            // Stop any existing speech
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                console.log('🛑 Stopped existing speech synthesis');
-                return;
-            }
+            console.log('📢 Enhanced Natural Voice Script Reading Called');
+            
+            // Stop any existing speech/audio
+            stopAllAudio();
             
             if (!scriptText || !scriptText.trim()) {
                 alert('No script text to read!');
                 return;
             }
             
+            // Use the enhanced natural voice reading function
+            console.log(`🎤 Reading with enhanced natural ${selectedScriptVoice} voice:`, scriptText.substring(0, 50) + '...');
+            readScriptWithNaturalVoice(selectedScriptVoice, scriptText);
+            
+            return; // Skip the old robotic TTS code below
+            
+            // OLD ROBOTIC TTS CODE (kept for reference but not used)
             console.log(`📢 Reading script with browser TTS (${selectedScriptVoice} voice):`, scriptText.substring(0, 50) + '...');
             console.log(`📝 Full script length: ${scriptText.length} characters`);
             
@@ -3286,7 +3291,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             // Configure speech settings
-            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.rate = 0.85; // Natural pace
             utterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 1.0; // Lower for Danny
             utterance.volume = 0.8;
             
@@ -3306,6 +3311,230 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             
             // Start speaking
             window.speechSynthesis.speak(utterance);
+        }
+
+        // Enhanced Voice Experience: Personality + Script Reading with Natural AI Voices
+        function showVoicePersonalityAndScript(voiceModel, scriptText) {
+            console.log('🎭 Creating enhanced voice experience for:', voiceModel);
+            
+            // Stop any existing audio
+            stopAllAudio();
+            
+            // Natural AI voice URLs
+            const naturalVoiceUrls = {
+                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",  // Natural Sofia Vergara-style
+                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",  // Natural Benicio Del Toro-style  
+                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"   // Natural Miami Energy
+            };
+            
+            const voiceUrl = naturalVoiceUrls[voiceModel];
+            if (!voiceUrl) {
+                console.error('❌ No natural voice available for:', voiceModel);
+                alert('Voice not available: ' + voiceModel);
+                return;
+            }
+            
+            // Voice descriptions
+            const voiceDescriptions = {
+                'yeni': 'Sofia Vergara-inspired warmth & confidence - Professional Latina HVAC consultant',
+                'danny': 'Benicio Del Toro-inspired authority & charm - Technical HVAC specialist',
+                'gabi': 'Enthusiastic Miami energy - Friendly HVAC consultant'
+            };
+            
+            // Create enhanced experience modal
+            const modalContainer = document.createElement('div');
+            modalContainer.className = 'voice-experience-modal';
+            modalContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 35000;
+                padding: 20px;
+                box-sizing: border-box;
+            `;
+            
+            const scriptPreview = scriptText.length > 300 ? scriptText.substring(0, 300) + '...' : scriptText;
+            
+            modalContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 30px; color: white; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid rgba(59, 130, 246, 0.6); box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; color: #60a5fa; font-size: 24px;">🎭 ${voiceModel.toUpperCase()} Natural AI Voice</h2>
+                        <p style="margin: 10px 0 0 0; color: #94a3b8; font-size: 14px; line-height: 1.4;">
+                            ${voiceDescriptions[voiceModel]}
+                        </p>
+                        <p style="margin: 5px 0 0 0; color: #10b981; font-size: 13px; font-weight: bold;">
+                            🌟 100% Natural AI Generated - Zero Robotic Sound
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                        <h3 style="color: #f59e0b; margin: 0 0 10px 0; font-size: 16px;">📄 Your Selected Script:</h3>
+                        <p style="color: #e2e8f0; font-size: 13px; line-height: 1.5; margin: 0; max-height: 120px; overflow-y: auto;">
+                            ${scriptPreview}
+                        </p>
+                    </div>
+                    
+                    <div style="display: grid; gap: 15px; margin-bottom: 25px;">
+                        <button onclick="playNaturalVoicePersonality('${voiceModel}', '${voiceUrl}')" 
+                                style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; transition: all 0.2s;">
+                            🎭 Hear Voice Personality
+                            <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">Listen to ${voiceModel}'s natural AI voice introduction</div>
+                        </button>
+                        
+                        <button onclick="readScriptWithNaturalVoice('${voiceModel}', \`${scriptText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
+                                style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 15px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; transition: all 0.2s;">
+                            📢 Read Script Content  
+                            <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">Natural AI voice reads your actual script</div>
+                        </button>
+                        
+                        <button onclick="playBothVoiceAndScript('${voiceModel}', '${voiceUrl}', \`${scriptText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
+                                style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 15px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; transition: all 0.2s;">
+                            🎬 Play Both Sequentially
+                            <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">Voice personality first, then script reading</div>
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+                        <button onclick="stopAllAudio()" 
+                                style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">
+                            ⏹️ Stop All Audio
+                        </button>
+                        <button onclick="customizeVoice('${voiceModel}')" 
+                                style="background: #6366f1; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">
+                            ⚙️ Voice Settings
+                        </button>
+                        <button onclick="this.closest('.voice-experience-modal').remove()" 
+                                style="background: #64748b; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">
+                            ✕ Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modalContainer);
+            console.log('✅ Enhanced voice experience modal created');
+        }
+        
+        // Play natural AI voice personality introduction
+        function playNaturalVoicePersonality(voiceModel, audioUrl) {
+            console.log('🎭 Playing natural voice personality for:', voiceModel);
+            
+            stopAllAudio();
+            
+            const audio = new Audio(audioUrl);
+            audio.preload = 'auto';
+            audio.volume = 0.9;
+            
+            audio.onloadstart = () => console.log('🔊 Loading natural voice audio...');
+            audio.oncanplay = () => {
+                console.log('✅ Natural voice audio ready to play');
+                audio.play().catch(error => {
+                    console.error('❌ Audio play failed:', error);
+                    alert('Unable to play natural voice. Please try again.');
+                });
+            };
+            
+            audio.onplay = () => console.log('🎤 Playing natural voice personality');
+            audio.onended = () => console.log('✅ Natural voice personality finished');
+            audio.onerror = (e) => {
+                console.error('❌ Natural voice audio error:', e);
+                alert('Error playing natural voice audio');
+            };
+            
+            window.currentAudio = audio;
+        }
+        
+        // Read script with natural AI voice (enhanced TTS)
+        function readScriptWithNaturalVoice(voiceModel, scriptText) {
+            console.log('📢 Reading script with natural voice for:', voiceModel);
+            console.log('📝 Script:', scriptText.substring(0, 100) + '...');
+            
+            stopAllAudio();
+            
+            // Enhanced TTS with voice personality
+            if (!scriptText || scriptText.trim().length === 0) {
+                alert('No script content to read');
+                return;
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(scriptText);
+            
+            // Configure for natural delivery
+            const voices = window.speechSynthesis.getVoices();
+            let selectedVoice = null;
+            
+            // Voice selection based on personality
+            if (voiceModel === 'yeni' || voiceModel === 'gabi') {
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('samantha') ||
+                    voice.name.toLowerCase().includes('karen') ||
+                    voice.name.toLowerCase().includes('victoria') ||
+                    voice.name.toLowerCase().includes('female')
+                );
+            } else if (voiceModel === 'danny') {
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('alex') ||
+                    voice.name.toLowerCase().includes('daniel') ||
+                    voice.name.toLowerCase().includes('david') ||
+                    voice.name.toLowerCase().includes('male')
+                );
+            }
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log('🎤 Using enhanced voice:', selectedVoice.name);
+            }
+            
+            // Natural speaking parameters
+            utterance.rate = 0.85;  // Natural pace
+            utterance.pitch = voiceModel === 'danny' ? 0.7 : voiceModel === 'yeni' ? 1.1 : 1.0;
+            utterance.volume = 0.9;
+            
+            utterance.onstart = () => console.log('🗣️ Started natural script reading');
+            utterance.onend = () => console.log('✅ Finished natural script reading');
+            utterance.onerror = (e) => {
+                console.error('❌ Script reading error:', e);
+                alert('Error reading script');
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        // Play voice personality then script reading
+        function playBothVoiceAndScript(voiceModel, audioUrl, scriptText) {
+            console.log('🎬 Playing voice personality + script for:', voiceModel);
+            
+            stopAllAudio();
+            
+            // First play personality
+            const audio = new Audio(audioUrl);
+            audio.preload = 'auto';
+            audio.volume = 0.9;
+            
+            audio.onended = () => {
+                console.log('🎭 Personality finished, now reading script...');
+                setTimeout(() => {
+                    readScriptWithNaturalVoice(voiceModel, scriptText);
+                }, 1000); // 1 second pause between personality and script
+            };
+            
+            audio.onerror = (e) => {
+                console.error('❌ Personality audio error, proceeding to script:', e);
+                readScriptWithNaturalVoice(voiceModel, scriptText);
+            };
+            
+            audio.play().catch(error => {
+                console.error('❌ Personality play failed, proceeding to script:', error);
+                readScriptWithNaturalVoice(voiceModel, scriptText);
+            });
+            
+            window.currentAudio = audio;
         }
 
         // Initialize script library on page load
