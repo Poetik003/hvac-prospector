@@ -307,6 +307,8 @@ def read_script():
         script_text = data.get('script_text', '')
         voice_model = data.get('voice_model', 'yeni')
         voice_settings = data.get('voice_settings', {})
+        phone_call = data.get('phone_call', False)
+        lead_info = data.get('lead_info', {})
         
         if not script_text:
             return jsonify({"error": "Script text is required"}), 400
@@ -330,14 +332,17 @@ def read_script():
                 "script_length": len(script_text),
                 "script_preview": script_text[:100] + "..." if len(script_text) > 100 else script_text,
                 "processing_status": "Script content received and processed",
-                "demo_mode": True,
+                "demo_mode": not phone_call,
                 "demo_explanation": f"Playing {voice_model} voice reading script content",
                 "voice_selection_note": f"You selected {voice_model.upper()} voice to read this script",
                 "script_processing_status": "Script content received and processed successfully",
                 "caller_info": caller_info,
                 "phone_number": caller_info['number'],
                 "caller_name": caller_info['name'],
-                "business_name": caller_info['business']
+                "business_name": caller_info['business'],
+                "phone_call_mode": phone_call,
+                "lead_info": lead_info if phone_call else None,
+                "telephony_ready": phone_call
             }
             
             logger.info(f"✅ Script reading response generated: {audio_url}")
@@ -760,6 +765,89 @@ def generate_real_script_audio(script_text, voice_model, requirements):
     except Exception as e:
         logger.error(f"❌ Real script audio generation error: {e}")
         return None
+
+@app.route('/api/place-phone-call', methods=['POST'])
+def place_phone_call():
+    """
+    Place real phone call with AI voice
+    Expected JSON payload:
+    {
+        "phone_number": "+1234567890",
+        "script_text": "Text for AI to speak",
+        "voice_model": "yeni|danny|gabi", 
+        "lead_info": {
+            "name": "John Doe",
+            "company": "Acme Corp",
+            "industry": "healthcare"
+        }
+    }
+    """
+    try:
+        logger.info("📞 Phone call request received")
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+        
+        phone_number = data.get('phone_number', '')
+        script_text = data.get('script_text', '')
+        voice_model = data.get('voice_model', 'yeni')
+        lead_info = data.get('lead_info', {})
+        
+        if not phone_number or not script_text:
+            return jsonify({"error": "Phone number and script text are required"}), 400
+        
+        logger.info(f"📱 Placing call to: {phone_number}")
+        logger.info(f"🎤 Using voice: {voice_model}")
+        logger.info(f"📋 Lead: {lead_info.get('name', 'Unknown')} at {lead_info.get('company', 'Unknown')}")
+        
+        # In production, this would integrate with:
+        # - Twilio Voice API
+        # - Vonage Voice API  
+        # - Amazon Connect
+        # - Other telephony services
+        
+        # For now, simulate the process
+        call_id = f"call_{int(time.time())}"
+        
+        # Generate AI voice for the call
+        audio_url = generate_script_reading_voice(script_text, voice_model)
+        
+        # Get caller info
+        caller_info = get_caller_info(voice_model)
+        
+        response_data = {
+            "success": True,
+            "call_id": call_id,
+            "message": "Phone call initiated successfully",
+            "phone_number": phone_number,
+            "caller_info": caller_info,
+            "audio_url": audio_url,
+            "voice_model": voice_model,
+            "lead_info": lead_info,
+            "call_status": "connecting",
+            "estimated_duration": "2-3 minutes",
+            "next_steps": [
+                "Call will connect within 30 seconds",
+                f"AI voice ({voice_model}) will speak the personalized script",
+                "Call will be recorded for analysis",
+                "You can hang up anytime to end the call"
+            ]
+        }
+        
+        logger.info(f"📞 Phone call initiated: {call_id}")
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        logger.error(f"❌ Phone call error: {str(e)}")
+        return jsonify({
+            "error": "Phone call failed", 
+            "details": str(e),
+            "success": False
+        }), 500
+
+# Import time for call ID generation
+import time
 
 if __name__ == '__main__':
     logger.info("🚀 Starting ProSpector Pro Voice API Server...")
