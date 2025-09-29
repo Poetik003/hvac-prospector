@@ -758,12 +758,11 @@
                 window.currentAudio = null;
             }
             
-            // SIMPLE WORKING SOLUTION: Direct HTML5 audio with user interaction
+            // NATURAL MIAMI LATINO VOICES - Direct from voice_api.py
             const audioUrls = {
-                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/1b7100ff-25aa-4930-982e-2c23ad89900e.mp3",
-                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/3a5a19cf-f53a-4a0d-909e-f71c67fda3bc.mp3", 
-                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/12de0ce7-fbe2-42f0-aecd-02a60c5a5baf.mp3",
-                'pedro': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/f3a4b4c0-a001-4827-ac9a-3523ee030339.mp3"
+                'yeni': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/b2c7b026-eb1b-4e3a-a72e-e433ad901aa2.mp3",   // Yeni - Natural Sofia Vergara-style
+                'danny': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/92f9a9be-1fa8-4574-a70d-b384d2baff0f.mp3",  // Danny - Natural Benicio Del Toro-style
+                'gabi': "https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/edce34bb-7609-4915-99b1-6f6d5b85864f.mp3"    // Gabi - Natural Miami consultant
             };
             
             const audioUrl = audioUrls[model];
@@ -2139,14 +2138,33 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             }
             
             console.log('✅ Script library container found');
-            console.log('📖 Available scripts:', Object.keys(hvacScriptLibrary));
-            console.log('📖 Total scripts to add:', Object.keys(hvacScriptLibrary).length);
+            
+            // Combine built-in scripts with saved scripts
+            const savedScripts = JSON.parse(localStorage.getItem('saved_scripts') || '{}');
+            const allScripts = { ...hvacScriptLibrary, ...savedScripts };
+            
+            console.log('📖 Built-in HVAC scripts:', Object.keys(hvacScriptLibrary));
+            console.log('📖 Saved custom scripts:', Object.keys(savedScripts));
+            console.log('📖 Total scripts to add:', Object.keys(allScripts).length);
             
             // Clear existing content
             scriptLibraryContainer.innerHTML = '';
             
-            Object.keys(hvacScriptLibrary).forEach((scriptKey, index) => {
-                const script = hvacScriptLibrary[scriptKey];
+            if (Object.keys(allScripts).length === 0) {
+                scriptLibraryContainer.innerHTML = `
+                    <div class="text-center py-4 text-slate-400">
+                        <i class="fas fa-scroll text-2xl mb-2"></i>
+                        <p>No scripts available. There may be a loading issue.</p>
+                        <button onclick="initializeScriptLibrary()" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                            🔄 Retry Loading
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            Object.keys(allScripts).forEach((scriptKey, index) => {
+                const script = allScripts[scriptKey];
                 
                 console.log(`📄 Adding script ${index + 1}: ${script.title}`);
                 
@@ -2154,7 +2172,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 scriptItem.className = 'script-library-item p-3 bg-slate-700 hover:bg-slate-600 rounded-lg cursor-pointer transition-colors border-2 border-transparent mobile-friendly';
                 scriptItem.onclick = () => {
                     console.log('📝 Script clicked:', script.title);
-                    selectScript(scriptKey);
+                    selectScript(scriptKey, allScripts);
                 };
                 
                 // Add mobile support directly
@@ -2187,8 +2205,22 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             initializeScriptLibrary();
         }
 
-        function selectScript(scriptKey) {
-            const script = hvacScriptLibrary[scriptKey];
+        function selectScript(scriptKey, allScripts = null) {
+            console.log('📋 Selecting script:', scriptKey);
+            
+            // Use provided scripts or fall back to built-in + saved
+            if (!allScripts) {
+                const savedScripts = JSON.parse(localStorage.getItem('saved_scripts') || '{}');
+                allScripts = { ...hvacScriptLibrary, ...savedScripts };
+            }
+            
+            const script = allScripts[scriptKey];
+            
+            if (!script) {
+                console.error('❌ Script not found:', scriptKey);
+                return;
+            }
+            
             currentSelectedScript = scriptKey;
             
             // Update script editor with selected content
@@ -2203,9 +2235,13 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 item.classList.add('border-transparent');
             });
             
-            event.target.closest('.script-library-item').classList.add('border-blue-500', 'bg-slate-600');
+            // Highlight the selected item if event is available
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.closest('.script-library-item').classList.add('border-blue-500', 'bg-slate-600');
+            }
             
-            console.log('📜 Selected script:', script.title);
+            console.log('✅ Script selected and loaded:', script.title);
+            showSuccess(`Script "${script.title}" loaded successfully!`);
         }
 
         function selectVoiceForReading(voiceModel) {
@@ -4297,6 +4333,232 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             
             console.log('🎉 Script Library v2.1 initialized successfully!');
         });
+
+        // ========== MISSING ACTION BUTTON FUNCTIONS ==========
+        
+        async function readScriptWithVoice() {
+            console.log('🎤 Smart Voice - AI-generated voice reading');
+            const scriptText = document.getElementById('script-editor').value.trim();
+            
+            if (!scriptText) {
+                alert('⚠️ Please select or enter a script first!');
+                return;
+            }
+            
+            const btn = document.getElementById('read-script-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+            btn.disabled = true;
+            
+            try {
+                // Stop any current audio
+                if (window.currentAudio) {
+                    window.currentAudio.pause();
+                    window.currentAudio = null;
+                }
+                
+                // Call API to generate AI voice reading the actual script
+                const response = await fetch('/api/read-script', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        script_text: scriptText,
+                        voice_model: selectedScriptVoice,
+                        voice_settings: JSON.parse(localStorage.getItem(`voice_settings_${selectedScriptVoice}`) || '{}')
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.audio_url) {
+                    // Play the AI-generated voice reading
+                    const audio = new Audio(data.audio_url);
+                    window.currentAudio = audio;
+                    
+                    audio.onloadeddata = () => {
+                        console.log('✅ AI voice ready to play');
+                        audio.play();
+                    };
+                    
+                    audio.onended = () => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    };
+                    
+                    audio.onerror = () => {
+                        console.error('❌ AI voice playback failed');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        alert('❌ Voice playback failed. Please try again.');
+                    };
+                } else {
+                    throw new Error(data.error || 'Voice generation failed');
+                }
+            } catch (error) {
+                console.error('❌ Smart Voice error:', error);
+                alert(`❌ AI voice generation failed: ${error.message}`);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        function readScriptDirectly() {
+            console.log('📢 Read Now - Direct browser TTS');
+            const scriptText = document.getElementById('script-editor').value.trim();
+            
+            if (!scriptText) {
+                alert('⚠️ Please select or enter a script first!');
+                return;
+            }
+            
+            // Stop any current audio
+            if (window.currentAudio) {
+                window.currentAudio.pause();
+                window.currentAudio = null;
+            }
+            
+            // Stop any current speech synthesis
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            const btn = document.getElementById('direct-read-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-volume-up mr-2"></i>📢 Reading...';
+            btn.disabled = true;
+            
+            try {
+                // Use Web Speech API for immediate reading
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(scriptText);
+                    
+                    // Configure voice settings
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    // Try to use a natural voice
+                    const voices = speechSynthesis.getVoices();
+                    const preferredVoice = voices.find(voice => 
+                        voice.name.includes('Samantha') || 
+                        voice.name.includes('Alex') || 
+                        voice.name.includes('Natural') ||
+                        voice.lang.includes('en-US')
+                    );
+                    
+                    if (preferredVoice) {
+                        utterance.voice = preferredVoice;
+                    }
+                    
+                    utterance.onend = () => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    };
+                    
+                    utterance.onerror = () => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        alert('❌ Speech synthesis failed. Please try Smart Voice instead.');
+                    };
+                    
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    throw new Error('Speech synthesis not supported');
+                }
+            } catch (error) {
+                console.error('❌ Direct reading error:', error);
+                alert('❌ Direct reading failed. Please try Smart Voice instead.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        function saveScript() {
+            console.log('💾 Saving script');
+            const scriptText = document.getElementById('script-editor').value.trim();
+            
+            if (!scriptText) {
+                alert('⚠️ No script to save!');
+                return;
+            }
+            
+            const scriptName = prompt('Enter a name for this script:', 'My Custom HVAC Script');
+            
+            if (scriptName) {
+                // Save to localStorage
+                const savedScripts = JSON.parse(localStorage.getItem('saved_scripts') || '{}');
+                const scriptKey = 'custom_' + Date.now();
+                
+                savedScripts[scriptKey] = {
+                    title: scriptName,
+                    category: 'Custom',
+                    script: scriptText,
+                    created: new Date().toISOString()
+                };
+                
+                localStorage.setItem('saved_scripts', JSON.stringify(savedScripts));
+                
+                alert(`✅ Script "${scriptName}" saved successfully!`);
+                
+                // Refresh script library to show new script
+                initializeScriptLibrary();
+            }
+        }
+        
+        function loadCustomScript() {
+            console.log('📄 Loading custom script');
+            
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const content = e.target.result;
+                        document.getElementById('script-editor').value = content;
+                        document.getElementById('script-title').textContent = file.name;
+                        alert(`✅ Script "${file.name}" loaded successfully!`);
+                    };
+                    
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+        
+        function stopAllAudio() {
+            console.log('⏹️ Stopping all audio');
+            
+            // Stop HTML5 audio
+            if (window.currentAudio) {
+                window.currentAudio.pause();
+                window.currentAudio = null;
+            }
+            
+            // Stop speech synthesis
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            // Reset all button states
+            const buttons = document.querySelectorAll('#read-script-btn, #direct-read-btn');
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                if (btn.id === 'read-script-btn') {
+                    btn.innerHTML = '<i class="fas fa-magic mr-2"></i>🎤 Smart Voice';
+                } else if (btn.id === 'direct-read-btn') {
+                    btn.innerHTML = '<i class="fas fa-volume-up mr-2"></i>📢 Read Now';
+                }
+            });
+            
+            alert('⏹️ All audio stopped');
+        }
         
         // Backup initialization for immediate load
         window.addEventListener('load', function() {
