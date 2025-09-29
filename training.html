@@ -3382,27 +3382,27 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             const scriptUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice to match personality as closely as possible
-            const voices = window.speechSynthesis.getVoices();
+            const scriptVoices = window.speechSynthesis.getVoices();
             let selectedVoice = null;
             
             // Enhanced voice selection for natural delivery
             if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
                 // Female voice selection - prioritize natural sounding voices
-                selectedVoice = voices.find(voice => 
+                selectedVoice = scriptVoices.find(voice => 
                     voice.name.toLowerCase().includes('samantha') ||
                     voice.name.toLowerCase().includes('karen') ||
                     voice.name.toLowerCase().includes('victoria') ||
                     voice.name.toLowerCase().includes('fiona') ||
                     voice.name.toLowerCase().includes('female')
-                ) || voices.find(voice => voice.name.toLowerCase().includes('en-us')) || voices[0];
+                ) || scriptVoices.find(voice => voice.name.toLowerCase().includes('en-us')) || scriptVoices[0];
             } else if (selectedScriptVoice === 'danny') {
                 // Male voice selection - prioritize authoritative voices
-                selectedVoice = voices.find(voice => 
+                selectedVoice = scriptVoices.find(voice => 
                     voice.name.toLowerCase().includes('alex') ||
                     voice.name.toLowerCase().includes('daniel') ||
                     voice.name.toLowerCase().includes('david') ||
                     voice.name.toLowerCase().includes('male')
-                ) || voices.find(voice => voice.name.toLowerCase().includes('en-us')) || voices[0];
+                ) || scriptVoices.find(voice => voice.name.toLowerCase().includes('en-us')) || scriptVoices[0];
             }
             
             if (selectedVoice) {
@@ -3447,13 +3447,13 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             const ttsUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice based on selected AI voice
-            const voices = window.speechSynthesis.getVoices();
+            const ttsVoices = window.speechSynthesis.getVoices();
             let preferredVoice = null;
             
             // Try to find appropriate voice based on selected AI voice
             if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
                 // Look for female voice
-                preferredVoice = voices.find(voice => 
+                preferredVoice = ttsVoices.find(voice => 
                     voice.name.toLowerCase().includes('female') || 
                     voice.name.toLowerCase().includes('samantha') ||
                     voice.name.toLowerCase().includes('victoria') ||
@@ -3461,7 +3461,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 );
             } else if (selectedScriptVoice === 'danny') {
                 // Look for male voice
-                preferredVoice = voices.find(voice => 
+                preferredVoice = ttsVoices.find(voice => 
                     voice.name.toLowerCase().includes('male') || 
                     voice.name.toLowerCase().includes('alex') ||
                     voice.name.toLowerCase().includes('daniel') ||
@@ -4150,12 +4150,12 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             const voiceUtterance = new SpeechSynthesisUtterance(scriptText);
             
             // Configure voice to match the selected personality
-            const voices = window.speechSynthesis.getVoices();
+            const voiceList = window.speechSynthesis.getVoices();
             let selectedVoice = null;
             
             if (voiceModel === 'yeni' || voiceModel === 'gabi') {
                 // Female voice for Yeni and Gabi
-                selectedVoice = voices.find(voice => 
+                selectedVoice = scriptVoices.find(voice => 
                     voice.name.toLowerCase().includes('samantha') ||
                     voice.name.toLowerCase().includes('karen') ||
                     voice.name.toLowerCase().includes('victoria') ||
@@ -4163,7 +4163,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 );
             } else if (voiceModel === 'danny') {
                 // Male voice for Danny
-                selectedVoice = voices.find(voice => 
+                selectedVoice = scriptVoices.find(voice => 
                     voice.name.toLowerCase().includes('alex') ||
                     voice.name.toLowerCase().includes('daniel') ||
                     voice.name.toLowerCase().includes('david') ||
@@ -4438,8 +4438,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     directUtterance.volume = 1.0;
                     
                     // Try to use a natural voice
-                    const voices = speechSynthesis.getVoices();
-                    const preferredVoice = voices.find(voice => 
+                    const availableVoices = speechSynthesis.getVoices();
+                    const preferredVoice = availableVoices.find(voice => 
                         voice.name.includes('Samantha') || 
                         voice.name.includes('Alex') || 
                         voice.name.includes('Natural') ||
