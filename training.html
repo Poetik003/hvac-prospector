@@ -4250,7 +4250,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 console.log('🎤 Voice model:', selectedScriptVoice);
                 
                 // Call API to generate AI voice reading the actual script
-                const response = await fetch('/api/read-script', {
+                const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -4343,23 +4343,51 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 if ('speechSynthesis' in window) {
                     const directUtterance = new SpeechSynthesisUtterance(scriptText);
                     
-                    // Configure voice settings
-                    directUtterance.rate = 0.9;
-                    directUtterance.pitch = 1.0;
-                    directUtterance.volume = 1.0;
-                    
-                    // Try to use a natural voice
+                    // Configure voice to match selected AI voice personality
                     const availableVoices = speechSynthesis.getVoices();
-                    const preferredVoice = availableVoices.find(voice => 
-                        voice.name.includes('Samantha') || 
-                        voice.name.includes('Alex') || 
-                        voice.name.includes('Natural') ||
-                        voice.lang.includes('en-US')
-                    );
+                    let selectedVoice = null;
                     
-                    if (preferredVoice) {
-                        directUtterance.voice = preferredVoice;
+                    console.log(`🎤 Configuring TTS for ${selectedScriptVoice} personality`);
+                    
+                    // Enhanced voice selection matching AI voice personality
+                    if (selectedScriptVoice === 'yeni' || selectedScriptVoice === 'gabi') {
+                        // Female voice selection - prioritize natural sounding voices
+                        selectedVoice = availableVoices.find(voice => 
+                            voice.name.toLowerCase().includes('samantha') ||
+                            voice.name.toLowerCase().includes('karen') ||
+                            voice.name.toLowerCase().includes('victoria') ||
+                            voice.name.toLowerCase().includes('fiona') ||
+                            voice.name.toLowerCase().includes('female') ||
+                            voice.name.toLowerCase().includes('zoe')
+                        ) || availableVoices.find(voice => voice.lang.includes('en-US') && voice.name.toLowerCase().includes('female'));
+                    } else if (selectedScriptVoice === 'danny') {
+                        // Male voice selection - prioritize authoritative voices
+                        selectedVoice = availableVoices.find(voice => 
+                            voice.name.toLowerCase().includes('alex') ||
+                            voice.name.toLowerCase().includes('daniel') ||
+                            voice.name.toLowerCase().includes('david') ||
+                            voice.name.toLowerCase().includes('male') ||
+                            voice.name.toLowerCase().includes('tom')
+                        ) || availableVoices.find(voice => voice.lang.includes('en-US') && voice.name.toLowerCase().includes('male'));
                     }
+                    
+                    if (selectedVoice) {
+                        directUtterance.voice = selectedVoice;
+                        console.log('🎤 Using enhanced voice for direct reading:', selectedVoice.name);
+                    } else {
+                        // Fallback to any English voice
+                        const fallbackVoice = availableVoices.find(voice => voice.lang.includes('en-US')) || availableVoices[0];
+                        if (fallbackVoice) {
+                            directUtterance.voice = fallbackVoice;
+                            console.log('🎤 Using fallback voice:', fallbackVoice.name);
+                        }
+                    }
+                    
+                    // Configure natural speech parameters based on selected voice
+                    directUtterance.rate = 0.85;  // Natural conversational pace
+                    directUtterance.pitch = selectedScriptVoice === 'danny' ? 0.8 : 
+                                           selectedScriptVoice === 'yeni' ? 1.1 : 1.0;  // Match personality
+                    directUtterance.volume = 0.95;
                     
                     directUtterance.onend = () => {
                         btn.innerHTML = originalText;
