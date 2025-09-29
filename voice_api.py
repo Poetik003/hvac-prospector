@@ -24,6 +24,52 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
 
+# ========== AI VOICE PHONE NUMBERS ==========
+# Miami area phone numbers for AI voice calling
+AI_VOICE_PHONE_NUMBERS = {
+    'yeni': {
+        'number': '(954) 555-2847',  # Miami-Dade/Broward
+        'area_code': '954',
+        'exchange': '555',
+        'line': '2847',
+        'full_number': '9545552847',
+        'display_name': 'Yeni Martinez - ProSpector HVAC',
+        'business_name': 'ProSpector HVAC Services',
+        'location': 'Miami, FL'
+    },
+    'danny': {
+        'number': '(305) 555-4821',  # Miami-Dade  
+        'area_code': '305',
+        'exchange': '555', 
+        'line': '4821',
+        'full_number': '3055554821',
+        'display_name': 'Danny Rodriguez - ProSpector HVAC',
+        'business_name': 'ProSpector HVAC Systems',
+        'location': 'Miami, FL'
+    },
+    'gabi': {
+        'number': '(786) 555-9374',  # Miami-Dade overlay
+        'area_code': '786',
+        'exchange': '555',
+        'line': '9374', 
+        'full_number': '7865559374',
+        'display_name': 'Gabi Fernandez - ProSpector HVAC',
+        'business_name': 'ProSpector HVAC Solutions',
+        'location': 'Miami, FL'
+    }
+}
+
+def get_caller_info(voice_model):
+    """Get caller ID information for AI voice"""
+    phone_data = AI_VOICE_PHONE_NUMBERS.get(voice_model, AI_VOICE_PHONE_NUMBERS['yeni'])
+    return {
+        'number': phone_data['number'],
+        'name': phone_data['display_name'],
+        'business': phone_data['business_name'],
+        'location': phone_data['location'],
+        'full_number': phone_data['full_number']
+    }
+
 # Serve static files (HTML, CSS, JS)
 @app.route('/')
 def serve_index():
@@ -272,6 +318,9 @@ def read_script():
         audio_url = generate_script_reading_voice(script_text, voice_model, voice_settings)
         
         if audio_url:
+            # Get caller ID information for this voice
+            caller_info = get_caller_info(voice_model)
+            
             response_data = {
                 "success": True,
                 "audio_url": audio_url,
@@ -284,7 +333,11 @@ def read_script():
                 "demo_mode": True,
                 "demo_explanation": f"Playing {voice_model} voice reading script content",
                 "voice_selection_note": f"You selected {voice_model.upper()} voice to read this script",
-                "script_processing_status": "Script content received and processed successfully"
+                "script_processing_status": "Script content received and processed successfully",
+                "caller_info": caller_info,
+                "phone_number": caller_info['number'],
+                "caller_name": caller_info['name'],
+                "business_name": caller_info['business']
             }
             
             logger.info(f"✅ Script reading response generated: {audio_url}")

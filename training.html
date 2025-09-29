@@ -3146,15 +3146,34 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 'gabi': 'Gabi (Friendly Style)'
             };
             
+            // Get caller ID information
+            const callerInfo = getCallerID(selectedAIVoice);
+            
             conversationDisplay.innerHTML = `
                 <div class="space-y-3">
+                    <!-- Incoming Call Display -->
+                    <div class="bg-green-600/20 border-2 border-green-500 p-4 rounded-lg mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="text-green-400 text-2xl">📱</div>
+                            <div>
+                                <p class="text-green-400 font-bold text-sm">INCOMING CALL</p>
+                                <p class="text-white font-semibold">${callerInfo.name}</p>
+                                <p class="text-green-300 text-sm">${callerInfo.number}</p>
+                                <p class="text-gray-400 text-xs">${callerInfo.business} • ${callerInfo.location}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Sales Rep Message -->
                     <div class="bg-purple-600/20 border-l-4 border-purple-500 p-3 rounded">
-                        <p class="text-purple-400 font-semibold text-sm">AI Sales Rep - ${voiceNames[selectedAIVoice]}:</p>
+                        <p class="text-purple-400 font-semibold text-sm">📞 ${voiceNames[selectedAIVoice]} - ${formatPhoneForDisplay(selectedAIVoice, false)}:</p>
                         <p class="text-white text-sm">${aiGreeting}</p>
                     </div>
+                    
+                    <!-- Your Response Section -->
                     <div class="bg-blue-600/20 border border-blue-500/30 rounded-lg p-3">
                         <p class="text-blue-400 text-xs font-semibold mb-2">You are the Prospect (${personality}):</p>
-                        <p class="text-yellow-400 text-xs italic">🎤 How do you respond? Use the Record button to reply as a ${personality} prospect</p>
+                        <p class="text-yellow-400 text-xs italic">🎤 How do you respond to this sales call? Use the Record button to reply as a ${personality} prospect</p>
                     </div>
                 </div>
             `;
@@ -3330,7 +3349,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     'gabi': 'Gabi (Friendly Style)'
                 };
                 salesRepDiv.innerHTML = `
-                    <p class="text-purple-400 font-semibold text-sm">AI Sales Rep - ${voiceNames[selectedAIVoice]}:</p>
+                    <p class="text-purple-400 font-semibold text-sm">📞 ${voiceNames[selectedAIVoice]} - ${formatPhoneForDisplay(selectedAIVoice, false)}:</p>
                     <p class="text-white text-sm">${aiResponse}</p>
                 `;
                 conversationDisplay.appendChild(salesRepDiv);
@@ -3394,6 +3413,64 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         // Role-play mode variables
         let rolePlayMode = 'sales-rep'; // 'sales-rep' or 'prospect'
         let selectedAIVoice = 'yeni'; // AI voice for reverse role-play
+
+        // ========== AI VOICE PHONE NUMBERS ==========
+        
+        // Miami area phone numbers for AI voice calling
+        const aiVoicePhoneNumbers = {
+            'yeni': {
+                number: '(954) 555-2847',  // Miami-Dade/Broward
+                areaCode: '954',
+                exchange: '555',
+                line: '2847',
+                fullNumber: '9545552847',
+                displayName: 'Yeni Martinez - ProSpector HVAC',
+                businessName: 'ProSpector HVAC Services',
+                location: 'Miami, FL'
+            },
+            'danny': {
+                number: '(305) 555-4821',  // Miami-Dade  
+                areaCode: '305',
+                exchange: '555', 
+                line: '4821',
+                fullNumber: '3055554821',
+                displayName: 'Danny Rodriguez - ProSpector HVAC',
+                businessName: 'ProSpector HVAC Systems',
+                location: 'Miami, FL'
+            },
+            'gabi': {
+                number: '(786) 555-9374',  // Miami-Dade overlay
+                areaCode: '786',
+                exchange: '555',
+                line: '9374', 
+                fullNumber: '7865559374',
+                displayName: 'Gabi Fernandez - ProSpector HVAC',
+                businessName: 'ProSpector HVAC Solutions',
+                location: 'Miami, FL'
+            }
+        };
+        
+        // Get caller ID info for selected voice
+        function getCallerID(voiceModel) {
+            const phoneData = aiVoicePhoneNumbers[voiceModel];
+            return {
+                number: phoneData.number,
+                name: phoneData.displayName,
+                business: phoneData.businessName,
+                location: phoneData.location,
+                fullNumber: phoneData.fullNumber
+            };
+        }
+        
+        // Format phone number for display
+        function formatPhoneForDisplay(voiceModel, includeBusinessName = true) {
+            const phoneData = aiVoicePhoneNumbers[voiceModel];
+            if (includeBusinessName) {
+                return `📞 ${phoneData.number} - ${phoneData.businessName}`;
+            } else {
+                return `📞 ${phoneData.number}`;
+            }
+        }
 
         // ========== MISSING ACTION BUTTON FUNCTIONS ==========
         
