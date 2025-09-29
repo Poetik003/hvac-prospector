@@ -601,6 +601,9 @@
                     </button>
                 </div>
                 
+                <button onclick="openTrainingSession()" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-bold transition-all mobile-friendly">
+                    <i class="fas fa-graduation-cap mr-2"></i>Continue Training
+                </button>
                 <button onclick="deployToProduction()" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-bold text-lg transition-all shadow-lg mobile-friendly">
                     <i class="fas fa-rocket mr-2"></i>Deploy to Production
                 </button>
@@ -614,6 +617,116 @@
             <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p class="text-white text-lg font-semibold">Processing AI Voice Model...</p>
             <p class="text-slate-400 text-sm">This may take a few moments</p>
+        </div>
+    </div>
+
+    <!-- Training Session Modal -->
+    <div id="training-session-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="glass-effect rounded-2xl p-6 max-w-md w-full">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-white">AI Voice Training Session</h2>
+                <button onclick="closeTrainingSession()" class="text-slate-400 hover:text-white text-2xl">×</button>
+            </div>
+            
+            <!-- Personalized Voice Coaching -->
+            <div class="mb-6">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-microphone text-green-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold">Personalized Voice Coaching</h3>
+                        <p class="text-slate-400 text-sm">Real-time AI coaching to improve your calling performance</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Modules -->
+            <div class="space-y-4 mb-6">
+                <h3 class="text-white font-bold">Training Modules</h3>
+                
+                <!-- Tone & Pacing -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-medium">Tone & Pacing</h4>
+                        <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">Completed</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-3">Master professional tone and optimal speaking pace for cold calls</p>
+                    <button onclick="reviewModule('tone-pacing')" class="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors">
+                        Review Training
+                    </button>
+                </div>
+
+                <!-- Objection Handling -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-medium">Objection Handling</h4>
+                        <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">In Progress</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-3">Advanced techniques for handling common objections effectively</p>
+                    <button onclick="continueModule('objection-handling')" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                        Continue Training
+                    </button>
+                </div>
+
+                <!-- Closing Techniques -->
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-medium">Closing Techniques</h4>
+                        <span class="text-xs bg-slate-600 text-slate-300 px-2 py-1 rounded">Not Started</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-3">Master the art of closing calls and scheduling appointments</p>
+                    <button onclick="startModule('closing-techniques')" class="w-full py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-medium transition-colors">
+                        Start Training
+                    </button>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="mb-6">
+                <h3 class="text-white font-bold mb-3">Performance Metrics</h3>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="text-white font-medium mb-3">Your Progress</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Overall Score</span>
+                            <span class="text-green-400 font-bold">8.2/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Voice Clarity</span>
+                            <span class="text-blue-400 font-bold">9.1/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Objection Response</span>
+                            <span class="text-yellow-400 font-bold">7.8/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Closing Rate</span>
+                            <span class="text-purple-400 font-bold">7.5/10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="mb-6">
+                <h3 class="text-white font-bold mb-3">AI Recommendations</h3>
+                <div class="bg-slate-800/50 rounded-xl p-4 space-y-2">
+                    <p class="text-slate-300 text-sm">• Focus on slowing down during objections</p>
+                    <p class="text-slate-300 text-sm">• Practice assumptive closing techniques</p>
+                    <p class="text-slate-300 text-sm">• Increase pause time after questions</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <button onclick="closeTrainingSession()" class="flex-1 py-3 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-medium transition-colors">
+                    Close
+                </button>
+                <button onclick="startPracticeCall()" class="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                    <i class="fas fa-play mr-2"></i>Start Practice Call
+                </button>
+            </div>
         </div>
     </div>
 
@@ -687,15 +800,36 @@
             document.addEventListener('keydown', function(e) {
                 // Press Escape to stop any playing audio or close modals
                 if (e.key === 'Escape') {
+                    // Stop window.currentAudio
                     if (window.currentAudio) {
                         window.currentAudio.pause();
+                        window.currentAudio.currentTime = 0;
                         window.currentAudio = null;
-                        console.log('⏹️ Audio stopped by user (Escape key)');
+                        console.log('⏹️ Global audio stopped by user (Escape key)');
                     }
+                    
+                    // Stop all audio players in voice preview modals
+                    const audioPlayers = document.querySelectorAll('.working-audio-player audio');
+                    audioPlayers.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        console.log('⏹️ Voice preview audio stopped');
+                    });
+                    
+                    // Remove voice preview players
+                    const voicePlayers = document.querySelectorAll('.working-audio-player');
+                    voicePlayers.forEach(player => player.remove());
+                    
                     // Close customization modal if open
                     const modal = document.getElementById('voice-customization-modal');
                     if (modal) {
                         closeCustomizationModal();
+                    }
+                    
+                    // Close training session modal if open
+                    const trainingModal = document.getElementById('training-session-modal');
+                    if (trainingModal && !trainingModal.classList.contains('hidden')) {
+                        closeTrainingSession();
                     }
                 }
             });
@@ -843,9 +977,9 @@
                             style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 10px;">
                         ▶️ Play Voice
                     </button>
-                    <button onclick="this.parentElement.parentElement.querySelector('audio').pause()" 
+                    <button onclick="const audio = this.parentElement.parentElement.querySelector('audio'); audio.pause(); audio.currentTime = 0; console.log('⏹️ Audio stopped and reset');" 
                             style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                        ⏸️ Stop
+                        ⏹️ Stop
                     </button>
                 </div>
                 
@@ -3208,6 +3342,58 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         function generateReport() {
             console.log('📋 Generating performance report...');
             alert('📋 Performance Report Generated!\\n\\nOverall Score: 78%\\nTop Strength: Natural conversation flow\\nFocus Area: Closing techniques\\n\\nDetailed report saved to your dashboard.');
+        }
+
+        // Training Session Modal Functions
+        function openTrainingSession() {
+            console.log('🎓 Opening AI Voice Training Session...');
+            const modal = document.getElementById('training-session-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeTrainingSession() {
+            console.log('🚪 Closing training session...');
+            const modal = document.getElementById('training-session-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function reviewModule(moduleType) {
+            console.log(`📚 Reviewing ${moduleType} module...`);
+            closeTrainingSession();
+            
+            if (moduleType === 'tone-pacing') {
+                alert('📚 Tone & Pacing Review\\n\\n✅ Module Completed!\\n\\nKey Points Learned:\\n• Optimal speaking pace: 150-170 words/minute\\n• Lower pitch for authority during objections\\n• Pause 2-3 seconds after questions\\n• Match prospect\'s energy level\\n\\nScore: 92% - Excellent!\\n\\nReady to practice with live calls?');
+            }
+        }
+
+        function continueModule(moduleType) {
+            console.log(`▶️ Continuing ${moduleType} module...`);
+            closeTrainingSession();
+            
+            if (moduleType === 'objection-handling') {
+                alert('🛡️ Objection Handling Training\\n\\nCurrent Progress: 65%\\n\\nNext Lesson: Price Objections\\n\\n"I need to think about it" → "I understand completely. Most of my best customers said the same thing initially. What specifically would you like to think through? The investment or the timing?"\\n\\nPractice this approach 3 times, then return to continue.');
+            }
+        }
+
+        function startModule(moduleType) {
+            console.log(`🚀 Starting ${moduleType} module...`);
+            closeTrainingSession();
+            
+            if (moduleType === 'closing-techniques') {
+                alert('🎯 Closing Techniques Training\\n\\nWelcome to Advanced Closing!\\n\\nLesson 1: The Assumptive Close\\n\\n"Based on everything we\'ve discussed, when would be the best time for our technician to come out - morning or afternoon?"\\n\\nThis assumes they\'re ready to schedule while giving them control over timing.\\n\\nReady to practice?');
+            }
+        }
+
+        function startPracticeCall() {
+            console.log('📞 Starting practice call simulation...');
+            closeTrainingSession();
+            alert('📞 Practice Call Simulation\\n\\nAI Role-Play Mode Activated!\\n\\n🎭 Scenario: Price Objection\\nCustomer: "That sounds expensive..."\\n\\nYour Response: (Click microphone to record)\\n\\n💡 Tips:\\n• Acknowledge their concern\\n• Pivot to value\\n• Ask qualifying questions\\n\\nReady? Click Record when prepared!');
         }
 
         function getMoreTips() {
