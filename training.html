@@ -4399,15 +4399,19 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 window.phoneCallTimer = null;
             }
             
+            // Clear current call info
+            window.currentRealCall = null;
+            
             // In production, this would disconnect the telephony session
             
-            // Update UI
+            // Update UI immediately
             resetRealCallUI();
             
-            // Show call summary
+            // Show call summary with demo mode explanation
             document.getElementById('real-call-status').innerHTML = 
                 `📞 <strong>Call ended.</strong><br>
-                Call recorded and saved for analysis.`;
+                <span class="text-yellow-400">⚠️ DEMO MODE:</span> In production, this would have been a real call to your phone.<br>
+                <small class="text-slate-400">Call simulation recorded for analysis.</small>`;
             
             // Generate call record
             setTimeout(() => {
@@ -4570,9 +4574,27 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         
         // Reset real call UI
         function resetRealCallUI() {
-            document.getElementById('place-real-call-btn').style.display = 'block';
-            document.getElementById('end-real-call-btn').style.display = 'none';
-            document.getElementById('real-call-progress').style.display = 'none';
+            // Reset button states
+            const placeCallBtn = document.getElementById('place-real-call-btn');
+            const endCallBtn = document.getElementById('end-real-call-btn');
+            const callProgress = document.getElementById('real-call-progress');
+            
+            if (placeCallBtn) {
+                placeCallBtn.style.display = 'block';
+                placeCallBtn.disabled = false;
+                placeCallBtn.innerHTML = '<i class="fas fa-phone mr-2"></i>Place Real Call';
+            }
+            
+            if (endCallBtn) {
+                endCallBtn.style.display = 'none';
+                endCallBtn.disabled = false;
+            }
+            
+            if (callProgress) {
+                callProgress.style.display = 'none';
+            }
+            
+            console.log('🔄 Real call UI reset complete');
         }
         
         // Generate call record for real phone call
