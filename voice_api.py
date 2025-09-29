@@ -447,5 +447,5 @@ if __name__ == '__main__':
     logger.info("🌐 CORS enabled for browser integration")
     logger.info("🌐 Also serving static files for ProSpector Pro app")
     
-    # Run the Flask development server on port 5000 (avoiding port conflicts)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Run the Flask development server on port 8000 (matching frontend expectations)
+    app.run(host='0.0.0.0', port=8000, debug=True)
