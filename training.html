@@ -88,6 +88,44 @@
         .mobile-friendly {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        /* Enhanced mobile button support */
+        button, .btn, [onclick] {
+            -webkit-tap-highlight-color: transparent !important;
+            touch-action: manipulation !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            outline: none !important;
+            border: none;
+            background-clip: padding-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        /* Mobile touch feedback */
+        button:active, .btn:active, [onclick]:active {
+            transform: scale(0.98) !important;
+            opacity: 0.8 !important;
+            transition: all 0.1s ease !important;
+        }
+        
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            button, .btn, [onclick] {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
         }
 
         .script-library-item {
@@ -2467,6 +2505,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
 
         function previewVoice(voiceModel) {
             console.log('🎵 Previewing voice:', voiceModel);
+            console.log('📱 Function called from mobile device');
             
             // Stop any current audio first
             stopAllAudio();
@@ -2474,6 +2513,13 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             // Show preview with stop button
             playVoicePreviewWithStop(voiceModel);
         }
+        
+        // Ensure functions are globally accessible for mobile
+        window.previewVoice = previewVoice;
+        window.customizeVoice = customizeVoice;
+        window.stopAllAudio = stopAllAudio;
+        window.readScriptWithVoice = readScriptWithVoice;
+        window.speakScriptText = speakScriptText;
 
         function stopAllAudio() {
             console.log('⏹️ Stopping all audio...');
@@ -2564,6 +2610,13 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             `;
             
             document.body.appendChild(previewContainer);
+            
+            // Add mobile support to preview player buttons
+            setTimeout(() => {
+                const previewButtons = previewContainer.querySelectorAll('button, [onclick]');
+                previewButtons.forEach(btn => makeMobileFriendly(btn));
+                console.log(`📱 Added mobile support to ${previewButtons.length} preview buttons`);
+            }, 100);
             
             // Set up audio player reference
             const audioPlayer = document.getElementById(`preview-audio-${voiceModel}`);
@@ -3476,7 +3529,14 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             `;
             
             document.body.appendChild(modalContainer);
-            console.log('✅ Enhanced voice experience modal created');
+            
+            // Add mobile support to all buttons in the modal
+            setTimeout(() => {
+                const modalButtons = modalContainer.querySelectorAll('button, [onclick]');
+                modalButtons.forEach(btn => makeMobileFriendly(btn));
+            }, 100);
+            
+            console.log('✅ Enhanced voice experience modal created with mobile support');
         }
         
         // Play natural AI voice personality introduction
@@ -4119,6 +4179,114 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             window.currentAudio = audio;
         }
 
+        // Mobile Touch Event Handler for Better Button Responsiveness
+        function addMobileSupport() {
+            console.log('📱 Adding mobile touch support...');
+            
+            // Add touch event handlers to all buttons
+            const buttons = document.querySelectorAll('button, [onclick], .btn');
+            buttons.forEach(button => {
+                if (!button.dataset.mobileHandled) {
+                    button.dataset.mobileHandled = 'true';
+                    
+                    // Add mobile-friendly classes
+                    button.classList.add('mobile-friendly');
+                    
+                    // Handle touch events for mobile
+                    button.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        this.style.transform = 'scale(0.98)';
+                        this.style.opacity = '0.8';
+                    });
+                    
+                    button.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        this.style.transform = '';
+                        this.style.opacity = '';
+                        
+                        // Trigger click event
+                        setTimeout(() => {
+                            if (this.onclick) {
+                                this.onclick(e);
+                            } else {
+                                this.click();
+                            }
+                        }, 50);
+                    });
+                    
+                    button.addEventListener('touchcancel', function(e) {
+                        this.style.transform = '';
+                        this.style.opacity = '';
+                    });
+                }
+            });
+            
+            console.log(`✅ Added mobile support to ${buttons.length} buttons`);
+        }
+        
+        // Global function to make buttons mobile-responsive
+        function makeMobileFriendly(element) {
+            if (element && !element.dataset.mobileHandled) {
+                element.dataset.mobileHandled = 'true';
+                element.classList.add('mobile-friendly');
+                
+                // Store original onclick for reference
+                const originalOnclick = element.onclick;
+                
+                element.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.98)';
+                    this.style.opacity = '0.8';
+                    console.log('📱 Touch start on:', this.textContent || this.innerHTML.substring(0, 20));
+                });
+                
+                element.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                    
+                    console.log('📱 Touch end on:', this.textContent || this.innerHTML.substring(0, 20));
+                    
+                    // Multiple fallback methods to trigger the action
+                    setTimeout(() => {
+                        try {
+                            if (originalOnclick) {
+                                console.log('📱 Calling original onclick function');
+                                originalOnclick.call(this, e);
+                            } else if (this.onclick) {
+                                console.log('📱 Calling current onclick function');
+                                this.onclick(e);
+                            } else {
+                                console.log('📱 Triggering click event');
+                                this.click();
+                            }
+                        } catch (error) {
+                            console.error('📱 Mobile click error:', error);
+                            // Final fallback - dispatch click event
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            this.dispatchEvent(clickEvent);
+                        }
+                    }, 50);
+                });
+                
+                element.addEventListener('touchcancel', function(e) {
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                    console.log('📱 Touch cancelled');
+                });
+                
+                // Additional click event listener for extra reliability
+                element.addEventListener('click', function(e) {
+                    console.log('📱 Regular click event triggered on:', this.textContent || this.innerHTML.substring(0, 20));
+                });
+            }
+        }
+
         // Initialize script library on page load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing Script Library v2.1...');
@@ -4141,6 +4309,23 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             // Set default voice selection
             selectVoiceForReading('yeni');
             
+            // Add mobile support
+            addMobileSupport();
+            
+            // Add extra debugging for mobile
+            if (navigator.userAgent.includes('Mobile')) {
+                console.log('📱 Mobile device detected - adding extra button debugging');
+                
+                // Debug all clicks on the page
+                document.addEventListener('touchstart', function(e) {
+                    console.log('📱 Page touch start:', e.target.tagName, e.target.textContent);
+                });
+                
+                document.addEventListener('click', function(e) {
+                    console.log('📱 Page click:', e.target.tagName, e.target.textContent);
+                });
+            }
+            
             console.log('🎉 Script Library v2.1 initialized successfully!');
         });
         
@@ -4152,6 +4337,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     console.log('🔄 Backup initialization: Initializing script library...');
                     initializeScriptLibrary();
                     selectVoiceForReading('yeni');
+                    addMobileSupport();
                 }
             }, 1000);
         });
