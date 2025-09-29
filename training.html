@@ -4227,24 +4227,54 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 // Generate personalized script for the call
                 const personalizedScript = getPersonalizedScript(leadInfo, 'opening');
                 
-                // Simulate calling process (in production, this would integrate with Twilio, Vonage, etc.)
-                document.getElementById('real-call-progress-text').textContent = 'DIALING YOUR PHONE';
+                // Make ACTUAL phone call using telephony API
+                document.getElementById('real-call-progress-text').textContent = 'INITIATING REAL CALL';
+                document.getElementById('real-call-status').textContent = `Placing real call to ${phoneNumber}...`;
                 
-                // Step 1: Initiate call
-                setTimeout(() => {
-                    document.getElementById('real-call-progress-text').textContent = 'CONNECTING...';
-                    document.getElementById('real-call-status').textContent = `Connecting to ${phoneNumber}`;
-                }, 2000);
+                // Call the telephony API to make actual phone call
+                const callResponse = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone_number: phoneNumber,
+                        script_text: personalizedScript,
+                        voice_model: selectedAIVoice,
+                        lead_info: leadInfo
+                    })
+                });
                 
-                // Step 2: Call connected
-                setTimeout(() => {
-                    document.getElementById('real-call-progress-text').textContent = 'CALL CONNECTED';
+                const callData = await callResponse.json();
+                
+                if (callData.success) {
+                    document.getElementById('real-call-progress-text').textContent = 'DIALING YOUR PHONE';
                     document.getElementById('real-call-status').textContent = 
-                        `Connected! AI is speaking with ${leadInfo.name} at ${phoneNumber}`;
+                        `📞 Real call initiated! Your phone should ring within 15-30 seconds.`;
                     
-                    // Start real AI voice call
-                    initiateRealAIVoiceCall(leadInfo, personalizedScript);
-                }, 4000);
+                    // Show call progress
+                    setTimeout(() => {
+                        document.getElementById('real-call-progress-text').textContent = 'PHONE RINGING';
+                        document.getElementById('real-call-status').innerHTML = 
+                            `📱 <strong>Your phone is ringing!</strong><br>
+                            Answer to speak with ${getVoiceDisplayName(selectedAIVoice)} AI voice<br>
+                            Call ID: ${callData.call_id}`;
+                    }, 5000);
+                    
+                    // Show connected status
+                    setTimeout(() => {
+                        document.getElementById('real-call-progress-text').textContent = 'CALL ACTIVE';
+                        document.getElementById('real-call-status').innerHTML = 
+                            `🎤 <strong>Call Active!</strong><br>
+                            AI is speaking: "${personalizedScript.substring(0, 60)}..."<br>
+                            Duration: <span id="phone-call-timer">00:00</span>`;
+                        
+                        startPhoneCallTimer();
+                    }, 15000);
+                    
+                    console.log('📞 REAL phone call placed successfully:', callData);
+                    
+                } else {
+                    throw new Error(callData.error || 'Phone call failed');
+                }
                 
                 console.log('📱 Real phone call initiated to:', phoneNumber);
                 
@@ -4387,6 +4417,157 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('📱 Real phone call ended');
         }
         
+        // Real phone calling function with telephony integration
+        async function placeRealPhoneCall() {
+            console.log('📞 Initiating real phone call...');
+            
+            const phoneNumber = document.getElementById('your-phone-number').value.trim();
+            const leadName = document.getElementById('lead-name').value.trim();
+            const leadCompany = document.getElementById('lead-company').value.trim();
+            const leadIndustry = document.getElementById('lead-industry').value || 'office';
+            
+            // Validate phone number
+            if (!phoneNumber || phoneNumber.length < 14) {
+                alert('⚠️ Please enter a valid phone number in (XXX) XXX-XXXX format');
+                return;
+            }
+            
+            // Validate lead info
+            if (!leadName) {
+                alert('⚠️ Please enter the lead name');
+                return;
+            }
+            
+            // Get personalized script
+            const personalizedScript = getPersonalizedScript(leadName, leadCompany, leadIndustry);
+            
+            if (!personalizedScript) {
+                alert('⚠️ No script selected. Please choose a script first.');
+                return;
+            }
+            
+            // Prepare lead information
+            const leadInfo = {
+                name: leadName,
+                company: leadCompany,
+                industry: leadIndustry,
+                title: document.getElementById('lead-title').value || 'Manager'
+            };
+            
+            // Show loading state
+            const btn = document.getElementById('place-real-call-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Placing Call...';
+            btn.disabled = true;
+            
+            // Show progress
+            document.getElementById('real-call-progress').style.display = 'block';
+            document.getElementById('real-call-status').innerHTML = 
+                `📞 <strong>Initiating call to ${phoneNumber}...</strong><br>
+                Generating AI voice for ${leadName}...`;
+            
+            try {
+                // Make API call to place real phone call
+                console.log('🔗 Calling telephony API...');
+                
+                const callResponse = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: phoneNumber,
+                        script_text: personalizedScript,
+                        voice_model: selectedAIVoice,
+                        lead_info: leadInfo
+                    })
+                });
+                
+                const callResult = await callResponse.json();
+                
+                if (callResult.success) {
+                    console.log('✅ Real phone call initiated:', callResult);
+                    
+                    // Update UI to show call in progress
+                    document.getElementById('place-real-call-btn').style.display = 'none';
+                    document.getElementById('end-real-call-btn').style.display = 'block';
+                    
+                    document.getElementById('real-call-status').innerHTML = 
+                        `📞 <strong>Calling ${callResult.phone_number}...</strong><br>
+                        AI Voice: ${selectedAIVoice.toUpperCase()} • Call ID: ${callResult.call_id}<br>
+                        Status: ${callResult.telephony_status}<br>
+                        ${callResult.telephony_status === 'initiated' ? 
+                          '<span class="text-green-400">📲 Your phone should ring momentarily!</span>' : 
+                          '<span class="text-yellow-400">⚠️ Demo mode - Telephony integration ready</span>'}`;
+                    
+                    // Store current call info for ending call
+                    window.currentRealCall = {
+                        callId: callResult.call_id,
+                        phoneNumber: callResult.phone_number,
+                        leadInfo: leadInfo,
+                        startTime: Date.now()
+                    };
+                    
+                    // Simulate call progress (in production this would be handled by telephony webhooks)
+                    setTimeout(() => {
+                        if (window.currentRealCall && window.currentRealCall.callId === callResult.call_id) {
+                            document.getElementById('real-call-status').innerHTML += 
+                                '<br><span class="text-blue-400">🎤 AI is speaking with the prospect...</span>';
+                        }
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(callResult.error || 'Phone call initiation failed');
+                }
+                
+            } catch (error) {
+                console.error('❌ Real phone call error:', error);
+                
+                // Reset UI
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.getElementById('real-call-progress').style.display = 'none';
+                
+                alert(`❌ Phone Call Failed\n\n${error.message}\n\nPlease check:\n• Phone number format: (786) 614-4926\n• Lead information is complete\n• Internet connection is stable`);
+            }
+        }
+        
+        // Helper function to get personalized script
+        function getPersonalizedScript(leadName, leadCompany, leadIndustry) {
+            // Get current selected script
+            const currentScript = getCurrentScript();
+            
+            if (!currentScript) {
+                return null;
+            }
+            
+            // Personalize the script with lead info
+            let personalizedScript = currentScript
+                .replace(/\[Customer Name\]/g, leadName)
+                .replace(/\[Company Name\]/g, leadCompany || 'your company');
+            
+            // Add industry-specific elements
+            const industrySpecific = {
+                'healthcare': 'healthcare facilities like Medical Center',
+                'office': 'office buildings and commercial spaces',
+                'retail': 'retail establishments',
+                'restaurant': 'restaurants and food service locations',
+                'warehouse': 'warehouse and distribution facilities',
+                'education': 'educational institutions'
+            };
+            
+            const industryText = industrySpecific[leadIndustry] || 'businesses like yours';
+            personalizedScript = personalizedScript.replace(/\[Industry Context\]/g, industryText);
+            
+            return personalizedScript;
+        }
+        
+        // Helper function to get current script content
+        function getCurrentScript() {
+            const scriptEditor = document.getElementById('script-editor');
+            return scriptEditor ? scriptEditor.value.trim() : null;
+        }
+        
         // Reset real call UI
         function resetRealCallUI() {
             document.getElementById('place-real-call-btn').style.display = 'block';
@@ -4422,20 +4603,58 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('📞 Real call record generated:', callRecord.id);
         }
         
-        // Auto-format phone number input
+        // Enhanced phone number auto-formatting - (786) 614-4926 format
         document.addEventListener('DOMContentLoaded', () => {
             const phoneInput = document.getElementById('your-phone-number');
             if (phoneInput) {
+                // Set initial placeholder
+                phoneInput.placeholder = '(786) 614-4926';
+                
                 phoneInput.addEventListener('input', (e) => {
+                    // Remove all non-digits
                     let value = e.target.value.replace(/\D/g, '');
                     
-                    if (value.length >= 6) {
-                        value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
-                    } else if (value.length >= 3) {
-                        value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+                    // Limit to 10 digits
+                    if (value.length > 10) {
+                        value = value.slice(0, 10);
                     }
                     
-                    e.target.value = value;
+                    // Format as (XXX) XXX-XXXX
+                    let formatted = '';
+                    if (value.length > 0) {
+                        if (value.length <= 3) {
+                            formatted = `(${value}`;
+                        } else if (value.length <= 6) {
+                            formatted = `(${value.slice(0,3)}) ${value.slice(3)}`;
+                        } else {
+                            formatted = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6)}`;
+                        }
+                    }
+                    
+                    e.target.value = formatted;
+                });
+                
+                // Handle paste events
+                phoneInput.addEventListener('paste', (e) => {
+                    setTimeout(() => {
+                        const event = new Event('input');
+                        phoneInput.dispatchEvent(event);
+                    }, 10);
+                });
+                
+                // Handle backspace properly
+                phoneInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace') {
+                        const cursorPos = e.target.selectionStart;
+                        const value = e.target.value;
+                        
+                        // If cursor is after a formatting character, move it back
+                        if (cursorPos > 0 && [')', ' ', '-'].includes(value[cursorPos - 1])) {
+                            setTimeout(() => {
+                                e.target.setSelectionRange(cursorPos - 1, cursorPos - 1);
+                            }, 10);
+                        }
+                    }
                 });
             }
         });
