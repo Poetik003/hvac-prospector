@@ -2130,14 +2130,38 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         // ========== NEW SCRIPT LIBRARY FUNCTIONS ==========
 
         function initializeScriptLibrary() {
+            console.log('📚 Initializing script library...');
             const scriptLibraryContainer = document.getElementById('script-library');
             
-            Object.keys(hvacScriptLibrary).forEach(scriptKey => {
+            if (!scriptLibraryContainer) {
+                console.error('❌ Script library container not found!');
+                return;
+            }
+            
+            console.log('✅ Script library container found');
+            console.log('📖 Available scripts:', Object.keys(hvacScriptLibrary));
+            console.log('📖 Total scripts to add:', Object.keys(hvacScriptLibrary).length);
+            
+            // Clear existing content
+            scriptLibraryContainer.innerHTML = '';
+            
+            Object.keys(hvacScriptLibrary).forEach((scriptKey, index) => {
                 const script = hvacScriptLibrary[scriptKey];
                 
+                console.log(`📄 Adding script ${index + 1}: ${script.title}`);
+                
                 const scriptItem = document.createElement('div');
-                scriptItem.className = 'script-library-item p-3 bg-slate-700 hover:bg-slate-600 rounded-lg cursor-pointer transition-colors border-2 border-transparent';
-                scriptItem.onclick = () => selectScript(scriptKey);
+                scriptItem.className = 'script-library-item p-3 bg-slate-700 hover:bg-slate-600 rounded-lg cursor-pointer transition-colors border-2 border-transparent mobile-friendly';
+                scriptItem.onclick = () => {
+                    console.log('📝 Script clicked:', script.title);
+                    selectScript(scriptKey);
+                };
+                
+                // Add mobile support directly
+                scriptItem.addEventListener('touchend', (e) => {
+                    console.log('📱 Script touched:', script.title);
+                    selectScript(scriptKey);
+                });
                 
                 scriptItem.innerHTML = `
                     <div class="flex items-start justify-between">
@@ -2151,7 +2175,16 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 `;
                 
                 scriptLibraryContainer.appendChild(scriptItem);
+                console.log(`✅ Added script item to DOM: ${script.title}`);
             });
+            
+            console.log(`🎉 Script library initialized with ${scriptLibraryContainer.children.length} scripts`);
+        }
+        
+        // Force script library initialization (for debugging)
+        function forceInitializeScripts() {
+            console.log('🔄 FORCE initializing scripts...');
+            initializeScriptLibrary();
         }
 
         function selectScript(scriptKey) {
@@ -2504,8 +2537,12 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         }
 
         function previewVoice(voiceModel) {
-            console.log('🎵 Previewing voice:', voiceModel);
-            console.log('📱 Function called from mobile device');
+            console.log('🎵 PREVIEW VOICE FUNCTION CALLED:', voiceModel);
+            console.log('📱 User agent:', navigator.userAgent);
+            console.log('📱 Function called at:', new Date().toLocaleTimeString());
+            
+            // Show an alert to confirm the function is being called
+            alert(`🎵 Preview Voice Called!\n\nVoice: ${voiceModel}\nTime: ${new Date().toLocaleTimeString()}\n\nCheck console for details.`);
             
             // Stop any current audio first
             stopAllAudio();
@@ -4179,11 +4216,11 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             window.currentAudio = audio;
         }
 
-        // Mobile Touch Event Handler for Better Button Responsiveness
+        // Simple Mobile Touch Handler - Direct Approach
         function addMobileSupport() {
-            console.log('📱 Adding mobile touch support...');
+            console.log('📱 Adding SIMPLE mobile touch support...');
             
-            // Add touch event handlers to all buttons
+            // Simple approach: just add mobile classes and let onclick work
             const buttons = document.querySelectorAll('button, [onclick], .btn');
             buttons.forEach(button => {
                 if (!button.dataset.mobileHandled) {
@@ -4191,99 +4228,31 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                     
                     // Add mobile-friendly classes
                     button.classList.add('mobile-friendly');
+                    button.style.cursor = 'pointer';
+                    button.style.touchAction = 'manipulation';
                     
-                    // Handle touch events for mobile
-                    button.addEventListener('touchstart', function(e) {
-                        e.preventDefault();
-                        this.style.transform = 'scale(0.98)';
-                        this.style.opacity = '0.8';
-                    });
-                    
-                    button.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        this.style.transform = '';
-                        this.style.opacity = '';
-                        
-                        // Trigger click event
-                        setTimeout(() => {
-                            if (this.onclick) {
-                                this.onclick(e);
-                            } else {
-                                this.click();
-                            }
-                        }, 50);
-                    });
-                    
-                    button.addEventListener('touchcancel', function(e) {
-                        this.style.transform = '';
-                        this.style.opacity = '';
-                    });
+                    console.log('📱 Enhanced button:', button.textContent || button.innerHTML.substring(0, 20));
                 }
             });
             
-            console.log(`✅ Added mobile support to ${buttons.length} buttons`);
+            console.log(`✅ Enhanced ${buttons.length} buttons for mobile`);
+            
+            // Add global touch debugging
+            document.addEventListener('touchend', function(e) {
+                console.log('📱 Global touch end on:', e.target.tagName, e.target.textContent);
+                // Don't prevent default here - let normal click handling work
+            });
         }
         
-        // Global function to make buttons mobile-responsive
+        // Simple mobile-friendly function
         function makeMobileFriendly(element) {
             if (element && !element.dataset.mobileHandled) {
                 element.dataset.mobileHandled = 'true';
                 element.classList.add('mobile-friendly');
+                element.style.cursor = 'pointer';
+                element.style.touchAction = 'manipulation';
                 
-                // Store original onclick for reference
-                const originalOnclick = element.onclick;
-                
-                element.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    this.style.transform = 'scale(0.98)';
-                    this.style.opacity = '0.8';
-                    console.log('📱 Touch start on:', this.textContent || this.innerHTML.substring(0, 20));
-                });
-                
-                element.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.style.transform = '';
-                    this.style.opacity = '';
-                    
-                    console.log('📱 Touch end on:', this.textContent || this.innerHTML.substring(0, 20));
-                    
-                    // Multiple fallback methods to trigger the action
-                    setTimeout(() => {
-                        try {
-                            if (originalOnclick) {
-                                console.log('📱 Calling original onclick function');
-                                originalOnclick.call(this, e);
-                            } else if (this.onclick) {
-                                console.log('📱 Calling current onclick function');
-                                this.onclick(e);
-                            } else {
-                                console.log('📱 Triggering click event');
-                                this.click();
-                            }
-                        } catch (error) {
-                            console.error('📱 Mobile click error:', error);
-                            // Final fallback - dispatch click event
-                            const clickEvent = new MouseEvent('click', {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window
-                            });
-                            this.dispatchEvent(clickEvent);
-                        }
-                    }, 50);
-                });
-                
-                element.addEventListener('touchcancel', function(e) {
-                    this.style.transform = '';
-                    this.style.opacity = '';
-                    console.log('📱 Touch cancelled');
-                });
-                
-                // Additional click event listener for extra reliability
-                element.addEventListener('click', function(e) {
-                    console.log('📱 Regular click event triggered on:', this.textContent || this.innerHTML.substring(0, 20));
-                });
+                console.log('📱 Made mobile-friendly:', element.textContent || element.innerHTML.substring(0, 20));
             }
         }
 
