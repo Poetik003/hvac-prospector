@@ -4007,7 +4007,7 @@ I'd love to schedule..."></textarea>
             var modal = document.createElement('div');
             modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
             modal.innerHTML = `
-                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-2xl mx-auto border border-slate-600 shadow-2xl">
+                <div class="bg-slate-800 rounded-2xl p-6 w-full max-w-2xl mx-auto border border-slate-600 shadow-2xl max-h-[90vh] flex flex-col">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold gradient-text">Launch AI Voice Campaign</h3>
                         <button class="close-campaign-modal text-slate-400 hover:text-white transition-colors">
@@ -4015,6 +4015,8 @@ I'd love to schedule..."></textarea>
                         </button>
                     </div>
                     
+                    <!-- Scrollable Content Area -->
+                    <div class="flex-1 overflow-y-auto pr-2" style="max-height: calc(90vh - 200px);">
                     <div class="mb-6">
                         <div class="flex items-center space-x-3 mb-4">
                             <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
@@ -4195,8 +4197,10 @@ I'd love to schedule..."></textarea>
                             </label>
                         </div>
                     </div>
+                    </div>
                     
-                    <div class="flex space-x-3">
+                    <!-- Fixed Button Area -->
+                    <div class="flex space-x-3 mt-4 pt-4 border-t border-slate-600">
                         <button class="close-campaign-modal flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
                             Cancel
                         </button>
