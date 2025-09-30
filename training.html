@@ -3415,7 +3415,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 }
                 
                 // Use the existing Smart Voice API to generate the greeting
-                const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
+                const response = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -3601,7 +3601,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 console.log(`🎤 Attempting to play ${voiceModel} sales rep response...`);
                 
                 // Use Smart Voice API for the AI response
-                const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
+                const response = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -3958,7 +3958,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 console.log('🎤 Playing personalized AI greeting for real-time call');
                 
                 // Use voice API for realistic AI greeting
-                const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
+                const response = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -4232,7 +4232,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 document.getElementById('real-call-status').textContent = `Placing real call to ${phoneNumber}...`;
                 
                 // Call the telephony API to make actual phone call
-                const callResponse = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
+                const callResponse = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -4330,7 +4330,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 // 4. Handle real-time conversation
                 
                 // For now, simulate the process and show what would happen
-                const voiceApiCall = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
+                const voiceApiCall = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -4474,7 +4474,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 // Make API call to place real phone call
                 console.log('🔗 Calling telephony API...');
                 
-                const callResponse = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
+                const callResponse = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -4720,7 +4720,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 console.log('🎤 Voice model:', selectedScriptVoice);
                 
                 // Call API to generate AI voice reading the actual script
-                const response = await fetch('https://8000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
+                const response = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/read-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
