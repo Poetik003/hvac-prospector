@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Personas - ProSpector Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+        }
+        .persona-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .persona-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .persona-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--persona-color, #3b82f6), transparent);
+        }
+        .voice-sample {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <div class="bg-slate-800/50 border-b border-slate-700 p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-user-tie text-purple-400 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold">AI Agent Personas</h1>
+                    <p class="text-slate-400">Configure distinct AI personalities for different HVAC scenarios</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 text-sm text-slate-300">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-robot text-green-400"></i>
+                    <span>5 Active Agents</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-language text-blue-400"></i>
+                    <span>Multi-Language Support</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-microphone text-orange-400"></i>
+                    <span>Custom Voice Training</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Persona Gallery -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Sarah - Professional HVAC Consultant -->
+            <div class="persona-card bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-500/20" style="--persona-color: #3b82f6">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        S
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-400">Sarah Martinez</h3>
+                        <p class="text-blue-300 text-sm">Professional HVAC Consultant</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Personality Traits</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Professional</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Knowledgeable</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Trustworthy</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Solution-Focused</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Best For</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Commercial HVAC inquiries</li>
+                        <li>• Complex system diagnostics</li>
+                        <li>• High-value lead qualification</li>
+                        <li>• Energy efficiency consultations</li>
+                    </ul>
+                </div>
+
+                <div class="voice-sample">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-blue-400">VOICE SAMPLE</span>
+                        <button onclick="playVoiceSample('sarah')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                            <i class="fas fa-play mr-1"></i>Play
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 italic">
+                        "Hello! I'm Sarah from ProSpector HVAC. I understand you're looking for a reliable HVAC solution. Let me help you find the most energy-efficient system that fits your commercial needs and budget."
+                    </p>
+                </div>
+
+                <button onclick="customizePersona('sarah')" class="w-full mt-4 py-2 px-4 border border-blue-500 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors text-sm">
+                    <i class="fas fa-cog mr-2"></i>Customize Settings
+                </button>
+            </div>
+
+            <!-- Marcus - Emergency Response Specialist -->
+            <div class="persona-card bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-2xl p-6 border border-red-500/20" style="--persona-color: #ef4444">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        M
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-400">Marcus Rodriguez</h3>
+                        <p class="text-red-300 text-sm">Emergency Response Specialist</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Personality Traits</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Urgent</span>
+                        <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Calm Under Pressure</span>
+                        <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Safety-First</span>
+                        <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Direct</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Best For</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Emergency HVAC failures</li>
+                        <li>• Safety-critical situations</li>
+                        <li>• After-hours urgent calls</li>
+                        <li>• Priority dispatch routing</li>
+                    </ul>
+                </div>
+
+                <div class="voice-sample">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-red-400">VOICE SAMPLE</span>
+                        <button onclick="playVoiceSample('marcus')" class="px-2 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
+                            <i class="fas fa-play mr-1"></i>Play
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 italic">
+                        "I understand this is an emergency. Let me immediately connect you with our priority dispatch team. Can you confirm if this involves heating, cooling, or a potential safety issue?"
+                    </p>
+                </div>
+
+                <button onclick="customizePersona('marcus')" class="w-full mt-4 py-2 px-4 border border-red-500 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors text-sm">
+                    <i class="fas fa-cog mr-2"></i>Customize Settings
+                </button>
+            </div>
+
+            <!-- Lisa - Friendly Sales Assistant -->
+            <div class="persona-card bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-2xl p-6 border border-green-500/20" style="--persona-color: #10b981">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        L
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-400">Lisa Thompson</h3>
+                        <p class="text-green-300 text-sm">Friendly Sales Assistant</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Personality Traits</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Warm</span>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Approachable</span>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Patient</span>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Persuasive</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Best For</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Residential HVAC sales</li>
+                        <li>• Maintenance plan upsells</li>
+                        <li>• Customer retention calls</li>
+                        <li>• Seasonal promotions</li>
+                    </ul>
+                </div>
+
+                <div class="voice-sample">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-green-400">VOICE SAMPLE</span>
+                        <button onclick="playVoiceSample('lisa')" class="px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
+                            <i class="fas fa-play mr-1"></i>Play
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 italic">
+                        "Hi there! I'm Lisa from ProSpector HVAC. I hope you're staying comfortable! I'm calling because we have a fantastic offer on our premium maintenance plans that could save you money this season."
+                    </p>
+                </div>
+
+                <button onclick="customizePersona('lisa')" class="w-full mt-4 py-2 px-4 border border-green-500 text-green-400 hover:bg-green-500/10 rounded-lg transition-colors text-sm">
+                    <i class="fas fa-cog mr-2"></i>Customize Settings
+                </button>
+            </div>
+
+            <!-- Alex - Technical Support Expert -->
+            <div class="persona-card bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-2xl p-6 border border-purple-500/20" style="--persona-color: #8b5cf6">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        A
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-400">Alex Chen</h3>
+                        <p class="text-purple-300 text-sm">Technical Support Expert</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Personality Traits</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Analytical</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Detail-Oriented</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Patient</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Methodical</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Best For</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Technical troubleshooting</li>
+                        <li>• Warranty verification</li>
+                        <li>• Parts identification</li>
+                        <li>• System diagnostics</li>
+                    </ul>
+                </div>
+
+                <div class="voice-sample">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-purple-400">VOICE SAMPLE</span>
+                        <button onclick="playVoiceSample('alex')" class="px-2 py-1 bg-purple-600 hover:bg-purple-700 rounded text-xs transition-colors">
+                            <i class="fas fa-play mr-1"></i>Play
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 italic">
+                        "Let me help you troubleshoot this step by step. Can you tell me the model number of your unit and describe exactly what sounds or behaviors you're experiencing?"
+                    </p>
+                </div>
+
+                <button onclick="customizePersona('alex')" class="w-full mt-4 py-2 px-4 border border-purple-500 text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors text-sm">
+                    <i class="fas fa-cog mr-2"></i>Customize Settings
+                </button>
+            </div>
+
+            <!-- Maria - Bilingual Customer Care -->
+            <div class="persona-card bg-gradient-to-br from-orange-500/10 to-yellow-500/10 rounded-2xl p-6 border border-orange-500/20" style="--persona-color: #f97316">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        M
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-400">Maria Gonzalez</h3>
+                        <p class="text-orange-300 text-sm">Bilingual Customer Care</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Personality Traits</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs">Bilingual</span>
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs">Cultural Aware</span>
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs">Empathetic</span>
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs">Helpful</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Best For</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Spanish-speaking customers</li>
+                        <li>• Cultural sensitivity needs</li>
+                        <li>• Community outreach</li>
+                        <li>• Diverse market segments</li>
+                    </ul>
+                </div>
+
+                <div class="voice-sample">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-orange-400">VOICE SAMPLE</span>
+                        <button onclick="playVoiceSample('maria')" class="px-2 py-1 bg-orange-600 hover:bg-orange-700 rounded text-xs transition-colors">
+                            <i class="fas fa-play mr-1"></i>Play
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 italic">
+                        "¡Hola! Soy Maria de ProSpector HVAC. Puedo ayudarle en español o inglés. ¿Cómo puedo asistirle con su sistema de aire acondicionado hoy?"
+                    </p>
+                </div>
+
+                <button onclick="customizePersona('maria')" class="w-full mt-4 py-2 px-4 border border-orange-500 text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors text-sm">
+                    <i class="fas fa-cog mr-2"></i>Customize Settings
+                </button>
+            </div>
+
+            <!-- Create New Agent -->
+            <div class="persona-card bg-gradient-to-br from-slate-600/10 to-slate-700/10 rounded-2xl p-6 border border-slate-600/20 border-dashed" style="--persona-color: #64748b">
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <div class="w-16 h-16 bg-slate-600/20 rounded-full flex items-center justify-center text-slate-400 text-2xl mb-4">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-400 mb-2">Create New Agent</h3>
+                    <p class="text-slate-500 text-sm mb-4">Design a custom AI persona for your specific HVAC needs</p>
+                    <button onclick="createNewAgent()" class="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                        <i class="fas fa-magic mr-2"></i>Start Creation
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Comparison -->
+        <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Agent Performance Comparison</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-300">Agent</th>
+                            <th class="text-left py-3 px-4 text-slate-300">Calls Handled</th>
+                            <th class="text-left py-3 px-4 text-slate-300">Conversion Rate</th>
+                            <th class="text-left py-3 px-4 text-slate-300">Avg Call Time</th>
+                            <th class="text-left py-3 px-4 text-slate-300">Customer Satisfaction</th>
+                            <th class="text-left py-3 px-4 text-slate-300">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">S</div>
+                                    <span class="text-white">Sarah Martinez</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-white">847</td>
+                            <td class="py-4 px-4 text-green-400">78%</td>
+                            <td class="py-4 px-4 text-white">4:32</td>
+                            <td class="py-4 px-4 text-green-400">4.8/5</td>
+                            <td class="py-4 px-4">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">L</div>
+                                    <span class="text-white">Lisa Thompson</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-white">623</td>
+                            <td class="py-4 px-4 text-green-400">82%</td>
+                            <td class="py-4 px-4 text-white">3:47</td>
+                            <td class="py-4 px-4 text-green-400">4.9/5</td>
+                            <td class="py-4 px-4">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">A</div>
+                                    <span class="text-white">Alex Chen</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-white">456</td>
+                            <td class="py-4 px-4 text-blue-400">91%</td>
+                            <td class="py-4 px-4 text-white">6:15</td>
+                            <td class="py-4 px-4 text-green-400">4.7/5</td>
+                            <td class="py-4 px-4">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">M</div>
+                                    <span class="text-white">Marcus Rodriguez</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-white">189</td>
+                            <td class="py-4 px-4 text-orange-400">95%</td>
+                            <td class="py-4 px-4 text-white">2:23</td>
+                            <td class="py-4 px-4 text-green-400">4.6/5</td>
+                            <td class="py-4 px-4">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">M</div>
+                                    <span class="text-white">Maria Gonzalez</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-white">312</td>
+                            <td class="py-4 px-4 text-green-400">85%</td>
+                            <td class="py-4 px-4 text-white">5:02</td>
+                            <td class="py-4 px-4 text-green-400">4.9/5</td>
+                            <td class="py-4 px-4">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Active</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 text-center">
+                <i class="fas fa-brain text-purple-400 text-3xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-white mb-2">AI Training</h3>
+                <p class="text-slate-400 text-sm mb-4">Improve agent performance with advanced training</p>
+                <button onclick="openTraining()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+                    Start Training
+                </button>
+            </div>
+            
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 text-center">
+                <i class="fas fa-chart-line text-blue-400 text-3xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-white mb-2">Performance Analytics</h3>
+                <p class="text-slate-400 text-sm mb-4">View detailed agent performance metrics</p>
+                <a href="/analytics-dashboard.html" class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    View Analytics
+                </a>
+            </div>
+            
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 text-center">
+                <i class="fas fa-phone text-green-400 text-3xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-white mb-2">Test Agents</h3>
+                <p class="text-slate-400 text-sm mb-4">Make test calls with different personas</p>
+                <a href="/direct-calling.html" class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                    Test Call
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function playVoiceSample(agentName) {
+            console.log('🎤 Playing voice sample for:', agentName);
+            
+            // Simulate voice playback
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Playing...';
+            button.disabled = true;
+            
+            // Simulate playback duration
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check mr-1"></i>Played';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 1000);
+            }, 3000);
+            
+            // In real implementation, this would trigger actual TTS playback
+            console.log(`🔊 Voice sample for ${agentName} would play here`);
+        }
+
+        function customizePersona(agentName) {
+            const agentNames = {
+                'sarah': 'Sarah Martinez',
+                'marcus': 'Marcus Rodriguez', 
+                'lisa': 'Lisa Thompson',
+                'alex': 'Alex Chen',
+                'maria': 'Maria Gonzalez'
+            };
+            
+            alert(`⚙️ Customizing ${agentNames[agentName]}...\n\n🎭 Available Settings:\n• Voice tone and pace\n• Personality traits\n• Response patterns\n• Language preferences\n• Script templates\n• Escalation rules\n\n🔧 Advanced persona editor opening...`);
+        }
+
+        function createNewAgent() {
+            alert('🎭 Create New AI Agent Persona...\n\n📝 Agent Creation Wizard:\n• Choose voice characteristics\n• Define personality traits\n• Set conversation style\n• Configure HVAC specialization\n• Train with sample conversations\n• Test and deploy\n\n✨ Custom agent builder launching...');
+        }
+
+        function openTraining() {
+            alert('🧠 AI Agent Training Center...\n\n📚 Training Options:\n• Upload HVAC documentation\n• Record conversation samples\n• Fine-tune responses\n• A/B test persona variations\n• Performance optimization\n\n🎯 Training dashboard opening...');
+        }
+
+        // Simulate real-time agent status updates
+        function updateAgentStatus() {
+            const statusElements = document.querySelectorAll('tbody span');
+            statusElements.forEach(element => {
+                if (element.textContent === 'Active') {
+                    // Random chance to show as "In Call"
+                    if (Math.random() < 0.2) {
+                        element.textContent = 'In Call';
+                        element.className = 'px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs';
+                        
+                        // Revert back after a few seconds
+                        setTimeout(() => {
+                            element.textContent = 'Active';
+                            element.className = 'px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs';
+                        }, 5000);
+                    }
+                }
+            });
+        }
+
+        // Start real-time updates
+        setInterval(updateAgentStatus, 10000);
+
+        console.log('🎭 AI Agent Personas system loaded successfully!');
+    </script>
+</body>
+</html>
