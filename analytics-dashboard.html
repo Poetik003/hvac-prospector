@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - ProSpector Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+        }
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes ping {
+            75%, 100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <div class="bg-slate-800/50 border-b border-slate-700 p-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-blue-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">Analytics Dashboard</h1>
+                    <p class="text-slate-400 text-sm">Real-time calling metrics and performance insights</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="live-indicator"></div>
+                    <span class="text-green-400 text-sm font-semibold">LIVE</span>
+                </div>
+                <button onclick="refreshDashboard()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- Active Calls -->
+            <div class="metric-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-phone text-green-400"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-400" id="active-calls">23</div>
+                        <div class="text-xs text-slate-400">Active Calls</div>
+                    </div>
+                </div>
+                <div class="text-xs text-green-300">+5 from last hour</div>
+            </div>
+
+            <!-- Contact Rate -->
+            <div class="metric-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bullseye text-blue-400"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-400" id="contact-rate">68%</div>
+                        <div class="text-xs text-slate-400">Contact Rate</div>
+                    </div>
+                </div>
+                <div class="text-xs text-blue-300">↑ 12% vs yesterday</div>
+            </div>
+
+            <!-- Conversion Rate -->
+            <div class="metric-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-purple-400"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-purple-400" id="conversion-rate">34%</div>
+                        <div class="text-xs text-slate-400">Conversion Rate</div>
+                    </div>
+                </div>
+                <div class="text-xs text-purple-300">↑ 8% vs last week</div>
+            </div>
+
+            <!-- Appointments Booked -->
+            <div class="metric-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-orange-400"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-orange-400" id="appointments-booked">47</div>
+                        <div class="text-xs text-slate-400">Appointments Today</div>
+                    </div>
+                </div>
+                <div class="text-xs text-orange-300">Target: 60 (78%)</div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+            <!-- Call Volume Chart -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold">Call Volume Today</h3>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <span class="text-sm text-slate-300">Outbound</span>
+                        <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                        <span class="text-sm text-slate-300">Inbound</span>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="callVolumeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Conversion Funnel -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h3 class="text-xl font-semibold mb-4">HVAC Sales Funnel</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                            <span class="text-slate-300">Calls Made</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <span class="text-white font-semibold w-16 text-right">847</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                            <span class="text-slate-300">Contacts Made</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                            <span class="text-white font-semibold w-16 text-right">576</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-purple-500 rounded-full"></div>
+                            <span class="text-slate-300">Qualified Leads</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <span class="text-white font-semibold w-16 text-right">259</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                            <span class="text-slate-300">Appointments Set</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-orange-500 h-2 rounded-full" style="width: 34%"></div>
+                            </div>
+                            <span class="text-white font-semibold w-16 text-right">87</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                            <span class="text-slate-300">Jobs Closed</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 18%"></div>
+                            </div>
+                            <span class="text-white font-semibold w-16 text-right">47</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Performance & Live Activity -->
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Top Performers -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h3 class="text-xl font-semibold mb-4">Top Performers Today</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-black font-bold text-sm">1</div>
+                            <div>
+                                <div class="font-semibold text-white">Sarah M.</div>
+                                <div class="text-xs text-slate-400">HVAC Specialist</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-green-400 font-semibold">12 Appts</div>
+                            <div class="text-xs text-slate-400">87% Close Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full flex items-center justify-center text-black font-bold text-sm">2</div>
+                            <div>
+                                <div class="font-semibold text-white">Mike R.</div>
+                                <div class="text-xs text-slate-400">Senior Tech</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-green-400 font-semibold">9 Appts</div>
+                            <div class="text-xs text-slate-400">76% Close Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                            <div>
+                                <div class="font-semibold text-white">Lisa K.</div>
+                                <div class="text-xs text-slate-400">HVAC Sales</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-green-400 font-semibold">7 Appts</div>
+                            <div class="text-xs text-slate-400">82% Close Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Call Activity -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h3 class="text-xl font-semibold mb-4">Live Call Activity</h3>
+                <div class="space-y-3" id="live-calls">
+                    <div class="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="live-indicator"></div>
+                            <div>
+                                <div class="font-semibold text-white">Sarah M.</div>
+                                <div class="text-xs text-green-400">Commercial HVAC - Miami</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-semibold">03:47</div>
+                            <div class="text-xs text-slate-400">AC Repair Quote</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="live-indicator"></div>
+                            <div>
+                                <div class="font-semibold text-white">Mike R.</div>
+                                <div class="text-xs text-blue-400">Residential - Orlando</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-semibold">01:23</div>
+                            <div class="text-xs text-slate-400">Maintenance Plan</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="live-indicator"></div>
+                            <div>
+                                <div class="font-semibold text-white">AI Assistant</div>
+                                <div class="text-xs text-purple-400">Auto-Answering FAQ</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-semibold">00:45</div>
+                            <div class="text-xs text-slate-400">Hours & Pricing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Tracking -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h3 class="text-xl font-semibold mb-4">Revenue Impact</h3>
+                <div class="space-y-4">
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-green-400 mb-1">$24,750</div>
+                        <div class="text-sm text-green-300">Today's Revenue</div>
+                        <div class="text-xs text-slate-400 mt-1">↑ $3,200 vs yesterday</div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 text-sm">Monthly Goal</span>
+                            <span class="text-white font-semibold">$450,000</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style="width: 67%"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Progress: $301,500</span>
+                            <span class="text-green-400">67% Complete</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <div class="text-sm text-slate-300 mb-2">AI Impact Analysis</div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <div>• 47% calls automated</div>
+                            <div>• $8,900 cost savings</div>
+                            <div>• 23% faster response time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-8 bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <h3 class="text-xl font-semibold mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="viewDetailedReports()" class="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-center">
+                    <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                    <div class="text-sm font-semibold">Detailed Reports</div>
+                </button>
+                
+                <button onclick="exportData()" class="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-center">
+                    <i class="fas fa-download text-2xl mb-2"></i>
+                    <div class="text-sm font-semibold">Export Data</div>
+                </button>
+                
+                <button onclick="configureAlerts()" class="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-center">
+                    <i class="fas fa-bell text-2xl mb-2"></i>
+                    <div class="text-sm font-semibold">Configure Alerts</div>
+                </button>
+                
+                <a href="/direct-calling.html" class="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors text-center block">
+                    <i class="fas fa-phone text-2xl mb-2"></i>
+                    <div class="text-sm font-semibold">Start Calling</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let callVolumeChart;
+
+        // Initialize dashboard
+        function initDashboard() {
+            createCallVolumeChart();
+            startRealTimeUpdates();
+        }
+
+        // Create call volume chart
+        function createCallVolumeChart() {
+            const ctx = document.getElementById('callVolumeChart').getContext('2d');
+            
+            const hours = Array.from({length: 12}, (_, i) => {
+                const hour = (new Date().getHours() - 11 + i) % 24;
+                return `${hour}:00`;
+            });
+            
+            const outboundData = [45, 52, 48, 61, 73, 82, 78, 85, 92, 88, 95, 102];
+            const inboundData = [23, 19, 26, 31, 28, 35, 42, 38, 45, 41, 48, 52];
+            
+            callVolumeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: hours,
+                    datasets: [{
+                        label: 'Outbound Calls',
+                        data: outboundData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Inbound Calls',
+                        data: inboundData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: '#374151'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: '#374151'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Simulate real-time updates
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                updateMetrics();
+                updateLiveCalls();
+            }, 5000);
+        }
+
+        function updateMetrics() {
+            // Simulate real-time metric updates
+            const activeCalls = Math.floor(Math.random() * 10) + 18;
+            const contactRate = Math.floor(Math.random() * 15) + 60;
+            const conversionRate = Math.floor(Math.random() * 10) + 28;
+            const appointments = Math.floor(Math.random() * 8) + 42;
+            
+            document.getElementById('active-calls').textContent = activeCalls;
+            document.getElementById('contact-rate').textContent = contactRate + '%';
+            document.getElementById('conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('appointments-booked').textContent = appointments;
+        }
+
+        function updateLiveCalls() {
+            // Simulate live call updates
+            const calls = document.querySelectorAll('#live-calls .live-indicator');
+            calls.forEach(indicator => {
+                // Random chance to update call status
+                if (Math.random() < 0.3) {
+                    indicator.style.animationDelay = Math.random() * 2 + 's';
+                }
+            });
+        }
+
+        function refreshDashboard() {
+            console.log('🔄 Refreshing dashboard data...');
+            updateMetrics();
+            // Simulate data refresh animation
+            document.querySelector('[onclick="refreshDashboard()"]').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Refreshing...';
+            setTimeout(() => {
+                document.querySelector('[onclick="refreshDashboard()"]').innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Refresh';
+            }, 2000);
+        }
+
+        function viewDetailedReports() {
+            alert('📊 Opening Detailed Reports...\n\n✅ Custom report builder\n✅ Historical data analysis\n✅ Conversion tracking\n✅ Agent performance metrics\n\n📈 Advanced analytics coming soon!');
+        }
+
+        function exportData() {
+            alert('📥 Exporting Analytics Data...\n\n✅ CSV format ready\n✅ Date range: Last 30 days\n✅ Including: calls, conversions, revenue\n\n💾 Download will start shortly...');
+        }
+
+        function configureAlerts() {
+            alert('🔔 Alert Configuration...\n\n• Low conversion rate warnings\n• High call volume notifications\n• Performance milestone alerts\n• System health monitoring\n\n⚙️ Custom alert rules available!');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
