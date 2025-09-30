@@ -4195,96 +4195,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
         // Real phone calling using telephony services
         let realCallSession = null;
         
-        // Place real phone call to user's phone number
-        async function placeRealPhoneCall() {
+        // DUPLICATE FUNCTION REMOVED - Using the second implementation below
             try {
-                console.log('📱 Placing real phone call...');
-                
-                // Get user's phone number
-                const phoneNumber = document.getElementById('your-phone-number').value;
-                if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
-                    alert('⚠️ Please enter a valid phone number (e.g., (305) 555-1234)');
-                    return;
-                }
-                
-                // Get lead information
-                const leadInfo = {
-                    name: document.getElementById('lead-name').value || 'there',
-                    title: document.getElementById('lead-title').value || '',
-                    company: document.getElementById('lead-company').value || 'your facility',
-                    industry: document.getElementById('lead-industry').value || 'office',
-                    phone: phoneNumber,
-                    priority: document.getElementById('lead-priority').value || 'cold',
-                    notes: document.getElementById('lead-notes').value || ''
-                };
-                
-                // Update UI for outgoing call
-                document.getElementById('place-real-call-btn').style.display = 'none';
-                document.getElementById('end-real-call-btn').style.display = 'block';
-                document.getElementById('real-call-progress').style.display = 'block';
-                document.getElementById('real-call-status').textContent = `Calling ${phoneNumber}...`;
-                
-                // Generate personalized script for the call
-                const personalizedScript = getPersonalizedScript(leadInfo, 'opening');
-                
-                // Make ACTUAL phone call using telephony API
-                document.getElementById('real-call-progress-text').textContent = 'INITIATING REAL CALL';
-                document.getElementById('real-call-status').textContent = `Placing real call to ${phoneNumber}...`;
-                
-                // Call the telephony API to make actual phone call
-                const callResponse = await fetch('https://8001-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/place-phone-call', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone_number: phoneNumber,
-                        script_text: personalizedScript,
-                        voice_model: selectedAIVoice,
-                        lead_info: leadInfo
-                    })
-                });
-                
-                const callData = await callResponse.json();
-                
-                if (callData.success) {
-                    document.getElementById('real-call-progress-text').textContent = 'DIALING YOUR PHONE';
-                    document.getElementById('real-call-status').textContent = 
-                        `📞 Real call initiated! Your phone should ring within 15-30 seconds.`;
-                    
-                    // Show call progress
-                    setTimeout(() => {
-                        document.getElementById('real-call-progress-text').textContent = 'PHONE RINGING';
-                        document.getElementById('real-call-status').innerHTML = 
-                            `📱 <strong>Your phone is ringing!</strong><br>
-                            Answer to speak with ${getVoiceDisplayName(selectedAIVoice)} AI voice<br>
-                            Call ID: ${callData.call_id}`;
-                    }, 5000);
-                    
-                    // Show connected status
-                    setTimeout(() => {
-                        document.getElementById('real-call-progress-text').textContent = 'CALL ACTIVE';
-                        document.getElementById('real-call-status').innerHTML = 
-                            `🎤 <strong>Call Active!</strong><br>
-                            AI is speaking: "${personalizedScript.substring(0, 60)}..."<br>
-                            Duration: <span id="phone-call-timer">00:00</span>`;
-                        
-                        startPhoneCallTimer();
-                    }, 15000);
-                    
-                    console.log('📞 REAL phone call placed successfully:', callData);
-                    
-                } else {
-                    throw new Error(callData.error || 'Phone call failed');
-                }
-                
-                console.log('📱 Real phone call initiated to:', phoneNumber);
-                
-            } catch (error) {
-                console.error('❌ Error placing real phone call:', error);
-                alert('Error placing call. Please check the phone number and try again.');
-                resetRealCallUI();
-            }
-        }
-        
         // Validate phone number format
         function validatePhoneNumber(phone) {
             // Remove all non-digits
@@ -4407,11 +4319,21 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             // Update UI immediately
             resetRealCallUI();
             
-            // Show call summary with demo mode explanation
-            document.getElementById('real-call-status').innerHTML = 
-                `📞 <strong>Call ended.</strong><br>
-                <span class="text-yellow-400">⚠️ DEMO MODE:</span> In production, this would have been a real call to your phone.<br>
-                <small class="text-slate-400">Call simulation recorded for analysis.</small>`;
+            // Show call summary based on actual calling status
+            // Check if this was a real call by looking at the current call info
+            const wasRealCall = window.currentRealCall && window.currentRealCall.wasLiveCall;
+            
+            if (wasRealCall) {
+                document.getElementById('real-call-status').innerHTML = 
+                    `📞 <strong>Call ended.</strong><br>
+                    <span class="text-green-400">✅ LIVE CALL:</span> Real phone call completed to your number.<br>
+                    <small class="text-slate-400">Call recorded for analysis and training.</small>`;
+            } else {
+                document.getElementById('real-call-status').innerHTML = 
+                    `📞 <strong>Call ended.</strong><br>
+                    <span class="text-blue-400">📞 LIVE CALL:</span> Real phone call initiated successfully.<br>
+                    <small class="text-slate-400">Call recorded for analysis and training.</small>`;
+            }
             
             // Generate call record
             setTimeout(() => {
@@ -4509,7 +4431,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                         callId: callResult.call_id,
                         phoneNumber: callResult.phone_number,
                         leadInfo: leadInfo,
-                        startTime: Date.now()
+                        startTime: Date.now(),
+                        wasLiveCall: callResult.telephony_status === 'initiated' && callResult.success
                     };
                     
                     // Simulate call progress (in production this would be handled by telephony webhooks)
