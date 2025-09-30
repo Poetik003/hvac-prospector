@@ -18,6 +18,14 @@ import sys
 import requests
 
 # Load environment variables for live calling
+
+# FORCE LIVE CALLING MODE - OVERRIDE
+FORCE_LIVE_CALLING = True
+os.environ['LIVE_CALLING_ENABLED'] = 'true'
+os.environ['REAL_CALLS_ENABLED'] = 'true' 
+os.environ['DEMO_MODE'] = 'false'
+
+
 def load_env_config():
     """Load environment configuration for live calling"""
     try:
@@ -1185,5 +1193,5 @@ if __name__ == '__main__':
     logger.info("🌐 CORS enabled for browser integration")
     logger.info("🌐 Also serving static files for ProSpector Pro app")
     
-    # Run the Flask development server on port 8000 (matching frontend expectations)
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    # Run the Flask development server on port 8001 (LIVE CALLING ENABLED)
+    app.run(host='0.0.0.0', port=8001, debug=True)
