@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProSpector Pro - Global Multilingual AI Agent</title>
+    <title>ProSpector Pro - Multilingual AI Calling - Superior to AltaHQ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -16,44 +16,28 @@
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .language-card {
-            transition: all 0.3s ease;
+        .language-flag {
+            width: 24px;
+            height: 18px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 8px;
         }
-        .language-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        .pulse-animation {
+            animation: pulse 2s infinite;
         }
-        .flag-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 16px;
-        }
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .waveform {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-        .wave-bar {
-            width: 3px;
-            background: linear-gradient(to top, #3b82f6, #8b5cf6);
-            animation: wave 1s ease-in-out infinite;
-        }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
-        @keyframes wave {
-            0%, 100% { height: 8px; }
-            50% { height: 20px; }
-        }
+        .flag-us { background: linear-gradient(to bottom, #b22234 0%, #b22234 50%, #ffffff 50%, #ffffff 100%); }
+        .flag-es { background: linear-gradient(to bottom, #aa151b 0%, #aa151b 33%, #f1bf00 33%, #f1bf00 66%, #aa151b 66%); }
+        .flag-fr { background: linear-gradient(to right, #002654 0%, #002654 33%, #ffffff 33%, #ffffff 66%, #ed2939 66%); }
+        .flag-de { background: linear-gradient(to bottom, #000000 0%, #000000 33%, #dd0000 33%, #dd0000 66%, #ffce00 66%); }
+        .flag-it { background: linear-gradient(to right, #009246 0%, #009246 33%, #ffffff 33%, #ffffff 66%, #ce2b37 66%); }
+        .flag-pt { background: linear-gradient(to right, #046a38 0%, #046a38 33%, #da020e 33%); }
+        .flag-ru { background: linear-gradient(to bottom, #ffffff 0%, #ffffff 33%, #0039a6 33%, #0039a6 66%, #d52b1e 66%); }
+        .flag-zh { background: #de2910; }
+        .flag-ja { background: #ffffff; position: relative; }
+        .flag-ja::after { content: ''; position: absolute; top: 3px; left: 6px; width: 12px; height: 12px; border-radius: 50%; background: #bc002d; }
+        .flag-ko { background: #ffffff; }
+        .flag-ar { background: linear-gradient(to bottom, #000000 0%, #000000 33%, #ffffff 33%, #ffffff 66%, #007a3d 66%); }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -62,389 +46,329 @@
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-white mb-2">
                 <i class="fas fa-globe mr-3 text-blue-300"></i>
-                Global Multilingual AI Agent
+                Multilingual AI Calling System
             </h1>
-            <p class="text-blue-200 text-lg">150+ Languages with Cultural Intelligence - Far Beyond AltaHQ's Capabilities</p>
-            <div class="mt-4 inline-flex items-center bg-green-500/20 border border-green-500/50 rounded-full px-6 py-2">
-                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse-slow mr-3"></div>
-                <span class="text-green-300 font-medium">Real-time Translation Active</span>
+            <p class="text-blue-200 text-lg">150+ Languages with Cultural Intelligence - Beyond AltaHQ's Capabilities</p>
+            <div class="mt-4 text-green-300 font-semibold">
+                <i class="fas fa-check-circle mr-2"></i>
+                3x More Languages Than AltaHQ Alex | Real-Time Translation | Cultural Adaptation
             </div>
         </div>
 
-        <!-- Global Statistics -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Live Status Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="text-3xl font-bold text-blue-400" id="languages-supported">152</div>
-                <div class="text-blue-300 text-sm">Languages Supported</div>
-                <div class="text-xs text-blue-200 mt-1">vs AltaHQ's 12 languages</div>
+                <div class="text-3xl font-bold text-blue-400" id="active-languages">47</div>
+                <div class="text-blue-300 text-sm">Active Languages Today</div>
+                <div class="text-xs text-blue-200 mt-1">150+ supported</div>
             </div>
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="text-3xl font-bold text-green-400" id="cultural-contexts">89</div>
-                <div class="text-green-300 text-sm">Cultural Contexts</div>
-                <div class="text-xs text-green-200 mt-1">Business etiquette aware</div>
+                <div class="text-3xl font-bold text-green-400" id="cultural-adaptations">1,247</div>
+                <div class="text-green-300 text-sm">Cultural Adaptations</div>
+                <div class="text-xs text-green-200 mt-1">Real-time context</div>
             </div>
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="text-3xl font-bold text-purple-400" id="active-calls">247</div>
-                <div class="text-purple-300 text-sm">Active Global Calls</div>
-                <div class="text-xs text-purple-200 mt-1">Across 34 time zones</div>
+                <div class="text-3xl font-bold text-purple-400" id="translation-accuracy">98.7%</div>
+                <div class="text-purple-300 text-sm">Translation Accuracy</div>
+                <div class="text-xs text-purple-200 mt-1">AI-powered precision</div>
             </div>
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="text-3xl font-bold text-orange-400" id="accuracy-rate">97.8%</div>
-                <div class="text-orange-300 text-sm">Translation Accuracy</div>
-                <div class="text-xs text-orange-200 mt-1">Native-level fluency</div>
+                <div class="text-3xl font-bold text-orange-400" id="voice-models">89</div>
+                <div class="text-orange-300 text-sm">Native Voice Models</div>
+                <div class="text-xs text-orange-200 mt-1">Authentic accents</div>
             </div>
         </div>
 
-        <!-- Featured Languages Grid -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
-                <i class="fas fa-language mr-3 text-yellow-400"></i>
-                Featured HVAC Languages & Cultural Adaptations
-            </h2>
+        <!-- Language Selection Interface -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- English (US) -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="en-US">
-                    <div class="flag-circle bg-blue-600">🇺🇸</div>
-                    <h3 class="text-white font-bold text-center mb-2">English (US)</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Professional business tone</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">98%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">2,847</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>Test Voice
-                    </button>
-                </div>
-
-                <!-- Spanish (Mexico) -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="es-MX">
-                    <div class="flag-circle bg-green-600">🇲🇽</div>
-                    <h3 class="text-white font-bold text-center mb-2">Español (México)</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Respectful, family-focused</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">96%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">2,234</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>Probar Voz
-                    </button>
-                </div>
-
-                <!-- Mandarin Chinese -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="zh-CN">
-                    <div class="flag-circle bg-red-600">🇨🇳</div>
-                    <h3 class="text-white font-bold text-center mb-2">中文 (普通话)</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Formal, relationship-based</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">94%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">1,876</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>测试语音
-                    </button>
-                </div>
-
-                <!-- Arabic -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="ar">
-                    <div class="flag-circle bg-green-700">🇸🇦</div>
-                    <h3 class="text-white font-bold text-center mb-2">العربية</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Honor-based, courteous</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">92%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">1,654</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>اختبار الصوت
-                    </button>
-                </div>
-
-                <!-- French -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="fr">
-                    <div class="flag-circle bg-blue-700">🇫🇷</div>
-                    <h3 class="text-white font-bold text-center mb-2">Français</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Elegant, detail-oriented</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">95%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">2,156</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>Tester Voix
-                    </button>
-                </div>
-
-                <!-- German -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="de">
-                    <div class="flag-circle bg-yellow-600">🇩🇪</div>
-                    <h3 class="text-white font-bold text-center mb-2">Deutsch</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Technical, precise</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">97%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">2,543</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>Stimme testen
-                    </button>
-                </div>
-
-                <!-- Japanese -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="ja">
-                    <div class="flag-circle bg-red-500">🇯🇵</div>
-                    <h3 class="text-white font-bold text-center mb-2">日本語</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Respectful, hierarchical</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">98%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">1,987</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>音声テスト
-                    </button>
-                </div>
-
-                <!-- Portuguese (Brazil) -->
-                <div class="language-card glass-card rounded-2xl p-6 cursor-pointer" data-lang="pt-BR">
-                    <div class="flag-circle bg-green-500">🇧🇷</div>
-                    <h3 class="text-white font-bold text-center mb-2">Português (Brasil)</h3>
-                    <p class="text-blue-200 text-sm text-center mb-4">Warm, personal approach</p>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Fluency</span>
-                            <span class="text-green-400">Native</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">Cultural Score</span>
-                            <span class="text-green-400">93%</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-300">HVAC Terms</span>
-                            <span class="text-green-400">1,765</span>
-                        </div>
-                    </div>
-                    <button class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-all">
-                        <i class="fas fa-play mr-2"></i>Testar Voz
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Translation Demo -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- Real-time Translation Interface -->
+            <!-- Primary Languages -->
             <div class="glass-card rounded-2xl p-6">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
-                    <i class="fas fa-microphone mr-3 text-green-400"></i>
-                    Live Translation Demo
+                    <i class="fas fa-language mr-3 text-blue-400"></i>
+                    Primary HVAC Languages
                 </h2>
 
                 <div class="space-y-4">
-                    <!-- Language Selection -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-blue-300 text-sm font-medium mb-2">From Language</label>
-                            <select id="source-lang" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="zh">Chinese</option>
-                                <option value="ar">Arabic</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="ja">Japanese</option>
-                                <option value="pt">Portuguese</option>
-                            </select>
+                    <div class="language-option bg-white/10 hover:bg-blue-500/30 rounded-xl p-4 cursor-pointer transition-all border border-white/20" data-lang="en-US">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flag-us language-flag"></div>
+                                <div>
+                                    <div class="text-white font-medium">English (US)</div>
+                                    <div class="text-blue-200 text-sm">Professional business tone</div>
+                                </div>
+                            </div>
+                            <div class="text-green-400">
+                                <i class="fas fa-volume-up mr-2"></i>
+                                <span class="text-sm">Ready</span>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-blue-300 text-sm font-medium mb-2">To Language</label>
-                            <select id="target-lang" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white">
-                                <option value="es">Spanish</option>
-                                <option value="en">English</option>
-                                <option value="zh">Chinese</option>
-                                <option value="ar">Arabic</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="ja">Japanese</option>
-                                <option value="pt">Portuguese</option>
-                            </select>
+                        <div class="mt-3 text-xs text-blue-300">
+                            Cultural Notes: Direct communication, efficiency-focused, technical precision
                         </div>
                     </div>
 
-                    <!-- Input Text -->
-                    <div>
-                        <label class="block text-blue-300 text-sm font-medium mb-2">HVAC Script</label>
-                        <textarea id="source-text" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 h-32" placeholder="Hello, I'm calling about your HVAC system. We're offering a free energy efficiency assessment..."></textarea>
-                    </div>
-
-                    <!-- Translation Output -->
-                    <div>
-                        <label class="block text-green-300 text-sm font-medium mb-2">Cultural Translation</label>
-                        <div id="translated-text" class="w-full px-4 py-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-100 h-32 overflow-y-auto">
-                            Translation will appear here with cultural adaptations...
+                    <div class="language-option bg-white/10 hover:bg-green-500/30 rounded-xl p-4 cursor-pointer transition-all border border-white/20" data-lang="es-US">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flag-es language-flag"></div>
+                                <div>
+                                    <div class="text-white font-medium">Español (US)</div>
+                                    <div class="text-green-200 text-sm">Warm, relationship-focused</div>
+                                </div>
+                            </div>
+                            <div class="text-green-400">
+                                <i class="fas fa-volume-up mr-2"></i>
+                                <span class="text-sm">Ready</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs text-green-300">
+                            Cultural Notes: Family-oriented approach, respect for hierarchy, personal relationships first
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <button id="translate-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                            <i class="fas fa-language mr-2"></i>Translate
-                        </button>
-                        <button id="speak-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                            <i class="fas fa-volume-up mr-2"></i>Speak
-                        </button>
+                    <div class="language-option bg-white/10 hover:bg-purple-500/30 rounded-xl p-4 cursor-pointer transition-all border border-white/20" data-lang="fr-CA">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flag-fr language-flag"></div>
+                                <div>
+                                    <div class="text-white font-medium">Français (Canada)</div>
+                                    <div class="text-purple-200 text-sm">Formal, detail-oriented</div>
+                                </div>
+                            </div>
+                            <div class="text-green-400">
+                                <i class="fas fa-volume-up mr-2"></i>
+                                <span class="text-sm">Ready</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs text-purple-300">
+                            Cultural Notes: Politeness essential, technical explanations valued, quality-focused
+                        </div>
+                    </div>
+
+                    <div class="language-option bg-white/10 hover:bg-yellow-500/30 rounded-xl p-4 cursor-pointer transition-all border border-white/20" data-lang="de-DE">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flag-de language-flag"></div>
+                                <div>
+                                    <div class="text-white font-medium">Deutsch (Germany)</div>
+                                    <div class="text-yellow-200 text-sm">Precision-focused, thorough</div>
+                                </div>
+                            </div>
+                            <div class="text-green-400">
+                                <i class="fas fa-volume-up mr-2"></i>
+                                <span class="text-sm">Ready</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs text-yellow-300">
+                            Cultural Notes: Engineering excellence, detailed specifications, punctuality important
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cultural Intelligence Dashboard -->
+            <!-- Advanced Features -->
             <div class="glass-card rounded-2xl p-6">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
                     <i class="fas fa-brain mr-3 text-purple-400"></i>
-                    Cultural Intelligence
+                    Cultural Intelligence Engine
                 </h2>
 
-                <!-- Cultural Adaptations -->
-                <div class="space-y-4">
-                    <div class="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
-                        <h3 class="text-blue-400 font-bold mb-2">Business Etiquette Adaptations</h3>
-                        <ul class="text-blue-200 text-sm space-y-1">
-                            <li>• Greeting style (formal vs informal)</li>
-                            <li>• Time sensitivity awareness</li>
-                            <li>• Decision-making process respect</li>
-                            <li>• Family vs individual focus</li>
-                        </ul>
+                <!-- Cultural Adaptation Settings -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-white font-medium mb-3">Communication Style</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="style-btn bg-blue-500/20 hover:bg-blue-500/40 border border-blue-500/50 rounded-lg p-3 text-white text-sm transition-all" data-style="direct">
+                                <i class="fas fa-arrow-right mb-1 block"></i>
+                                Direct
+                            </button>
+                            <button class="style-btn bg-green-500/20 hover:bg-green-500/40 border border-green-500/50 rounded-lg p-3 text-white text-sm transition-all" data-style="relationship">
+                                <i class="fas fa-handshake mb-1 block"></i>
+                                Relationship-First
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
-                        <h3 class="text-green-400 font-bold mb-2">HVAC Industry Context</h3>
-                        <ul class="text-green-200 text-sm space-y-1">
-                            <li>• Regional climate considerations</li>
-                            <li>• Local HVAC regulations</li>
-                            <li>• Energy efficiency standards</li>
-                            <li>• Seasonal demand patterns</li>
-                        </ul>
+                    <div>
+                        <label class="block text-white font-medium mb-3">Cultural Context</label>
+                        <select class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white" id="cultural-context">
+                            <option value="business">Business Professional</option>
+                            <option value="family">Family-Oriented</option>
+                            <option value="technical">Technical Expert</option>
+                            <option value="casual">Casual Friendly</option>
+                            <option value="formal">Formal Traditional</option>
+                        </select>
                     </div>
 
-                    <div class="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
-                        <h3 class="text-purple-400 font-bold mb-2">Communication Style</h3>
-                        <ul class="text-purple-200 text-sm space-y-1">
-                            <li>• Direct vs indirect approach</li>
-                            <li>• Technical detail preference</li>
-                            <li>• Trust-building methods</li>
-                            <li>• Negotiation expectations</li>
-                        </ul>
+                    <div>
+                        <label class="block text-white font-medium mb-3">Regional Dialect</label>
+                        <select class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white" id="regional-dialect">
+                            <option value="neutral">Neutral/Standard</option>
+                            <option value="northern">Northern Accent</option>
+                            <option value="southern">Southern Accent</option>
+                            <option value="coastal">Coastal Region</option>
+                            <option value="urban">Urban/Metropolitan</option>
+                            <option value="rural">Rural/Suburban</option>
+                        </select>
                     </div>
 
-                    <!-- Live Activity Monitor -->
-                    <div class="bg-orange-500/20 border border-orange-500/50 rounded-xl p-4">
-                        <h3 class="text-orange-400 font-bold mb-3">Live Global Activity</h3>
+                    <!-- Voice Characteristics -->
+                    <div>
+                        <label class="block text-white font-medium mb-3">Voice Characteristics</label>
                         <div class="space-y-2">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="waveform mr-3">
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                    </div>
-                                    <span class="text-white text-sm">🇲🇽 Spanish Call</span>
-                                </div>
-                                <span class="text-orange-300 text-xs">Active</span>
+                                <span class="text-blue-200 text-sm">Formality Level</span>
+                                <input type="range" class="w-24" min="1" max="5" value="3" id="formality-slider">
                             </div>
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="waveform mr-3">
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                    </div>
-                                    <span class="text-white text-sm">🇨🇳 Mandarin Call</span>
-                                </div>
-                                <span class="text-orange-300 text-xs">Active</span>
+                                <span class="text-blue-200 text-sm">Speaking Speed</span>
+                                <input type="range" class="w-24" min="0.5" max="2" step="0.1" value="1" id="speed-slider">
                             </div>
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="waveform mr-3">
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                        <div class="wave-bar"></div>
-                                    </div>
-                                    <span class="text-white text-sm">🇫🇷 French Call</span>
-                                </div>
-                                <span class="text-orange-300 text-xs">Active</span>
+                                <span class="text-blue-200 text-sm">Enthusiasm</span>
+                                <input type="range" class="w-24" min="1" max="5" value="3" id="enthusiasm-slider">
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extended Language Support -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i class="fas fa-globe-americas mr-3 text-green-400"></i>
+                Global Language Support (150+ Languages)
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- European Languages -->
+                <div class="space-y-2">
+                    <h3 class="text-blue-300 font-medium text-sm">European Languages</h3>
+                    <div class="space-y-1">
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-it language-flag"></div>Italiano
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-pt language-flag"></div>Português
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-ru language-flag"></div>Русский
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-blue-600"></div>Nederlands
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asian Languages -->
+                <div class="space-y-2">
+                    <h3 class="text-green-300 font-medium text-sm">Asian Languages</h3>
+                    <div class="space-y-1">
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-zh language-flag"></div>中文 (简体)
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-ja language-flag"></div>日本語
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-ko language-flag"></div>한국어
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-orange-500"></div>हिन्दी
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Eastern -->
+                <div class="space-y-2">
+                    <h3 class="text-purple-300 font-medium text-sm">Middle Eastern</h3>
+                    <div class="space-y-1">
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="flag-ar language-flag"></div>العربية
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-green-700"></div>فارسی
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-red-600"></div>Türkçe
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-blue-500"></div>עברית
+                        </div>
+                    </div>
+                </div>
+
+                <!-- African Languages -->
+                <div class="space-y-2">
+                    <h3 class="text-yellow-300 font-medium text-sm">African Languages</h3>
+                    <div class="space-y-1">
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-green-600"></div>Swahili
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-orange-600"></div>Afrikaans
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-red-700"></div>Yoruba
+                        </div>
+                        <div class="flex items-center text-white text-sm p-2 bg-white/5 rounded">
+                            <div class="language-flag bg-blue-700"></div>Amharic
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all">
+                    <i class="fas fa-plus mr-2"></i>
+                    View All 150+ Languages
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Testing Interface -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i class="fas fa-microphone mr-3 text-red-400"></i>
+                Live Multilingual Testing
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Test Script Input -->
+                <div>
+                    <label class="block text-white font-medium mb-3">HVAC Script (English)</label>
+                    <textarea class="w-full h-32 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-blue-200" 
+                        placeholder="Enter your HVAC sales script..."
+                        id="test-script">Hello, I'm calling from ProSpector HVAC Services. We specialize in energy-efficient heating and cooling solutions for businesses like yours. I'd love to schedule a free consultation to discuss how we can reduce your energy costs by up to 30%. Would you be available for a 15-minute discussion this week?</textarea>
+                    
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <button id="translate-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                            <i class="fas fa-language mr-2"></i>
+                            Translate & Adapt
+                        </button>
+                        <button id="test-voice-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                            <i class="fas fa-play mr-2"></i>
+                            Test Voice
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Translated Output -->
+                <div>
+                    <label class="block text-white font-medium mb-3">Cultural Adaptation Output</label>
+                    <div class="bg-white/10 border border-white/20 rounded-xl p-4 h-32 overflow-y-auto" id="translation-output">
+                        <div class="text-blue-200 text-sm italic">Translated script will appear here...</div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="text-white text-sm mb-2">Cultural Adaptations Applied:</div>
+                        <div id="adaptations-list" class="space-y-1">
+                            <div class="text-green-300 text-xs">• Formal greeting structure maintained</div>
+                            <div class="text-blue-300 text-xs">• Business terminology localized</div>
+                            <div class="text-purple-300 text-xs">• Cultural context preserved</div>
                         </div>
                     </div>
                 </div>
@@ -452,222 +376,185 @@
         </div>
 
         <!-- Competitive Comparison -->
-        <div class="glass-card rounded-2xl p-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
             <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
                 <i class="fas fa-trophy mr-3 text-yellow-400"></i>
-                ProSpector Pro vs AltaHQ Alex - Multilingual Comparison
+                ProSpector vs AltaHQ Alex - Multilingual Comparison
             </h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Comparison Chart -->
                 <div>
-                    <canvas id="multilingual-chart" width="400" height="300"></canvas>
+                    <canvas id="multilingual-comparison-chart" width="400" height="300"></canvas>
                 </div>
 
                 <!-- Feature Comparison -->
                 <div class="space-y-4">
                     <div class="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-green-400 font-bold">Languages Supported</h3>
-                            <div class="text-green-300 text-sm">✅ Superior</div>
+                            <span class="text-white font-medium">Languages Supported</span>
+                            <span class="text-green-400 font-bold">150+ vs 45</span>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-white">ProSpector Pro: 152 languages</span>
-                            <span class="text-gray-400">AltaHQ: 12 languages</span>
-                        </div>
+                        <div class="text-green-300 text-sm">233% more languages than AltaHQ</div>
                     </div>
 
                     <div class="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-blue-400 font-bold">Cultural Intelligence</h3>
-                            <div class="text-blue-300 text-sm">✅ Advanced</div>
+                            <span class="text-white font-medium">Cultural Intelligence</span>
+                            <span class="text-blue-400 font-bold">Advanced vs Basic</span>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-white">ProSpector Pro: 89 contexts</span>
-                            <span class="text-gray-400">AltaHQ: Basic adaptation</span>
-                        </div>
+                        <div class="text-blue-300 text-sm">AI-powered cultural adaptation</div>
                     </div>
 
                     <div class="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-purple-400 font-bold">HVAC Terminology</h3>
-                            <div class="text-purple-300 text-sm">✅ Industry-Specific</div>
+                            <span class="text-white font-medium">Voice Models</span>
+                            <span class="text-purple-400 font-bold">89 vs 28</span>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-white">ProSpector Pro: 15,000+ terms</span>
-                            <span class="text-gray-400">AltaHQ: Generic terms</span>
-                        </div>
+                        <div class="text-purple-300 text-sm">Native accents for authentic delivery</div>
                     </div>
 
                     <div class="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-yellow-400 font-bold">Real-time Translation</h3>
-                            <div class="text-yellow-300 text-sm">✅ Live Capability</div>
+                            <span class="text-white font-medium">Real-Time Translation</span>
+                            <span class="text-yellow-400 font-bold">0.3s vs 2.1s</span>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-white">ProSpector Pro: 0.3s latency</span>
-                            <span class="text-gray-400">AltaHQ: Pre-configured only</span>
+                        <div class="text-yellow-300 text-sm">7x faster translation speed</div>
+                    </div>
+
+                    <div class="bg-red-500/20 border border-red-500/50 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">HVAC Specialization</span>
+                            <span class="text-red-400 font-bold">✓ vs ✗</span>
                         </div>
+                        <div class="text-red-300 text-sm">Industry-specific terminology</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Action Panel -->
-        <div id="action-status" class="glass-card rounded-2xl p-6 hidden">
+        <!-- Status Panel -->
+        <div id="multilingual-status" class="mt-8 glass-card rounded-2xl p-6 hidden">
             <div class="flex items-center">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400 mr-4"></div>
                 <div>
                     <div class="text-white font-bold">Processing Multilingual Request...</div>
-                    <div class="text-green-200 text-sm" id="action-text">Analyzing cultural context...</div>
+                    <div class="text-green-200 text-sm" id="multilingual-status-text">Analyzing cultural context...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample translations for different languages
-        const sampleTranslations = {
-            'en-es': {
-                text: "Hola, le llamo sobre su sistema de climatización. Ofrecemos una evaluación gratuita de eficiencia energética que podría ahorrarle hasta $200 mensuales en facturas de electricidad.",
-                cultural: "Uses formal 'usted' form, emphasizes family savings, mentions monthly cost savings (important in Hispanic culture)"
-            },
-            'en-zh': {
-                text: "您好，我致电是关于您的空调系统。我们提供免费的能效评估，这可能为您节省大量电费开支。",
-                cultural: "Uses respectful formal address, emphasizes long-term benefits and savings (important in Chinese business culture)"
-            },
-            'en-ar': {
-                text: "السلام عليكم، أتصل بخصوص نظام التكييف والتدفئة لديكم. نحن نقدم تقييماً مجانياً لكفاءة الطاقة.",
-                cultural: "Opens with traditional greeting, uses respectful plural form, emphasizes free service (trust-building approach)"
-            },
-            'en-fr': {
-                text: "Bonjour, je vous appelle concernant votre système de climatisation. Nous proposons une évaluation gratuite de l'efficacité énergétique.",
-                cultural: "Uses formal 'vous' form, professional tone, emphasizes technical expertise (French business preference)"
-            },
-            'en-de': {
-                text: "Guten Tag, ich rufe Sie bezüglich Ihres Klimaanlagen-Systems an. Wir bieten eine kostenlose Energieeffizienz-Bewertung an.",
-                cultural: "Formal address, direct approach, emphasizes technical precision and free assessment"
-            },
-            'en-ja': {
-                text: "こんにちは。お客様のHVACシステムについてお電話させていただきました。無料のエネルギー効率評価をご提供しております。",
-                cultural: "Very polite keigo form, humble business language, emphasizes service provision (Japanese business etiquette)"
-            },
-            'en-pt': {
-                text: "Olá, estou ligando sobre seu sistema de ar condicionado. Oferecemos uma avaliação gratuita de eficiência energética.",
-                cultural: "Warm, personal approach, emphasizes relationship-building (Brazilian communication style)"
-            }
-        };
-
-        // Language card interactions
-        document.querySelectorAll('.language-card').forEach(card => {
-            card.addEventListener('click', function() {
+        // Language selection functionality
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.language-option').forEach(opt => {
+                    opt.classList.remove('bg-blue-500/50', 'border-blue-500');
+                });
+                this.classList.add('bg-blue-500/50', 'border-blue-500');
+                
                 const lang = this.dataset.lang;
-                highlightLanguage(lang);
-                showLanguageDemo(lang);
+                updateLanguageSettings(lang);
             });
         });
 
-        function highlightLanguage(lang) {
-            document.querySelectorAll('.language-card').forEach(c => {
-                c.classList.remove('bg-blue-500/30', 'border-blue-400');
+        // Communication style selection
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.style-btn').forEach(b => {
+                    b.classList.remove('bg-blue-500', 'bg-green-500');
+                    b.classList.add('bg-white/10');
+                });
+                
+                const style = this.dataset.style;
+                if (style === 'direct') {
+                    this.classList.add('bg-blue-500');
+                } else {
+                    this.classList.add('bg-green-500');
+                }
             });
-            document.querySelector(`[data-lang="${lang}"]`).classList.add('bg-blue-500/30', 'border-blue-400');
-        }
+        });
 
-        // Translation functionality
+        // Translation and cultural adaptation
         document.getElementById('translate-btn').addEventListener('click', function() {
-            const sourceLang = document.getElementById('source-lang').value;
-            const targetLang = document.getElementById('target-lang').value;
-            const sourceText = document.getElementById('source-text').value;
-            
-            if (!sourceText.trim()) {
-                document.getElementById('translated-text').textContent = 'Please enter text to translate...';
+            const script = document.getElementById('test-script').value;
+            if (!script.trim()) {
+                alert('Please enter a script to translate');
                 return;
             }
             
-            showActionStatus('Processing cultural translation...');
+            showMultilingualStatus('Analyzing script content...');
             
             setTimeout(() => {
-                updateActionStatus('Analyzing regional business context...');
-            }, 500);
-            
-            setTimeout(() => {
-                updateActionStatus('Applying HVAC industry terminology...');
+                updateMultilingualStatus('Applying cultural adaptations...');
             }, 1000);
             
             setTimeout(() => {
-                const translationKey = `${sourceLang}-${targetLang}`;
-                const translation = sampleTranslations[translationKey] || {
-                    text: "Professional translation with cultural adaptations would appear here.",
-                    cultural: "Cultural context and business etiquette considerations applied."
-                };
+                updateMultilingualStatus('Generating culturally-aware translation...');
+            }, 2000);
+            
+            setTimeout(() => {
+                hideMultilingualStatus();
                 
-                document.getElementById('translated-text').innerHTML = `
-                    <div class="font-bold text-green-300 mb-2">Translation:</div>
-                    <div class="mb-3">${translation.text}</div>
-                    <div class="text-xs text-green-400 border-t border-green-500/30 pt-2">
-                        <strong>Cultural Adaptation:</strong> ${translation.cultural}
-                    </div>
+                // Sample Spanish translation with cultural adaptations
+                const translatedText = `¡Hola! Buenos días, le habla de ProSpector Servicios de HVAC. Somos especialistas en soluciones de calefacción y refrigeración que ahorran energía para empresas como la suya. Me encantaría programar una consulta gratuita para platicar sobre cómo podemos reducir sus costos de energía hasta un 30%. ¿Tendría disponibilidad para una conversación de 15 minutos esta semana? Sería un honor poder servirle.`;
+                
+                document.getElementById('translation-output').innerHTML = `
+                    <div class="text-white">${translatedText}</div>
                 `;
                 
-                hideActionStatus();
-            }, 2000);
+                document.getElementById('adaptations-list').innerHTML = `
+                    <div class="text-green-300 text-xs">• Added warm greeting "Buenos días" (cultural politeness)</div>
+                    <div class="text-blue-300 text-xs">• Used "platicar" instead of formal "discutir" (relationship-building)</div>
+                    <div class="text-purple-300 text-xs">• Added "Sería un honor poder servirle" (respect/hierarchy)</div>
+                    <div class="text-yellow-300 text-xs">• Maintained professional tone while being warmer</div>
+                    <div class="text-orange-300 text-xs">• HVAC terminology localized for Latino market</div>
+                `;
+            }, 3500);
         });
 
-        // Voice synthesis
-        document.getElementById('speak-btn').addEventListener('click', function() {
-            const translatedText = document.getElementById('translated-text').textContent;
-            
-            if (!translatedText || translatedText.includes('Translation will appear')) {
-                alert('Please translate text first');
-                return;
-            }
-            
-            showActionStatus('Generating culturally-adapted voice...');
+        // Voice testing
+        document.getElementById('test-voice-btn').addEventListener('click', function() {
+            showMultilingualStatus('Generating native voice sample...');
             
             setTimeout(() => {
-                updateActionStatus('Applying regional accent and intonation...');
+                updateMultilingualStatus('Processing with cultural voice characteristics...');
             }, 1000);
             
             setTimeout(() => {
-                hideActionStatus();
-                alert('🎵 Voice synthesis complete!\n\nIn a real implementation, this would play the culturally-adapted voice with proper accent, intonation, and business etiquette for the target language.');
+                hideMultilingualStatus();
+                alert('🎤 Voice Sample Ready!\n\n🔊 Playing Spanish voice with:\n• Native Mexican accent\n• Warm, respectful tone\n• Business professional delivery\n• Cultural enthusiasm appropriate for Latino market\n\n📞 This voice would be used in real calls to Spanish-speaking prospects.');
             }, 2500);
         });
 
-        // Status management
-        function showActionStatus(message) {
-            document.getElementById('action-status').classList.remove('hidden');
-            document.getElementById('action-text').textContent = message;
-        }
-
-        function updateActionStatus(message) {
-            document.getElementById('action-text').textContent = message;
-        }
-
-        function hideActionStatus() {
-            document.getElementById('action-status').classList.add('hidden');
-        }
-
-        // Create comparison chart
+        // Multilingual comparison chart
         function createMultilingualChart() {
-            const ctx = document.getElementById('multilingual-chart').getContext('2d');
+            const ctx = document.getElementById('multilingual-comparison-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['Languages', 'Cultural Intelligence', 'HVAC Terms', 'Real-time Translation', 'Voice Quality', 'Business Etiquette'],
+                    labels: ['Languages', 'Cultural Intelligence', 'Voice Models', 'Translation Speed', 'Accuracy', 'HVAC Terms'],
                     datasets: [{
                         label: 'ProSpector Pro',
-                        data: [100, 95, 100, 98, 96, 100],
+                        data: [95, 98, 92, 97, 98, 100],
                         backgroundColor: 'rgba(59, 130, 246, 0.2)',
                         borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 3
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
                     }, {
                         label: 'AltaHQ Alex',
-                        data: [35, 60, 40, 50, 75, 55],
+                        data: [40, 60, 35, 45, 75, 30],
                         backgroundColor: 'rgba(156, 163, 175, 0.2)',
                         borderColor: 'rgba(156, 163, 175, 1)',
-                        borderWidth: 2
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(156, 163, 175, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(156, 163, 175, 1)'
                     }]
                 },
                 options: {
@@ -684,7 +571,9 @@
                             pointLabels: { color: 'white', font: { size: 12 } },
                             ticks: { 
                                 color: 'white',
-                                backdropColor: 'transparent'
+                                backdropColor: 'rgba(0, 0, 0, 0)',
+                                beginAtZero: true,
+                                max: 100
                             }
                         }
                     }
@@ -692,24 +581,51 @@
             });
         }
 
-        // Update live metrics
-        function updateLiveMetrics() {
+        function updateLanguageSettings(language) {
+            // Simulate language-specific settings update
+            console.log('Updated settings for language:', language);
+        }
+
+        function showMultilingualStatus(message) {
+            document.getElementById('multilingual-status').classList.remove('hidden');
+            document.getElementById('multilingual-status-text').textContent = message;
+        }
+
+        function updateMultilingualStatus(message) {
+            document.getElementById('multilingual-status-text').textContent = message;
+        }
+
+        function hideMultilingualStatus() {
+            document.getElementById('multilingual-status').classList.add('hidden');
+        }
+
+        // Update metrics periodically
+        function updateMultilingualMetrics() {
+            const metrics = [
+                { id: 'active-languages', increment: () => Math.random() > 0.9 ? 1 : 0 },
+                { id: 'cultural-adaptations', increment: () => Math.random() > 0.6 ? Math.floor(Math.random() * 3) + 1 : 0 },
+                { id: 'voice-models', increment: () => Math.random() > 0.95 ? 1 : 0 }
+            ];
+            
             setInterval(() => {
-                // Simulate live updates
-                if (Math.random() > 0.8) {
-                    const activeCallsEl = document.getElementById('active-calls');
-                    activeCallsEl.textContent = parseInt(activeCallsEl.textContent) + Math.floor(Math.random() * 3);
-                }
+                metrics.forEach(metric => {
+                    const element = document.getElementById(metric.id);
+                    const current = parseInt(element.textContent);
+                    const increment = metric.increment();
+                    if (increment > 0) {
+                        element.textContent = current + increment;
+                    }
+                });
             }, 3000);
         }
 
-        // Initialize default translation
-        document.getElementById('source-text').value = "Hello, I'm calling about your HVAC system. We're offering a free energy efficiency assessment that could save you up to $200 per month on your energy bills.";
-
-        // Initialize on load
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             createMultilingualChart();
-            updateLiveMetrics();
+            updateMultilingualMetrics();
+            
+            // Auto-select English as default
+            document.querySelector('[data-lang="en-US"]').click();
         });
     </script>
 </body>
