@@ -73,9 +73,10 @@
                         <div class="text-xs text-blue-300 font-medium mb-2">Quick Steps:</div>
                         <div class="space-y-1 text-xs text-blue-200">
                             <div>1. Sign in to app.bland.ai</div>
-                            <div>2. Go to Developer Settings</div>
-                            <div>3. Copy your API key</div>
+                            <div>2. Go to Organization → API KEYS</div>
+                            <div>3. Copy your existing API key</div>
                             <div>4. Paste it in Step 2 below</div>
+                            <div class="text-yellow-200">⚠️ Keys start with numbers (e.g., 0245be61-...)</div>
                         </div>
                     </div>
                 </div>
@@ -93,7 +94,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-white font-medium mb-2">Bland AI API Key</label>
-                        <input type="password" id="bland-api-key" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="sk-your-bland-api-key-here">
+                        <input type="password" id="bland-api-key" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="0245be61-your-bland-api-key-here">
                         <div class="text-xs text-green-200 mt-1">
                             <i class="fas fa-lock mr-1"></i>
                             Stored securely in your browser
@@ -324,8 +325,10 @@
                 return;
             }
             
-            if (!apiKey.startsWith('sk-')) {
-                alert('Invalid API key format. Bland AI keys start with "sk-"');
+            // Validate Bland AI UUID format (e.g., 0245be61-cee5-4be3-org_a8ce8a5b01-b316af376f31)
+            const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/i;
+            if (!uuidPattern.test(apiKey)) {
+                alert('Invalid API key format. Bland AI keys use UUID format (e.g., 0245be61-cee5-4be3-...)');
                 return;
             }
             
