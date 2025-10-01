@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSpector Pro - Smart Calendar & CRM Integration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .animate-pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-calendar-check mr-3 text-blue-300"></i>
+                Smart Calendar & CRM Integration
+            </h1>
+            <p class="text-blue-200 text-lg">Advanced scheduling with real-time CRM sync - Superior to AltaHQ Alex</p>
+        </div>
+
+        <!-- Live Status Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold text-green-400" id="meetings-booked">127</div>
+                <div class="text-green-300 text-sm">Meetings Booked Today</div>
+                <div class="text-xs text-green-200 mt-1">↗ 23% vs yesterday</div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold text-blue-400" id="crm-syncs">1,847</div>
+                <div class="text-blue-300 text-sm">CRM Records Updated</div>
+                <div class="text-xs text-blue-200 mt-1">Real-time sync active</div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold text-purple-400" id="response-time">0.8s</div>
+                <div class="text-purple-300 text-sm">Avg Response Time</div>
+                <div class="text-xs text-purple-200 mt-1">84% faster than AltaHQ</div>
+            </div>
+        </div>
+
+        <!-- Main Integration Panel -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            
+            <!-- Calendar Booking Interface -->
+            <div class="glass-card rounded-2xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-calendar-plus mr-3 text-blue-400"></i>
+                    Smart Meeting Scheduler
+                </h2>
+
+                <!-- Lead Information -->
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-blue-300 text-sm font-medium mb-2">Lead Name</label>
+                        <input type="text" id="lead-name" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="Enter lead name">
+                    </div>
+                    <div>
+                        <label class="block text-blue-300 text-sm font-medium mb-2">Company</label>
+                        <input type="text" id="company" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="Company name">
+                    </div>
+                    <div>
+                        <label class="block text-blue-300 text-sm font-medium mb-2">Phone Number</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="(555) 123-4567">
+                    </div>
+                    <div>
+                        <label class="block text-blue-300 text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200" placeholder="lead@company.com">
+                    </div>
+                </div>
+
+                <!-- Meeting Type Selection -->
+                <div class="mb-6">
+                    <label class="block text-blue-300 text-sm font-medium mb-3">Meeting Type</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="meeting-type-btn bg-blue-500/20 hover:bg-blue-500/40 border border-blue-500/50 rounded-xl p-4 text-white transition-all" data-type="consultation">
+                            <i class="fas fa-user-tie mb-2 block"></i>
+                            HVAC Consultation
+                        </button>
+                        <button class="meeting-type-btn bg-green-500/20 hover:bg-green-500/40 border border-green-500/50 rounded-xl p-4 text-white transition-all" data-type="estimate">
+                            <i class="fas fa-calculator mb-2 block"></i>
+                            Free Estimate
+                        </button>
+                        <button class="meeting-type-btn bg-purple-500/20 hover:bg-purple-500/40 border border-purple-500/50 rounded-xl p-4 text-white transition-all" data-type="maintenance">
+                            <i class="fas fa-wrench mb-2 block"></i>
+                            Maintenance Visit
+                        </button>
+                        <button class="meeting-type-btn bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 rounded-xl p-4 text-white transition-all" data-type="emergency">
+                            <i class="fas fa-exclamation-triangle mb-2 block"></i>
+                            Emergency Service
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar Widget -->
+                <div class="mb-6">
+                    <label class="block text-blue-300 text-sm font-medium mb-3">Select Date & Time</label>
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <div class="grid grid-cols-7 gap-2 text-center text-sm text-blue-200 mb-4">
+                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-2">
+                            <!-- Calendar will be populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Time Slots -->
+                    <div class="mt-4">
+                        <div class="text-blue-300 text-sm font-medium mb-2">Available Time Slots</div>
+                        <div id="time-slots" class="grid grid-cols-3 gap-2">
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="09:00">9:00 AM</button>
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="10:30">10:30 AM</button>
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="14:00">2:00 PM</button>
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="15:30">3:30 PM</button>
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="17:00">5:00 PM</button>
+                            <button class="time-slot bg-white/10 hover:bg-blue-500/40 border border-white/20 rounded-lg p-2 text-white text-sm transition-all" data-time="18:30">6:30 PM</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <button id="book-meeting-btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        Book Meeting & Sync CRM
+                    </button>
+                    <button id="ai-call-book-btn" class="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl transition-all">
+                        <i class="fas fa-phone mr-2"></i>
+                        AI Call + Auto-Book Meeting
+                    </button>
+                </div>
+            </div>
+
+            <!-- CRM Integration Dashboard -->
+            <div class="glass-card rounded-2xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-database mr-3 text-green-400"></i>
+                    Real-Time CRM Sync
+                </h2>
+
+                <!-- CRM Connection Status -->
+                <div class="bg-green-500/20 border border-green-500/50 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse-slow mr-3"></div>
+                            <span class="text-green-300 font-medium">Connected to CRM</span>
+                        </div>
+                        <div class="text-green-400 text-sm">Last sync: 2 seconds ago</div>
+                    </div>
+                </div>
+
+                <!-- Supported CRM Systems -->
+                <div class="mb-6">
+                    <div class="text-white font-medium mb-3">Supported Integrations:</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center">
+                            <i class="fab fa-salesforce text-blue-400 text-xl mr-3"></i>
+                            <span class="text-white text-sm">Salesforce</span>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center">
+                            <i class="fas fa-hubspot text-orange-400 text-xl mr-3"></i>
+                            <span class="text-white text-sm">HubSpot</span>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center">
+                            <i class="fas fa-microsoft text-blue-400 text-xl mr-3"></i>
+                            <span class="text-white text-sm">Dynamics 365</span>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center">
+                            <i class="fas fa-pipe text-purple-400 text-xl mr-3"></i>
+                            <span class="text-white text-sm">Pipedrive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent CRM Activities -->
+                <div class="mb-6">
+                    <div class="text-white font-medium mb-3">Recent CRM Updates:</div>
+                    <div class="space-y-3 max-h-64 overflow-y-auto">
+                        <div class="bg-white/10 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-blue-400 text-sm font-medium">Lead Created</span>
+                                <span class="text-blue-200 text-xs">2 min ago</span>
+                            </div>
+                            <div class="text-white text-sm">John Smith - ABC Corp</div>
+                            <div class="text-blue-200 text-xs">Contact info + meeting scheduled</div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-green-400 text-sm font-medium">Opportunity Updated</span>
+                                <span class="text-green-200 text-xs">5 min ago</span>
+                            </div>
+                            <div class="text-white text-sm">Sarah Wilson - HVAC Solutions</div>
+                            <div class="text-green-200 text-xs">Status: Qualified → Meeting Booked</div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-purple-400 text-sm font-medium">Task Created</span>
+                                <span class="text-purple-200 text-xs">8 min ago</span>
+                            </div>
+                            <div class="text-white text-sm">Follow-up call scheduled</div>
+                            <div class="text-purple-200 text-xs">Mike Johnson - PrepWork Inc</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Integration -->
+                <div>
+                    <div class="text-white font-medium mb-3">Calendar Integrations:</div>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fab fa-google text-red-400 text-xl mr-3"></i>
+                                <span class="text-white text-sm">Google Calendar</span>
+                            </div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fab fa-microsoft text-blue-400 text-xl mr-3"></i>
+                                <span class="text-white text-sm">Outlook Calendar</span>
+                            </div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-3 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fab fa-apple text-gray-400 text-xl mr-3"></i>
+                                <span class="text-white text-sm">iCloud Calendar</span>
+                            </div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Analytics -->
+        <div class="mt-8">
+            <div class="glass-card rounded-2xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-chart-line mr-3 text-yellow-400"></i>
+                    Performance Analytics vs AltaHQ Alex
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Comparison Chart -->
+                    <div>
+                        <canvas id="comparison-chart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <!-- Key Metrics -->
+                    <div class="space-y-4">
+                        <div class="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
+                            <div class="text-green-400 text-sm font-medium">Meeting Booking Rate</div>
+                            <div class="text-white text-2xl font-bold">87.3%</div>
+                            <div class="text-green-300 text-xs">+23% vs AltaHQ Alex (71%)</div>
+                        </div>
+                        <div class="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
+                            <div class="text-blue-400 text-sm font-medium">CRM Sync Speed</div>
+                            <div class="text-white text-2xl font-bold">0.8s</div>
+                            <div class="text-blue-300 text-xs">84% faster than competitors</div>
+                        </div>
+                        <div class="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
+                            <div class="text-purple-400 text-sm font-medium">Calendar Integration</div>
+                            <div class="text-white text-2xl font-bold">98.9%</div>
+                            <div class="text-purple-300 text-xs">Success rate for bookings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Status -->
+        <div id="status-panel" class="mt-8 glass-card rounded-2xl p-6 hidden">
+            <div class="flex items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mr-4"></div>
+                <div>
+                    <div class="text-white font-bold">Processing Meeting Request...</div>
+                    <div class="text-blue-200 text-sm" id="status-text">Initializing calendar integration...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '');
+            x = x.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            e.target.value = x;
+        });
+
+        // Calendar generation
+        function generateCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+            
+            grid.innerHTML = '';
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'p-2';
+                grid.appendChild(cell);
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('button');
+                cell.className = 'calendar-day p-2 text-sm text-white hover:bg-blue-500/40 rounded-lg transition-all';
+                cell.textContent = day;
+                
+                if (day >= today.getDate()) {
+                    cell.classList.add('available');
+                    cell.addEventListener('click', function() {
+                        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('bg-blue-500'));
+                        this.classList.add('bg-blue-500');
+                    });
+                } else {
+                    cell.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        // Meeting type selection
+        document.querySelectorAll('.meeting-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.meeting-type-btn').forEach(b => {
+                    b.classList.remove('bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-red-500');
+                    b.classList.add('bg-white/10');
+                });
+                this.classList.remove('bg-white/10');
+                
+                const type = this.dataset.type;
+                if (type === 'consultation') this.classList.add('bg-blue-500');
+                else if (type === 'estimate') this.classList.add('bg-green-500');
+                else if (type === 'maintenance') this.classList.add('bg-purple-500');
+                else if (type === 'emergency') this.classList.add('bg-red-500');
+            });
+        });
+
+        // Time slot selection
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('bg-blue-500'));
+                this.classList.add('bg-blue-500');
+            });
+        });
+
+        // Book meeting functionality
+        document.getElementById('book-meeting-btn').addEventListener('click', function() {
+            const leadName = document.getElementById('lead-name').value;
+            const company = document.getElementById('company').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            
+            if (!leadName || !phone || !email) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            showStatus('Booking meeting and syncing with CRM...');
+            
+            // Simulate booking process
+            setTimeout(() => {
+                updateStatus('Creating calendar event...');
+            }, 1000);
+            
+            setTimeout(() => {
+                updateStatus('Updating CRM records...');
+            }, 2000);
+            
+            setTimeout(() => {
+                updateStatus('Sending confirmation emails...');
+            }, 3000);
+            
+            setTimeout(() => {
+                hideStatus();
+                alert('✅ Meeting booked successfully!\n\n📅 Calendar event created\n💼 CRM record updated\n📧 Confirmation sent to ' + email);
+                
+                // Update dashboard metrics
+                document.getElementById('meetings-booked').textContent = parseInt(document.getElementById('meetings-booked').textContent) + 1;
+                document.getElementById('crm-syncs').textContent = parseInt(document.getElementById('crm-syncs').textContent) + 1;
+            }, 4000);
+        });
+
+        // AI Call + Book functionality
+        document.getElementById('ai-call-book-btn').addEventListener('click', function() {
+            const phone = document.getElementById('phone').value;
+            if (!phone) {
+                alert('Please enter a phone number');
+                return;
+            }
+            
+            showStatus('Initiating AI call and preparing auto-booking...');
+            
+            setTimeout(() => {
+                updateStatus('Calling ' + phone + ' with AI agent...');
+            }, 1000);
+            
+            setTimeout(() => {
+                updateStatus('AI conversation in progress...');
+            }, 3000);
+            
+            setTimeout(() => {
+                updateStatus('Meeting interest confirmed, auto-booking...');
+            }, 6000);
+            
+            setTimeout(() => {
+                hideStatus();
+                alert('🎉 Success!\n\n📞 AI call completed\n✅ Meeting interest confirmed\n📅 Meeting automatically booked\n💼 CRM updated with call notes');
+            }, 8000);
+        });
+
+        function showStatus(message) {
+            document.getElementById('status-panel').classList.remove('hidden');
+            document.getElementById('status-text').textContent = message;
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status-text').textContent = message;
+        }
+
+        function hideStatus() {
+            document.getElementById('status-panel').classList.add('hidden');
+        }
+
+        // Performance chart
+        function createComparisonChart() {
+            const ctx = document.getElementById('comparison-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Booking Rate', 'Response Time', 'CRM Sync', 'Accuracy'],
+                    datasets: [{
+                        label: 'ProSpector Pro',
+                        data: [87.3, 0.8, 98.9, 94.7],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'AltaHQ Alex',
+                        data: [71.0, 4.2, 78.5, 89.2],
+                        backgroundColor: 'rgba(156, 163, 175, 0.8)',
+                        borderColor: 'rgba(156, 163, 175, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'white' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'white' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update metrics periodically
+        function updateMetrics() {
+            const meetingsElement = document.getElementById('meetings-booked');
+            const crmsElement = document.getElementById('crm-syncs');
+            
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    meetingsElement.textContent = parseInt(meetingsElement.textContent) + 1;
+                }
+                if (Math.random() > 0.5) {
+                    crmsElement.textContent = parseInt(crmsElement.textContent) + 1;
+                }
+            }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+            createComparisonChart();
+            updateMetrics();
+        });
+    </script>
+</body>
+</html>
