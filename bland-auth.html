@@ -325,10 +325,15 @@
                 return;
             }
             
-            // Validate Bland AI UUID format (e.g., 0245be61-cee5-4be3-org_a8ce8a5b01-b316af376f31)
-            const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/i;
-            if (!uuidPattern.test(apiKey)) {
-                alert('Invalid API key format. Bland AI keys use UUID format (e.g., 0245be61-cee5-4be3-...)');
+            // Basic validation - check for reasonable key length and basic format
+            if (apiKey.length < 20) {
+                alert('API key appears too short. Please check your Bland AI key.');
+                return;
+            }
+            
+            // Check if it looks like a Bland AI key (contains dashes and alphanumeric chars)
+            if (!apiKey.includes('-') || !/^[a-zA-Z0-9_-]+$/.test(apiKey)) {
+                alert('Invalid API key format. Please copy your key exactly as shown in Bland AI dashboard.');
                 return;
             }
             
