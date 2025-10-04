@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bland AI Key Format</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-600 to-blue-600 min-h-screen p-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+            <h1 class="text-3xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-key mr-3"></i>Bland AI Key Validator
+            </h1>
+            
+            <div class="mb-6">
+                <label class="block text-white font-medium mb-2">Test Your Bland AI API Key</label>
+                <input type="text" id="test-key" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" placeholder="Paste your Bland AI API key here">
+            </div>
+            
+            <button onclick="validateKey()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all mb-6">
+                <i class="fas fa-check-circle mr-2"></i>Validate Key Format
+            </button>
+            
+            <div id="result" class="hidden p-4 rounded-xl mb-6"></div>
+            
+            <div class="bg-black/20 rounded-xl p-4">
+                <h3 class="text-white font-bold mb-2">Expected Format Examples:</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="text-green-300">✅ Valid: 0245be61-cee5-4be3-org_a8ce8a5b01-b316af376f31</div>
+                    <div class="text-green-300">✅ Valid: 1234abcd-5678-90ef-ghij-klmnopqrstuvwxyz</div>
+                    <div class="text-red-300">❌ Invalid: sk-1234567890abcdef (OpenAI format)</div>
+                    <div class="text-red-300">❌ Invalid: blandkey_123456789 (Generic format)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function validateKey() {
+            const key = document.getElementById('test-key').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!key) {
+                showResult('Please enter an API key to validate', 'error');
+                return;
+            }
+            
+            // Flexible Bland AI key validation
+            const hasProperLength = key.length >= 20;
+            const hasDashes = key.includes('-');
+            const isAlphanumeric = /^[a-zA-Z0-9_-]+$/.test(key);
+            
+            if (hasProperLength && hasDashes && isAlphanumeric) {
+                showResult(`✅ Valid Bland AI Key Format!<br><br>
+                    <strong>Key Preview:</strong> ${key.substring(0, 12)}...<br>
+                    <strong>Format:</strong> UUID-based (correct)<br>
+                    <strong>Status:</strong> Ready for authentication`, 'success');
+            } else if (key.startsWith('sk-')) {
+                showResult(`❌ This appears to be an OpenAI format key<br><br>
+                    <strong>Issue:</strong> Starts with "sk-" (OpenAI format)<br>
+                    <strong>Expected:</strong> Bland AI keys start with numbers<br>
+                    <strong>Solution:</strong> Get your key from app.bland.ai → Organization → API KEYS`, 'error');
+            } else {
+                showResult(`❌ Invalid format for Bland AI<br><br>
+                    <strong>Current:</strong> ${key.substring(0, 20)}...<br>
+                    <strong>Expected:</strong> UUID format starting with numbers<br>
+                    <strong>Example:</strong> 0245be61-cee5-4be3-...`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `p-4 rounded-xl mb-6 ${type === 'success' ? 'bg-green-500/20 border border-green-400 text-green-100' : 'bg-red-500/20 border border-red-400 text-red-100'}`;
+            resultDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

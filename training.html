@@ -538,7 +538,7 @@
                                 <div class="mb-3">
                                     <!-- Lead Phone Number -->
                                     <label class="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
-                                    <input type="tel" id="lead-phone" placeholder="(786) 614-4925" 
+                                    <input type="tel" id="lead-phone" placeholder="any phone number" 
                                         class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
                                         value="(305) 555-7890">
                                 </div>
@@ -591,7 +591,7 @@
                             
                             <div class="mb-3">
                                 <label class="block text-xs font-medium text-slate-300 mb-1">Your Phone Number (AI will call you)</label>
-                                <input type="tel" id="your-phone-number" placeholder="(786) 614-4925" 
+                                <input type="tel" id="your-phone-number" placeholder="any phone number" 
                                     class="w-full bg-slate-700 border border-slate-600 text-white rounded px-2 py-1.5 text-sm mobile-friendly"
                                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
                                 <p class="text-xs text-slate-400 mt-1">📞 AI will call this number using your lead information</p>
@@ -4455,7 +4455,7 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
                 btn.disabled = false;
                 document.getElementById('real-call-progress').style.display = 'none';
                 
-                alert(`❌ Phone Call Failed\n\n${error.message}\n\nPlease check:\n• Phone number format: (786) 614-4926\n• Lead information is complete\n• Internet connection is stable`);
+                alert(`❌ Phone Call Failed\n\n${error.message}\n\nPlease check:\n• Phone number format: any phone number\n• Lead information is complete\n• Internet connection is stable`);
             }
         }
         
@@ -4548,10 +4548,10 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             console.log('📞 Real call record generated:', callRecord.id);
         }
         
-        // Enhanced phone number auto-formatting - (786) 614-4925 format for ALL phone fields
+        // Enhanced phone number auto-formatting - any phone number format for ALL phone fields
         document.addEventListener('DOMContentLoaded', () => {
             // Phone formatting function
-            function setupPhoneFormatting(phoneInput, placeholder = '(786) 614-4925') {
+            function setupPhoneFormatting(phoneInput, placeholder = 'any phone number') {
                 if (!phoneInput) return;
                 
                 // Set initial placeholder
@@ -4609,8 +4609,8 @@ I have an opening this Thursday afternoon - would 2 PM or 4 PM work better for y
             const yourPhoneInput = document.getElementById('your-phone-number');
             const leadPhoneInput = document.getElementById('lead-phone');
             
-            setupPhoneFormatting(yourPhoneInput, '(786) 614-4925');
-            setupPhoneFormatting(leadPhoneInput, '(786) 614-4925');
+            setupPhoneFormatting(yourPhoneInput, 'any phone number');
+            setupPhoneFormatting(leadPhoneInput, 'any phone number');
             
             console.log('📱 Enhanced phone formatting applied to all phone fields');
         });
