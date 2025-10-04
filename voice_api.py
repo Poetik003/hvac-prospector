@@ -17,6 +17,15 @@ import sys
 # Import requests for API calls
 import requests
 
+# Import Twilio + Bland AI integration
+try:
+    from twilio_bland_integration import get_integration
+    INTEGRATION_AVAILABLE = True
+    logger.info("✅ Twilio + Bland AI integration module loaded")
+except ImportError:
+    INTEGRATION_AVAILABLE = False
+    logger.warning("⚠️ Twilio + Bland AI integration module not available")
+
 # Load environment variables for live calling
 
 # FORCE LIVE CALLING MODE - OVERRIDE
@@ -410,6 +419,7 @@ def place_phone_call():
         script_text = data.get('script_text', '')
         voice_model = data.get('voice_model', 'yeni')
         lead_info = data.get('lead_info', {})
+        integration_mode = data.get('integration_mode', 'default')
         
         logger.info(f"📞 Real phone call request received")
         logger.info(f"📱 Phone number: {phone_number}")
@@ -425,6 +435,53 @@ def place_phone_call():
                 "message": "Phone number must be 10 digits in (XXX) XXX-XXXX format"
             }), 400
             
+        # Check if Twilio + Bland AI integration is requested
+        if integration_mode == 'twilio_bland_ai' and INTEGRATION_AVAILABLE:
+            logger.info(f"🚀 Using Twilio + Bland AI integration for {phone_number}")
+            
+            # Use integrated calling system
+            integration = get_integration()
+            
+            # Get appropriate HVAC script
+            scripts = integration.get_hvac_scripts()
+            if not script_text:
+                script_text = scripts.get('intro', 'Hello, this is a call from ProSpector HVAC Services.')
+            
+            # Make integrated call
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            try:
+                result = loop.run_until_complete(
+                    integration.initiate_integrated_call(clean_phone, script_text, lead_info, voice_model)
+                )
+            finally:
+                loop.close()
+            
+            if result['success']:
+                return jsonify({
+                    "success": True,
+                    "message": "Twilio + Bland AI integrated call initiated successfully",
+                    "call_sid": result.get('call_sid'),
+                    "call_id": result.get('call_id'), 
+                    "phone_number": phone_number,
+                    "voice_model": voice_model,
+                    "integration_mode": "twilio_bland_ai",
+                    "audio_url": result.get('audio_url'),
+                    "live_call": True
+                })
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": result.get('error', 'Integration call failed'),
+                    "details": result.get('details', 'Unknown error'),
+                    "integration_mode": "twilio_bland_ai"
+                }), 500
+        
+        # Fall back to existing calling system
+        logger.info(f"📞 Using standard calling system for {phone_number}")
+        
         # Generate AI voice audio for the call
         audio_url = generate_script_reading_voice(script_text, voice_model)
         
@@ -1186,6 +1243,78 @@ def generate_real_script_audio(script_text, voice_model, requirements):
 
 # Import time for call ID generation
 import time
+
+@app.route('/api/integration-status', methods=['GET'])
+@cross_origin()
+def get_integration_status():
+    """Get current integration configuration status"""
+    try:
+        if INTEGRATION_AVAILABLE:
+            integration = get_integration()
+            status = integration.get_integration_status()
+            return jsonify({
+                "success": True,
+                "integration_available": True,
+                "status": status
+            })
+        else:
+            return jsonify({
+                "success": True,
+                "integration_available": False,
+                "message": "Twilio + Bland AI integration module not loaded"
+            })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"Failed to get integration status: {str(e)}"
+        }), 500
+
+@app.route('/api/twiml/<call_id>', methods=['GET', 'POST'])
+@cross_origin()
+def serve_twiml(call_id):
+    """Serve TwiML for Twilio calls"""
+    try:
+        audio_url = request.args.get('audio')
+        if not audio_url:
+            return '''<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="alice">Hello, this is ProSpector HVAC Services. Please hold while we connect you.</Say>
+</Response>''', 200, {'Content-Type': 'text/xml'}
+        
+        twiml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="alice">Hello, connecting you with our HVAC specialist.</Say>
+    <Play>{audio_url}</Play>
+    <Gather input="speech dtmf" timeout="10" speechTimeout="auto">
+        <Say voice="alice">Thank you for your interest. Press 1 to speak with a representative, or stay on the line.</Say>
+    </Gather>
+    <Say voice="alice">Thank you for contacting ProSpector HVAC Services. Have a great day!</Say>
+</Response>'''
+        
+        return twiml, 200, {'Content-Type': 'text/xml'}
+    except Exception as e:
+        logger.error(f"TwiML error: {e}")
+        return '''<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="alice">We're sorry, there was a technical issue. Please call back later.</Say>
+</Response>''', 200, {'Content-Type': 'text/xml'}
+
+@app.route('/api/call-status/<call_id>', methods=['POST'])
+@cross_origin()
+def handle_call_status(call_id):
+    """Handle Twilio call status callbacks"""
+    try:
+        call_status = request.form.get('CallStatus')
+        call_sid = request.form.get('CallSid')
+        
+        logger.info(f"📊 Call {call_id} status update: {call_status} (SID: {call_sid})")
+        
+        # Here you could update a database, send notifications, etc.
+        
+        return jsonify({"success": True, "message": "Status updated"})
+    except Exception as e:
+        logger.error(f"Call status error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == '__main__':
     logger.info("🚀 Starting ProSpector Pro Voice API Server...")

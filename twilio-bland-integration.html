@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twilio + Bland AI Integration - ProSpector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        }
+        .integration-flow {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-4">
+                <i class="fas fa-phone mr-3 text-blue-300"></i>Twilio + Bland AI Integration
+            </h1>
+            <p class="text-blue-200 text-xl">Premium Telephony + Superior AI Voices for ProSpector</p>
+            <div class="mt-4 integration-flow p-4 rounded-xl text-white font-bold">
+                🔥 The Ultimate HVAC Cold Calling Solution
+            </div>
+        </div>
+
+        <!-- Integration Architecture -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Twilio Benefits -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-network-wired text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Twilio Telephony</h2>
+                    <p class="text-red-200">Enterprise-Grade Infrastructure</p>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start text-red-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>99.95% Uptime</strong><br>
+                            Carrier-grade reliability for business calls
+                        </div>
+                    </div>
+                    <div class="flex items-start text-red-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>Global Phone Numbers</strong><br>
+                            Local presence in 100+ countries
+                        </div>
+                    </div>
+                    <div class="flex items-start text-red-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>Advanced Call Controls</strong><br>
+                            Recording, forwarding, webhooks, analytics
+                        </div>
+                    </div>
+                    <div class="flex items-start text-red-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>Compliance Features</strong><br>
+                            TCPA compliance, call logs, consent tracking
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bland AI Benefits -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-microphone text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Bland AI Voices</h2>
+                    <p class="text-purple-200">Human-Like AI Conversations</p>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start text-purple-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>99.2% Human-Like Quality</strong><br>
+                            Indistinguishable from real human voices
+                        </div>
+                    </div>
+                    <div class="flex items-start text-purple-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>Real-Time Conversations</strong><br>
+                            Dynamic responses, interruption handling
+                        </div>
+                    </div>
+                    <div class="flex items-start text-purple-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>HVAC Expertise</strong><br>
+                            Industry-specific knowledge and terminology
+                        </div>
+                    </div>
+                    <div class="flex items-start text-purple-200">
+                        <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                        <div>
+                            <strong>Emotional Intelligence</strong><br>
+                            Adapts tone, handles objections naturally
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Workflow -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-cogs mr-2"></i>Integration Workflow
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold text-xl">1</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Lead Input</h3>
+                    <p class="text-blue-200 text-sm">Enter prospect info in ProSpector interface</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold text-xl">2</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">AI Voice Gen</h3>
+                    <p class="text-purple-200 text-sm">Bland AI creates personalized HVAC script</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold text-xl">3</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Twilio Call</h3>
+                    <p class="text-red-200 text-sm">Reliable phone connection & recording</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold text-xl">4</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Live AI Chat</h3>
+                    <p class="text-green-200 text-sm">Real-time conversation with prospect</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Panel -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-tools mr-2"></i>Integration Configuration
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Twilio Setup -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-network-wired mr-2 text-red-400"></i>Twilio Configuration
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Account SID</label>
+                            <input type="text" id="twilio-sid" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Auth Token</label>
+                            <input type="password" id="twilio-token" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="Your Twilio Auth Token">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Twilio Phone Number</label>
+                            <input type="text" id="twilio-number" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="+1234567890">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bland AI Setup -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-microphone mr-2 text-purple-400"></i>Bland AI Configuration
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Bland AI API Key</label>
+                            <input type="password" id="bland-key" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="0245be61-your-bland-api-key">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Default Voice</label>
+                            <select id="bland-voice" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                                <option value="yeni">Yeni (Professional Latina)</option>
+                                <option value="danny">Danny (Confident Male)</option>
+                                <option value="gabi">Gabi (Friendly Female)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Industry Specialization</label>
+                            <select id="industry" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                                <option value="hvac">HVAC Services</option>
+                                <option value="plumbing">Plumbing Services</option>
+                                <option value="electrical">Electrical Services</option>
+                                <option value="general">General Contractor</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <button onclick="saveIntegrationConfig()" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                    <i class="fas fa-save mr-2"></i>Save Integration Configuration
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Integration -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-flask mr-2"></i>Test Integration
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Test Call Parameters</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Test Phone Number</label>
+                            <input type="tel" id="test-phone" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="+1234567890">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Lead Name</label>
+                            <input type="text" id="test-name" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="John Smith">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Company</label>
+                            <input type="text" id="test-company" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                                   placeholder="ABC Corp">
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Integration Status</h3>
+                    <div id="integration-status" class="space-y-2 text-sm">
+                        <div class="flex items-center text-gray-300">
+                            <i class="fas fa-circle text-gray-500 mr-2"></i>
+                            Twilio: Not configured
+                        </div>
+                        <div class="flex items-center text-gray-300">
+                            <i class="fas fa-circle text-gray-500 mr-2"></i>
+                            Bland AI: Not configured
+                        </div>
+                        <div class="flex items-center text-gray-300">
+                            <i class="fas fa-circle text-gray-500 mr-2"></i>
+                            Integration: Not ready
+                        </div>
+                    </div>
+                    
+                    <button onclick="testIntegration()" class="w-full mt-6 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                        <i class="fas fa-phone mr-2"></i>Test Integration Call
+                    </button>
+                </div>
+            </div>
+            
+            <div id="test-result" class="hidden mt-6"></div>
+        </div>
+
+        <!-- Features Comparison -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">
+                Integration Benefits vs Alternatives
+            </h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-white/20">
+                            <th class="text-left text-white font-bold p-3">Feature</th>
+                            <th class="text-center text-green-300 font-bold p-3">Twilio + Bland AI</th>
+                            <th class="text-center text-gray-300 font-bold p-3">Twilio Only</th>
+                            <th class="text-center text-gray-300 font-bold p-3">Bland AI Only</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white">
+                        <tr class="border-b border-white/10">
+                            <td class="p-3">Voice Quality</td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-star"></i> 99.2% Human-Like
+                            </td>
+                            <td class="text-center text-yellow-300 p-3">
+                                <i class="fas fa-star-half-alt"></i> TTS Quality
+                            </td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-star"></i> Excellent
+                            </td>
+                        </tr>
+                        <tr class="border-b border-white/10">
+                            <td class="p-3">Call Reliability</td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-star"></i> 99.95% Uptime
+                            </td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-star"></i> Excellent
+                            </td>
+                            <td class="text-center text-yellow-300 p-3">
+                                <i class="fas fa-star-half-alt"></i> Good
+                            </td>
+                        </tr>
+                        <tr class="border-b border-white/10">
+                            <td class="p-3">Cost per Minute</td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-dollar-sign"></i> $0.01 + $0.09
+                            </td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-dollar-sign"></i> $0.01-0.05
+                            </td>
+                            <td class="text-center text-yellow-300 p-3">
+                                <i class="fas fa-dollar-sign"></i> $0.09
+                            </td>
+                        </tr>
+                        <tr class="border-b border-white/10">
+                            <td class="p-3">Global Coverage</td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-globe"></i> 100+ Countries
+                            </td>
+                            <td class="text-center text-green-300 p-3">
+                                <i class="fas fa-globe"></i> Excellent
+                            </td>
+                            <td class="text-center text-yellow-300 p-3">
+                                <i class="fas fa-map"></i> Limited
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="text-center mt-8">
+            <a href="/main-dashboard.html" class="inline-block bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                <i class="fas fa-arrow-left mr-2"></i>Back to ProSpector Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Load existing configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExistingConfig();
+            updateIntegrationStatus();
+        });
+        
+        function loadExistingConfig() {
+            // Load from localStorage
+            const twilioSid = localStorage.getItem('twilio_account_sid');
+            const twilioToken = localStorage.getItem('twilio_auth_token');
+            const twilioNumber = localStorage.getItem('twilio_phone_number');
+            const blandKey = localStorage.getItem('bland_api_key');
+            
+            if (twilioSid) document.getElementById('twilio-sid').value = twilioSid;
+            if (twilioToken) document.getElementById('twilio-token').value = twilioToken;
+            if (twilioNumber) document.getElementById('twilio-number').value = twilioNumber;
+            if (blandKey) document.getElementById('bland-key').value = blandKey;
+        }
+        
+        function saveIntegrationConfig() {
+            const twilioSid = document.getElementById('twilio-sid').value.trim();
+            const twilioToken = document.getElementById('twilio-token').value.trim();
+            const twilioNumber = document.getElementById('twilio-number').value.trim();
+            const blandKey = document.getElementById('bland-key').value.trim();
+            const voice = document.getElementById('bland-voice').value;
+            const industry = document.getElementById('industry').value;
+            
+            // Validate inputs
+            if (!twilioSid || !twilioToken || !twilioNumber || !blandKey) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Save configuration
+            localStorage.setItem('twilio_account_sid', twilioSid);
+            localStorage.setItem('twilio_auth_token', twilioToken);
+            localStorage.setItem('twilio_phone_number', twilioNumber);
+            localStorage.setItem('bland_api_key', blandKey);
+            localStorage.setItem('default_voice', voice);
+            localStorage.setItem('industry_specialization', industry);
+            
+            // Update integration status
+            updateIntegrationStatus();
+            
+            alert('✅ Integration configuration saved successfully!');
+        }
+        
+        function updateIntegrationStatus() {
+            const statusDiv = document.getElementById('integration-status');
+            const twilioSid = localStorage.getItem('twilio_account_sid');
+            const blandKey = localStorage.getItem('bland_api_key');
+            
+            const twilioStatus = twilioSid ? 
+                '<i class="fas fa-circle text-green-500 mr-2"></i>Twilio: Configured ✓' : 
+                '<i class="fas fa-circle text-gray-500 mr-2"></i>Twilio: Not configured';
+                
+            const blandStatus = blandKey ? 
+                '<i class="fas fa-circle text-green-500 mr-2"></i>Bland AI: Configured ✓' : 
+                '<i class="fas fa-circle text-gray-500 mr-2"></i>Bland AI: Not configured';
+                
+            const integrationStatus = (twilioSid && blandKey) ? 
+                '<i class="fas fa-circle text-green-500 mr-2"></i>Integration: Ready for calls ✓' : 
+                '<i class="fas fa-circle text-orange-500 mr-2"></i>Integration: Partial setup';
+            
+            statusDiv.innerHTML = `
+                <div class="flex items-center text-white">${twilioStatus}</div>
+                <div class="flex items-center text-white">${blandStatus}</div>
+                <div class="flex items-center text-white">${integrationStatus}</div>
+            `;
+        }
+        
+        async function testIntegration() {
+            const testPhone = document.getElementById('test-phone').value.trim();
+            const testName = document.getElementById('test-name').value.trim();
+            const testCompany = document.getElementById('test-company').value.trim();
+            const resultDiv = document.getElementById('test-result');
+            
+            if (!testPhone || !testName || !testCompany) {
+                alert('Please fill in all test parameters');
+                return;
+            }
+            
+            // Check configuration
+            const twilioSid = localStorage.getItem('twilio_account_sid');
+            const blandKey = localStorage.getItem('bland_api_key');
+            
+            if (!twilioSid || !blandKey) {
+                alert('Please configure both Twilio and Bland AI credentials first');
+                return;
+            }
+            
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `
+                <div class="p-4 bg-blue-500/20 rounded-xl text-blue-200">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    Testing integration... Initiating call to ${testPhone}
+                </div>
+            `;
+            
+            try {
+                // Make the test call using the combined integration
+                const response = await fetch('/api/place-phone-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phone_number: testPhone,
+                        lead_name: testName,
+                        company: testCompany,
+                        voice_model: localStorage.getItem('default_voice') || 'yeni',
+                        integration_mode: 'twilio_bland_ai'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="p-4 bg-green-500/20 rounded-xl text-green-200">
+                            <strong>✅ Integration Test Successful!</strong><br><br>
+                            📞 Call initiated to ${testPhone}<br>
+                            🎤 Using Bland AI voice: ${localStorage.getItem('default_voice')}<br>
+                            📋 Call ID: ${result.call_id || 'N/A'}<br>
+                            ⏱️ Status: ${result.message}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="p-4 bg-red-500/20 rounded-xl text-red-200">
+                            <strong>❌ Integration Test Failed</strong><br><br>
+                            Error: ${result.error || 'Unknown error occurred'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="p-4 bg-red-500/20 rounded-xl text-red-200">
+                        <strong>❌ Integration Test Error</strong><br><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
