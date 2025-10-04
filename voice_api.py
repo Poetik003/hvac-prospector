@@ -17,15 +17,6 @@ import sys
 # Import requests for API calls
 import requests
 
-# Import Twilio + Bland AI integration
-try:
-    from twilio_bland_integration import get_integration
-    INTEGRATION_AVAILABLE = True
-    logger.info("✅ Twilio + Bland AI integration module loaded")
-except ImportError:
-    INTEGRATION_AVAILABLE = False
-    logger.warning("⚠️ Twilio + Bland AI integration module not available")
-
 # Load environment variables for live calling
 
 # FORCE LIVE CALLING MODE - OVERRIDE
@@ -56,6 +47,15 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
+
+# Import Twilio + Bland AI integration (after logger setup)
+try:
+    from twilio_bland_integration import get_integration
+    INTEGRATION_AVAILABLE = True
+    logger.info("✅ Twilio + Bland AI integration module loaded")
+except ImportError:
+    INTEGRATION_AVAILABLE = False
+    logger.warning("⚠️ Twilio + Bland AI integration module not available")
 
 # ========== AI VOICE PHONE NUMBERS ==========
 # Miami area phone numbers for AI voice calling
@@ -435,8 +435,34 @@ def place_phone_call():
                 "message": "Phone number must be 10 digits in (XXX) XXX-XXXX format"
             }), 400
             
+        # Check for Bland AI direct calling
+        if integration_mode == 'bland_ai_direct':
+            logger.info(f"🎤 Using Bland AI direct calling for {phone_number}")
+            
+            # Use Bland AI's native calling API
+            result = make_bland_ai_direct_call(clean_phone, script_text, voice_model, lead_info)
+            
+            if result['success']:
+                return jsonify({
+                    "success": True,
+                    "message": "Bland AI direct call initiated successfully",
+                    "call_id": result.get('call_id'),
+                    "phone_number": phone_number,
+                    "voice_model": voice_model,
+                    "integration_mode": "bland_ai_direct",
+                    "call_url": result.get('call_url'),
+                    "live_call": True
+                })
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": result.get('error', 'Bland AI direct call failed'),
+                    "details": result.get('details', 'Unknown error'),
+                    "integration_mode": "bland_ai_direct"
+                }), 500
+        
         # Check if Twilio + Bland AI integration is requested
-        if integration_mode == 'twilio_bland_ai' and INTEGRATION_AVAILABLE:
+        elif integration_mode == 'twilio_bland_ai' and INTEGRATION_AVAILABLE:
             logger.info(f"🚀 Using Twilio + Bland AI integration for {phone_number}")
             
             # Use integrated calling system
@@ -1243,6 +1269,125 @@ def generate_real_script_audio(script_text, voice_model, requirements):
 
 # Import time for call ID generation
 import time
+
+def make_bland_ai_direct_call(phone_number, script_text, voice_model, lead_info):
+    """
+    Make a direct call using Bland AI's native calling API
+    """
+    try:
+        logger.info(f"📞 Making Bland AI direct call to {phone_number}")
+        
+        # Get Bland AI API key from environment or localStorage equivalent
+        bland_api_key = os.environ.get('BLAND_AI_API_KEY')
+        
+        if not bland_api_key:
+            logger.error("❌ Bland AI API key not configured")
+            return {
+                'success': False,
+                'error': 'Bland AI API key not configured',
+                'details': 'Please set BLAND_AI_API_KEY environment variable'
+            }
+        
+        # Personalize script with lead info
+        personalized_script = personalize_script_for_bland(script_text, lead_info)
+        
+        # Prepare Bland AI call request
+        headers = {
+            'Authorization': bland_api_key,
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            'phone_number': f'+1{phone_number}',
+            'task': personalized_script,
+            'voice': voice_model,
+            'record': True,
+            'max_duration': 10,  # 10 minutes max
+            'answered_by_enabled': True,
+            'wait_for_greeting': True,
+            'language': 'en'
+        }
+        
+        logger.info(f"🔊 Bland AI payload: {payload}")
+        
+        # Make the API call to Bland AI
+        response = requests.post(
+            'https://api.bland.ai/v1/calls',
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            logger.info(f"✅ Bland AI direct call initiated: {result}")
+            
+            return {
+                'success': True,
+                'call_id': result.get('call_id'),
+                'call_url': result.get('call_url', ''),
+                'status': result.get('status', 'initiated'),
+                'message': f'Bland AI call initiated to {phone_number}'
+            }
+        else:
+            logger.error(f"❌ Bland AI call failed: {response.status_code} - {response.text}")
+            return {
+                'success': False,
+                'error': f'Bland AI API error: {response.status_code}',
+                'details': response.text
+            }
+            
+    except Exception as e:
+        logger.error(f"❌ Bland AI direct call error: {e}")
+        return {
+            'success': False,
+            'error': f'Bland AI call failed: {str(e)}',
+            'details': str(e)
+        }
+
+def personalize_script_for_bland(script, lead_info):
+    """
+    Personalize script template with lead information for Bland AI
+    """
+    if not lead_info:
+        return script
+        
+    personalized = script
+    
+    # Replace common placeholders
+    if 'name' in lead_info and lead_info['name']:
+        personalized = personalized.replace('[LEAD_NAME]', lead_info['name'])
+        personalized = personalized.replace('[NAME]', lead_info['name'])
+    
+    if 'company' in lead_info and lead_info['company']:
+        personalized = personalized.replace('[COMPANY]', lead_info['company'])
+        personalized = personalized.replace('[BUSINESS]', lead_info['company'])
+    
+    # Add HVAC-specific context
+    if 'industry' in lead_info:
+        personalized = personalized.replace('[INDUSTRY]', lead_info['industry'])
+    
+    if 'building_size' in lead_info:
+        size_map = {
+            'small': 'smaller facility',
+            'medium': 'mid-size building', 
+            'large': 'large facility',
+            'xlarge': 'enterprise facility'
+        }
+        personalized = personalized.replace('[BUILDING_SIZE]', size_map.get(lead_info['building_size'], 'facility'))
+    
+    if 'pain_point' in lead_info:
+        pain_map = {
+            'costs': 'high energy costs',
+            'comfort': 'temperature control issues',
+            'maintenance': 'frequent HVAC repairs',
+            'efficiency': 'poor energy efficiency',
+            'air-quality': 'air quality concerns'
+        }
+        personalized = personalized.replace('[PAIN_POINT]', pain_map.get(lead_info['pain_point'], 'HVAC challenges'))
+    
+    logger.info(f"📝 Script personalized for Bland AI call")
+    return personalized
 
 @app.route('/api/integration-status', methods=['GET'])
 @cross_origin()
