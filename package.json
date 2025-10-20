@@ -1,0 +1,41 @@
+{
+  "name": "prospector-pro-hvac-app",
+  "version": "2.0.0",
+  "description": "ProSpector Pro - AI-Powered HVAC Sales Training & Voice Customization Platform",
+  "main": "Index.html",
+  "scripts": {
+    "start": "node server3000.js",
+    "dev": "nodemon server3000.js",
+    "build": "echo 'Static HTML app - no build needed'",
+    "netlify-build": "echo 'ProSpector Pro - Netlify deployment ready'",
+    "test": "echo 'Tests will be added in future versions'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "hvac",
+    "sales",
+    "ai",
+    "voice-training", 
+    "miami",
+    "prospector",
+    "customer-service"
+  ],
+  "homepage": "https://prospector-pro.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Poetik003/hvac-prospector.git"
+  },
+  "author": "ProSpector HVAC Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

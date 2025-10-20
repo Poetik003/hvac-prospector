@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl mb-4">Quick Button Test</h1>
+    
+    <!-- Same exact structure as in Index.html -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <!-- Sarah Profile -->
+        <div class="bg-slate-800/30 rounded-xl p-4 border border-blue-500/30">
+            <h4 class="text-white font-semibold mb-2">👩‍💼 Sarah from Miami</h4>
+            <p class="text-slate-400 text-sm mb-3">Professional female voice • Sofia Vergara style warmth • Perfect for B2B calls</p>
+            <div class="flex items-center text-xs text-green-400 mb-3">
+                <i class="fas fa-check-circle mr-1"></i>
+                <span>Ready for campaigns</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="sarah-preview-main" class="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                    🔊 Hear Sarah
+                </button>
+                <button id="sarah-customize-main" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
+                    ⚙️ Customize
+                </button>
+            </div>
+        </div>
+        
+        <!-- Danny Profile -->  
+        <div class="bg-slate-800/30 rounded-xl p-4 border border-green-500/30">
+            <h4 class="text-white font-semibold mb-2">👨‍🔧 Danny from Miami</h4>
+            <p class="text-slate-400 text-sm mb-3">Friendly male voice • Benicio Del Toro smooth style • Great for community outreach</p>
+            <div class="flex items-center text-xs text-green-400 mb-3">
+                <i class="fas fa-check-circle mr-1"></i>
+                <span>Ready for campaigns</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="danny-preview-main" class="flex-1 bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg font-semibold text-white text-sm transition-colors">
+                    🔊 Hear Danny
+                </button>
+                <button id="danny-customize-main" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-lg text-white text-sm">
+                    ⚙️ Customize
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔧 Test script starting...');
+        
+        function addClickHandlers() {
+            const sarahBtn = document.getElementById('sarah-customize-main');
+            const dannyBtn = document.getElementById('danny-customize-main');
+            
+            console.log('Sarah button:', sarahBtn);
+            console.log('Danny button:', dannyBtn);
+            
+            if (sarahBtn) {
+                sarahBtn.onclick = function() {
+                    alert('✅ SARAH CUSTOMIZE WORKS!');
+                };
+                console.log('✅ Sarah button handler added');
+            }
+            
+            if (dannyBtn) {
+                dannyBtn.onclick = function() {
+                    alert('✅ DANNY CUSTOMIZE WORKS!');
+                };
+                console.log('✅ Danny button handler added');
+            }
+        }
+        
+        // Add handlers when DOM loads
+        document.addEventListener('DOMContentLoaded', addClickHandlers);
+        
+        // Also try immediately
+        addClickHandlers();
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 16:04:32] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:04:32] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:04:32] code 404, message File not found
+[13/Sep/2025 16:04:32] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 16:15:54] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:15:54] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:17:38] "GET /Index.html HTTP/1.1" 304 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 16:21:27] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:21:27] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:21:28] code 404, message File not found
+[13/Sep/2025 16:21:28] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 16:23:31] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:25:24] "GET /Index.html HTTP/1.1" 304 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 16:31:28] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:31:28] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:31:28] code 404, message File not found
+[13/Sep/2025 16:31:28] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 16:32:45] "GET /Index.html HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 16:38:23] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:38:23] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:38:23] code 404, message File not found
+[13/Sep/2025 16:38:23] "GET /favicon.png HTTP/1.1" 404 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 16:47:15] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 16:47:15] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 16:47:15] code 404, message File not found
+[13/Sep/2025 16:47:15] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:03:00] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 17:03:01] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 304 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 17:10:04] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 17:10:04] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:10:05] code 404, message File not found
+[13/Sep/2025 17:10:05] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:11:36] "GET /Index.html HTTP/1.1" 200 -
+[13/Sep/2025 17:19:43] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:19:43] code 404, message File not found
+[13/Sep/2025 17:19:43] "GET /favicon.ico HTTP/1.1" 404 -
+[13/Sep/2025 17:20:41] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:20:41] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:20:42] code 404, message File not found
+[13/Sep/2025 17:20:42] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:20:58] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:20:58] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:20:58] code 404, message File not found
+[13/Sep/2025 17:20:58] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:22:45] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 17:25:02] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:25:02] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:25:02] code 404, message File not found
+[13/Sep/2025 17:25:02] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:26:23] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 17:33:46] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:33:46] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:33:46] code 404, message File not found
+[13/Sep/2025 17:33:46] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:34:27] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 17:41:22] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:41:22] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:41:23] code 404, message File not found
+[13/Sep/2025 17:41:23] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:42:29] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 17:47:36] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 17:47:36] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 17:47:36] code 404, message File not found
+[13/Sep/2025 17:47:36] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 17:48:19] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 18:02:25] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 18:02:25] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 18:02:26] code 404, message File not found
+[13/Sep/2025 18:02:26] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 18:03:26] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 18:03:27] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 304 -
+[13/Sep/2025 18:08:16] "HEAD / HTTP/1.1" 200 -
+[13/Sep/2025 18:08:16] "HEAD / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[13/Sep/2025 18:14:54] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 18:14:54] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[13/Sep/2025 18:14:55] code 404, message File not found
+[13/Sep/2025 18:14:55] "GET /favicon.png HTTP/1.1" 404 -
+[13/Sep/2025 18:16:23] "GET / HTTP/1.1" 200 -
+[13/Sep/2025 20:12:26] "GET / HTTP/1.1" 304 -
+[13/Sep/2025 20:12:26] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 304 -
+[13/Sep/2025 21:52:17] "GET / HTTP/1.1" 304 -
+[13/Sep/2025 21:52:18] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 304 -
+[13/Sep/2025 22:48:27] "GET / HTTP/1.1" 304 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[15/Sep/2025 00:02:04] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:02:04] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 00:02:04] code 404, message File not found
+[15/Sep/2025 00:02:04] "GET /favicon.png HTTP/1.1" 404 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[15/Sep/2025 00:14:26] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:14:26] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 00:14:27] code 404, message File not found
+[15/Sep/2025 00:14:27] "GET /favicon.png HTTP/1.1" 404 -
+[15/Sep/2025 00:15:17] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:15:17] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 304 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[15/Sep/2025 00:21:00] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:21:00] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 00:21:00] code 404, message File not found
+[15/Sep/2025 00:21:00] "GET /favicon.png HTTP/1.1" 404 -
+[15/Sep/2025 00:22:27] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[15/Sep/2025 00:26:52] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:26:52] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 00:26:53] code 404, message File not found
+[15/Sep/2025 00:26:53] "GET /favicon.png HTTP/1.1" 404 -
+[15/Sep/2025 00:28:21] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 8000
+Serving directory: /home/user/webapp
+[15/Sep/2025 00:34:58] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 00:34:58] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 00:34:59] code 404, message File not found
+[15/Sep/2025 00:34:59] "GET /favicon.png HTTP/1.1" 404 -
+[15/Sep/2025 00:36:22] "GET / HTTP/1.1" 200 -
+ProSpector Pro server running on port 3000
+Access the app at: http://localhost:3000/Index.html
+Serving directory: /home/user/webapp
+[15/Sep/2025 04:04:29] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 04:04:29] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 04:04:30] code 404, message File not found
+[15/Sep/2025 04:04:30] "GET /favicon.png HTTP/1.1" 404 -
+[15/Sep/2025 04:05:16] "GET / HTTP/1.1" 304 -
+[15/Sep/2025 04:07:48] "GET / HTTP/1.1" 200 -
+[15/Sep/2025 04:07:48] "GET /prospector-logo-final.png?v=32 HTTP/1.1" 200 -
+[15/Sep/2025 04:07:49] code 404, message File not found
+[15/Sep/2025 04:07:49] "GET /favicon.png HTTP/1.1" 404 -

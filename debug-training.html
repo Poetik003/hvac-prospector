@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 DEBUG: Voice Training - Script Reading Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- FORCE NO CACHE -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .debug-banner {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .success-indicator {
+            background: #10b981;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .error-indicator {
+            background: #ef4444;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Debug Banner -->
+    <div class="debug-banner">
+        🔧 DEBUG MODE: Script Reading Diagnostic Tool v1.0
+        <br><small>Last Updated: $(date)</small>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Status Panel -->
+        <div class="glass-effect rounded-2xl p-6 mb-6">
+            <h1 class="text-2xl font-bold text-center mb-4">🎯 Script Reading Test Center</h1>
+            
+            <div id="version-check" class="success-indicator">
+                ✅ Latest version loaded successfully
+            </div>
+            
+            <div id="browser-support" class="mb-4">
+                <h3 class="font-bold mb-2">🌐 Browser Compatibility Check:</h3>
+                <div id="support-results">Checking...</div>
+            </div>
+        </div>
+
+        <!-- Script Library -->
+        <div class="glass-effect rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">📜 HVAC Script Library</h2>
+            
+            <div class="space-y-3 mb-4" id="script-buttons">
+                <button onclick="loadScript('winter-emergency')" class="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-left">
+                    ❄️ Winter Emergency Call
+                </button>
+                <button onclick="loadScript('maintenance-pitch')" class="w-full p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-left">
+                    🔧 Preventive Maintenance
+                </button>
+                <button onclick="loadScript('system-upgrade')" class="w-full p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-left">
+                    ⚡ System Upgrade Consultation
+                </button>
+            </div>
+            
+            <textarea id="script-editor" rows="6" 
+                placeholder="Selected script will appear here..."
+                class="w-full bg-slate-700/50 border border-slate-600 text-white rounded-lg px-4 py-3 text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+        </div>
+
+        <!-- Voice Selection -->
+        <div class="glass-effect rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">🎤 AI Voice Selection</h2>
+            
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <button onclick="selectVoice('yeni')" id="voice-yeni" class="voice-btn p-4 bg-slate-600 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                    🎤 Yeni<br><small>Sofia Style</small>
+                </button>
+                <button onclick="selectVoice('danny')" id="voice-danny" class="voice-btn p-4 bg-slate-600 hover:bg-green-600 text-white rounded-lg transition-colors">
+                    🎤 Danny<br><small>Benicio Style</small>
+                </button>
+                <button onclick="selectVoice('gabi')" id="voice-gabi" class="voice-btn p-4 bg-slate-600 hover:bg-purple-600 text-white rounded-lg transition-colors">
+                    🎤 Gabi<br><small>Friendly Style</small>
+                </button>
+            </div>
+            
+            <div id="selected-voice-display" class="text-center text-blue-400">
+                No voice selected
+            </div>
+        </div>
+
+        <!-- Script Reading Controls -->
+        <div class="glass-effect rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">🎬 Script Reading Controls</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <button onclick="readWithTTS()" class="p-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-lg font-bold transition-all">
+                    📢 Read Script (TTS)
+                </button>
+                <button onclick="testAPICall()" class="p-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-bold transition-all">
+                    🎤 Test API Call
+                </button>
+                <button onclick="stopAllAudio()" class="p-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all">
+                    🛑 Stop All
+                </button>
+            </div>
+            
+            <div id="reading-status" class="text-center p-4 bg-slate-700 rounded-lg">
+                Ready to test script reading...
+            </div>
+        </div>
+
+        <!-- Debug Log -->
+        <div class="glass-effect rounded-2xl p-6">
+            <h2 class="text-xl font-bold mb-4">📋 Debug Log</h2>
+            <div id="debug-log" class="bg-slate-900 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
+                Debug log will appear here...\n
+            </div>
+            <button onclick="clearLog()" class="mt-2 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded">
+                Clear Log
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Debug logging function
+        function log(message) {
+            const logDiv = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+
+        // HVAC Script Library
+        const scripts = {
+            'winter-emergency': `Hi [Customer Name], this is from ProSpector HVAC. I hope I'm catching you at a good time.
+
+With temperatures dropping this week, I wanted to reach out because our records show your heating system is due for its annual maintenance check.
+
+I know the last thing you want is to wake up to a cold house in the middle of winter. We've been serving homeowners in Miami for over 15 years, and I'd love to schedule a quick 20-minute inspection to ensure everything is running efficiently.
+
+Would tomorrow afternoon or Thursday morning work better for you?`,
+
+            'maintenance-pitch': `Hello [Customer Name], this is calling from ProSpector HVAC.
+
+I'm reaching out because we've helped over 500 Miami families save money on their energy bills through our preventive maintenance program.
+
+Most homeowners don't realize that a dirty filter or minor tune-up issue can increase their energy costs by up to 30%. Our 21-point inspection catches these problems before they become expensive repairs.
+
+We have an opening this week - would you be interested in scheduling a complimentary system evaluation?`,
+
+            'system-upgrade': `Good afternoon [Customer Name], this is from ProSpector HVAC.
+
+I'm calling because newer HVAC systems are now 40% more energy efficient than models from just 5 years ago. With Florida's rising energy costs, many of our Miami customers are saving $200+ monthly after upgrading.
+
+I'd like to offer you a free energy assessment to show you exactly how much you could save. We also have financing options with $0 down and payments as low as $89 per month.
+
+When would be a good time this week for me to stop by?`
+        };
+
+        let selectedVoice = 'yeni';
+
+        function loadScript(scriptKey) {
+            const script = scripts[scriptKey];
+            if (script) {
+                document.getElementById('script-editor').value = script;
+                log(`📜 Loaded script: ${scriptKey}`);
+                updateStatus(`Script "${scriptKey}" loaded successfully`);
+            } else {
+                log(`❌ Script not found: ${scriptKey}`);
+            }
+        }
+
+        function selectVoice(voice) {
+            selectedVoice = voice;
+            
+            // Update visual feedback
+            document.querySelectorAll('.voice-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'bg-green-600', 'bg-purple-600');
+                btn.classList.add('bg-slate-600');
+            });
+            
+            const selectedBtn = document.getElementById(`voice-${voice}`);
+            if (voice === 'yeni') selectedBtn.classList.add('bg-blue-600');
+            else if (voice === 'danny') selectedBtn.classList.add('bg-green-600');
+            else if (voice === 'gabi') selectedBtn.classList.add('bg-purple-600');
+            
+            document.getElementById('selected-voice-display').textContent = `Selected: ${voice.charAt(0).toUpperCase() + voice.slice(1)}`;
+            
+            log(`🎤 Selected voice: ${voice}`);
+        }
+
+        function readWithTTS() {
+            const scriptText = document.getElementById('script-editor').value;
+            
+            if (!scriptText.trim()) {
+                log('❌ No script text to read!');
+                updateStatus('Error: No script text available', true);
+                return;
+            }
+
+            log(`🚀 Starting TTS reading with ${selectedVoice} voice...`);
+            log(`📝 Script length: ${scriptText.length} characters`);
+            updateStatus('🗣️ Reading script with text-to-speech...');
+
+            try {
+                // Stop existing speech
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    log('🛑 Stopped existing speech');
+                }
+
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(scriptText);
+                
+                // Configure voice
+                const voices = window.speechSynthesis.getVoices();
+                log(`🎤 Available voices: ${voices.length}`);
+                
+                if (selectedVoice === 'yeni' || selectedVoice === 'gabi') {
+                    const femaleVoice = voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('samantha'));
+                    if (femaleVoice) {
+                        utterance.voice = femaleVoice;
+                        log(`🎤 Using female voice: ${femaleVoice.name}`);
+                    }
+                } else if (selectedVoice === 'danny') {
+                    const maleVoice = voices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('alex'));
+                    if (maleVoice) {
+                        utterance.voice = maleVoice;
+                        log(`🎤 Using male voice: ${maleVoice.name}`);
+                    }
+                }
+
+                utterance.rate = 0.9;
+                utterance.pitch = selectedVoice === 'danny' ? 0.8 : 1.0;
+                utterance.volume = 0.8;
+
+                utterance.onstart = () => {
+                    log('✅ Speech synthesis started');
+                    updateStatus('🗣️ Currently reading script...');
+                };
+
+                utterance.onend = () => {
+                    log('✅ Speech synthesis completed');
+                    updateStatus('✅ Finished reading script');
+                };
+
+                utterance.onerror = (error) => {
+                    log(`❌ Speech error: ${error.error}`);
+                    updateStatus(`Error: ${error.error}`, true);
+                };
+
+                window.speechSynthesis.speak(utterance);
+                log('📢 Speech synthesis command issued');
+
+            } catch (error) {
+                log(`❌ Exception in TTS: ${error.message}`);
+                updateStatus(`Error: ${error.message}`, true);
+            }
+        }
+
+        async function testAPICall() {
+            const scriptText = document.getElementById('script-editor').value;
+            
+            if (!scriptText.trim()) {
+                log('❌ No script text for API test!');
+                return;
+            }
+
+            log('🌐 Testing API call...');
+            updateStatus('🔄 Testing voice generation API...');
+
+            try {
+                const response = await fetch('https://5000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/api/generate-voice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: scriptText.substring(0, 100),
+                        requirements: `${selectedVoice} Professional HVAC Sales voice`,
+                        model: 'elevenlabs/v3-tts',
+                        task_summary: 'Test script reading'
+                    })
+                });
+
+                log(`📡 API Response: ${response.status} ${response.statusText}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    log(`✅ API Success: ${JSON.stringify(result)}`);
+                    updateStatus('✅ API call successful');
+                } else {
+                    log(`❌ API Error: ${response.status}`);
+                    updateStatus(`API Error: ${response.status}`, true);
+                }
+
+            } catch (error) {
+                log(`❌ API Exception: ${error.message}`);
+                updateStatus(`API Error: ${error.message}`, true);
+            }
+        }
+
+        function stopAllAudio() {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                log('🛑 Stopped all audio');
+                updateStatus('🛑 All audio stopped');
+            } else {
+                log('ℹ️ No audio currently playing');
+                updateStatus('ℹ️ No audio to stop');
+            }
+        }
+
+        function updateStatus(message, isError = false) {
+            const status = document.getElementById('reading-status');
+            status.textContent = message;
+            status.className = isError ? 
+                'text-center p-4 bg-red-600 rounded-lg text-white' : 
+                'text-center p-4 bg-green-600 rounded-lg text-white';
+        }
+
+        function clearLog() {
+            document.getElementById('debug-log').innerHTML = 'Debug log cleared...\n';
+        }
+
+        function checkBrowserSupport() {
+            const results = [];
+            
+            if ('speechSynthesis' in window) {
+                results.push('✅ Speech Synthesis API supported');
+                log('✅ Speech Synthesis API available');
+            } else {
+                results.push('❌ Speech Synthesis API not supported');
+                log('❌ Speech Synthesis API not available');
+            }
+            
+            if (typeof fetch !== 'undefined') {
+                results.push('✅ Fetch API supported');
+            } else {
+                results.push('❌ Fetch API not supported');
+            }
+            
+            results.push(`✅ User Agent: ${navigator.userAgent.substring(0, 50)}...`);
+            
+            document.getElementById('support-results').innerHTML = results.join('<br>');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Debug Training Interface initialized');
+            checkBrowserSupport();
+            selectVoice('yeni');
+            loadScript('winter-emergency');
+            
+            // Load voices
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    log(`🎤 Voices loaded: ${window.speechSynthesis.getVoices().length}`);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

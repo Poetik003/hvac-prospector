@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test - ProSpector Pro Voices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a202c;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .audio-btn {
+            display: block;
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .audio-btn:hover {
+            background: #3182ce;
+        }
+        .audio-btn:disabled {
+            background: #718096;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #22543d; color: #68d391; }
+        .info { background: #2d3748; color: #63b3ed; }
+        .error { background: #742a2a; color: #fc8181; }
+        .warning { background: #744210; color: #f6e05e; }
+    </style>
+</head>
+<body>
+    <h1>💬 Interactive Miami Conversation Test</h1>
+    <p>Test the <strong>natural conversational AI voices</strong> having real dialogues</p>
+    <p style="font-size: 14px; color: #cbd5e0;">Listen for interactive questions, natural pauses, and genuine conversation flow!</p>
+    
+    <div id="status" class="status info">Ready to test audio</div>
+    
+    <button class="audio-btn" onclick="testProfessionalSarah()">
+        💬 Test Sarah - Natural Conversation
+    </button>
+    
+    <button class="audio-btn" onclick="testFriendlyMarcus()">
+        🤝 Test Marcus - Community Dialogue
+    </button>
+    
+    <button class="audio-btn" onclick="testProfessionalDavid()">
+        💼 Test David - Business Conversation
+    </button>
+    
+    <button class="audio-btn" onclick="testFriendlyEmma()">
+        😊 Test Emma - Friendly Dialogue
+    </button>
+    
+    <button class="audio-btn" onclick="testWebSpeech()">
+        🔊 Test Web Speech API
+    </button>
+    
+    <button class="audio-btn" onclick="stopAllAudio()">
+        🛑 Stop All Audio
+    </button>
+    
+    <div style="margin-top: 30px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <h3>🔍 Troubleshooting:</h3>
+        <ul>
+            <li>Make sure your phone's volume is turned up</li>
+            <li>Check that your phone isn't on silent/vibrate mode</li>
+            <li>Try using headphones if speakers don't work</li>
+            <li>Some browsers require you to tap twice - first tap enables audio</li>
+        </ul>
+    </div>
+
+    <script>
+        let currentAudio = null;
+        
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            console.log(`📱 ${type.toUpperCase()}: ${message}`);
+        }
+        
+        function stopAllAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+                showStatus('Audio stopped', 'info');
+            }
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+        
+        function playAudio(url, name) {
+            try {
+                stopAllAudio();
+                
+                showStatus(`Loading ${name}...`, 'info');
+                
+                const audio = new Audio();
+                audio.src = url;
+                audio.volume = 1.0;
+                
+                audio.addEventListener('loadstart', () => {
+                    console.log(`📱 Loading ${name}`);
+                });
+                
+                audio.addEventListener('canplay', () => {
+                    showStatus(`${name} ready - playing now!`, 'success');
+                });
+                
+                audio.addEventListener('play', () => {
+                    showStatus(`🔊 ${name} is speaking`, 'success');
+                });
+                
+                audio.addEventListener('ended', () => {
+                    showStatus(`✅ ${name} finished`, 'success');
+                    currentAudio = null;
+                });
+                
+                audio.addEventListener('error', (e) => {
+                    console.error(`📱❌ Audio error:`, e, audio.error);
+                    showStatus(`❌ Error playing ${name}: ${audio.error ? audio.error.message : 'Unknown error'}`, 'error');
+                    currentAudio = null;
+                });
+                
+                currentAudio = audio;
+                
+                const playPromise = audio.play();
+                
+                if (playPromise) {
+                    playPromise.then(() => {
+                        console.log(`📱✅ ${name} playing successfully`);
+                    }).catch((error) => {
+                        console.error(`📱❌ Play failed:`, error);
+                        if (error.name === 'NotAllowedError') {
+                            showStatus(`🔔 Tap again to enable audio for ${name}`, 'warning');
+                        } else {
+                            showStatus(`❌ Cannot play ${name}: ${error.message}`, 'error');
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error(`📱🚨 Setup error:`, error);
+                showStatus(`❌ Setup failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function testProfessionalSarah() {
+            const url = 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/083c77b9-2ebf-4f28-a8c4-f55f823eb28a.mp3';
+            playAudio(url, 'Sarah - Natural Miami Conversation');
+        }
+        
+        function testFriendlyMarcus() {
+            const url = 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/9e33cd80-74db-4fdc-844b-80ddac0bd7a3.mp3';
+            playAudio(url, 'Marcus - Community Conversation');
+        }
+        
+        function testProfessionalDavid() {
+            const url = 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/006154f2-93bc-4df7-874c-b619ad0f3b75.mp3';
+            playAudio(url, 'David - Business Dialogue');
+        }
+        
+        function testFriendlyEmma() {
+            const url = 'https://cdn1.genspark.ai/user-upload-image/elevenlabs/eleven_v3/dda24e17-64b3-4486-aa98-4fe9f3434a57.mp3';
+            playAudio(url, 'Emma - Friendly Dialogue');
+        }
+        
+        function testWebSpeech() {
+            if (!('speechSynthesis' in window)) {
+                showStatus('❌ Web Speech API not supported', 'error');
+                return;
+            }
+            
+            stopAllAudio();
+            showStatus('Testing Web Speech API...', 'info');
+            
+            const utterance = new SpeechSynthesisUtterance('Hello! This is a test of the Web Speech API on your mobile device.');
+            utterance.volume = 1.0;
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            utterance.onstart = () => {
+                showStatus('🔊 Web Speech API speaking', 'success');
+            };
+            
+            utterance.onend = () => {
+                showStatus('✅ Web Speech API test complete', 'success');
+            };
+            
+            utterance.onerror = (error) => {
+                showStatus(`❌ Web Speech error: ${error.error}`, 'error');
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        // Enable audio context on first user interaction
+        document.addEventListener('click', function enableAudio() {
+            const audioContext = window.AudioContext || window.webkitAudioContext;
+            if (audioContext) {
+                const context = new audioContext();
+                if (context.state === 'suspended') {
+                    context.resume().then(() => {
+                        console.log('📱 Audio context resumed');
+                        showStatus('Audio enabled - you can now hear previews', 'success');
+                    });
+                }
+            }
+            // Remove listener after first click
+            document.removeEventListener('click', enableAudio);
+        }, { once: true });
+        
+        console.log('📱 Audio test page loaded');
+        showStatus('Ready to test audio - tap any button above', 'info');
+    </script>
+</body>
+</html>

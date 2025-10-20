@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bland AI Authentication - Updated Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+            <h1 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-key mr-2"></i>Bland AI Auth (Fixed)
+            </h1>
+            
+            <div class="mb-4 p-3 bg-green-500/20 rounded-xl text-green-200 text-sm">
+                ✅ <strong>Updated Validation:</strong> Now accepts your Bland AI key format!
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-white font-medium mb-2">Enter Your Bland AI API Key</label>
+                <input type="password" id="api-key" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                       placeholder="0245be61-your-key-here">
+            </div>
+            
+            <button onclick="validateAndConnect()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all mb-4">
+                <i class="fas fa-check-circle mr-2"></i>Verify & Connect
+            </button>
+            
+            <div id="result" class="hidden"></div>
+            
+            <div class="text-xs text-blue-200 mt-4">
+                <strong>New Validation:</strong> Accepts any key 20+ characters with dashes
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function validateAndConnect() {
+            const apiKey = document.getElementById('api-key').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!apiKey) {
+                showResult('Please enter your Bland AI API key', 'error');
+                return;
+            }
+            
+            // NEW FLEXIBLE VALIDATION
+            if (apiKey.length < 20) {
+                showResult('API key appears too short. Please check your Bland AI key.', 'error');
+                return;
+            }
+            
+            if (!apiKey.includes('-') || !/^[a-zA-Z0-9_-]+$/.test(apiKey)) {
+                showResult('Invalid API key format. Please copy your key exactly as shown in Bland AI dashboard.', 'error');
+                return;
+            }
+            
+            // SUCCESS!
+            localStorage.setItem('bland_api_key', apiKey);
+            showResult('✅ Success! API key validated and stored. Redirecting to integration dashboard...', 'success');
+            
+            setTimeout(() => {
+                // Redirect to main ProSpector interface
+                window.location.href = '/main-dashboard.html';
+            }, 2000);
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `p-4 rounded-xl ${type === 'success' ? 'bg-green-500/20 text-green-200' : 'bg-red-500/20 text-red-200'}`;
+            resultDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

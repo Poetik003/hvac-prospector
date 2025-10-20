@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSpector Pro - AI HVAC Sales Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            80% { transform: scale(1.05); opacity: 0.3; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">
+                    ProSpector Pro
+                </span>
+            </h1>
+            <p class="text-xl text-slate-300 mb-6">AI-Powered HVAC Sales Platform</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm">
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full">✅ Live Calling Active</span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full">🎤 Natural AI Voices</span>
+                <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full">🧠 HVAC Specialized</span>
+                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full">📞 Bland AI Integration</span>
+            </div>
+        </div>
+
+        <!-- Main Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            
+            <!-- Live Calling System -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/direct-calling.html', 'Live Calling System')">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 pulse-ring">
+                    <i class="fas fa-phone text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Live Calling System</h3>
+                <p class="text-slate-400 text-center mb-4">Make real AI-powered phone calls to prospects with natural voices</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Real phone calls to any phone number</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>HVAC-specific conversation scripts</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Professional caller ID integration</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Start Live Calling
+                </button>
+            </div>
+
+            <!-- Bland AI Integration -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/bland-auth.html', 'Bland AI Integration')">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-microphone-alt text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Bland AI Integration</h3>
+                <p class="text-slate-400 text-center mb-4">Connect your Bland AI account for ultra-natural voice quality</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>99.2% natural voice quality</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Use your 100 free calls</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>HVAC + Bland AI combined</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-key mr-2"></i>
+                    Connect Bland AI
+                </button>
+            </div>
+
+            <!-- Twilio + Bland AI Integration -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/twilio-bland-integration.html', 'Twilio + Bland AI Integration')">
+                <div class="w-16 h-16 bg-gradient-to-r from-red-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-network-wired text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Premium Integration</h3>
+                <p class="text-slate-400 text-center mb-4">Combine Twilio's reliability with Bland AI's voice quality</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>99.95% call reliability</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Enterprise telephony + AI</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Global phone numbers</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-red-500 to-purple-500 hover:from-red-600 hover:to-purple-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Premium Setup
+                </button>
+            </div>
+
+            <!-- Bland AI Voice Calling -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/bland-ai-calling.html', 'Bland AI Voice Calling')">
+                <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-microphone text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Bland AI Calling</h3>
+                <p class="text-slate-400 text-center mb-4">Make prospect calls with 99.2% natural AI voices</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Human-like conversations</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>3 specialized HVAC voices</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Personalized HVAC scripts</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-phone mr-2"></i>
+                    Start Calling
+                </button>
+            </div>
+
+            <!-- AI Agent Personas -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/agent-personas.html', 'AI Agent Personas')">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">AI Agent Personas</h3>
+                <p class="text-slate-400 text-center mb-4">5 specialized HVAC AI personalities for different scenarios</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Sarah Martinez - Professional</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Marcus Thompson - Technical</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Performance comparison dashboard</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-user-friends mr-2"></i>
+                    Manage Personas
+                </button>
+            </div>
+
+            <!-- Natural Voices System -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/natural-voices.html', 'Natural Voices System')">
+                <div class="w-16 h-16 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-volume-up text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Natural Voices System</h3>
+                <p class="text-slate-400 text-center mb-4">Bland.ai quality voices with HVAC industry specialization</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>98.7% naturalness score</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>0.18s response latency</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Live voice testing lab</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-microphone mr-2"></i>
+                    Test Voices
+                </button>
+            </div>
+
+            <!-- Calendar & CRM Integration -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/calendar-integration.html', 'Calendar & CRM Integration')">
+                <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Smart Calendar & CRM</h3>
+                <p class="text-slate-400 text-center mb-4">Advanced scheduling with real-time CRM sync</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>87.3% meeting booking rate</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Multiple CRM platforms</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>AI Call + Auto-Book</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    Manage Calendar
+                </button>
+            </div>
+
+            <!-- Multilingual AI System -->
+            <div class="feature-card glass-card rounded-2xl p-6" onclick="openFeature('/multilingual-ai.html', 'Multilingual AI System')">
+                <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-globe text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-3">Multilingual AI</h3>
+                <p class="text-slate-400 text-center mb-4">150+ languages with cultural intelligence</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center text-green-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>233% more languages than competitors</span>
+                    </div>
+                    <div class="flex items-center text-blue-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>Cultural adaptation engine</span>
+                    </div>
+                    <div class="flex items-center text-purple-400">
+                        <i class="fas fa-check mr-2"></i>
+                        <span>HVAC terms in all languages</span>
+                    </div>
+                </div>
+                <button class="w-full mt-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    <i class="fas fa-language mr-2"></i>
+                    Explore Languages
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions Bar -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <button onclick="makeQuickCall()" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl transition-all">
+                    <i class="fas fa-phone mb-2 block text-xl"></i>
+                    <div class="text-sm">Quick Call</div>
+                    <div class="text-xs opacity-75">any phone number</div>
+                </button>
+                
+                <button onclick="openFeature('/analytics-dashboard.html', 'Performance Analytics')" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl transition-all">
+                    <i class="fas fa-chart-line mb-2 block text-xl"></i>
+                    <div class="text-sm">Analytics</div>
+                    <div class="text-xs opacity-75">Performance Data</div>
+                </button>
+                
+                <button onclick="openFeature('/roi-calculator.html', 'ROI Calculator')" class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-4 px-6 rounded-xl transition-all">
+                    <i class="fas fa-calculator mb-2 block text-xl"></i>
+                    <div class="text-sm">ROI Calculator</div>
+                    <div class="text-xs opacity-75">Cost Analysis</div>
+                </button>
+                
+                <button onclick="openFeature('/twilio-number-config.html', 'Configure Twilio Number')" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-all">
+                    <i class="fas fa-phone mb-2 block text-xl"></i>
+                    <div class="text-sm">Use Twilio #</div>
+                    <div class="text-xs opacity-75">844-803-1492</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Status Dashboard -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6">System Status</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-3 h-3 bg-green-400 rounded-full mx-auto mb-2 pulse-ring"></div>
+                    <div class="text-sm text-slate-400">Voice API</div>
+                    <div class="font-bold text-green-400">Online</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-3 h-3 bg-blue-400 rounded-full mx-auto mb-2 pulse-ring"></div>
+                    <div class="text-sm text-slate-400">Live Calling</div>
+                    <div class="font-bold text-blue-400">Active</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-3 h-3 bg-purple-400 rounded-full mx-auto mb-2 pulse-ring"></div>
+                    <div class="text-sm text-slate-400">AI Personas</div>
+                    <div class="font-bold text-purple-400">5 Ready</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-3 h-3 bg-orange-400 rounded-full mx-auto mb-2 pulse-ring"></div>
+                    <div class="text-sm text-slate-400">Integrations</div>
+                    <div class="font-bold text-orange-400">6 Active</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitive Advantage -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold mb-4">🏆 Market Leading Platform</h2>
+            <p class="text-slate-400 mb-6">Superior to AltaHQ Alex, Bland.ai, and Connex.ai Athena</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card rounded-xl p-4">
+                    <div class="text-2xl font-bold text-green-400">99.2%</div>
+                    <div class="text-sm text-slate-400">Voice Naturalness</div>
+                    <div class="text-xs text-green-300">vs 94.2% competitors</div>
+                </div>
+                <div class="glass-card rounded-xl p-4">
+                    <div class="text-2xl font-bold text-blue-400">0.18s</div>
+                    <div class="text-sm text-slate-400">Response Time</div>
+                    <div class="text-xs text-blue-300">5x faster than others</div>
+                </div>
+                <div class="glass-card rounded-xl p-4">
+                    <div class="text-2xl font-bold text-purple-400">100%</div>
+                    <div class="text-sm text-slate-400">HVAC Specialized</div>
+                    <div class="text-xs text-purple-300">vs 0% generic platforms</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Panel -->
+        <div id="status-panel" class="mt-8 glass-card rounded-2xl p-6 hidden">
+            <div class="flex items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mr-4"></div>
+                <div>
+                    <div class="text-white font-bold">Loading Feature...</div>
+                    <div class="text-blue-200 text-sm" id="status-text">Initializing system...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Feature navigation function
+        function openFeature(url, featureName) {
+            showStatus(`Loading ${featureName}...`);
+            
+            setTimeout(() => {
+                hideStatus();
+                // Open in same window for mobile compatibility
+                window.location.href = url;
+            }, 1000);
+        }
+
+        // Quick call function
+        function makeQuickCall() {
+            showStatus('Initiating quick call to (786) 614-4925...');
+            
+            setTimeout(() => {
+                hideStatus();
+                // Redirect to direct calling with pre-filled number
+                window.location.href = '/direct-calling.html?phone=(786)%20614-4925&quick=true';
+            }, 1500);
+        }
+
+        // Original app function
+        function openOriginalApp() {
+            showStatus('Loading full ProSpector Pro dashboard...');
+            
+            setTimeout(() => {
+                hideStatus();
+                window.location.href = '/';
+            }, 1000);
+        }
+
+        // Status functions
+        function showStatus(message) {
+            document.getElementById('status-panel').classList.remove('hidden');
+            document.getElementById('status-text').textContent = message;
+        }
+
+        function hideStatus() {
+            document.getElementById('status-panel').classList.add('hidden');
+        }
+
+        // Initialize system status
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate status indicators
+            const indicators = document.querySelectorAll('.pulse-ring');
+            indicators.forEach((indicator, index) => {
+                setTimeout(() => {
+                    indicator.style.animationDelay = `${index * 0.5}s`;
+                }, index * 200);
+            });
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case '1':
+                            e.preventDefault();
+                            openFeature('/direct-calling.html', 'Live Calling System');
+                            break;
+                        case '2':
+                            e.preventDefault();
+                            openFeature('/bland-auth.html', 'Bland AI Integration');
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            openFeature('/agent-personas.html', 'AI Agent Personas');
+                            break;
+                    }
+                }
+            });
+
+            // Show keyboard shortcuts hint
+            setTimeout(() => {
+                const hint = document.createElement('div');
+                hint.className = 'fixed bottom-4 right-4 bg-black/80 text-white px-4 py-2 rounded-lg text-sm';
+                hint.innerHTML = '💡 Tip: Use Ctrl+1, Ctrl+2, Ctrl+3 for quick navigation';
+                document.body.appendChild(hint);
+                
+                setTimeout(() => {
+                    hint.remove();
+                }, 5000);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Click Test</title></head>
+<body>
+<iframe src="https://3000-in729du0qi04ve0ijwlzw-6532622b.e2b.dev/" style="width:100%;height:800px;"></iframe>
+<script>
+setTimeout(() => {
+    console.log('Testing customize button click...');
+    const iframe = document.querySelector('iframe');
+    if (iframe && iframe.contentWindow) {
+        const button = iframe.contentDocument.getElementById('sarah-customize-main');
+        if (button) {
+            console.log('Found button, clicking...');
+            button.click();
+        } else {
+            console.log('Button not found');
+        }
+    }
+}, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Reading Test - Debug Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e293b;
+            color: white;
+        }
+        .test-container {
+            background: #334155;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .stop-btn {
+            background: #ef4444;
+        }
+        .stop-btn:hover {
+            background: #dc2626;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            background: #475569;
+            color: white;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .status {
+            background: #059669;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: none;
+        }
+        .error {
+            background: #dc2626;
+        }
+        .log {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Script Reading Debug Test</h1>
+    <p>This is a simplified test to diagnose why script reading isn't working.</p>
+    
+    <div class="test-container">
+        <h2>📜 Test Script</h2>
+        <textarea id="test-script" placeholder="Enter your script here...">Hi there, this is Yeni from ProSpector HVAC. I hope I'm catching you at a good time. 
+
+With temperatures dropping this week, I wanted to reach out because our records show your heating system is due for its annual maintenance check.
+
+I know the last thing you want is to wake up to a cold house in the middle of winter. We've been serving homeowners in Miami for over 15 years, and I'd love to schedule a quick 20-minute inspection to ensure everything is running efficiently.
+
+Would tomorrow afternoon or Thursday morning work better for you?</textarea>
+        
+        <div>
+            <button onclick="testDirectReading()">📢 Test Direct Reading</button>
+            <button onclick="testSpeechSynthesis()">🗣️ Test Speech Synthesis</button>
+            <button onclick="stopAllSpeech()" class="stop-btn">🛑 Stop All</button>
+        </div>
+        
+        <div id="status" class="status">Ready to test...</div>
+        <div id="log" class="log">Test log will appear here...\n</div>
+    </div>
+    
+    <div class="test-container">
+        <h2>🎤 Voice Selection Test</h2>
+        <div>
+            <button onclick="selectVoice('yeni')">🎤 Yeni (Sofia Style)</button>
+            <button onclick="selectVoice('danny')">🎤 Danny (Benicio Style)</button>
+            <button onclick="selectVoice('gabi')">🎤 Gabi (Friendly Style)</button>
+        </div>
+        <p id="selected-voice">No voice selected</p>
+    </div>
+
+    <script>
+        let selectedVoice = 'yeni';
+        
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.className = isError ? 'status error' : 'status';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+        
+        function selectVoice(voice) {
+            selectedVoice = voice;
+            document.getElementById('selected-voice').textContent = `Selected: ${voice.charAt(0).toUpperCase() + voice.slice(1)}`;
+            log(`🎤 Selected voice: ${voice}`);
+            showStatus(`Voice set to ${voice}`);
+        }
+        
+        function testDirectReading() {
+            const scriptText = document.getElementById('test-script').value;
+            
+            if (!scriptText.trim()) {
+                showStatus('❌ No script text to read!', true);
+                return;
+            }
+            
+            log('🚀 Starting direct reading test...');
+            log(`📝 Script length: ${scriptText.length} characters`);
+            log(`🎤 Using voice: ${selectedVoice}`);
+            
+            try {
+                // Stop any existing speech
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    log('🛑 Stopped existing speech');
+                }
+                
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(scriptText);
+                
+                // Configure based on selected voice
+                if (selectedVoice === 'yeni' || selectedVoice === 'gabi') {
+                    // Female voice
+                    const voices = window.speechSynthesis.getVoices();
+                    const femaleVoice = voices.find(voice => 
+                        voice.name.toLowerCase().includes('female') ||
+                        voice.name.toLowerCase().includes('samantha') ||
+                        voice.name.toLowerCase().includes('karen')
+                    );
+                    if (femaleVoice) utterance.voice = femaleVoice;
+                } else if (selectedVoice === 'danny') {
+                    // Male voice  
+                    const voices = window.speechSynthesis.getVoices();
+                    const maleVoice = voices.find(voice => 
+                        voice.name.toLowerCase().includes('male') ||
+                        voice.name.toLowerCase().includes('alex') ||
+                        voice.name.toLowerCase().includes('daniel')
+                    );
+                    if (maleVoice) utterance.voice = maleVoice;
+                }
+                
+                // Set properties
+                utterance.rate = 0.9;
+                utterance.pitch = selectedVoice === 'danny' ? 0.8 : 1.0;
+                utterance.volume = 0.8;
+                
+                // Event handlers
+                utterance.onstart = () => {
+                    log('✅ Speech started successfully');
+                    showStatus('🗣️ Reading script...');
+                };
+                
+                utterance.onend = () => {
+                    log('✅ Speech completed');
+                    showStatus('✅ Finished reading script');
+                };
+                
+                utterance.onerror = (error) => {
+                    log(`❌ Speech error: ${error.error}`);
+                    showStatus(`❌ Speech error: ${error.error}`, true);
+                };
+                
+                // Start speaking
+                window.speechSynthesis.speak(utterance);
+                log('📢 Speech synthesis started');
+                
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`);
+                showStatus(`❌ Error: ${error.message}`, true);
+            }
+        }
+        
+        function testSpeechSynthesis() {
+            log('🧪 Testing speech synthesis capabilities...');
+            
+            if ('speechSynthesis' in window) {
+                log('✅ Speech Synthesis API available');
+                
+                const voices = window.speechSynthesis.getVoices();
+                log(`🎤 Available voices: ${voices.length}`);
+                
+                voices.forEach((voice, index) => {
+                    log(`  ${index + 1}. ${voice.name} (${voice.lang}) ${voice.default ? '[DEFAULT]' : ''}`);
+                });
+                
+                if (voices.length === 0) {
+                    log('⚠️ No voices loaded yet, loading...');
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        const newVoices = window.speechSynthesis.getVoices();
+                        log(`🎤 Voices loaded: ${newVoices.length}`);
+                        newVoices.forEach((voice, index) => {
+                            log(`  ${index + 1}. ${voice.name} (${voice.lang})`);
+                        });
+                    };
+                }
+                
+                showStatus('✅ Speech synthesis is available');
+            } else {
+                log('❌ Speech Synthesis API not available in this browser');
+                showStatus('❌ Speech synthesis not supported', true);
+            }
+        }
+        
+        function stopAllSpeech() {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                log('🛑 All speech stopped');
+                showStatus('🛑 Speech stopped');
+            } else {
+                log('ℹ️ No speech currently playing');
+                showStatus('ℹ️ Nothing to stop');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Script Reading Debug Test initialized');
+            selectVoice('yeni');
+            
+            // Load voices
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    log(`🎤 Voices loaded: ${window.speechSynthesis.getVoices().length}`);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

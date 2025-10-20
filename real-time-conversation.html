@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time AI Conversation Demo - ProSpector Pro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .conversation-panel {
+            background: #2d3748;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #4a5568;
+        }
+        .voice-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .voice-card {
+            background: #1a202c;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #4a5568;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .voice-card:hover {
+            border-color: #63b3ed;
+            transform: translateY(-2px);
+        }
+        .voice-card.selected {
+            border-color: #48bb78;
+            background: #22543d;
+        }
+        .conversation-display {
+            background: #1a202c;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .ai-message {
+            background: #4299e1;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .prospect-message {
+            background: #48bb78;
+            color: white;
+            margin-right: auto;
+        }
+        .system-message {
+            background: #ed8936;
+            color: white;
+            text-align: center;
+            max-width: 100%;
+            font-style: italic;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #38a169;
+        }
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+        .status-indicator {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .status-listening {
+            background: #4299e1;
+            color: white;
+        }
+        .status-speaking {
+            background: #48bb78;
+            color: white;
+        }
+        .status-inactive {
+            background: #718096;
+            color: white;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .feature-card {
+            background: #2d3748;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Real-Time AI Conversation Demo</h1>
+            <p>Experience interactive AI that responds to your voice in real-time</p>
+        </div>
+
+        <div class="conversation-panel">
+            <h2>Select an AI Voice Personality</h2>
+            <div class="voice-selector">
+                <div class="voice-card" data-voice="sarah">
+                    <h3>🌴 Sarah from Miami</h3>
+                    <p><strong>Style:</strong> Natural Conversation</p>
+                    <p>Warm, professional, interactive</p>
+                </div>
+                <div class="voice-card" data-voice="marcus">
+                    <h3>🤝 Marcus from Miami</h3>
+                    <p><strong>Style:</strong> Community Dialogue</p>
+                    <p>Friendly, bilingual charm</p>
+                </div>
+                <div class="voice-card" data-voice="david">
+                    <h3>💼 David Rodriguez</h3>
+                    <p><strong>Style:</strong> Business Conversation</p>
+                    <p>Professional, executive</p>
+                </div>
+                <div class="voice-card" data-voice="emma">
+                    <h3>😊 Emma from Miami</h3>
+                    <p><strong>Style:</strong> Friendly Dialogue</p>
+                    <p>Enthusiastic, energetic</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="status" class="status-indicator status-inactive">
+            Select a voice and click "Start Conversation" to begin
+        </div>
+
+        <div class="conversation-display" id="conversationDisplay">
+            <div class="system-message">
+                Real-time conversation will appear here...
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" class="btn btn-primary" disabled>
+                🎤 Start Conversation
+            </button>
+            <button id="stopBtn" class="btn btn-danger" disabled>
+                🛑 End Conversation
+            </button>
+            <button id="muteBtn" class="btn btn-secondary" disabled>
+                🔇 Mute Microphone
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>🎤 Voice Recognition</h3>
+                <p>AI listens and responds to your speech in real-time</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 Context Awareness</h3>
+                <p>AI adapts responses based on your mood and answers</p>
+            </div>
+            <div class="feature-card">
+                <h3>🗣️ Natural Dialogue</h3>
+                <p>Feels like talking to a real person, not a robot</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌴 Miami Authenticity</h3>
+                <p>Genuine regional personality and cultural connection</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class RealTimeDemo {
+            constructor() {
+                this.selectedVoice = null;
+                this.isActive = false;
+                this.recognition = null;
+                this.isListening = false;
+                
+                this.initializeElements();
+                this.initializeVoiceSelection();
+                this.initializeSpeechRecognition();
+                this.initializeControls();
+            }
+            
+            initializeElements() {
+                this.statusDiv = document.getElementById('status');
+                this.conversationDisplay = document.getElementById('conversationDisplay');
+                this.startBtn = document.getElementById('startBtn');
+                this.stopBtn = document.getElementById('stopBtn');
+                this.muteBtn = document.getElementById('muteBtn');
+            }
+            
+            initializeVoiceSelection() {
+                document.querySelectorAll('.voice-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        // Remove selection from other cards
+                        document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('selected'));
+                        
+                        // Select this card
+                        card.classList.add('selected');
+                        this.selectedVoice = card.dataset.voice;
+                        
+                        // Enable start button
+                        this.startBtn.disabled = false;
+                        this.updateStatus('Voice selected - ready to start conversation');
+                    });
+                });
+            }
+            
+            initializeSpeechRecognition() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    this.updateStatus('⚠️ Speech recognition not supported. Please use Chrome browser.');
+                    return;
+                }
+                
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                
+                this.recognition.continuous = true;
+                this.recognition.interimResults = true;
+                this.recognition.lang = 'en-US';
+                
+                this.recognition.onstart = () => {
+                    this.isListening = true;
+                    this.updateStatus('🎤 Listening for your response...', 'listening');
+                };
+                
+                this.recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    
+                    if (finalTranscript.trim()) {
+                        this.addMessage('prospect', finalTranscript);
+                        this.processResponse(finalTranscript);
+                    }
+                };
+                
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    if (this.isActive) {
+                        this.updateStatus('Processing your response...', 'speaking');
+                    }
+                };
+                
+                this.recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    this.updateStatus('Voice recognition error - please try again');
+                };
+            }
+            
+            initializeControls() {
+                this.startBtn.addEventListener('click', () => {
+                    this.startConversation();
+                });
+                
+                this.stopBtn.addEventListener('click', () => {
+                    this.stopConversation();
+                });
+                
+                this.muteBtn.addEventListener('click', () => {
+                    this.toggleMute();
+                });
+            }
+            
+            startConversation() {
+                if (!this.selectedVoice) {
+                    this.updateStatus('Please select a voice first');
+                    return;
+                }
+                
+                this.isActive = true;
+                this.startBtn.disabled = true;
+                this.stopBtn.disabled = false;
+                this.muteBtn.disabled = false;
+                
+                // Clear conversation display
+                this.conversationDisplay.innerHTML = '';
+                
+                // Start with AI greeting
+                const greeting = this.getGreeting(this.selectedVoice);
+                this.addMessage('ai', greeting);
+                this.speakMessage(greeting, () => {
+                    this.startListening();
+                });
+                
+                this.updateStatus('🤖 AI is speaking...', 'speaking');
+            }
+            
+            stopConversation() {
+                this.isActive = false;
+                
+                if (this.recognition && this.isListening) {
+                    this.recognition.stop();
+                }
+                
+                this.startBtn.disabled = false;
+                this.stopBtn.disabled = true;
+                this.muteBtn.disabled = true;
+                
+                this.updateStatus('Conversation ended', 'inactive');
+                this.addMessage('system', 'Conversation ended');
+            }
+            
+            toggleMute() {
+                if (this.isListening) {
+                    this.recognition.stop();
+                    this.muteBtn.textContent = '🎤 Unmute Microphone';
+                    this.updateStatus('Microphone muted');
+                } else if (this.isActive) {
+                    this.startListening();
+                    this.muteBtn.textContent = '🔇 Mute Microphone';
+                }
+            }
+            
+            getGreeting(voice) {
+                const greetings = {
+                    'sarah': "Hey there! This is Sarah from ProSpector Pro down in Miami. How's your day going?",
+                    'marcus': "¡Oye! Marcus here from ProSpector Pro. How you been doing, my friend?", 
+                    'david': "Good afternoon! David Rodriguez here from ProSpector Pro. How are things going for you today?",
+                    'emma': "Hi! This is Emma from ProSpector Pro. How's everything going with you today?"
+                };
+                
+                return greetings[voice] || greetings['sarah'];
+            }
+            
+            processResponse(response) {
+                // Simple response generation based on keywords
+                const aiResponse = this.generateResponse(response);
+                
+                setTimeout(() => {
+                    this.addMessage('ai', aiResponse);
+                    this.speakMessage(aiResponse, () => {
+                        if (this.isActive) {
+                            this.startListening();
+                        }
+                    });
+                }, 1000);
+            }
+            
+            generateResponse(response) {
+                const lowerResponse = response.toLowerCase();
+                
+                // Simple contextual responses
+                if (lowerResponse.includes('good') || lowerResponse.includes('great') || lowerResponse.includes('fine')) {
+                    return "That's wonderful to hear! I'm glad you're doing well. So I was wondering - have you been keeping an eye on your energy costs lately?";
+                } else if (lowerResponse.includes('busy') || lowerResponse.includes('not now')) {
+                    return "I totally understand you're busy! This will just take a minute. Can I ask you one quick question about your HVAC costs?";
+                } else if (lowerResponse.includes('no') || lowerResponse.includes('not interested')) {
+                    return "I completely understand. But what if I told you this could save you thousands of dollars without any hassle? Wouldn't you at least want to know about it?";
+                } else if (lowerResponse.includes('yes') || lowerResponse.includes('sure')) {
+                    return "Excellent! So here's what I've been seeing with businesses around Miami - their energy costs are through the roof. Have you noticed the same thing?";
+                } else {
+                    return "I appreciate you taking the time to talk with me. So I was wondering - have you noticed your energy bills being higher than usual lately?";
+                }
+            }
+            
+            speakMessage(message, callback) {
+                this.updateStatus('🤖 AI is speaking...', 'speaking');
+                
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(message);
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 0.9;
+                    
+                    utterance.onend = () => {
+                        if (callback) callback();
+                    };
+                    
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    if (callback) callback();
+                }
+            }
+            
+            startListening() {
+                if (!this.recognition || !this.isActive) return;
+                
+                try {
+                    this.recognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                }
+            }
+            
+            addMessage(type, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                
+                if (type === 'ai') {
+                    messageDiv.innerHTML = `<strong>🤖 AI:</strong> ${message}`;
+                } else if (type === 'prospect') {
+                    messageDiv.innerHTML = `<strong>👤 You:</strong> ${message}`;
+                } else {
+                    messageDiv.innerHTML = message;
+                }
+                
+                this.conversationDisplay.appendChild(messageDiv);
+                this.conversationDisplay.scrollTop = this.conversationDisplay.scrollHeight;
+            }
+            
+            updateStatus(message, type = 'inactive') {
+                this.statusDiv.textContent = message;
+                this.statusDiv.className = `status-indicator status-${type}`;
+            }
+        }
+        
+        // Initialize demo when page loads
+        window.addEventListener('load', () => {
+            new RealTimeDemo();
+        });
+    </script>
+</body>
+</html>

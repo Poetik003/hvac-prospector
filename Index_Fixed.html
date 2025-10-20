@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSpector Pro - AI-Powered Sales Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Core Styles */
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+        
+        /* Tab System - WORKING VERSION */
+        .tab-content { display: none; }
+        .nav-item.active { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; 
+            color: white !important; 
+        }
+        
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        
+        /* Loading Screen */
+        #loadingScreen { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-hidden">
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="fas fa-robot text-6xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">ProSpector Pro</h1>
+            <p class="text-white/80">Loading AI-Powered Sales Dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <div class="w-64 bg-gray-800 flex flex-col shadow-2xl">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center justify-center">
+                    <img id="sidebarLogo" src="prospector-logo-final.png?v=32" alt="ProSpector Pro" class="h-12 w-auto">
+                </div>
+            </div>
+            
+            <!-- Navigation Items -->
+            <nav class="p-4 space-y-2 flex-1">
+                <button data-tab="dashboard" class="nav-item active w-full flex items-center py-4 px-4 text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
+                    <i class="fas fa-tachometer-alt mr-3 text-lg"></i>
+                    <span>Dashboard</span>
+                </button>
+                
+                <button data-tab="leads" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
+                    <i class="fas fa-users mr-3 text-lg"></i>
+                    <span>Prospects</span>
+                </button>
+                
+                <button data-tab="scripts" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
+                    <i class="fas fa-file-alt mr-3 text-lg"></i>
+                    <span>AI Actors</span>
+                </button>
+                
+                <button data-tab="voicecalling" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
+                    <i class="fas fa-phone mr-3 text-lg"></i>
+                    <span>AI Cold Calling</span>
+                </button>
+                
+                <button data-tab="meetings" class="nav-item w-full flex items-center py-4 px-4 text-white/80 hover:text-white rounded-xl font-semibold text-sm transition-all duration-300 relative">
+                    <i class="fas fa-calendar mr-3 text-lg"></i>
+                    <span>Appointments</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img id="centerLogo" src="prospector-logo-final.png?v=32" alt="ProSpector Pro" class="h-8 w-auto mr-3">
+                        <h1 class="text-2xl font-bold gradient-text">ProSpector Pro</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-400">AI-Powered Sales Dashboard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content p-6 animate-fade-in">
+                    <div class="mb-8">
+                        <div class="text-center mb-6">
+                            <h2 class="text-3xl font-bold gradient-text mb-4">Welcome to ProSpector Pro</h2>
+                            <p class="text-xl text-gray-300">Your AI-Powered Sales Success Platform</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- Stats Cards -->
+                            <div class="glass-card p-6 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white mb-1">Active Campaigns</h3>
+                                        <p class="text-3xl font-bold text-blue-400">0</p>
+                                    </div>
+                                    <i class="fas fa-bullhorn text-3xl text-blue-400"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="glass-card p-6 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white mb-1">Total Prospects</h3>
+                                        <p class="text-3xl font-bold text-green-400">0</p>
+                                    </div>
+                                    <i class="fas fa-users text-3xl text-green-400"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="glass-card p-6 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white mb-1">Appointments</h3>
+                                        <p class="text-3xl font-bold text-purple-400">0</p>
+                                    </div>
+                                    <i class="fas fa-calendar text-3xl text-purple-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-card p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold text-white mb-4">Quick Actions</h3>
+                                <div class="space-y-3">
+                                    <button onclick="switchTab('scripts')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                        <i class="fas fa-microphone mr-2"></i>Set Up AI Actors
+                                    </button>
+                                    <button onclick="switchTab('leads')" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                        <i class="fas fa-users mr-2"></i>Import Prospects
+                                    </button>
+                                    <button onclick="switchTab('voicecalling')" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                        <i class="fas fa-phone mr-2"></i>Start AI Campaign
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="glass-card p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold text-white mb-4">Recent Activity</h3>
+                                <div class="text-gray-400 text-center py-8">
+                                    <i class="fas fa-chart-line text-4xl mb-4"></i>
+                                    <p>No recent activity</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prospects Tab -->
+                <div id="leads-tab" class="tab-content p-6 hidden">
+                    <h2 class="text-3xl font-bold gradient-text mb-6">Lead Management & Integrations</h2>
+                    <div class="glass-card p-6 rounded-xl">
+                        <p class="text-xl text-gray-300 mb-4">Import and manage your prospects from various sources.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                <i class="fas fa-upload mr-2"></i>Import CSV
+                            </button>
+                            <button class="bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                <i class="fas fa-link mr-2"></i>Connect CRM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Actors Tab -->
+                <div id="scripts-tab" class="tab-content p-6 hidden">
+                    <h2 class="text-3xl font-bold gradient-text mb-6">AI Actors - Voice Previews</h2>
+                    <div class="glass-card p-6 rounded-xl">
+                        <p class="text-xl text-gray-300 mb-6">Professional Miami AI Personalities for HVAC Lead Generation</p>
+                        
+                        <!-- Voice Preview Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Pedro Rodriguez - High-Energy Executive -->
+                            <div class="bg-gray-800 p-6 rounded-xl">
+                                <h3 class="text-xl font-bold text-white mb-2">Pedro Rodriguez</h3>
+                                <p class="text-blue-400 font-semibold mb-2">High-Energy HVAC Executive</p>
+                                <p class="text-gray-300 text-sm mb-4">Professional HVAC expert focusing on maintenance, repairs, and equipment replacement. Energetic and results-driven approach.</p>
+                                
+                                <div class="space-y-3">
+                                    <button id="previewPedro" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold transition-colors">
+                                        <i class="fas fa-play mr-2"></i>Preview Voice
+                                    </button>
+                                    <button id="testPedro" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-semibold transition-colors">
+                                        <i class="fas fa-phone mr-2"></i>Test HVAC Conversation
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- More AI Actors Can Be Added Here -->
+                            <div class="bg-gray-800 p-6 rounded-xl">
+                                <h3 class="text-xl font-bold text-white mb-2">More Actors Coming Soon</h3>
+                                <p class="text-purple-400 font-semibold mb-2">Professional HVAC Specialists</p>
+                                <p class="text-gray-300 text-sm mb-4">Additional Miami AI personalities will be available soon for different HVAC specialties.</p>
+                                
+                                <button class="w-full bg-gray-600 text-white py-2 px-4 rounded font-semibold cursor-not-allowed">
+                                    <i class="fas fa-clock mr-2"></i>Coming Soon
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Cold Calling Tab -->
+                <div id="voicecalling-tab" class="tab-content p-6 hidden">
+                    <h2 class="text-3xl font-bold gradient-text mb-6">AI Cold Calling Campaigns</h2>
+                    <div class="glass-card p-6 rounded-xl">
+                        <p class="text-xl text-gray-300 mb-4">Launch AI-powered calling campaigns with professional HVAC conversations.</p>
+                        <button class="bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-rocket mr-2"></i>Launch Campaign
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Appointments Tab -->
+                <div id="meetings-tab" class="tab-content p-6 hidden">
+                    <h2 class="text-3xl font-bold gradient-text mb-6">Appointment Management</h2>
+                    <div class="glass-card p-6 rounded-xl">
+                        <p class="text-xl text-gray-300 mb-4">Manage and track appointments scheduled by your AI actors.</p>
+                        <div class="text-gray-400 text-center py-8">
+                            <i class="fas fa-calendar text-4xl mb-4"></i>
+                            <p>No appointments scheduled</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PROVEN WORKING TAB SYSTEM - DO NOT MODIFY
+        console.log('🚀 ProSpector Pro loading...');
+        
+        function switchTab(tabName) {
+            console.log('✅ Switching to tab:', tabName);
+            
+            // Hide all tab content
+            var contents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].style.display = 'none';
+                contents[i].classList.add('hidden');
+            }
+            
+            // Remove active class from all nav items
+            var navItems = document.querySelectorAll('.nav-item');
+            for (var i = 0; i < navItems.length; i++) {
+                navItems[i].classList.remove('active');
+                navItems[i].classList.add('text-white/80');
+                navItems[i].classList.remove('text-white');
+            }
+            
+            // Show target tab content
+            var targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.remove('hidden');
+                console.log('✅ Activated tab content:', tabName);
+            } else {
+                console.error('❌ Tab content not found:', tabName + '-tab');
+            }
+            
+            // Activate corresponding nav button
+            var activeButton = document.querySelector('[data-tab="' + tabName + '"]');
+            if (activeButton) {
+                activeButton.classList.add('active');
+                activeButton.classList.remove('text-white/80');
+                activeButton.classList.add('text-white');
+                console.log('✅ Activated nav button:', tabName);
+            } else {
+                console.error('❌ Nav button not found for:', tabName);
+            }
+        }
+        
+        // Logo loading functions
+        function checkLogos() {
+            var sidebarLogo = document.getElementById('sidebarLogo');
+            var centerLogo = document.getElementById('centerLogo');
+            
+            if (sidebarLogo && sidebarLogo.complete) {
+                console.log('✅ Sidebar logo loaded successfully');
+            }
+            if (centerLogo && centerLogo.complete) {
+                console.log('✅ Center logo loaded successfully');
+            }
+        }
+        
+        // Voice preview functions
+        function previewVoice(voiceId) {
+            console.log('🎤 Previewing voice:', voiceId);
+            
+            // Show loading state
+            var btn = document.getElementById('preview' + voiceId.charAt(0).toUpperCase() + voiceId.slice(1));
+            if (btn) {
+                var originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                btn.disabled = true;
+                
+                // Simulate voice preview (replace with actual API call)
+                setTimeout(function() {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    console.log('✅ Voice preview completed');
+                }, 2000);
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 DOM ready - initializing ProSpector Pro...');
+            
+            // Hide loading screen
+            setTimeout(function() {
+                var loading = document.getElementById('loadingScreen');
+                if (loading) {
+                    loading.style.display = 'none';
+                    console.log('✅ Loading screen hidden');
+                }
+            }, 1000);
+            
+            // Set up tab navigation
+            var tabButtons = document.querySelectorAll('[data-tab]');
+            console.log('📋 Found', tabButtons.length, 'tab buttons');
+            
+            for (var i = 0; i < tabButtons.length; i++) {
+                var button = tabButtons[i];
+                var tabName = button.getAttribute('data-tab');
+                
+                // Use closure to capture tabName correctly
+                (function(name, btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('🖱️ Tab clicked:', name);
+                        switchTab(name);
+                    });
+                })(tabName, button);
+            }
+            
+            // Set up voice preview buttons
+            var previewPedroBtn = document.getElementById('previewPedro');
+            if (previewPedroBtn) {
+                previewPedroBtn.addEventListener('click', function() {
+                    previewVoice('pedro');
+                });
+            }
+            
+            // Initialize with dashboard tab
+            switchTab('dashboard');
+            
+            // Check logos after delay
+            setTimeout(checkLogos, 1500);
+            
+            console.log('✅ ProSpector Pro initialized successfully!');
+        });
+        
+        console.log('📜 ProSpector Pro scripts loaded');
+    </script>
+</body>
+</html>

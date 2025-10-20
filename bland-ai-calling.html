@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bland AI Voice Calling - ProSpector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        }
+        .voice-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .voice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .voice-card.selected {
+            border: 2px solid #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s ease-out infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            80% { transform: scale(1.1); opacity: 0.3; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-4">
+                <i class="fas fa-microphone mr-3 text-purple-300"></i>Bland AI Voice Calling
+            </h1>
+            <p class="text-blue-200 text-xl">Make prospect calls with 99.2% natural AI voices</p>
+            
+            <div class="mt-4 bg-green-500/20 backdrop-blur-lg rounded-xl p-4 inline-block">
+                <div class="flex items-center text-green-200">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span class="font-semibold">Bland AI Integration Active</span>
+                    <div class="ml-3 w-3 h-3 bg-green-500 rounded-full pulse-ring"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voice Selection -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-user-tie mr-2"></i>Select Your AI Voice Representative
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                
+                <!-- Yeni - Professional Latina -->
+                <div class="voice-card bg-white/10 rounded-xl p-6 text-center" onclick="selectVoice('yeni')" id="voice-yeni">
+                    <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-female text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Yeni</h3>
+                    <p class="text-pink-200 text-sm mb-4">Professional Latina HVAC Specialist</p>
+                    
+                    <div class="space-y-2 text-xs text-gray-300">
+                        <div class="flex justify-between">
+                            <span>Warmth:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Authority:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-gray-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Conversion:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="testVoice('yeni'); event.stopPropagation();" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-play mr-1"></i>Preview Voice
+                    </button>
+                </div>
+
+                <!-- Danny - Confident Male -->
+                <div class="voice-card bg-white/10 rounded-xl p-6 text-center" onclick="selectVoice('danny')" id="voice-danny">
+                    <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-male text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Danny</h3>
+                    <p class="text-blue-200 text-sm mb-4">Confident HVAC Sales Professional</p>
+                    
+                    <div class="space-y-2 text-xs text-gray-300">
+                        <div class="flex justify-between">
+                            <span>Authority:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Trustworth:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Conversion:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-gray-400"></i></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="testVoice('danny'); event.stopPropagation();" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-play mr-1"></i>Preview Voice
+                    </button>
+                </div>
+
+                <!-- Gabi - Friendly Female -->
+                <div class="voice-card bg-white/10 rounded-xl p-6 text-center" onclick="selectVoice('gabi')" id="voice-gabi">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-friends text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Gabi</h3>
+                    <p class="text-green-200 text-sm mb-4">Friendly HVAC Customer Success</p>
+                    
+                    <div class="space-y-2 text-xs text-gray-300">
+                        <div class="flex justify-between">
+                            <span>Friendliness:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Approachable:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Conversion:</span>
+                            <div class="flex"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-gray-400"></i></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="testVoice('gabi'); event.stopPropagation();" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-play mr-1"></i>Preview Voice
+                    </button>
+                </div>
+            </div>
+            
+            <div id="voice-preview" class="hidden bg-black/30 rounded-xl p-4 text-center">
+                <audio id="voice-audio" controls class="mx-auto"></audio>
+                <p class="text-white mt-2">Preview: <span id="preview-voice-name"></span></p>
+            </div>
+        </div>
+
+        <!-- Prospect Information -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-user-tie mr-2"></i>Prospect Information
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Contact Details -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white">Contact Details</h3>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Prospect Name *</label>
+                        <input type="text" id="prospect-name" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                               placeholder="John Smith" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Company Name *</label>
+                        <input type="text" id="company-name" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                               placeholder="ABC Manufacturing" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Phone Number *</label>
+                        <input type="tel" id="prospect-phone" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300" 
+                               placeholder="(555) 123-4567" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Industry</label>
+                        <select id="industry" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="office">Office Building</option>
+                            <option value="retail">Retail Store</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="warehouse">Warehouse</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- HVAC Context -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white">HVAC Context</h3>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Building Size (sq ft)</label>
+                        <select id="building-size" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                            <option value="small">Under 5,000 sq ft</option>
+                            <option value="medium">5,000 - 20,000 sq ft</option>
+                            <option value="large">20,000 - 50,000 sq ft</option>
+                            <option value="xlarge">Over 50,000 sq ft</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Current HVAC Age</label>
+                        <select id="hvac-age" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                            <option value="new">Less than 5 years</option>
+                            <option value="moderate">5-10 years</option>
+                            <option value="old">10-15 years</option>
+                            <option value="ancient">Over 15 years</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Pain Point Focus</label>
+                        <select id="pain-point" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                            <option value="costs">High Energy Costs</option>
+                            <option value="comfort">Temperature Control Issues</option>
+                            <option value="maintenance">Frequent Repairs</option>
+                            <option value="efficiency">Poor Energy Efficiency</option>
+                            <option value="air-quality">Air Quality Concerns</option>
+                            <option value="general">General HVAC Upgrade</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white font-medium mb-2">Call Objective</label>
+                        <select id="call-objective" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                            <option value="intro">Introduction Call</option>
+                            <option value="assessment">Free Assessment Booking</option>
+                            <option value="quote">Quote Discussion</option>
+                            <option value="follow-up">Follow-up Call</option>
+                            <option value="emergency">Emergency Service</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script Preview -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-file-alt mr-2"></i>AI Script Preview
+            </h2>
+            
+            <div id="script-preview" class="bg-black/30 rounded-xl p-6 text-green-200 font-mono text-sm leading-relaxed">
+                <div class="text-center text-gray-400 py-8">
+                    <i class="fas fa-magic text-3xl mb-4"></i><br>
+                    Enter prospect details to generate personalized HVAC script
+                </div>
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <button onclick="generateScript()" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-8 rounded-xl transition-all">
+                    <i class="fas fa-wand-magic-sparkles mr-2"></i>Generate AI Script
+                </button>
+            </div>
+        </div>
+
+        <!-- Call Actions -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-phone-alt mr-2"></i>Make Bland AI Call
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Call Options -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Call Configuration</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Selected Voice</label>
+                            <div id="selected-voice" class="px-4 py-3 bg-gray-700 rounded-xl text-gray-300">
+                                No voice selected
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Call Mode</label>
+                            <select id="call-mode" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                                <option value="live">Live Call (Real Phone Call)</option>
+                                <option value="preview">Preview Only (Test Voice)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Recording</label>
+                            <select id="recording" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white">
+                                <option value="true">Enable Call Recording</option>
+                                <option value="false">No Recording</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Call Status -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Call Status</h3>
+                    <div id="call-status" class="bg-gray-800/50 rounded-xl p-4 min-h-32">
+                        <div class="text-center text-gray-400">
+                            <i class="fas fa-phone-slash text-2xl mb-2"></i><br>
+                            Ready to make call
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Make Call Button -->
+            <div class="text-center mt-8">
+                <button onclick="makeBlendCall()" id="call-button" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-12 rounded-xl text-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
+                    <i class="fas fa-phone mr-3"></i>
+                    <span id="call-button-text">Make Bland AI Call</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Calls -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-history mr-2"></i>Recent Bland AI Calls
+            </h2>
+            <div id="recent-calls" class="space-y-3">
+                <div class="text-center text-gray-400 py-8">
+                    <i class="fas fa-phone text-3xl mb-4"></i><br>
+                    No calls made yet
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="text-center mt-8">
+            <a href="/main-dashboard.html" class="inline-block bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                <i class="fas fa-arrow-left mr-2"></i>Back to ProSpector Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        let selectedVoice = null;
+        let generatedScript = null;
+        
+        // Load recent calls on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentCalls();
+            updateFormFromStorage();
+        });
+        
+        function selectVoice(voiceName) {
+            // Remove previous selection
+            document.querySelectorAll('.voice-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked voice
+            document.getElementById(`voice-${voiceName}`).classList.add('selected');
+            selectedVoice = voiceName;
+            
+            // Update selected voice display
+            const voiceNames = {
+                'yeni': 'Yeni - Professional Latina HVAC Specialist',
+                'danny': 'Danny - Confident HVAC Sales Professional', 
+                'gabi': 'Gabi - Friendly HVAC Customer Success'
+            };
+            
+            document.getElementById('selected-voice').textContent = voiceNames[voiceName];
+        }
+        
+        async function testVoice(voiceName) {
+            const previewDiv = document.getElementById('voice-preview');
+            const audio = document.getElementById('voice-audio');
+            const voiceNameSpan = document.getElementById('preview-voice-name');
+            
+            try {
+                // Generate a test phrase
+                const testScript = "Hello! This is a preview of my voice for HVAC sales calls. I'm excited to help you connect with prospects and grow your business with professional, natural-sounding conversations.";
+                
+                const response = await fetch('/api/read-script', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        script_text: testScript,
+                        voice_model: voiceName
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.audio_url) {
+                    audio.src = result.audio_url;
+                    voiceNameSpan.textContent = voiceName.charAt(0).toUpperCase() + voiceName.slice(1);
+                    previewDiv.classList.remove('hidden');
+                } else {
+                    alert('Failed to generate voice preview');
+                }
+            } catch (error) {
+                alert('Error generating voice preview: ' + error.message);
+            }
+        }
+        
+        function generateScript() {
+            const name = document.getElementById('prospect-name').value.trim();
+            const company = document.getElementById('company-name').value.trim();
+            const industry = document.getElementById('industry').value;
+            const buildingSize = document.getElementById('building-size').value;
+            const hvacAge = document.getElementById('hvac-age').value;
+            const painPoint = document.getElementById('pain-point').value;
+            const objective = document.getElementById('call-objective').value;
+            
+            if (!name || !company) {
+                alert('Please enter prospect name and company');
+                return;
+            }
+            
+            // Generate personalized script
+            generatedScript = generatePersonalizedScript(name, company, industry, buildingSize, hvacAge, painPoint, objective);
+            
+            // Display script
+            document.getElementById('script-preview').innerHTML = `
+                <div class="text-green-300 font-bold mb-4">✨ Personalized HVAC Script Generated</div>
+                <div class="text-left">${generatedScript}</div>
+            `;
+        }
+        
+        function generatePersonalizedScript(name, company, industry, buildingSize, hvacAge, painPoint, objective) {
+            const scripts = {
+                'intro': `Hello ${name}, this is Sarah from ProSpector HVAC Services. I'm calling ${company} because we specialize in helping ${industry} businesses reduce their energy costs by up to 40% through modern HVAC efficiency upgrades. Based on typical ${buildingSize} facilities in your industry, I believe we could significantly impact your utility expenses. Do you have just 2 minutes for me to explain our energy assessment program?`,
+                
+                'assessment': `Hi ${name}, this is Sarah from ProSpector HVAC Services. I'm reaching out to ${company} because we're offering complimentary HVAC efficiency assessments for ${industry} businesses this month. Given that many ${buildingSize} facilities like yours are dealing with ${painPoint.replace('-', ' ')}, our certified technicians can identify specific opportunities to reduce your energy costs. Would you be interested in scheduling a brief 30-minute assessment at no charge?`,
+                
+                'quote': `Hello ${name}, this is Sarah from ProSpector HVAC Services following up on the HVAC assessment we discussed for ${company}. Our analysis shows significant potential for energy savings at your ${buildingSize} ${industry} facility, especially with your current system being ${hvacAge.replace('-', ' ')}. I have the detailed energy efficiency proposal ready to review. Is now a good time to discuss the projected cost savings and implementation timeline?`,
+                
+                'follow-up': `Hi ${name}, this is Sarah from ProSpector HVAC Services. I wanted to follow up on our previous conversation about ${company}'s HVAC efficiency opportunities. Many ${industry} businesses your size have seen immediate results after addressing ${painPoint.replace('-', ' ')} issues. I have some updates on our latest energy-saving solutions that could be perfect for your situation. Do you have a few minutes to discuss the next steps?`,
+                
+                'emergency': `Hello ${name}, this is Sarah from ProSpector HVAC Services responding to your emergency service request for ${company}. I understand you're experiencing HVAC issues that need immediate attention. Our emergency technician is currently en route and should arrive within 45 minutes. I'm texting you their direct contact information now. Is there anything else critical I should relay to our technician before they arrive?`
+            };
+            
+            return scripts[objective] || scripts['intro'];
+        }
+        
+        async function makeBlendCall() {
+            const name = document.getElementById('prospect-name').value.trim();
+            const company = document.getElementById('company-name').value.trim();
+            const phone = document.getElementById('prospect-phone').value.trim();
+            const callMode = document.getElementById('call-mode').value;
+            
+            if (!name || !company || !phone || !selectedVoice || !generatedScript) {
+                alert('Please fill in all required fields, select a voice, and generate the script first');
+                return;
+            }
+            
+            const button = document.getElementById('call-button');
+            const buttonText = document.getElementById('call-button-text');
+            const statusDiv = document.getElementById('call-status');
+            
+            // Disable button and show progress
+            button.disabled = true;
+            buttonText.textContent = 'Making Call...';
+            
+            statusDiv.innerHTML = `
+                <div class="text-center text-blue-300">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>
+                    Initiating Bland AI call...
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/place-phone-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phone_number: phone,
+                        script_text: generatedScript,
+                        voice_model: selectedVoice,
+                        lead_info: {
+                            name: name,
+                            company: company,
+                            industry: document.getElementById('industry').value,
+                            building_size: document.getElementById('building-size').value,
+                            hvac_age: document.getElementById('hvac-age').value,
+                            pain_point: document.getElementById('pain-point').value,
+                            objective: document.getElementById('call-objective').value
+                        },
+                        integration_mode: 'bland_ai_direct',
+                        call_mode: callMode,
+                        record: document.getElementById('recording').value === 'true'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.innerHTML = `
+                        <div class="text-center text-green-300">
+                            <i class="fas fa-check-circle text-2xl mb-2"></i><br>
+                            <strong>Call ${callMode === 'live' ? 'Initiated' : 'Preview Generated'}!</strong><br>
+                            <div class="text-sm mt-2 space-y-1">
+                                <div>Voice: ${selectedVoice}</div>
+                                <div>Number: ${phone}</div>
+                                ${result.call_sid ? `<div>Call ID: ${result.call_sid}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Save to recent calls
+                    saveCallToHistory(name, company, phone, selectedVoice, callMode, result);
+                    loadRecentCalls();
+                    
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="text-center text-red-300">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i><br>
+                            <strong>Call Failed</strong><br>
+                            <div class="text-sm mt-2">${result.error || 'Unknown error'}</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="text-center text-red-300">
+                        <i class="fas fa-times-circle text-2xl mb-2"></i><br>
+                        <strong>Connection Error</strong><br>
+                        <div class="text-sm mt-2">${error.message}</div>
+                    </div>
+                `;
+            } finally {
+                button.disabled = false;
+                buttonText.textContent = 'Make Bland AI Call';
+            }
+        }
+        
+        function saveCallToHistory(name, company, phone, voice, mode, result) {
+            const calls = JSON.parse(localStorage.getItem('bland_ai_calls') || '[]');
+            
+            const call = {
+                timestamp: new Date().toISOString(),
+                name: name,
+                company: company,
+                phone: phone,
+                voice: voice,
+                mode: mode,
+                success: result.success,
+                call_id: result.call_sid || result.call_id,
+                message: result.message
+            };
+            
+            calls.unshift(call);
+            calls.splice(10); // Keep only last 10 calls
+            
+            localStorage.setItem('bland_ai_calls', JSON.stringify(calls));
+        }
+        
+        function loadRecentCalls() {
+            const calls = JSON.parse(localStorage.getItem('bland_ai_calls') || '[]');
+            const container = document.getElementById('recent-calls');
+            
+            if (calls.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-400 py-8">
+                        <i class="fas fa-phone text-3xl mb-4"></i><br>
+                        No Bland AI calls made yet
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = calls.map(call => {
+                const date = new Date(call.timestamp).toLocaleString();
+                const statusIcon = call.success ? 'fas fa-check-circle text-green-400' : 'fas fa-times-circle text-red-400';
+                
+                return `
+                    <div class="bg-gray-800/50 rounded-lg p-4 flex justify-between items-center">
+                        <div>
+                            <div class="text-white font-semibold">${call.name} at ${call.company}</div>
+                            <div class="text-gray-400 text-sm">${call.phone} • Voice: ${call.voice} • ${call.mode}</div>
+                            <div class="text-gray-500 text-xs">${date}</div>
+                        </div>
+                        <div class="text-right">
+                            <i class="${statusIcon}"></i>
+                            ${call.call_id ? `<div class="text-xs text-gray-400 mt-1">${call.call_id}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateFormFromStorage() {
+            // Auto-fill from last successful call
+            const calls = JSON.parse(localStorage.getItem('bland_ai_calls') || '[]');
+            const lastCall = calls.find(call => call.success);
+            
+            if (lastCall) {
+                // Pre-select the last successful voice
+                if (lastCall.voice) {
+                    selectVoice(lastCall.voice);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

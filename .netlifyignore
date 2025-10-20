@@ -1,0 +1,49 @@
+# Files to exclude from Netlify deployment
+
+# Local development files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Server files (not needed for static deployment)
+server3000.js
+voice_api.py
+supervisord.conf
+supervisord.log
+supervisord.pid
+supervisor.sock
+*.log
+*.pid
+
+# Development/testing files
+audio-test.html
+button-test*.html
+calendar-debug.html
+calendar-test.html
+click-test.html
+function-test.html
+tab_test_minimal.html
+test*.html
+working-buttons.html
+
+# Backup files
+*_Original_Broken.html
+*_Fixed.html
+Index_*.html
+
+# Media files (large)
+screen_recording.mp4
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Git files (already handled by Netlify)
+.git/
+.gitignore

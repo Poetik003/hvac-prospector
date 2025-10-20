@@ -1,0 +1,97 @@
+2025-09-13 16:04:19,011 INFO RPC interface 'supervisor' initialized
+2025-09-13 16:04:19,011 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-09-13 16:04:19,013 INFO daemonizing the supervisord process
+2025-09-13 16:04:19,014 INFO supervisord started with pid 13389
+2025-09-13 16:04:20,018 INFO spawned: 'prospector-web' with pid 13415
+2025-09-13 16:04:21,155 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 16:21:09,734 INFO waiting for prospector-web to stop
+2025-09-13 16:21:09,735 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 16:21:09,739 INFO spawned: 'prospector-web' with pid 15764
+2025-09-13 16:21:10,823 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 16:31:21,221 INFO waiting for prospector-web to stop
+2025-09-13 16:31:21,222 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 16:31:21,227 INFO spawned: 'prospector-web' with pid 17264
+2025-09-13 16:31:22,313 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 16:38:14,154 INFO waiting for prospector-web to stop
+2025-09-13 16:38:14,155 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 16:38:14,159 INFO spawned: 'prospector-web' with pid 18485
+2025-09-13 16:38:15,233 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 16:47:07,436 INFO waiting for prospector-web to stop
+2025-09-13 16:47:07,437 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 16:47:07,441 INFO spawned: 'prospector-web' with pid 19646
+2025-09-13 16:47:08,529 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 17:09:58,277 INFO waiting for prospector-web to stop
+2025-09-13 17:09:58,279 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 17:09:58,282 INFO spawned: 'prospector-web' with pid 21617
+2025-09-13 17:09:59,364 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 17:24:55,890 INFO waiting for prospector-web to stop
+2025-09-13 17:24:55,891 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 17:24:55,895 INFO spawned: 'prospector-web' with pid 23773
+2025-09-13 17:24:56,976 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 17:33:23,561 INFO waiting for prospector-web to stop
+2025-09-13 17:33:23,562 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 17:33:23,565 INFO spawned: 'prospector-web' with pid 25316
+2025-09-13 17:33:24,646 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 17:41:02,023 INFO waiting for prospector-web to stop
+2025-09-13 17:41:02,024 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 17:41:02,028 INFO spawned: 'prospector-web' with pid 26630
+2025-09-13 17:41:03,105 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 17:47:10,093 INFO waiting for prospector-web to stop
+2025-09-13 17:47:10,094 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 17:47:10,101 INFO spawned: 'prospector-web' with pid 28142
+2025-09-13 17:47:11,177 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-13 18:14:48,813 INFO waiting for prospector-web to stop
+2025-09-13 18:14:48,815 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-13 18:14:48,819 INFO spawned: 'prospector-web' with pid 31356
+2025-09-13 18:14:49,899 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:01:56,906 INFO waiting for prospector-web to stop
+2025-09-15 00:01:56,908 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:01:56,916 INFO spawned: 'prospector-web' with pid 46095
+2025-09-15 00:01:58,015 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:14:18,546 INFO waiting for prospector-web to stop
+2025-09-15 00:14:18,548 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:14:18,552 INFO spawned: 'prospector-web' with pid 47729
+2025-09-15 00:14:19,639 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:20:53,396 INFO waiting for prospector-web to stop
+2025-09-15 00:20:53,397 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:20:53,401 INFO spawned: 'prospector-web' with pid 48885
+2025-09-15 00:20:54,483 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:26:43,547 INFO waiting for prospector-web to stop
+2025-09-15 00:26:43,548 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:26:43,553 INFO spawned: 'prospector-web' with pid 49825
+2025-09-15 00:26:44,639 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:34:51,487 INFO waiting for prospector-web to stop
+2025-09-15 00:34:51,488 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:34:51,492 INFO spawned: 'prospector-web' with pid 50700
+2025-09-15 00:34:52,573 INFO success: prospector-web entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:41:00,042 INFO spawned: 'voice-api' with pid 51498
+2025-09-15 00:41:01,654 INFO success: voice-api entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:41:14,183 INFO waiting for prospector-web to stop
+2025-09-15 00:41:14,185 WARN stopped: prospector-web (terminated by SIGTERM)
+2025-09-15 00:41:21,910 INFO waiting for voice-api to stop
+2025-09-15 00:41:21,981 INFO stopped: voice-api (exit status 0)
+2025-09-15 00:41:21,985 INFO spawned: 'voice-api' with pid 51642
+2025-09-15 00:41:23,508 INFO success: voice-api entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:42:06,797 INFO waiting for voice-api to stop
+2025-09-15 00:42:06,881 INFO stopped: voice-api (exit status 0)
+2025-09-15 00:42:06,885 INFO spawned: 'voice-api' with pid 51720
+2025-09-15 00:42:08,428 INFO success: voice-api entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 00:43:42,647 INFO waiting for voice-api to stop
+2025-09-15 00:43:42,738 INFO stopped: voice-api (exit status 0)
+2025-09-15 00:43:42,742 INFO spawned: 'voice-api' with pid 51857
+2025-09-15 00:43:44,339 INFO success: voice-api entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 04:11:01,575 INFO RPC interface 'supervisor' initialized
+2025-09-15 04:11:01,575 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-09-15 04:11:01,577 INFO daemonizing the supervisord process
+2025-09-15 04:11:01,578 INFO supervisord started with pid 82999
+2025-09-15 04:11:02,581 INFO spawned: 'voice-api' with pid 83002
+2025-09-15 04:11:02,584 INFO spawned: 'prospector-web' with pid 83003
+2025-09-15 04:11:02,936 WARN exited: prospector-web (exit status 1; not expected)
+2025-09-15 04:11:04,224 INFO success: voice-api entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-09-15 04:11:04,226 INFO spawned: 'prospector-web' with pid 83013
+2025-09-15 04:11:04,320 WARN exited: prospector-web (exit status 1; not expected)
+2025-09-15 04:11:06,325 INFO spawned: 'prospector-web' with pid 83019
+2025-09-15 04:11:06,421 WARN exited: prospector-web (exit status 1; not expected)
+2025-09-15 04:11:10,068 INFO spawned: 'prospector-web' with pid 83024
+2025-09-15 04:11:10,160 WARN exited: prospector-web (exit status 1; not expected)
+2025-09-15 04:11:11,161 INFO gave up: prospector-web entered FATAL state, too many start retries too quickly

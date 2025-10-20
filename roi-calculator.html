@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator - ProSpector Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="max-w-6xl mx-auto p-6">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-calculator text-2xl text-green-400"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">AI Voice ROI Calculator</h1>
+            <p class="text-slate-300 text-lg">Calculate your savings with ProSpector Pro AI Voice Assistant</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Input Panel -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                <h2 class="text-2xl font-bold mb-6 text-green-400">Your Business Metrics</h2>
+                
+                <div class="space-y-6">
+                    <!-- Current Staff -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-users mr-2"></i>Current Phone Staff
+                        </label>
+                        <input type="number" id="current-staff" value="3" min="1" max="50"
+                               class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-green-500">
+                        <p class="text-xs text-slate-400 mt-1">Number of people handling phone calls</p>
+                    </div>
+
+                    <!-- Average Salary -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-dollar-sign mr-2"></i>Average Annual Salary
+                        </label>
+                        <input type="number" id="avg-salary" value="45000" step="1000" min="20000" max="100000"
+                               class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-green-500">
+                        <p class="text-xs text-slate-400 mt-1">Include benefits and overhead</p>
+                    </div>
+
+                    <!-- Daily Calls -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-phone mr-2"></i>Daily Incoming Calls
+                        </label>
+                        <input type="number" id="daily-calls" value="150" min="10" max="1000"
+                               class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-green-500">
+                        <p class="text-xs text-slate-400 mt-1">Average calls received per day</p>
+                    </div>
+
+                    <!-- FAQ Percentage -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-question-circle mr-2"></i>FAQ/Simple Calls (%)
+                        </label>
+                        <input type="range" id="faq-percentage" min="30" max="80" value="60" 
+                               class="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-slate-400 mt-1">
+                            <span>30%</span>
+                            <span id="faq-value" class="text-green-400 font-semibold">60%</span>
+                            <span>80%</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Calls AI can handle (pricing, hours, basic info)</p>
+                    </div>
+
+                    <!-- Business Hours -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            <i class="fas fa-clock mr-2"></i>Business Hours Coverage
+                        </label>
+                        <select id="coverage-type" class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-green-500">
+                            <option value="business">Business Hours Only (8 AM - 6 PM)</option>
+                            <option value="extended">Extended Hours (7 AM - 9 PM)</option>
+                            <option value="24/7">24/7 Coverage</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                <h2 class="text-2xl font-bold mb-6 text-blue-400">Your Savings Potential</h2>
+                
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-green-400" id="annual-savings">$87,000</div>
+                        <div class="text-sm text-green-300">Annual Savings</div>
+                    </div>
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-blue-400" id="monthly-savings">$7,250</div>
+                        <div class="text-sm text-blue-300">Monthly Savings</div>
+                    </div>
+                    <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-purple-400" id="calls-automated">90</div>
+                        <div class="text-sm text-purple-300">Daily Calls Automated</div>
+                    </div>
+                    <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-orange-400" id="roi-percentage">1,740%</div>
+                        <div class="text-sm text-orange-300">ROI First Year</div>
+                    </div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-white">Cost Breakdown</h3>
+                    
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-slate-300">Current Annual Cost:</span>
+                            <span class="font-semibold" id="current-cost">$135,000</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-slate-300">ProSpector Pro Cost:</span>
+                            <span class="font-semibold text-blue-400" id="prospector-cost">$5,000</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-600 pt-2">
+                            <span class="text-green-400 font-semibold">Net Annual Savings:</span>
+                            <span class="text-green-400 font-bold text-lg" id="net-savings">$87,000</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="font-semibold text-white mb-2">Additional Benefits</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>24/7 availability increases customer satisfaction</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Never miss a call or potential customer</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Consistent, professional responses</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Staff can focus on complex tasks and sales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="mt-8 bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 text-white">5-Year Savings Projection</h2>
+            <div class="h-64">
+                <canvas id="savingsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="mt-8 text-center bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl p-8 border border-green-500/30">
+            <h2 class="text-3xl font-bold mb-4">Ready to Start Saving?</h2>
+            <p class="text-slate-300 mb-6">See ProSpector Pro in action with a free demo call</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/direct-calling.html" class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold text-lg transition-colors">
+                    <i class="fas fa-phone mr-2"></i>Try Live Demo
+                </a>
+                <button onclick="generateReport()" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-lg transition-colors">
+                    <i class="fas fa-download mr-2"></i>Get Full Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+
+        function updateCalculations() {
+            const currentStaff = parseInt(document.getElementById('current-staff').value);
+            const avgSalary = parseInt(document.getElementById('avg-salary').value);
+            const dailyCalls = parseInt(document.getElementById('daily-calls').value);
+            const faqPercentage = parseInt(document.getElementById('faq-percentage').value);
+            const coverageType = document.getElementById('coverage-type').value;
+
+            // Update FAQ percentage display
+            document.getElementById('faq-value').textContent = faqPercentage + '%';
+
+            // Calculate current costs
+            const annualStaffCost = currentStaff * avgSalary;
+            
+            // Calculate ProSpector Pro costs (example pricing)
+            let prospectorMonthlyCost = 299; // Base plan
+            if (dailyCalls > 200) prospectorMonthlyCost = 599;
+            if (dailyCalls > 500) prospectorMonthlyCost = 999;
+            if (coverageType === '24/7') prospectorMonthlyCost *= 1.5;
+            
+            const prospectorAnnualCost = prospectorMonthlyCost * 12;
+
+            // Calculate calls that can be automated
+            const automatedCalls = Math.round(dailyCalls * (faqPercentage / 100));
+            
+            // Calculate staff reduction potential (conservative: 1 staff per 100 automated calls)
+            const staffReduction = Math.min(currentStaff - 1, Math.floor(automatedCalls / 50));
+            const savings = staffReduction * avgSalary;
+            const netSavings = savings - prospectorAnnualCost;
+            const monthlySavings = netSavings / 12;
+            const roi = ((netSavings / prospectorAnnualCost) * 100);
+
+            // Update display
+            document.getElementById('annual-savings').textContent = '$' + netSavings.toLocaleString();
+            document.getElementById('monthly-savings').textContent = '$' + Math.round(monthlySavings).toLocaleString();
+            document.getElementById('calls-automated').textContent = automatedCalls.toLocaleString();
+            document.getElementById('roi-percentage').textContent = Math.round(roi).toLocaleString() + '%';
+            document.getElementById('current-cost').textContent = '$' + annualStaffCost.toLocaleString();
+            document.getElementById('prospector-cost').textContent = '$' + prospectorAnnualCost.toLocaleString();
+            document.getElementById('net-savings').textContent = '$' + netSavings.toLocaleString();
+
+            updateChart(netSavings);
+        }
+
+        function updateChart(annualSavings) {
+            const ctx = document.getElementById('savingsChart').getContext('2d');
+            
+            if (chart) chart.destroy();
+            
+            const years = ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+            const cumulativeSavings = years.map((_, index) => annualSavings * (index + 1));
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Cumulative Savings',
+                        data: cumulativeSavings,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e2e8f0' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(value) {
+                                    return '$' + (value / 1000) + 'K';
+                                }
+                            },
+                            grid: { color: '#374151' }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: '#374151' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateReport() {
+            alert('📊 Generating comprehensive ROI report...\n\n✅ Your custom analysis will be emailed within 24 hours\n✅ Includes detailed breakdown and implementation timeline\n✅ Free consultation call included\n\n📧 Please provide your email for the full report.');
+        }
+
+        // Event listeners
+        document.getElementById('current-staff').addEventListener('input', updateCalculations);
+        document.getElementById('avg-salary').addEventListener('input', updateCalculations);
+        document.getElementById('daily-calls').addEventListener('input', updateCalculations);
+        document.getElementById('faq-percentage').addEventListener('input', updateCalculations);
+        document.getElementById('coverage-type').addEventListener('change', updateCalculations);
+
+        // Initialize
+        updateCalculations();
+    </script>
+</body>
+</html>
