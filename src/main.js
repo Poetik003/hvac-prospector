@@ -26,6 +26,20 @@ const leads = [
   ['Daniel Ortiz','Maintenance Supervisor','Grand Bay Convention Center','Convention Center','Miami Beach, FL','Cold','New']
 ];
 
+const actors = [
+  { id:'sofia', name:'Sofía Reyes', tag:'Miami Latina · Warm', accent:'Neutral US Latina', tone:'Warm, confident, consultative', langs:'English + Spanish', gender:'Female', voice:'ElevenLabs · v3-tts · Rachel-tuned', best:'Property managers, condo boards, hospitality', calls:1284, connect:'38.4%', book:'12.1%', color:'#a473ff' },
+  { id:'diego', name:'Diego Alvarez', tag:'Miami Latino · Direct', accent:'Neutral US Latino', tone:'Direct, energetic, executive', langs:'English + Spanish', gender:'Male', voice:'ElevenLabs · v3-tts · Antoni-tuned', best:'Facility directors, chief engineers, industrial', calls:963, connect:'34.7%', book:'10.4%', color:'#4b93ff' },
+  { id:'marcus', name:'Marcus Bell', tag:'Southern US · Trusted', accent:'Soft Southern US', tone:'Trusted neighbor, unhurried', langs:'English', gender:'Male', voice:'ElevenLabs · v3-tts · Josh-tuned', best:'Small commercial, family-run operations', calls:702, connect:'31.9%', book:'9.2%', color:'#fb8733' },
+  { id:'jasmine', name:'Jasmine Cole', tag:'US · Bright', accent:'Neutral US', tone:'Bright, articulate, curious', langs:'English', gender:'Female', voice:'ElevenLabs · v3-tts · Bella-tuned', best:'Property tech, SaaS-adjacent, corporate real estate', calls:518, connect:'29.4%', book:'8.7%', color:'#4aca98' }
+];
+
+const scripts = [
+  { id:'discovery', name:'HVAC Discovery Intro', segment:'Commercial · Cold', duration:'45s open', book:'12.4%', updated:'Updated 2h ago' },
+  { id:'chiller', name:'Chiller Replacement Angle', segment:'Hospital · Warm', duration:'55s open', book:'15.1%', updated:'Updated yesterday' },
+  { id:'data', name:'Data Center Cooling Audit', segment:'Data center · Hot', duration:'40s open', book:'18.7%', updated:'Updated 3d ago' },
+  { id:'reengage', name:'Re-engage No-Answer', segment:'Any · Cold callback', duration:'30s open', book:'7.2%', updated:'Updated 1w ago' }
+];
+
 const app = document.querySelector('#app');
 app.innerHTML = `
   <div class="shell">
@@ -67,6 +81,18 @@ app.innerHTML = `
           <div class="lead-summary"><div><span>Total prospects</span><b>2,847</b></div><div><span>Ready to call</span><b class="green">1,926</b></div><div><span>Needs research</span><b class="amber-text">312</b></div><div><span>Invalid numbers</span><b class="red-text">86</b></div></div>
           <article class="card lead-card"><div class="lead-toolbar"><label class="lead-search">⌕ <input id="lead-search" placeholder="Search company, contact, or title" /></label><select id="lead-filter"><option>All statuses</option><option>Hot</option><option>Warm</option><option>Cold</option></select><button class="secondary">Filter ▾</button></div><div class="table-wrap"><table class="lead-table"><thead><tr><th>Contact</th><th>Company / facility</th><th>Industry</th><th>Location</th><th>Priority</th><th>Status</th></tr></thead><tbody id="lead-rows">${leads.map(l=>`<tr><td><b>${l[0]}</b><small>${l[1]}</small></td><td>${l[2]}</td><td>${l[3]}</td><td>${l[4]}</td><td><span class="priority ${l[5].toLowerCase()}">${l[5]}</span></td><td><span class="lead-status">${l[6]}</span></td></tr>`).join('')}</tbody></table></div></article>
         </section>
+        <section id="actors-panel" class="actors-view" hidden>
+          <div class="hero"><div><div class="eyebrow">AI VOICE PROFILES · MOCK MODE</div><h1>AI Actors</h1><p>Voices that place your outbound calls. Preview, tune personalities, and assign to campaigns.</p></div><div class="hero-actions"><button class="secondary" id="import-actor">⇧ Import voice</button><button class="primary" id="create-actor">＋ New actor</button></div></div>
+          <div class="lead-summary"><div><span>Active actors</span><b>4</b></div><div><span>Calls this week</span><b class="green">3,467</b></div><div><span>Avg. connect rate</span><b>33.6%</b></div><div><span>Avg. booking rate</span><b>10.1%</b></div></div>
+          <div class="actor-grid">${actors.map(a=>`
+            <article class="actor-card" data-actor="${a.id}">
+              <header><div class="actor-avatar" style="background:linear-gradient(135deg,${a.color},${a.color}55)">${a.name.split(' ').map(p=>p[0]).join('')}</div><div><b>${a.name}</b><small>${a.tag}</small></div><label class="actor-toggle"><input type="checkbox" checked><span></span></label></header>
+              <dl><div><dt>Accent</dt><dd>${a.accent}</dd></div><div><dt>Tone</dt><dd>${a.tone}</dd></div><div><dt>Languages</dt><dd>${a.langs}</dd></div><div><dt>Voice engine</dt><dd>${a.voice}</dd></div><div><dt>Best fit</dt><dd>${a.best}</dd></div></dl>
+              <div class="actor-metrics"><div><b>${a.calls.toLocaleString()}</b><span>Calls</span></div><div><b>${a.connect}</b><span>Connect</span></div><div><b>${a.book}</b><span>Booked</span></div></div>
+              <footer><button class="preview-btn" data-preview="${a.id}">▶ Preview voice</button><button class="secondary" data-edit="${a.id}">Tune</button><button class="secondary" data-assign="${a.id}">Assign</button></footer>
+            </article>`).join('')}</div>
+          <article class="card scripts-card"><div class="card-head"><div><h2>Call scripts</h2><p>The openings and objection paths your actors run</p></div><button class="primary" id="new-script">＋ New script</button></div><div class="table-wrap"><table class="lead-table"><thead><tr><th>Script</th><th>Segment</th><th>Length</th><th>Booking rate</th><th>Updated</th><th></th></tr></thead><tbody>${scripts.map(s=>`<tr><td><b>${s.name}</b><small>ID · ${s.id}</small></td><td>${s.segment}</td><td>${s.duration}</td><td><span class="lead-status">${s.book}</span></td><td>${s.updated}</td><td><button class="text-button" data-script="${s.id}">Open →</button></td></tr>`).join('')}</tbody></table></div></article>
+        </section>
       </section>
     </main>
   </div><div class="toast" id="toast"></div>`;
@@ -81,8 +107,27 @@ document.querySelectorAll('.nav-item').forEach(button => button.addEventListener
   document.querySelector('#crumb').textContent = page;
   document.querySelector('#dashboard-panel').hidden = page !== 'dashboard';
   document.querySelector('#prospects-panel').hidden = page !== 'prospects';
+  document.querySelector('#actors-panel').hidden = page !== 'actors';
   notify(`${button.textContent.trim()} view selected`);
 }));
+
+document.querySelectorAll('[data-preview]').forEach(b => b.addEventListener('click', () => {
+  const a = actors.find(x => x.id === b.dataset.preview);
+  const original = b.innerHTML;
+  b.classList.add('playing');
+  b.innerHTML = '■ Stop preview';
+  notify(`Previewing ${a.name} — mock playback (no audio in preview mode)`);
+  const stop = () => { b.classList.remove('playing'); b.innerHTML = original; b.onclick = null; };
+  const timer = setTimeout(stop, 4200);
+  b.onclick = () => { clearTimeout(timer); stop(); b.onclick = null; };
+}));
+document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => notify(`Tune ${actors.find(a=>a.id===b.dataset.edit).name} — personality panel opened`)));
+document.querySelectorAll('[data-assign]').forEach(b => b.addEventListener('click', () => notify(`Assign ${actors.find(a=>a.id===b.dataset.assign).name} to a campaign — picker opened`)));
+document.querySelectorAll('[data-script]').forEach(b => b.addEventListener('click', () => notify(`Script ${b.dataset.script} — editor opened`)));
+document.querySelectorAll('.actor-toggle input').forEach(c => c.addEventListener('change', e => notify(`Actor ${e.target.checked ? 'enabled' : 'paused'}`)));
+document.querySelector('#import-actor').addEventListener('click', () => notify('Voice importer opened — upload a sample or connect ElevenLabs'));
+document.querySelector('#create-actor').addEventListener('click', () => notify('New actor builder opened'));
+document.querySelector('#new-script').addEventListener('click', () => notify('Script generator opened — pick a segment and tone'));
 
 document.querySelector('#campaign').addEventListener('click', () => notify('Campaign workspace ready — mock mode is active.'));
 document.querySelector('#import').addEventListener('click', () => notify('Lead importer opened — connect a source to continue.'));
