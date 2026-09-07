@@ -27,10 +27,10 @@ const leads = [
 ];
 
 const actors = [
-  { id:'sofia', name:'Sofía Reyes', tag:'Miami Latina · Warm', accent:'Neutral US Latina', tone:'Warm, confident, consultative', langs:'English + Spanish', gender:'Female', voice:'ElevenLabs · v3-tts · Rachel-tuned', best:'Property managers, condo boards, hospitality', calls:1284, connect:'38.4%', book:'12.1%', color:'#a473ff' },
-  { id:'diego', name:'Diego Alvarez', tag:'Miami Latino · Direct', accent:'Neutral US Latino', tone:'Direct, energetic, executive', langs:'English + Spanish', gender:'Male', voice:'ElevenLabs · v3-tts · Antoni-tuned', best:'Facility directors, chief engineers, industrial', calls:963, connect:'34.7%', book:'10.4%', color:'#4b93ff' },
-  { id:'marcus', name:'Marcus Bell', tag:'Southern US · Trusted', accent:'Soft Southern US', tone:'Trusted neighbor, unhurried', langs:'English', gender:'Male', voice:'ElevenLabs · v3-tts · Josh-tuned', best:'Small commercial, family-run operations', calls:702, connect:'31.9%', book:'9.2%', color:'#fb8733' },
-  { id:'jasmine', name:'Jasmine Cole', tag:'US · Bright', accent:'Neutral US', tone:'Bright, articulate, curious', langs:'English', gender:'Female', voice:'ElevenLabs · v3-tts · Bella-tuned', best:'Property tech, SaaS-adjacent, corporate real estate', calls:518, connect:'29.4%', book:'8.7%', color:'#4aca98' }
+  { id:'sofia', name:'Sofía Reyes', tag:'Miami Latina · Warm', accent:'Neutral US Latina', tone:'Warm, confident, consultative', langs:'English + Spanish', gender:'Female', voice:'ElevenLabs · Rachel · multilingual v2', voiceId:'21m00Tcm4TlvDq8ikWAM', best:'Property managers, condo boards, hospitality', calls:1284, connect:'38.4%', book:'12.1%', color:'#a473ff' },
+  { id:'diego', name:'Diego Alvarez', tag:'Miami Latino · Direct', accent:'Neutral US Latino', tone:'Direct, energetic, executive', langs:'English + Spanish', gender:'Male', voice:'ElevenLabs · Antoni · multilingual v2', voiceId:'ErXwobaYiN019PkySvjV', best:'Facility directors, chief engineers, industrial', calls:963, connect:'34.7%', book:'10.4%', color:'#4b93ff' },
+  { id:'marcus', name:'Marcus Bell', tag:'Southern US · Trusted', accent:'Soft Southern US', tone:'Trusted neighbor, unhurried', langs:'English', gender:'Male', voice:'ElevenLabs · Josh · multilingual v2', voiceId:'TxGEqnHWrfWFTfGW9XjX', best:'Small commercial, family-run operations', calls:702, connect:'31.9%', book:'9.2%', color:'#fb8733' },
+  { id:'jasmine', name:'Jasmine Cole', tag:'US · Bright', accent:'Neutral US', tone:'Bright, articulate, curious', langs:'English', gender:'Female', voice:'ElevenLabs · Bella · multilingual v2', voiceId:'EXAVITQu4vr4xnSDxMaL', best:'Property tech, SaaS-adjacent, corporate real estate', calls:518, connect:'29.4%', book:'8.7%', color:'#4aca98' }
 ];
 
 const scripts = [
@@ -111,15 +111,11 @@ document.querySelectorAll('.nav-item').forEach(button => button.addEventListener
   notify(`${button.textContent.trim()} view selected`);
 }));
 
-document.querySelectorAll('[data-preview]').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('[data-preview]').forEach(b => b.addEventListener('click', async () => {
   const a = actors.find(x => x.id === b.dataset.preview);
-  const original = b.innerHTML;
-  b.classList.add('playing');
-  b.innerHTML = '■ Stop preview';
-  notify(`Previewing ${a.name} — mock playback (no audio in preview mode)`);
-  const stop = () => { b.classList.remove('playing'); b.innerHTML = original; b.onclick = null; };
-  const timer = setTimeout(stop, 4200);
-  b.onclick = () => { clearTimeout(timer); stop(); b.onclick = null; };
+  if (window.prospectorAudio) { window.prospectorAudio.pause(); window.prospectorAudio = null; document.querySelectorAll('[data-preview]').forEach(x => { x.classList.remove('playing'); x.disabled=false; x.textContent='▶ Preview voice'; }); }
+  b.classList.add('playing'); b.textContent='… Generating natural preview'; b.disabled=true;
+  try { const res=await fetch('/api/preview-voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({actorId:a.id,voiceId:a.voiceId,text:`Hi, this is ${a.name} with ProSpector. I’m reaching out because we help commercial facilities reduce HVAC downtime and plan maintenance before it becomes an emergency. Do you have a quick minute?`,settings:window.actorSettings?.[a.id]||{}})}); if(!res.ok) throw new Error(await res.text()); const audio=new Audio(URL.createObjectURL(await res.blob())); window.prospectorAudio=audio; b.disabled=false; b.textContent='■ Stop preview'; audio.onended=()=>{b.classList.remove('playing');b.textContent='▶ Preview voice';window.prospectorAudio=null}; await audio.play(); notify(`Playing natural ElevenLabs preview for ${a.name}`); } catch(err) { b.classList.remove('playing');b.disabled=false;b.textContent='▶ Preview voice';notify('Preview unavailable — check ELEVENLABS_API_KEY and try again');console.error(err); }
 }));
 document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => notify(`Tune ${actors.find(a=>a.id===b.dataset.edit).name} — personality panel opened`)));
 document.querySelectorAll('[data-assign]').forEach(b => b.addEventListener('click', () => notify(`Assign ${actors.find(a=>a.id===b.dataset.assign).name} to a campaign — picker opened`)));
