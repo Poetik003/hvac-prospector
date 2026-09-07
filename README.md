@@ -1,42 +1,19 @@
-# HVAC ProSpector
+# ProSpector
 
-**AI-Powered HVAC Maintenance Sales Dashboard**
+Commercial HVAC AI outbound calling + appointment setting platform.
 
-A comprehensive web-based dashboard for HVAC contractors selling maintenance service agreements to large commercial facilities.
+## Deployment
 
-## 🎯 What This Does
+This folder is Netlify-ready. Any push to `main` publishes the site.
 
-- **Lead Management**: Track prospects from Apollo AI imports through sales pipeline
-- **Meeting Scheduling**: Schedule and manage facility tours and presentations
-- **Call Scripts**: AI-generated industry-specific sales scripts
-- **Research Tools**: Company and facility assessment templates
-- **Analytics**: Track performance and conversion metrics
+- Publish directory: `.`
+- Build command: none (static site)
+- Base directory: leave empty (root)
 
-## 🏢 Target Industries
+## Local preview
 
-- Manufacturing facilities
-- Data centers  
-- Hospitals and healthcare
-- Universities
-- Pharmaceutical companies
-- Commercial buildings
+Open `index.html` in a browser, or run:
 
-## 🚀 Quick Start
-
-1. **Open the dashboard**: [Your live site will be here]
-2. **Import leads**: Use the Apollo AI import feature
-3. **Generate scripts**: Create industry-specific call scripts
-4. **Schedule meetings**: Track facility tours and presentations
-5. **Monitor progress**: Use analytics to optimize performance
-
-## 💼 Perfect For
-
-- HVAC contractors and service companies
-- Sales teams targeting commercial facilities
-- Business development professionals
-- Facility maintenance sales
-
----
-
-**Status**: Ready for deployment ✅  
-**Last Updated**: December 2024
+```bash
+python3 -m http.server 8000
+```
