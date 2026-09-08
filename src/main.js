@@ -73,7 +73,7 @@ app.innerHTML = `
       <div class="side-bottom"><div class="mode-chip"><span></span> Mock mode</div><div class="account"><div class="avatar">PS</div><div><b>ProSpector</b><small>Workspace owner</small></div><span>•••</span></div></div>
     </aside>
     <main class="main">
-      <header class="topbar"><div class="crumb">app <span>/</span> <b id="crumb">dashboard</b></div><div class="top-actions"><div class="connected"><i></i> All systems operational</div><button class="circle">?</button><div class="user-avatar">JD</div></div></header>
+      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button><div class="crumb">app <span>/</span> <b id="crumb">dashboard</b></div><div class="top-actions"><div class="connected"><i></i> All systems operational</div><button class="circle">?</button><div class="user-avatar">JD</div></div></header>
       <section class="content">
         <section id="dashboard-panel">
           <div class="hero"><div><div class="eyebrow">SUNDAY · SEPTEMBER 6, 2026</div><h1>Good evening, Jordan.</h1><p>Your AI sales team is ready. Here’s the pulse across your pipeline.</p></div><div class="hero-actions"><button class="secondary" id="import">＋ Import leads</button><button class="primary" id="campaign">＋ New campaign</button></div></div>
@@ -120,6 +120,9 @@ app.innerHTML = `
   </div><div class="toast" id="toast"></div>`;
 
 const toast = document.querySelector('#toast');
+const mobileMenu=document.querySelector('#mobile-menu');
+mobileMenu.addEventListener('click',()=>document.querySelector('.sidebar').classList.toggle('open'));
+document.querySelector('.main').addEventListener('click',()=>document.querySelector('.sidebar').classList.remove('open'));
 function notify(message){ toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2400); }
 
 document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
