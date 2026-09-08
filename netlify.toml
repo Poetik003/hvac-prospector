@@ -1,7 +1,5 @@
 [build]
   publish = "."
-  command = ""
-  functions = "netlify/functions"
 
 [[headers]]
   for = "/*"
@@ -9,3 +7,10 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "microphone=(self), camera=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.netlify.app https://identity.netlify.com https://*.supabase.co https://api.openai.com https://api.elevenlabs.io https://api.apollo.io; media-src 'self' blob:; frame-ancestors 'none';"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

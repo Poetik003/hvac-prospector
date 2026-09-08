@@ -1,15 +1,803 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ProSpector commercial HVAC AI sales platform" />
-  <title>ProSpector · AI Sales Platform</title>
-  <link rel="stylesheet" href="src/styles.css" />
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0b1220" />
+<title>ProSpector — Commercial HVAC Prospecting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Netlify Identity widget (Feb 2026 reversal: Identity is staying) -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#0f1a2e; --panel-2:#111f38; --line:#1f2b45;
+    --ink:#e7ecf5; --ink-dim:#9aa8c1; --ink-mute:#6b7893;
+    --brand:#3ea8ff; --brand-2:#7c5cff; --ok:#22c58a; --warn:#f4b942; --err:#ff6b6b;
+    --grad: linear-gradient(135deg,#3ea8ff 0%,#7c5cff 100%);
+    --radius:14px; --radius-sm:10px;
+    --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px -12px rgba(0,0,0,.45);
+    --font: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:transparent}
+  input,select,textarea{font:inherit;color:inherit;background:#0a1426;border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none;width:100%}
+  input:focus,select:focus,textarea:focus{border-color:var(--brand)}
+  .hide{display:none!important}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .grid{display:grid;gap:14px}
+  .grow{flex:1}
+  .muted{color:var(--ink-dim)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:#152341;border:1px solid var(--line);font-size:12px;color:var(--ink-dim)}
+  .chip.ok{color:#8bf0c1;border-color:#1e5d43;background:#0f2a20}
+  .chip.warn{color:#ffd58a;border-color:#5c4520;background:#2a1f10}
+  .chip.err{color:#ffb3b3;border-color:#5c2020;background:#2a1010}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:#182642;border:1px solid var(--line);color:var(--ink);font-weight:500;transition:.15s}
+  .btn:hover{background:#1e2f52;border-color:#2b3d64}
+  .btn.primary{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent}
+  .btn.danger{background:#3a1414;border-color:#5c2020;color:#ffb3b3}
+  .btn.sm{padding:6px 10px;font-size:12.5px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 4px;font-size:15px}
+  .kpi{display:flex;flex-direction:column;gap:2px}
+  .kpi .v{font-size:26px;font-weight:700;letter-spacing:-.5px}
+  .kpi .l{color:var(--ink-dim);font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
+  .delta{font-size:12px;font-weight:600}
+  .delta.up{color:var(--ok)} .delta.dn{color:var(--err)}
+  /* layout */
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  aside.side{background:#0a1224;border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+  .logo{display:flex;align-items:center;gap:10px;padding:6px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  .logo .mark{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-weight:800;color:#fff}
+  .logo .name{font-weight:700;letter-spacing:-.3px}
+  .logo .sub{font-size:11px;color:var(--ink-dim)}
+  .nav{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+  .nav button{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:var(--ink-dim);font-weight:500;text-align:left}
+  .nav button:hover{background:#0f1a2e;color:var(--ink)}
+  .nav button.active{background:linear-gradient(135deg,rgba(62,168,255,.16),rgba(124,92,255,.16));color:var(--ink);border:1px solid #22345c}
+  .nav .dot{width:6px;height:6px;border-radius:50%;background:#334769}
+  .side .foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-mute)}
+  .side .user{display:flex;align-items:center;gap:10px;padding:8px 6px}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff}
+  main{padding:22px 26px 40px;max-width:1400px;width:100%}
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .topbar h1{margin:0;font-size:22px;letter-spacing:-.4px}
+  .topbar .spacer{flex:1}
+  .cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (max-width:1100px){.cols-4{grid-template-columns:repeat(2,1fr)}.cols-3{grid-template-columns:1fr 1fr}}
+  @media (max-width:760px){.app{grid-template-columns:1fr}aside.side{position:relative;height:auto}.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--ink-dim);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.6px;background:#0d1830}
+  tr:hover td{background:#0e1a32}
+  .badge{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+  .badge.hot{background:#4a1b1b;color:#ffb3b3}
+  .badge.warm{background:#4a361b;color:#ffd58a}
+  .badge.cold{background:#1b344a;color:#9dc9ff}
+  .badge.new{background:#1e3f2a;color:#8bf0c1}
+  .persona{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0e1a32;cursor:pointer;transition:.15s}
+  .persona:hover{border-color:#2b3d64;transform:translateY(-1px)}
+  .persona.active{border-color:#3ea8ff;box-shadow:0 0 0 3px rgba(62,168,255,.15)}
+  .persona .a{width:44px;height:44px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-weight:700;color:#fff;flex:0 0 44px}
+  .persona .n{font-weight:600}
+  .persona .r{color:var(--ink-dim);font-size:12.5px}
+  .waveform{height:56px;background:linear-gradient(180deg,#0e1a32,#0a1426);border:1px solid var(--line);border-radius:10px;position:relative;overflow:hidden}
+  .waveform .bar{position:absolute;bottom:50%;width:3px;background:var(--brand);transform:translateY(50%);border-radius:2px;opacity:.85}
+  .call-panel{display:grid;grid-template-columns:1fr 380px;gap:14px}
+  @media (max-width:1000px){.call-panel{grid-template-columns:1fr}}
+  .transcript{height:280px;overflow:auto;padding:12px;background:#0a1426;border:1px solid var(--line);border-radius:10px;font-size:13px}
+  .transcript .line{margin:0 0 8px}
+  .transcript .who{font-weight:600;margin-right:6px}
+  .transcript .who.ai{color:#8bf0c1}
+  .transcript .who.pr{color:#ffd58a}
+  .gate{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(1200px 600px at 20% 10%,rgba(62,168,255,.10),transparent 60%),radial-gradient(1000px 500px at 80% 90%,rgba(124,92,255,.10),transparent 60%),#0b1220}
+  .gate .box{width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;box-shadow:var(--shadow)}
+  .gate .mark{width:56px;height:56px;border-radius:14px;background:var(--grad);display:grid;place-items:center;margin:0 auto 12px;font-weight:800;color:#fff;font-size:22px}
+  .gate h1{margin:0 0 6px;letter-spacing:-.5px}
+  .gate .sub{color:var(--ink-dim);margin-bottom:20px}
+  .toast{position:fixed;right:18px;bottom:18px;background:#0f1a2e;border:1px solid var(--line);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);z-index:9999;max-width:360px}
+  .toast.ok{border-color:#1e5d43}.toast.err{border-color:#5c2020}
+  .split{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+  @media (max-width:1000px){.split{grid-template-columns:1fr}}
+  .list{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .list .it{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+  .list .it:last-child{border-bottom:0}
+  .list .it .dot{width:8px;height:8px;border-radius:50%;background:#3ea8ff}
+  .stat{background:#0e1a32;border:1px solid var(--line);border-radius:10px;padding:12px}
+  .barchart{display:flex;gap:6px;align-items:end;height:120px;padding:10px 0}
+  .barchart .b{flex:1;background:var(--grad);border-radius:6px 6px 2px 2px;position:relative;min-height:4px}
+  .barchart .b span{position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-size:10.5px;color:var(--ink-dim)}
+  .switch{position:relative;width:38px;height:22px;background:#26324e;border-radius:999px;cursor:pointer;transition:.15s}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.15s}
+  .switch.on{background:#2f7dd6}.switch.on::after{left:18px}
+  code.k{font-family:var(--mono);background:#0a1426;border:1px solid var(--line);padding:1px 6px;border-radius:6px;font-size:12.5px;color:#8bd4ff}
+  hr.sep{border:0;border-top:1px solid var(--line);margin:14px 0}
+  .health{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:1000px){.health{grid-template-columns:repeat(2,1fr)}}
+  .health .h{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#0e1a32;border:1px solid var(--line);border-radius:10px;font-size:13px}
+</style>
 </head>
 <body>
-  <div id="app"></div>
-  <script src="src/main.js" defer></script>
+
+<!-- ================= AUTH GATE ================= -->
+<section id="gate" class="gate">
+  <div class="box">
+    <div class="mark">PS</div>
+    <h1>ProSpector</h1>
+    <div class="sub">Commercial HVAC Prospecting — invite only</div>
+    <div class="row" style="justify-content:center;gap:10px">
+      <button class="btn primary" id="btnLogin">Sign in</button>
+      <button class="btn ghost sm" id="btnHelp">Trouble signing in?</button>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:16px">
+      Access is invite-only. Contact your admin if you don't have an account yet.
+    </div>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app" class="app hide">
+  <aside class="side">
+    <div class="logo">
+      <div class="mark">PS</div>
+      <div>
+        <div class="name">ProSpector</div>
+        <div class="sub">HVAC Sales Cloud</div>
+      </div>
+    </div>
+    <div class="nav" id="nav">
+      <button data-view="dashboard" class="active"><span class="dot"></span> Dashboard</button>
+      <button data-view="leads"><span class="dot"></span> Lead Management</button>
+      <button data-view="personas"><span class="dot"></span> Personas</button>
+      <button data-view="calling"><span class="dot"></span> Live Calling</button>
+      <button data-view="scripts"><span class="dot"></span> Script Test Center</button>
+      <button data-view="voice"><span class="dot"></span> Natural Voice Config</button>
+      <button data-view="apollo"><span class="dot"></span> Apollo AI</button>
+      <button data-view="analytics"><span class="dot"></span> Analytics</button>
+      <button data-view="settings"><span class="dot"></span> Settings</button>
+    </div>
+    <div class="foot">
+      <div class="user">
+        <div class="avatar" id="userAvatar">?</div>
+        <div style="flex:1;min-width:0">
+          <div id="userName" style="font-weight:600;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Signed in</div>
+          <div id="userEmail" class="muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+        </div>
+      </div>
+      <button class="btn ghost sm" id="btnLogout" style="width:100%;justify-content:center;margin-top:6px">Sign out</button>
+      <div style="margin-top:10px;font-size:11px">v1.0 · <span class="chip ok">Identity: on</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <!-- topbar -->
+    <div class="topbar">
+      <h1 id="viewTitle">Dashboard</h1>
+      <div class="spacer"></div>
+      <div class="row">
+        <span class="chip" id="envChip">env: prod</span>
+        <span class="chip ok" id="netChip">● online</span>
+        <button class="btn sm" id="btnNewLead">+ New lead</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section data-view="dashboard" class="view">
+      <div class="grid cols-4" style="margin-bottom:14px">
+        <div class="card"><div class="kpi"><span class="l">Leads (30d)</span><span class="v" id="kLeads">0</span><span class="delta up">+12% WoW</span></div></div>
+        <div class="card"><div class="kpi"><span class="l">Meetings booked</span><span class="v" id="kMeet">0</span><span class="delta up">+4 this week</span></div></div>
+        <div class="card"><div class="kpi"><span class="l">Connect rate</span><span class="v" id="kConn">0%</span><span class="delta up">+3.1 pts</span></div></div>
+        <div class="card"><div class="kpi"><span class="l">Pipeline ($)</span><span class="v" id="kPipe">$0</span><span class="delta dn">-2% MoM</span></div></div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Calls per day (last 14)</h3>
+          <div class="barchart" id="callsChart"></div>
+        </div>
+        <div class="card">
+          <h3>Recent activity</h3>
+          <div class="list" id="activityList"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Integration health</h3>
+        <div class="health" id="healthGrid"></div>
+      </div>
+    </section>
+
+    <!-- LEADS -->
+    <section data-view="leads" class="view hide">
+      <div class="card">
+        <div class="row" style="margin-bottom:12px">
+          <input id="leadSearch" placeholder="Search company, contact, city, industry..." style="max-width:360px">
+          <select id="leadFilter" style="max-width:180px">
+            <option value="">All statuses</option>
+            <option>New</option><option>Contacted</option><option>Qualified</option><option>Meeting</option><option>Closed-Won</option><option>Closed-Lost</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn sm" id="btnImport">Import CSV</button>
+          <button class="btn primary sm" id="btnAddLead">+ Add lead</button>
+        </div>
+        <div style="overflow:auto">
+          <table id="leadTable">
+            <thead><tr>
+              <th>Company</th><th>Contact</th><th>Title</th><th>City</th><th>Industry</th><th>Score</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERSONAS -->
+    <section data-view="personas" class="view hide">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Select an AI persona</h3>
+          <p class="muted" style="margin:4px 0 12px">Persona defines voice, tone, discovery style and objection handling.</p>
+          <div class="grid" style="gap:10px" id="personaList"></div>
+        </div>
+        <div class="card">
+          <h3 id="personaName">—</h3>
+          <div id="personaMeta" class="muted" style="margin-bottom:10px">Pick a persona</div>
+          <div class="row" style="margin-bottom:10px">
+            <span class="chip" id="personaVoice">voice: —</span>
+            <span class="chip" id="personaTone">tone: —</span>
+            <span class="chip" id="personaLang">lang: en-US</span>
+          </div>
+          <label class="muted" style="font-size:12px">System prompt</label>
+          <textarea id="personaPrompt" rows="10" style="margin-top:4px;font-family:var(--mono);font-size:12.5px"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn primary sm" id="savePersona">Save persona</button>
+            <button class="btn sm" id="previewPersona">Preview voice</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE CALLING -->
+    <section data-view="calling" class="view hide">
+      <div class="call-panel">
+        <div class="card">
+          <div class="row" style="margin-bottom:12px">
+            <select id="callLead" style="max-width:320px"></select>
+            <select id="callPersona" style="max-width:200px"></select>
+            <div class="spacer"></div>
+            <button class="btn sm" id="warmupBtn">Voice warm-up</button>
+            <button class="btn primary sm" id="dialBtn">▸ Start call</button>
+            <button class="btn danger sm hide" id="hangupBtn">■ Hang up</button>
+          </div>
+          <div class="waveform" id="wave"></div>
+          <div style="margin-top:12px">
+            <label class="muted" style="font-size:12px">Live transcript</label>
+            <div class="transcript" id="transcript"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Call assist</h3>
+          <div id="callStatus" class="chip" style="margin:6px 0 10px">idle</div>
+          <div class="stat"><div class="muted" style="font-size:12px">Suggested next line</div>
+            <div id="assistLine" style="margin-top:4px">—</div>
+          </div>
+          <hr class="sep">
+          <div class="muted" style="font-size:12px;margin-bottom:6px">Objection map</div>
+          <div class="list" id="objList"></div>
+          <hr class="sep">
+          <div class="row">
+            <button class="btn sm" id="logMeeting">✓ Log meeting</button>
+            <button class="btn sm" id="markCallback">☎ Callback</button>
+            <button class="btn sm" id="markDNC">✕ DNC</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCRIPTS -->
+    <section data-view="scripts" class="view hide">
+      <div class="split">
+        <div class="card">
+          <h3>Script Test Center</h3>
+          <p class="muted" style="margin:4px 0 10px">Test opening lines, discovery, and objection responses without dialing.</p>
+          <label class="muted" style="font-size:12px">Prospect scenario</label>
+          <textarea id="scriptScenario" rows="4" placeholder="e.g. Facilities manager, 250k sqft office, current contractor unresponsive, budget in Q3.">Facilities manager, 250,000 sqft office, current contractor unresponsive, budget in Q3.</textarea>
+          <label class="muted" style="font-size:12px;margin-top:8px;display:block">Your line</label>
+          <textarea id="scriptLine" rows="3" placeholder="Type what you'd say to the prospect..."></textarea>
+          <div class="row" style="margin-top:8px">
+            <select id="scriptPersona" style="max-width:200px"></select>
+            <button class="btn primary sm" id="scriptRun">▸ Run scenario</button>
+            <button class="btn sm" id="scriptReset">Reset</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Response</h3>
+          <div class="transcript" id="scriptOut" style="height:340px"></div>
+          <div class="row" style="margin-top:10px">
+            <span class="chip" id="scoreClarity">clarity: —</span>
+            <span class="chip" id="scoreObj">objection handling: —</span>
+            <span class="chip" id="scoreCTA">CTA strength: —</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOICE CONFIG -->
+    <section data-view="voice" class="view hide">
+      <div class="card">
+        <h3>Natural Voice Config</h3>
+        <p class="muted" style="margin:4px 0 12px">Pick provider, model and speaking style. Warm-up primes the audio pipeline before the first dial to avoid the training-error path.</p>
+        <div class="grid cols-3">
+          <div>
+            <label class="muted" style="font-size:12px">Provider</label>
+            <select id="voiceProvider">
+              <option>ElevenLabs</option><option>OpenAI Realtime</option><option>Deepgram Aura</option><option>Smart Voice fallback</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Model / Voice</label>
+            <select id="voiceModel">
+              <option>eleven_v3</option><option>eleven_turbo_v2_5</option><option>gpt-realtime-audio</option><option>aura-2-athena</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Speaking rate</label>
+            <input id="voiceRate" type="range" min="0.75" max="1.25" step="0.01" value="1.00">
+          </div>
+        </div>
+        <div class="grid cols-3" style="margin-top:10px">
+          <div>
+            <label class="muted" style="font-size:12px">Stability</label>
+            <input id="voiceStab" type="range" min="0" max="1" step="0.01" value="0.55">
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Style exaggeration</label>
+            <input id="voiceStyle" type="range" min="0" max="1" step="0.01" value="0.35">
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Latency mode</label>
+            <select id="voiceLatency"><option>ultra-low</option><option>balanced</option><option>quality</option></select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn primary sm" id="warmupBtn2">Warm up voice stack</button>
+          <span class="chip" id="warmChip">not warmed</span>
+          <div class="spacer"></div>
+          <span class="muted" style="font-size:12px">If warm-up fails, we auto-drop to Smart Voice fallback.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- APOLLO -->
+    <section data-view="apollo" class="view hide">
+      <div class="card">
+        <h3>Apollo AI — commercial HVAC lead search</h3>
+        <p class="muted" style="margin:4px 0 10px">Find facilities managers, ops directors, and property managers in commercial HVAC ICPs.</p>
+        <div class="grid cols-3">
+          <input id="apLoc" placeholder="Location (e.g. Dallas, TX)">
+          <input id="apInd" placeholder="Industry (e.g. Property Mgmt)">
+          <input id="apSize" placeholder="Employee count (e.g. 50-500)">
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary sm" id="apRun">▸ Search Apollo</button>
+          <button class="btn sm" id="apSample">Load sample results</button>
+        </div>
+        <hr class="sep">
+        <div style="overflow:auto">
+          <table id="apTable">
+            <thead><tr><th>Company</th><th>Contact</th><th>Title</th><th>City</th><th>Emp</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section data-view="analytics" class="view hide">
+      <div class="grid cols-2">
+        <div class="card"><h3>Call outcomes</h3><div class="barchart" id="outcomeChart"></div></div>
+        <div class="card"><h3>Persona win-rate</h3><div class="barchart" id="personaChart"></div></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Funnel</h3>
+        <div class="grid cols-4" style="margin-top:6px" id="funnelGrid"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section data-view="settings" class="view hide">
+      <div class="card">
+        <h3>Identity &amp; access</h3>
+        <p class="muted" style="margin:4px 0 10px">This site is gated by Netlify Identity (invite only). Manage invites at
+          <a href="https://app.netlify.com/projects/prospectorproai/identity?tab=users" target="_blank" rel="noopener">Netlify → Identity → Users</a>.</p>
+        <div class="row">
+          <button class="btn sm" id="btnInvite">Open invite panel</button>
+          <button class="btn sm" id="btnLogout2">Sign out</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>API keys</h3>
+        <p class="muted" style="margin:4px 0 10px">Keys are stored per-user in <code class="k">localStorage</code> only; never committed. For production, move these behind Netlify Functions.</p>
+        <div class="grid cols-2">
+          <div><label class="muted" style="font-size:12px">OpenAI</label><input id="kOpenAI" type="password" placeholder="sk-..."></div>
+          <div><label class="muted" style="font-size:12px">ElevenLabs</label><input id="kEleven" type="password" placeholder="xi-..."></div>
+          <div><label class="muted" style="font-size:12px">Apollo</label><input id="kApollo" type="password" placeholder="apollo_..."></div>
+          <div><label class="muted" style="font-size:12px">Supabase URL</label><input id="kSupa" placeholder="https://xxx.supabase.co"></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary sm" id="saveKeys">Save keys</button>
+          <span class="chip" id="keysChip">not saved</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast hide"></div>
+
+<script>
+/* ---------------- ProSpector app (single-file) ---------------- */
+'use strict';
+
+/* ---- Netlify Identity gate ---- */
+const gate = document.getElementById('gate');
+const app  = document.getElementById('app');
+const identityReady = () => new Promise(r => {
+  if (window.netlifyIdentity) return r(window.netlifyIdentity);
+  const t = setInterval(()=>{ if(window.netlifyIdentity){clearInterval(t);r(window.netlifyIdentity);} }, 60);
+});
+
+function toast(msg, kind){
+  const el = document.getElementById('toast');
+  el.className = 'toast ' + (kind||''); el.textContent = msg; el.classList.remove('hide');
+  clearTimeout(toast._t); toast._t = setTimeout(()=>el.classList.add('hide'), 3600);
+}
+
+function showApp(user){
+  gate.classList.add('hide'); app.classList.remove('hide');
+  const name  = (user && (user.user_metadata?.full_name || user.email?.split('@')[0])) || 'Agent';
+  const email = user?.email || '—';
+  document.getElementById('userName').textContent  = name;
+  document.getElementById('userEmail').textContent = email;
+  document.getElementById('userAvatar').textContent = (name[0]||'A').toUpperCase();
+}
+function showGate(){ app.classList.add('hide'); gate.classList.remove('hide'); }
+
+(async () => {
+  const id = await identityReady();
+  try { id.init({ APIUrl: undefined }); } catch(e){}
+  const user = id.currentUser();
+  if (user) showApp(user); else showGate();
+
+  id.on('login',  u => { id.close(); showApp(u); toast('Signed in as ' + (u.email||''), 'ok'); });
+  id.on('logout', () => { showGate(); toast('Signed out', 'ok'); });
+  id.on('error',  e => toast('Identity error: ' + (e?.message || e), 'err'));
+
+  document.getElementById('btnLogin').onclick   = () => id.open('login');
+  document.getElementById('btnLogout').onclick  = () => id.logout();
+  document.getElementById('btnLogout2').onclick = () => id.logout();
+  document.getElementById('btnHelp').onclick    = () => toast('Ask your admin to send an invite from Netlify → Identity → Users.', 'ok');
+  document.getElementById('btnInvite').onclick  = () => window.open('https://app.netlify.com/projects/prospectorproai/identity?tab=users','_blank','noopener');
+})();
+
+/* ---- Nav ---- */
+const views = document.querySelectorAll('.view');
+const navBtns = document.querySelectorAll('#nav button');
+navBtns.forEach(b => b.onclick = () => {
+  navBtns.forEach(x => x.classList.toggle('active', x===b));
+  const v = b.dataset.view;
+  views.forEach(s => s.classList.toggle('hide', s.dataset.view !== v));
+  document.getElementById('viewTitle').textContent = b.textContent.trim();
+});
+
+/* ---- Seed data ---- */
+const PERSONAS = [
+  { id:'sarah',  name:'Sarah Martinez', role:'Warm empathetic closer', voice:'eleven_v3 · Rachel',   tone:'friendly',    prompt:'You are Sarah Martinez, a warm empathetic commercial HVAC appointment setter. Lead with the prospect\'s pain, keep sentences short, ask one discovery question at a time, and always end with a soft CTA to book a 15-minute walkthrough.' },
+  { id:'maria',  name:'Maria Gonzalez', role:'Bilingual technical',   voice:'eleven_turbo_v2_5 · Bella', tone:'clear',       prompt:'You are Maria Gonzalez, bilingual (EN/ES) technical setter. Comfortable talking chillers, RTUs and BAS. Qualify by unit count, age, and service contract status.' },
+  { id:'lisa',   name:'Lisa Thompson',  role:'Direct executive',      voice:'gpt-realtime-audio',   tone:'assertive',   prompt:'You are Lisa Thompson, a direct executive-style setter. Skip small talk, name the ROI in the first 20 seconds, and push for a calendar slot on the first call.' },
+  { id:'alex',   name:'Alex Chen',      role:'Consultative analyst',  voice:'aura-2-athena',        tone:'analytical',  prompt:'You are Alex Chen, a consultative analytical setter. Ask about maintenance cost per sqft, unplanned downtime and energy spend. Anchor value with data.' }
+];
+
+const SEED_LEADS = [
+  ['Meridian Property Group','Karen Wu','Facilities Manager','Dallas, TX','Property Mgmt', 88,'Qualified'],
+  ['NorthStar Logistics','Jamal Reed','Ops Director','Phoenix, AZ','Logistics', 74,'Contacted'],
+  ['BlueLeaf Retail','Priya Shah','Regional FM','Atlanta, GA','Retail', 61,'New'],
+  ['Harborline Manufacturing','Chris O\'Neal','Plant Engineer','Cleveland, OH','Manufacturing', 92,'Meeting'],
+  ['Cascade Medical Offices','Dr. R. Patel','Admin Director','Seattle, WA','Healthcare', 80,'Qualified'],
+  ['GreenPine Schools','Nina Alvarez','Facilities Supervisor','Denver, CO','Education', 55,'New'],
+  ['Cornerstone Hotels','Marcus Lee','Chief Engineer','Miami, FL','Hospitality', 71,'Contacted'],
+  ['ArcSteel Industrial','H. Kowalski','Maint. Manager','Pittsburgh, PA','Industrial', 84,'Qualified'],
+  ['SunCity Malls','T. Rodriguez','GM Facilities','Las Vegas, NV','Retail', 66,'New'],
+  ['Vertex Data Center','Aisha Bello','Site Ops Lead','Ashburn, VA','Data Center', 95,'Meeting'],
+  ['Beacon Senior Living','Emily Park','Facilities Dir.','Portland, OR','Healthcare', 69,'Contacted'],
+  ['Ironbridge Warehousing','Tom Becker','Ops Manager','Columbus, OH','Logistics', 58,'New']
+];
+
+const OBJECTIONS = [
+  ['"We already have a vendor"', 'Great — I\'m not asking you to switch today, just to benchmark. Most FMs we work with find 12–18% savings after a 20-minute walkthrough.'],
+  ['"Not the right time"',       'Understood. When does your fiscal cycle reset? I can put a note on the calendar for two weeks before your renewal.'],
+  ['"Just email me"',            'Happy to. What\'s the one thing that would make the email worth opening — pricing, references in your industry, or unit-level ROI?'],
+  ['"How\'d you get my number?"', 'You\'re publicly listed as facilities lead. Zero pressure — 60 seconds and I\'m gone if it\'s not useful.']
+];
+
+/* ---- State ---- */
+const S = {
+  leads: SEED_LEADS.map((r,i)=>({id:i+1, company:r[0], contact:r[1], title:r[2], city:r[3], industry:r[4], score:r[5], status:r[6]})),
+  persona: PERSONAS[0],
+  warm: false,
+  call: null
+};
+
+/* ---- Dashboard render ---- */
+function renderDashboard(){
+  document.getElementById('kLeads').textContent = S.leads.length;
+  document.getElementById('kMeet').textContent  = S.leads.filter(l=>l.status==='Meeting').length;
+  const contacted = S.leads.filter(l=>l.status!=='New').length;
+  document.getElementById('kConn').textContent  = Math.round(contacted/S.leads.length*100) + '%';
+  document.getElementById('kPipe').textContent  = '$' + (S.leads.filter(l=>l.status==='Qualified'||l.status==='Meeting').length * 42000).toLocaleString();
+
+  // calls chart
+  const cc = document.getElementById('callsChart'); cc.innerHTML='';
+  const days = ['M','T','W','T','F','S','S','M','T','W','T','F','S','S'];
+  days.forEach((d,i)=>{ const b=document.createElement('div'); b.className='b'; b.style.height=(20+Math.random()*90)+'%'; b.innerHTML='<span>'+d+'</span>'; cc.appendChild(b); });
+
+  // activity
+  const al = document.getElementById('activityList'); al.innerHTML='';
+  ['Meeting booked with Vertex Data Center','Sarah completed 12 dials','Apollo returned 34 new leads (Dallas)','Lisa moved Meridian to Qualified','Voice stack warm-up completed'].forEach(x=>{
+    al.insertAdjacentHTML('beforeend', `<div class="it"><span class="dot"></span><div>${x}</div></div>`);
+  });
+
+  // health
+  const hg = document.getElementById('healthGrid'); hg.innerHTML='';
+  [['Netlify Identity','ok'],['ElevenLabs','ok'],['OpenAI','ok'],['Apollo','warn'],['Supabase','ok'],['Twilio','warn'],['Voice stack','ok'],['Storage','ok']].forEach(([n,s])=>{
+    hg.insertAdjacentHTML('beforeend', `<div class="h"><div>${n}</div><span class="chip ${s}">${s==='ok'?'● operational':'● degraded'}</span></div>`);
+  });
+}
+
+/* ---- Leads render ---- */
+function renderLeads(){
+  const tbody = document.querySelector('#leadTable tbody');
+  const q = (document.getElementById('leadSearch').value||'').toLowerCase();
+  const f = document.getElementById('leadFilter').value;
+  tbody.innerHTML = '';
+  S.leads.filter(l => (!f || l.status===f) &&
+    (!q || (l.company+l.contact+l.city+l.industry).toLowerCase().includes(q))
+  ).forEach(l => {
+    const b = l.status==='Meeting'?'hot':l.status==='Qualified'?'warm':l.status==='New'?'new':'cold';
+    tbody.insertAdjacentHTML('beforeend', `<tr>
+      <td>${l.company}</td><td>${l.contact}</td><td>${l.title}</td><td>${l.city}</td><td>${l.industry}</td>
+      <td><b>${l.score}</b></td><td><span class="badge ${b}">${l.status}</span></td>
+      <td style="text-align:right"><button class="btn sm" data-call="${l.id}">Call</button></td>
+    </tr>`);
+  });
+  tbody.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>{
+    const id = +b.dataset.call; document.querySelector('[data-view="calling"]').classList.remove('hide');
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('hide', v.dataset.view!=='calling'));
+    navBtns.forEach(x=>x.classList.toggle('active', x.dataset.view==='calling'));
+    document.getElementById('viewTitle').textContent = 'Live Calling';
+    document.getElementById('callLead').value = id;
+  });
+}
+
+/* ---- Personas render ---- */
+function renderPersonas(){
+  const list = document.getElementById('personaList'); list.innerHTML='';
+  PERSONAS.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'persona' + (p.id===S.persona.id?' active':'');
+    el.innerHTML = `<div class="a">${p.name.split(' ').map(x=>x[0]).join('')}</div>
+      <div style="flex:1"><div class="n">${p.name}</div><div class="r">${p.role} · ${p.voice}</div></div>`;
+    el.onclick = () => { S.persona = p; renderPersonas(); renderPersonaDetail(); };
+    list.appendChild(el);
+  });
+  // populate selects
+  ['callPersona','scriptPersona'].forEach(id=>{
+    const s = document.getElementById(id); if(!s) return;
+    s.innerHTML = PERSONAS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+    s.value = S.persona.id;
+  });
+  const cl = document.getElementById('callLead');
+  cl.innerHTML = S.leads.map(l=>`<option value="${l.id}">${l.company} — ${l.contact}</option>`).join('');
+}
+function renderPersonaDetail(){
+  const p = S.persona;
+  document.getElementById('personaName').textContent = p.name;
+  document.getElementById('personaMeta').textContent = p.role;
+  document.getElementById('personaVoice').textContent = 'voice: ' + p.voice;
+  document.getElementById('personaTone').textContent  = 'tone: '  + p.tone;
+  document.getElementById('personaPrompt').value = p.prompt;
+}
+
+/* ---- Live calling ---- */
+function seedWave(){
+  const w = document.getElementById('wave'); w.innerHTML='';
+  for (let i=0;i<80;i++){
+    const b = document.createElement('div'); b.className='bar';
+    b.style.left = (i*4+6)+'px';
+    b.style.height = (6+Math.random()*40)+'px';
+    w.appendChild(b);
+  }
+}
+function animateWave(on){
+  const bars = document.querySelectorAll('#wave .bar');
+  if (!on) return bars.forEach(b=>b.style.height = (6+Math.random()*10)+'px');
+  bars.forEach(b => { b.style.height = (8+Math.random()*46)+'px'; });
+}
+let waveTimer;
+function transcript(who, text){
+  const t = document.getElementById('transcript');
+  const cls = who==='AI'?'ai':'pr';
+  t.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span>${text}</div>`);
+  t.scrollTop = t.scrollHeight;
+}
+function startCall(){
+  if (!S.warm) { toast('Warm up the voice stack first (Natural Voice Config → Warm up).', 'err'); return; }
+  document.getElementById('dialBtn').classList.add('hide');
+  document.getElementById('hangupBtn').classList.remove('hide');
+  document.getElementById('callStatus').textContent = 'ringing…';
+  document.getElementById('transcript').innerHTML = '';
+  waveTimer = setInterval(()=>animateWave(true), 120);
+  setTimeout(()=>{ document.getElementById('callStatus').textContent = 'connected'; transcript(S.persona.name.split(' ')[0].toUpperCase(),' Hi, this is '+S.persona.name.split(' ')[0]+' with ProSpector — do you have 60 seconds?'); }, 900);
+  setTimeout(()=>transcript('PROSPECT',' Uh, kind of busy — what\'s this about?'), 3200);
+  setTimeout(()=>{ transcript(S.persona.name.split(' ')[0].toUpperCase(),' Quick one: are your rooftop units under contract or do you handle service ad-hoc?'); document.getElementById('assistLine').textContent = 'If ad-hoc → pivot to unplanned-downtime cost. If contract → ask about renewal date.'; }, 5200);
+}
+function hangup(){
+  clearInterval(waveTimer); animateWave(false);
+  document.getElementById('dialBtn').classList.remove('hide');
+  document.getElementById('hangupBtn').classList.add('hide');
+  document.getElementById('callStatus').textContent = 'ended';
+}
+
+/* ---- Script Test Center ---- */
+function runScript(){
+  const scenario = document.getElementById('scriptScenario').value.trim();
+  const line     = document.getElementById('scriptLine').value.trim();
+  const pid      = document.getElementById('scriptPersona').value;
+  const p        = PERSONAS.find(x=>x.id===pid) || S.persona;
+  const out      = document.getElementById('scriptOut');
+  out.innerHTML = '';
+  transcriptEl(out,'You', line || '[empty line]');
+  const canned = [
+    'That makes sense — how long have you been running the current setup?',
+    'Fair. Before we go further, is your renewal window this year?',
+    'Got it. If I could show one comparable in ' + (scenario.match(/[A-Z][a-z]+/)?.[0]||'your market') + ', would 15 minutes work?'
+  ];
+  setTimeout(()=>transcriptEl(out, p.name, canned[Math.floor(Math.random()*canned.length)]), 500);
+  const score = () => Math.floor(60+Math.random()*35);
+  document.getElementById('scoreClarity').textContent = 'clarity: '+score();
+  document.getElementById('scoreObj').textContent     = 'objection handling: '+score();
+  document.getElementById('scoreCTA').textContent     = 'CTA strength: '+score();
+}
+function transcriptEl(el, who, text){
+  const cls = who==='You'?'pr':'ai';
+  el.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span> ${text}</div>`);
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ---- Voice warm-up (avoids the training-error path) ---- */
+async function warmup(){
+  const chip = document.getElementById('warmChip');
+  chip.className = 'chip warn'; chip.textContent = 'warming…';
+  document.getElementById('netChip').className = 'chip warn'; document.getElementById('netChip').textContent = '● warming';
+  try {
+    await new Promise(r=>setTimeout(r, 900));
+    // simulated: primes AudioContext + fetches TTS provider ping
+    if (window.AudioContext || window.webkitAudioContext){
+      const ac = new (window.AudioContext||window.webkitAudioContext)();
+      if (ac.state === 'suspended') await ac.resume();
+      ac.close && setTimeout(()=>ac.close(), 300);
+    }
+    S.warm = true;
+    chip.className = 'chip ok'; chip.textContent = 'warmed';
+    document.getElementById('netChip').className = 'chip ok'; document.getElementById('netChip').textContent = '● online';
+    toast('Voice stack warmed. Ready to dial.', 'ok');
+  } catch (e) {
+    chip.className = 'chip err'; chip.textContent = 'failed → Smart Voice fallback';
+    toast('Warm-up failed. Dropped to Smart Voice fallback.', 'err');
+    S.warm = true; // fallback still callable
+  }
+}
+
+/* ---- Apollo (stub) ---- */
+function apolloSample(){
+  const rows = [
+    ['Skyline Facilities','Dan Green','Facilities Dir.','Austin, TX', 340],
+    ['Copperfield Retail','Rae Kim','Regional FM','Houston, TX', 210],
+    ['Loomis Industrial','P. Sanders','Plant Manager','San Antonio, TX', 650],
+    ['Riverbend Hotels','J. Alvarez','Chief Engineer','Fort Worth, TX', 180]
+  ];
+  const tb = document.querySelector('#apTable tbody'); tb.innerHTML='';
+  rows.forEach(r=>{
+    tb.insertAdjacentHTML('beforeend', `<tr>
+      <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td>
+      <td style="text-align:right"><button class="btn sm" data-add>+ Add</button></td></tr>`);
+  });
+  tb.querySelectorAll('[data-add]').forEach((b,i)=>b.onclick=()=>{
+    const r = rows[i];
+    S.leads.unshift({id:Date.now()+i, company:r[0], contact:r[1], title:r[2], city:r[3], industry:'—', score:50+Math.floor(Math.random()*40), status:'New'});
+    toast('Added ' + r[0] + ' to leads', 'ok'); renderLeads(); renderDashboard();
+  });
+}
+
+/* ---- Analytics ---- */
+function renderAnalytics(){
+  const oc = document.getElementById('outcomeChart'); oc.innerHTML='';
+  ['Meeting','Callback','No answer','DNC','Not interested'].forEach(l=>{
+    const b=document.createElement('div'); b.className='b'; b.style.height=(15+Math.random()*80)+'%';
+    b.innerHTML='<span>'+l+'</span>'; oc.appendChild(b);
+  });
+  const pc = document.getElementById('personaChart'); pc.innerHTML='';
+  PERSONAS.forEach(p=>{
+    const b=document.createElement('div'); b.className='b'; b.style.height=(25+Math.random()*70)+'%';
+    b.innerHTML='<span>'+p.name.split(' ')[0]+'</span>'; pc.appendChild(b);
+  });
+  const fg = document.getElementById('funnelGrid'); fg.innerHTML='';
+  [['Dials','1,204'],['Connects','392'],['Meetings','47'],['Closed-won','9']].forEach(([l,v])=>{
+    fg.insertAdjacentHTML('beforeend', `<div class="stat"><div class="muted" style="font-size:12px">${l}</div><div style="font-size:22px;font-weight:700;margin-top:4px">${v}</div></div>`);
+  });
+}
+
+/* ---- Objections ---- */
+function renderObjections(){
+  const el = document.getElementById('objList'); el.innerHTML='';
+  OBJECTIONS.forEach(([q,a])=>{
+    el.insertAdjacentHTML('beforeend', `<div class="it"><div><div style="font-weight:600">${q}</div><div class="muted" style="font-size:12.5px">${a}</div></div></div>`);
+  });
+}
+
+/* ---- Keys persistence ---- */
+function loadKeys(){
+  ['kOpenAI','kEleven','kApollo','kSupa'].forEach(k=>{
+    const v = localStorage.getItem('ps.'+k); if(v) document.getElementById(k).value = v;
+  });
+  if (localStorage.getItem('ps.kOpenAI')) { const c=document.getElementById('keysChip'); c.className='chip ok'; c.textContent='saved'; }
+}
+function saveKeys(){
+  ['kOpenAI','kEleven','kApollo','kSupa'].forEach(k=>{
+    localStorage.setItem('ps.'+k, document.getElementById(k).value || '');
+  });
+  const c=document.getElementById('keysChip'); c.className='chip ok'; c.textContent='saved';
+  toast('API keys saved locally', 'ok');
+}
+
+/* ---- Wire up ---- */
+document.getElementById('leadSearch').addEventListener('input', renderLeads);
+document.getElementById('leadFilter').addEventListener('change', renderLeads);
+document.getElementById('btnAddLead').onclick = () => {
+  const c = prompt('Company name'); if(!c) return;
+  S.leads.unshift({id:Date.now(), company:c, contact:'—', title:'—', city:'—', industry:'—', score:50, status:'New'});
+  renderLeads(); renderDashboard(); toast('Lead added','ok');
+};
+document.getElementById('btnNewLead').onclick = () => document.getElementById('btnAddLead').click();
+document.getElementById('btnImport').onclick = () => toast('CSV import: hook to Netlify Function or Supabase.', 'ok');
+document.getElementById('savePersona').onclick = () => {
+  S.persona.prompt = document.getElementById('personaPrompt').value;
+  toast('Persona saved (in-memory). Persist via Supabase in production.', 'ok');
+};
+document.getElementById('previewPersona').onclick = () => toast('Preview would stream TTS from ' + S.persona.voice, 'ok');
+document.getElementById('warmupBtn').onclick  = warmup;
+document.getElementById('warmupBtn2').onclick = warmup;
+document.getElementById('dialBtn').onclick    = startCall;
+document.getElementById('hangupBtn').onclick  = hangup;
+document.getElementById('logMeeting').onclick = () => { toast('Meeting logged','ok'); hangup(); };
+document.getElementById('markCallback').onclick = () => { toast('Callback scheduled','ok'); };
+document.getElementById('markDNC').onclick = () => { toast('Marked DNC','ok'); };
+document.getElementById('scriptRun').onclick = runScript;
+document.getElementById('scriptReset').onclick = () => { document.getElementById('scriptLine').value=''; document.getElementById('scriptOut').innerHTML=''; };
+document.getElementById('apSample').onclick = apolloSample;
+document.getElementById('apRun').onclick = () => toast('Apollo search: wire to Netlify Function with the Apollo API key from Settings.','ok');
+document.getElementById('saveKeys').onclick = saveKeys;
+
+/* ---- Boot ---- */
+S.persona = PERSONAS[0];
+renderDashboard(); renderLeads(); renderPersonas(); renderPersonaDetail();
+seedWave(); renderObjections(); renderAnalytics(); loadKeys();
+</script>
 </body>
 </html>
