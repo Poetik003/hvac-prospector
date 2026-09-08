@@ -122,7 +122,7 @@ app.innerHTML = `
 
 const toast = document.querySelector('#toast');
 const mobileMenu=document.querySelector('#mobile-menu');
-mobileMenu.addEventListener('click',()=>document.querySelector('.sidebar').classList.toggle('open'));
+mobileMenu.addEventListener('click',event=>{event.stopPropagation();document.querySelector('.sidebar').classList.toggle('open')});
 document.querySelector('.main').addEventListener('click',()=>document.querySelector('.sidebar').classList.remove('open'));
 function notify(message){ toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2400); }
 
