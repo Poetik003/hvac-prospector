@@ -472,12 +472,38 @@ function showGate(){ app.classList.add('hide'); gate.classList.remove('hide'); }
 (async () => {
   const id = await identityReady();
   try { id.init({ APIUrl: undefined }); } catch(e){}
-  const user = id.currentUser();
-  if (user) showApp(user); else showGate();
 
-  id.on('login',  u => { id.close(); showApp(u); toast('Signed in as ' + (u.email||''), 'ok'); });
+  // CRITICAL: detect invite/recovery/confirmation token in URL fragment
+  // and force-open the widget's signup or recovery flow. The widget's own
+  // auto-handling is unreliable on Safari + iCloud Private Relay.
+  const hash = window.location.hash || '';
+  const hasInvite   = hash.includes('invite_token=');
+  const hasRecovery = hash.includes('recovery_token=');
+  const hasConfirm  = hash.includes('confirmation_token=');
+
+  const user = id.currentUser();
+  if (user && !hasInvite && !hasRecovery && !hasConfirm) {
+    showApp(user);
+  } else {
+    showGate();
+  }
+
+  id.on('init',   () => {
+    // After init, if there's a token in the URL, force the widget open.
+    if (hasInvite)   { try { id.open('signup'); } catch(e){} }
+    if (hasRecovery) { try { id.open('login');  } catch(e){} }
+    if (hasConfirm)  { try { id.open('login');  } catch(e){} }
+  });
+  id.on('login',  u => { id.close(); showApp(u); toast('Signed in as ' + (u.email||''), 'ok'); history.replaceState(null,'',window.location.pathname); });
   id.on('logout', () => { showGate(); toast('Signed out', 'ok'); });
   id.on('error',  e => toast('Identity error: ' + (e?.message || e), 'err'));
+
+  // If the widget already fired init before we attached the listener, fallback:
+  setTimeout(() => {
+    if (hasInvite || hasRecovery || hasConfirm) {
+      try { id.open(hasInvite ? 'signup' : 'login'); } catch(e){}
+    }
+  }, 400);
 
   document.getElementById('btnLogin').onclick   = () => id.open('login');
   document.getElementById('btnLogout').onclick  = () => id.logout();
