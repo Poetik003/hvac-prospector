@@ -50,6 +50,10 @@ const callProspects=[
 ];
 
 const app = document.querySelector('#app');
+const identity = window.netlifyIdentity;
+const roleForUser = user => user?.app_metadata?.roles?.includes('admin') ? 'Admin' : (user?.user_metadata?.role || 'Caller');
+function showLogin(){app.innerHTML=`<main class="auth-shell"><section class="auth-card"><div class="auth-logo">P<span>↗</span></div><div class="eyebrow">PROSPECTOR · PRIVATE WORKSPACE</div><h1>Sign in to ProSpector</h1><p>Use your invited team account to access prospects, AI actors, calling, and appointments.</p><button class="primary auth-button" id="login-button">Sign in</button><small>Registration is invite-only. Ask an administrator for an invitation.</small></section></main>`;document.querySelector('#login-button').onclick=()=>identity?.open('login')}
+if(identity){identity.on('init',user=>{if(!user)showLogin()});identity.on('logout',showLogin);identity.on('error',e=>console.error(e));identity.init()}
 app.innerHTML = `
   <div class="shell">
     <aside class="sidebar">
@@ -73,10 +77,10 @@ app.innerHTML = `
       <div class="side-bottom"><div class="mode-chip"><span></span> Mock mode</div><div class="account"><div class="avatar">PS</div><div><b>ProSpector</b><small>Workspace owner</small></div><span>•••</span></div></div>
     </aside>
     <main class="main">
-      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button><div class="crumb">app <span>/</span> <b id="crumb">dashboard</b></div><div class="top-actions"><div class="connected"><i></i> All systems operational</div><button class="circle">?</button><div class="user-avatar">JD</div></div></header>
+      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button><div class="crumb">app <span>/</span> <b id="crumb">dashboard</b></div><div class="top-actions"><div class="connected"><i></i> All systems operational</div><button class="circle">?</button><button class="user-avatar" id="account-button">PS</button></div></header>
       <section class="content">
         <section id="dashboard-panel">
-          <div class="hero"><div><div class="eyebrow">SUNDAY · SEPTEMBER 6, 2026</div><h1>Good evening, Jordan.</h1><p>Your AI sales team is ready. Here’s the pulse across your pipeline.</p></div><div class="hero-actions"><button class="secondary" id="import">＋ Import leads</button><button class="primary" id="campaign">＋ New campaign</button></div></div>
+          <div class="hero"><div><div class="eyebrow">SUNDAY · SEPTEMBER 6, 2026</div><h1>Good evening, ProSpector team.</h1><p>Your AI sales team is ready. Here’s the pulse across your pipeline.</p></div><div class="hero-actions"><button class="secondary" id="import">＋ Import leads</button><button class="primary" id="campaign">＋ New campaign</button></div></div>
           <div class="metric-grid">${metrics.map(([label, value, change]) => `<article class="metric"><div class="metric-label">${label}<span class="metric-dot"></span></div><strong>${value}</strong><small>${change} <em>vs last week</em></small></article>`).join('')}</div>
           <div class="two-col">
             <article class="card chart-card"><div class="card-head"><div><h2>Pipeline activity</h2><p>Calls and qualified leads over the last 30 days</p></div><button class="filter">Last 30 days⌄</button></div><div class="chart"><div class="chart-value"><b>1,284</b><span>calls placed</span><em>↑ 18.4%</em></div><svg viewBox="0 0 620 210" preserveAspectRatio="none"><path class="gridline" d="M0 35H620M0 85H620M0 135H620M0 185H620"/><path class="area" d="M0 178 C40 165 54 151 85 160 S122 130 155 145 S194 106 225 123 S260 91 296 105 S332 75 365 92 S404 49 438 68 S474 42 508 57 S551 29 580 42 S605 18 620 25 L620 210H0Z"/><path class="line" d="M0 178 C40 165 54 151 85 160 S122 130 155 145 S194 106 225 123 S260 91 296 105 S332 75 365 92 S404 49 438 68 S474 42 508 57 S551 29 580 42 S605 18 620 25"/><path class="line orange" d="M0 194 C44 187 78 179 115 188 S173 163 213 177 S266 150 310 165 S371 136 413 151 S470 124 516 139 S574 108 620 118"/><text x="0" y="207">AUG 07</text><text x="145" y="207">AUG 14</text><text x="290" y="207">AUG 21</text><text x="435" y="207">AUG 28</text><text x="570" y="207">SEP 06</text></svg><div class="legend"><span><i></i>Calls placed</span><span><i class="orange-dot"></i>Qualified leads</span></div></div></article>
@@ -121,6 +125,8 @@ app.innerHTML = `
   </div><div class="toast" id="toast"></div>`;
 
 const toast = document.querySelector('#toast');
+const currentUser=identity?.currentUser();
+if(currentUser){document.querySelector('#account-button').title=`${currentUser.email} · ${roleForUser(currentUser)}`;document.querySelector('#account-button').onclick=()=>identity.logout()}
 const mobileMenu=document.querySelector('#mobile-menu');
 mobileMenu.addEventListener('click',event=>{event.stopPropagation();document.querySelector('.sidebar').classList.toggle('open')});
 document.querySelector('.main').addEventListener('click',()=>document.querySelector('.sidebar').classList.remove('open'));
