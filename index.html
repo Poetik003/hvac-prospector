@@ -8,8 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<!-- Netlify Identity widget (Feb 2026 reversal: Identity is staying) -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+<!-- Simple two-role auth (no external service) -->
 <style>
   :root{
     --bg:#0b1220; --panel:#0f1a2e; --panel-2:#111f38; --line:#1f2b45;
@@ -132,13 +131,17 @@
   <div class="box">
     <div class="mark">PS</div>
     <h1>ProSpector</h1>
-    <div class="sub">Commercial HVAC Prospecting — invite only</div>
-    <div class="row" style="justify-content:center;gap:10px">
-      <button class="btn primary" id="btnLogin">Sign in</button>
-      <button class="btn ghost sm" id="btnHelp">Trouble signing in?</button>
-    </div>
-    <div class="muted" style="font-size:12px;margin-top:16px">
-      Access is invite-only. Contact your admin if you don't have an account yet.
+    <div class="sub">Commercial HVAC Prospecting</div>
+    <form id="loginForm" style="margin-top:18px;text-align:left" autocomplete="off">
+      <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Username</label>
+      <input id="loginUser" type="text" autocapitalize="none" autocomplete="username" placeholder="admin or team">
+      <label class="muted" style="font-size:12.5px;display:block;margin:10px 0 4px">Password</label>
+      <input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter your password">
+      <div id="loginError" class="muted" style="font-size:12px;color:var(--err);min-height:16px;margin-top:6px"></div>
+      <button type="submit" class="btn primary" style="width:100%;justify-content:center;margin-top:10px">Sign in</button>
+    </form>
+    <div class="muted" style="font-size:11.5px;margin-top:14px">
+      Two accounts: <b>admin</b> (you) and <b>team</b> (share with your team members).
     </div>
   </div>
 </section>
@@ -445,13 +448,15 @@
 /* ---------------- ProSpector app (single-file) ---------------- */
 'use strict';
 
-/* ---- Netlify Identity gate ---- */
+/* ---- Simple two-role gate (admin + team) ---- */
 const gate = document.getElementById('gate');
 const app  = document.getElementById('app');
-const identityReady = () => new Promise(r => {
-  if (window.netlifyIdentity) return r(window.netlifyIdentity);
-  const t = setInterval(()=>{ if(window.netlifyIdentity){clearInterval(t);r(window.netlifyIdentity);} }, 60);
-});
+
+// === CREDENTIALS — change these anytime by editing this file ===
+const CREDS = {
+  admin: { user: 'admin', pass: 'ChangeMe-Admin-2026', name: 'William Lehrer', role: 'admin' },
+  team:  { user: 'team',  pass: 'ProSpector-Team',      name: 'Team Member',    role: 'team'  }
+};
 
 function toast(msg, kind){
   const el = document.getElementById('toast');
@@ -459,57 +464,62 @@ function toast(msg, kind){
   clearTimeout(toast._t); toast._t = setTimeout(()=>el.classList.add('hide'), 3600);
 }
 
-function showApp(user){
+function showApp(session){
   gate.classList.add('hide'); app.classList.remove('hide');
-  const name  = (user && (user.user_metadata?.full_name || user.email?.split('@')[0])) || 'Agent';
-  const email = user?.email || '—';
-  document.getElementById('userName').textContent  = name;
-  document.getElementById('userEmail').textContent = email;
-  document.getElementById('userAvatar').textContent = (name[0]||'A').toUpperCase();
+  document.getElementById('userName').textContent  = session.name;
+  document.getElementById('userEmail').textContent = session.role === 'admin' ? 'Admin' : 'Team Member';
+  document.getElementById('userAvatar').textContent = (session.name[0]||'A').toUpperCase();
+  // Hide Settings from team members
+  document.querySelectorAll('[data-view="settings"]').forEach(el => {
+    if (session.role !== 'admin') el.classList.add('hide');
+  });
+  // Hide the nav BUTTON for Settings too
+  document.querySelectorAll('#nav button').forEach(b => {
+    if (b.dataset.view === 'settings' && session.role !== 'admin') b.style.display = 'none';
+  });
 }
 function showGate(){ app.classList.add('hide'); gate.classList.remove('hide'); }
 
-(async () => {
-  const id = await identityReady();
-  try { id.init({ APIUrl: undefined }); } catch(e){}
+function currentSession(){
+  try {
+    const s = JSON.parse(localStorage.getItem('ps.session') || 'null');
+    if (s && s.role && s.name && s.exp && s.exp > Date.now()) return s;
+  } catch(e){}
+  return null;
+}
+function login(username, password){
+  const u = (username||'').trim().toLowerCase();
+  const p = password || '';
+  const match = CREDS[u];
+  if (!match || match.pass !== p) return null;
+  const session = { role: match.role, name: match.name, user: match.user, exp: Date.now() + 1000*60*60*8 }; // 8h
+  localStorage.setItem('ps.session', JSON.stringify(session));
+  return session;
+}
+function logout(){ localStorage.removeItem('ps.session'); showGate(); toast('Signed out','ok'); }
 
-  // CRITICAL: detect invite/recovery/confirmation token in URL fragment
-  // and force-open the widget's signup or recovery flow. The widget's own
-  // auto-handling is unreliable on Safari + iCloud Private Relay.
-  const hash = window.location.hash || '';
-  const hasInvite   = hash.includes('invite_token=');
-  const hasRecovery = hash.includes('recovery_token=');
-  const hasConfirm  = hash.includes('confirmation_token=');
+// Boot
+(function(){
+  const s = currentSession();
+  if (s) showApp(s); else showGate();
 
-  const user = id.currentUser();
-  if (user && !hasInvite && !hasRecovery && !hasConfirm) {
-    showApp(user);
-  } else {
-    showGate();
-  }
-
-  id.on('init',   () => {
-    // After init, if there's a token in the URL, force the widget open.
-    if (hasInvite)   { try { id.open('signup'); } catch(e){} }
-    if (hasRecovery) { try { id.open('login');  } catch(e){} }
-    if (hasConfirm)  { try { id.open('login');  } catch(e){} }
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginError');
+    const s = login(u, p);
+    if (!s){ err.textContent = 'Incorrect username or password.'; return; }
+    err.textContent = '';
+    document.getElementById('loginPass').value = '';
+    showApp(s);
+    toast('Welcome, ' + s.name, 'ok');
   });
-  id.on('login',  u => { id.close(); showApp(u); toast('Signed in as ' + (u.email||''), 'ok'); history.replaceState(null,'',window.location.pathname); });
-  id.on('logout', () => { showGate(); toast('Signed out', 'ok'); });
-  id.on('error',  e => toast('Identity error: ' + (e?.message || e), 'err'));
 
-  // If the widget already fired init before we attached the listener, fallback:
-  setTimeout(() => {
-    if (hasInvite || hasRecovery || hasConfirm) {
-      try { id.open(hasInvite ? 'signup' : 'login'); } catch(e){}
-    }
-  }, 400);
-
-  document.getElementById('btnLogin').onclick   = () => id.open('login');
-  document.getElementById('btnLogout').onclick  = () => id.logout();
-  document.getElementById('btnLogout2').onclick = () => id.logout();
-  document.getElementById('btnHelp').onclick    = () => toast('Ask your admin to send an invite from Netlify → Identity → Users.', 'ok');
-  document.getElementById('btnInvite').onclick  = () => window.open('https://app.netlify.com/projects/prospectorproai/identity?tab=users','_blank','noopener');
+  const btnOut  = document.getElementById('btnLogout');
+  const btnOut2 = document.getElementById('btnLogout2');
+  if (btnOut)  btnOut.onclick  = logout;
+  if (btnOut2) btnOut2.onclick = logout;
 })();
 
 /* ---- Nav ---- */
@@ -825,6 +835,5 @@ S.persona = PERSONAS[0];
 renderDashboard(); renderLeads(); renderPersonas(); renderPersonaDetail();
 seedWave(); renderObjections(); renderAnalytics(); loadKeys();
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
