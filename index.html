@@ -8,7 +8,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<!-- Simple two-role auth (no external service) -->
+<!-- Supabase auth (email invites, password reset, real per-user accounts) -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  window.supabase = createClient(
+    'https://bvremkqzcfvuorksolfk.supabase.co',
+    'sb_publishable_AAGycHy234EJ3R-tF1dqvw_jBGEemcQ',
+    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true, flowType: 'pkce' } }
+  );
+  window.dispatchEvent(new Event('supabase-ready'));
+</script>
 <style>
   :root{
     --bg:#0b1220; --panel:#0f1a2e; --panel-2:#111f38; --line:#1f2b45;
@@ -132,16 +141,43 @@
     <div class="mark">PS</div>
     <h1>ProSpector</h1>
     <div class="sub">Commercial HVAC Prospecting</div>
+
+    <!-- MODE: sign in -->
     <form id="loginForm" style="margin-top:18px;text-align:left" autocomplete="off">
-      <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Username</label>
-      <input id="loginUser" type="text" autocapitalize="none" autocomplete="username" placeholder="admin or team">
+      <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Email</label>
+      <input id="loginEmail" type="email" autocapitalize="none" autocomplete="username" placeholder="you@example.com">
       <label class="muted" style="font-size:12.5px;display:block;margin:10px 0 4px">Password</label>
-      <input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter your password">
+      <input id="loginPass" type="password" autocomplete="current-password" placeholder="Your password">
       <div id="loginError" class="muted" style="font-size:12px;color:var(--err);min-height:16px;margin-top:6px"></div>
       <button type="submit" class="btn primary" style="width:100%;justify-content:center;margin-top:10px">Sign in</button>
+      <div class="row" style="justify-content:space-between;margin-top:10px;font-size:12px">
+        <a href="#" id="linkForgot" style="color:var(--ink-dim)">Forgot password?</a>
+        <a href="#" id="linkAcceptInvite" style="color:var(--ink-dim)">Accepting an invite?</a>
+      </div>
     </form>
-    <div class="muted" style="font-size:11.5px;margin-top:14px">
-      Two accounts: <b>admin</b> (you) and <b>team</b> (share with your team members).
+
+    <!-- MODE: forgot password -->
+    <form id="forgotForm" class="hide" style="margin-top:18px;text-align:left" autocomplete="off">
+      <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Email</label>
+      <input id="forgotEmail" type="email" autocapitalize="none" placeholder="you@example.com">
+      <div id="forgotMsg" class="muted" style="font-size:12px;min-height:16px;margin-top:6px"></div>
+      <button type="submit" class="btn primary" style="width:100%;justify-content:center;margin-top:10px">Send reset email</button>
+      <div style="margin-top:10px;font-size:12px"><a href="#" id="linkBackToLogin" style="color:var(--ink-dim)">Back to sign in</a></div>
+    </form>
+
+    <!-- MODE: complete signup (after clicking invite link) -->
+    <form id="setPassForm" class="hide" style="margin-top:18px;text-align:left" autocomplete="off">
+      <div class="muted" style="font-size:12.5px;margin-bottom:8px">Welcome! Set a password to activate your account.</div>
+      <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Your name</label>
+      <input id="setName" type="text" placeholder="Full name">
+      <label class="muted" style="font-size:12.5px;display:block;margin:10px 0 4px">New password</label>
+      <input id="setPass" type="password" placeholder="At least 8 characters">
+      <div id="setMsg" class="muted" style="font-size:12px;color:var(--err);min-height:16px;margin-top:6px"></div>
+      <button type="submit" class="btn primary" style="width:100%;justify-content:center;margin-top:10px">Activate account</button>
+    </form>
+
+    <div class="muted" style="font-size:11.5px;margin-top:14px" id="gateFoot">
+      Access is invite-only. Ask your admin for an invite.
     </div>
   </div>
 </section>
@@ -413,14 +449,31 @@
       </div>
     </section>
 
-    <!-- SETTINGS -->
+    <!-- SETTINGS (admin only) -->
     <section data-view="settings" class="view hide">
       <div class="card">
-        <h3>Identity &amp; access</h3>
-        <p class="muted" style="margin:4px 0 10px">This site is gated by Netlify Identity (invite only). Manage invites at
-          <a href="https://app.netlify.com/projects/prospectorproai/identity?tab=users" target="_blank" rel="noopener">Netlify → Identity → Users</a>.</p>
+        <h3>Team members</h3>
+        <p class="muted" style="margin:4px 0 10px">Invite a team member by email. They'll receive a link to set their password and sign in.</p>
         <div class="row">
-          <button class="btn sm" id="btnInvite">Open invite panel</button>
+          <input id="inviteEmail" type="email" placeholder="teammate@company.com" style="max-width:300px">
+          <select id="inviteRole" style="max-width:140px">
+            <option value="team">Team</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button class="btn primary sm" id="btnSendInvite">Send invite</button>
+          <span id="inviteMsg" class="muted" style="font-size:12px"></span>
+        </div>
+        <hr class="sep">
+        <div style="overflow:auto">
+          <table id="usersTable">
+            <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Status</th><th>Last sign-in</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="muted" style="font-size:12px;margin-top:10px">
+          Manage everything in your <a href="https://supabase.com/dashboard/project/bvremkqzcfvuorksolfk/auth/users" target="_blank" rel="noopener">Supabase Auth dashboard</a> (delete users, reset passwords, disable accounts).
+        </div>
+        <div class="row" style="margin-top:12px">
           <button class="btn sm" id="btnLogout2">Sign out</button>
         </div>
       </div>
@@ -448,15 +501,9 @@
 /* ---------------- ProSpector app (single-file) ---------------- */
 'use strict';
 
-/* ---- Simple two-role gate (admin + team) ---- */
+/* ---- Supabase auth (email invites, password reset) ---- */
 const gate = document.getElementById('gate');
 const app  = document.getElementById('app');
-
-// === CREDENTIALS — change these anytime by editing this file ===
-const CREDS = {
-  admin: { user: 'admin', pass: 'ChangeMe-Admin-2026', name: 'William Lehrer', role: 'admin' },
-  team:  { user: 'team',  pass: 'ProSpector-Team',      name: 'Team Member',    role: 'team'  }
-};
 
 function toast(msg, kind){
   const el = document.getElementById('toast');
@@ -464,63 +511,170 @@ function toast(msg, kind){
   clearTimeout(toast._t); toast._t = setTimeout(()=>el.classList.add('hide'), 3600);
 }
 
-function showApp(session){
-  gate.classList.add('hide'); app.classList.remove('hide');
-  document.getElementById('userName').textContent  = session.name;
-  document.getElementById('userEmail').textContent = session.role === 'admin' ? 'Admin' : 'Team Member';
-  document.getElementById('userAvatar').textContent = (session.name[0]||'A').toUpperCase();
-  // Hide Settings from team members
-  document.querySelectorAll('[data-view="settings"]').forEach(el => {
-    if (session.role !== 'admin') el.classList.add('hide');
-  });
-  // Hide the nav BUTTON for Settings too
+let currentRole = 'team';
+let currentUser = null;
+
+function applyRoleGating(role){
   document.querySelectorAll('#nav button').forEach(b => {
-    if (b.dataset.view === 'settings' && session.role !== 'admin') b.style.display = 'none';
+    if (b.dataset.view === 'settings') b.style.display = (role === 'admin') ? '' : 'none';
   });
 }
-function showGate(){ app.classList.add('hide'); gate.classList.remove('hide'); }
-
-function currentSession(){
-  try {
-    const s = JSON.parse(localStorage.getItem('ps.session') || 'null');
-    if (s && s.role && s.name && s.exp && s.exp > Date.now()) return s;
-  } catch(e){}
-  return null;
+function showApp(user, role){
+  currentUser = user; currentRole = role;
+  gate.classList.add('hide'); app.classList.remove('hide');
+  const name  = user.user_metadata?.full_name || (user.email||'').split('@')[0] || 'Agent';
+  document.getElementById('userName').textContent  = name;
+  document.getElementById('userEmail').textContent = user.email || '';
+  document.getElementById('userAvatar').textContent = (name[0]||'A').toUpperCase();
+  applyRoleGating(role);
+  if (role === 'admin') loadUsers();
 }
-function login(username, password){
-  const u = (username||'').trim().toLowerCase();
-  const p = password || '';
-  const match = CREDS[u];
-  if (!match || match.pass !== p) return null;
-  const session = { role: match.role, name: match.name, user: match.user, exp: Date.now() + 1000*60*60*8 }; // 8h
-  localStorage.setItem('ps.session', JSON.stringify(session));
-  return session;
+function showGate(mode){
+  app.classList.add('hide'); gate.classList.remove('hide');
+  document.getElementById('loginForm').classList.toggle('hide',  mode !== 'login');
+  document.getElementById('forgotForm').classList.toggle('hide', mode !== 'forgot');
+  document.getElementById('setPassForm').classList.toggle('hide', mode !== 'setpass');
+  document.getElementById('gateFoot').classList.toggle('hide', mode === 'setpass');
 }
-function logout(){ localStorage.removeItem('ps.session'); showGate(); toast('Signed out','ok'); }
 
-// Boot
-(function(){
-  const s = currentSession();
-  if (s) showApp(s); else showGate();
+async function getRole(user){
+  // Role stored in user.app_metadata.role (set by admin) or user_metadata.role (fallback)
+  return user?.app_metadata?.role || user?.user_metadata?.role || 'team';
+}
 
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    const err = document.getElementById('loginError');
-    const s = login(u, p);
-    if (!s){ err.textContent = 'Incorrect username or password.'; return; }
-    err.textContent = '';
-    document.getElementById('loginPass').value = '';
-    showApp(s);
-    toast('Welcome, ' + s.name, 'ok');
+async function boot(){
+  const sb = window.supabase;
+
+  // Detect password-recovery / invite callback in the URL (Supabase uses ?code= with PKCE)
+  const url = new URL(window.location.href);
+  const hasCode = url.searchParams.has('code');
+  const hashParams = new URLSearchParams((window.location.hash||'').replace(/^#/,''));
+  const isRecovery = hashParams.get('type') === 'recovery' || url.searchParams.get('type') === 'recovery';
+  const isInvite   = hashParams.get('type') === 'invite'   || url.searchParams.get('type') === 'invite';
+
+  if (hasCode) {
+    // Supabase auto-exchanges the code with detectSessionInUrl:true.
+    // Wait a tick, then check session.
+    await new Promise(r=>setTimeout(r, 200));
+  }
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && !isRecovery && !isInvite) {
+    const role = await getRole(session.user);
+    showApp(session.user, role);
+  } else if (session && (isRecovery || isInvite)) {
+    // User arrived via invite/recovery link — force them to set a password
+    showGate('setpass');
+  } else {
+    showGate('login');
+  }
+
+  // Clean the URL of tokens after handling
+  if (hasCode || isRecovery || isInvite) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  sb.auth.onAuthStateChange((event, sess) => {
+    if (event === 'SIGNED_OUT') showGate('login');
   });
+}
 
-  const btnOut  = document.getElementById('btnLogout');
-  const btnOut2 = document.getElementById('btnLogout2');
-  if (btnOut)  btnOut.onclick  = logout;
-  if (btnOut2) btnOut2.onclick = logout;
-})();
+/* Wire up forms */
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const err   = document.getElementById('loginError');
+  err.textContent = 'Signing in...';
+  const { data, error } = await window.supabase.auth.signInWithPassword({ email, password: pass });
+  if (error) { err.textContent = error.message; return; }
+  err.textContent = '';
+  document.getElementById('loginPass').value = '';
+  const role = await getRole(data.user);
+  showApp(data.user, role);
+  toast('Welcome, ' + (data.user.email||''), 'ok');
+});
+
+document.getElementById('linkForgot').onclick = (e) => { e.preventDefault(); showGate('forgot'); };
+document.getElementById('linkBackToLogin').onclick = (e) => { e.preventDefault(); showGate('login'); };
+document.getElementById('linkAcceptInvite').onclick = (e) => {
+  e.preventDefault();
+  toast('Open the invite link from your email. It will bring you here with a "set password" form.', 'ok');
+};
+
+document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('forgotEmail').value.trim();
+  const msg   = document.getElementById('forgotMsg');
+  msg.style.color = 'var(--ink-dim)'; msg.textContent = 'Sending...';
+  const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/'
+  });
+  if (error) { msg.style.color = 'var(--err)'; msg.textContent = error.message; return; }
+  msg.style.color = 'var(--ok)'; msg.textContent = 'Check your email for a reset link.';
+});
+
+document.getElementById('setPassForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('setName').value.trim();
+  const pass = document.getElementById('setPass').value;
+  const msg  = document.getElementById('setMsg');
+  if (pass.length < 8) { msg.textContent = 'Password must be at least 8 characters.'; return; }
+  msg.textContent = 'Saving...';
+  const { data, error } = await window.supabase.auth.updateUser({
+    password: pass,
+    data: name ? { full_name: name } : undefined
+  });
+  if (error) { msg.textContent = error.message; return; }
+  msg.textContent = '';
+  const role = await getRole(data.user);
+  showApp(data.user, role);
+  toast('Account activated. Welcome!', 'ok');
+});
+
+/* Admin invite panel */
+async function loadUsers(){
+  const tb = document.querySelector('#usersTable tbody');
+  if (!tb) return;
+  // With publishable key we can't list all users from the browser.
+  // Direct admins to the Supabase dashboard for the full user list.
+  tb.innerHTML = `<tr><td colspan="5" class="muted" style="font-size:12.5px">
+    For the full user list (with delete/reset/disable controls), open the
+    <a href="https://supabase.com/dashboard/project/bvremkqzcfvuorksolfk/auth/users" target="_blank" rel="noopener">Supabase Auth dashboard</a>.
+    You can send invites from here or from the dashboard.
+  </td></tr>`;
+}
+document.getElementById('btnSendInvite')?.addEventListener('click', async () => {
+  const email = document.getElementById('inviteEmail').value.trim();
+  const role  = document.getElementById('inviteRole').value;
+  const msg   = document.getElementById('inviteMsg');
+  if (!email) { msg.style.color = 'var(--err)'; msg.textContent = 'Enter an email address.'; return; }
+  msg.style.color = 'var(--ink-dim)'; msg.textContent = 'Sending...';
+  // Send a signup magic-link. Recipient clicks it, lands here with type=invite/recovery and sets password.
+  const { error } = await window.supabase.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: true,
+      emailRedirectTo: window.location.origin + '/',
+      data: { role, invited_by: currentUser?.email || 'admin' }
+    }
+  });
+  if (error) { msg.style.color = 'var(--err)'; msg.textContent = error.message; return; }
+  msg.style.color = 'var(--ok)';
+  msg.textContent = `Invite sent to ${email}. Role: ${role}.`;
+  document.getElementById('inviteEmail').value = '';
+});
+
+/* Sidebar sign-out */
+const btnOut  = document.getElementById('btnLogout');
+const btnOut2 = document.getElementById('btnLogout2');
+async function doLogout(){ await window.supabase.auth.signOut(); showGate('login'); toast('Signed out', 'ok'); }
+if (btnOut)  btnOut.onclick  = doLogout;
+if (btnOut2) btnOut2.onclick = doLogout;
+
+/* Kick off after Supabase SDK is ready */
+if (window.supabase) boot();
+else window.addEventListener('supabase-ready', boot, { once: true });
 
 /* ---- Nav ---- */
 const views = document.querySelectorAll('.view');
