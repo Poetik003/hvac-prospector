@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en">
+<!-- ProSpector — interactive web app. Do NOT enter Reader View. -->
+<html lang="en" class="no-reader">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#0b1220" />
+<meta name="generator" content="ProSpector static build — interactive web app, not an article" />
+<meta name="robots" content="noai, noimageai" />
 <title>ProSpector — Commercial HVAC Prospecting</title>
+<style id="no-reader">html{height:101vh;overflow:hidden}body{min-height:101vh;overflow:auto}html.no-reader{height:101vh!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -854,7 +858,7 @@ async function playTTS(text, voiceId){
   audio.play().catch(()=>{});
 }
 
-const S = { callHistory: [], callAudioOn: true };
+S.callHistory = []; S.callAudioOn = true; S.callAllowTts = true;
 
 function transcript(who, text){
   const t = document.getElementById('transcript');
