@@ -314,8 +314,12 @@
             <button class="btn primary sm" id="dialBtn">▸ Start call</button>
             <button class="btn danger sm hide" id="hangupBtn">■ Hang up</button>
           </div>
-          <div class="waveform" id="wave"></div>
-          <div style="margin-top:12px">
+<div class="waveform" id="wave"></div>
+            <div class="row" style="margin-top:10px;font-size:12.5px;color:var(--ink-dim)">
+              <label class="switch" id="ttsToggle" style="margin-right:6px"></label>
+              <span>Voice playback on (ElevenLabs)</span>
+            </div>
+            <div style="margin-top:12px">
             <label class="muted" style="font-size:12px">Live transcript</label>
             <div class="transcript" id="transcript"></div>
           </div>
@@ -804,7 +808,7 @@ function renderPersonaDetail(){
   document.getElementById('personaPrompt').value = p.prompt;
 }
 
-/* ---- Live calling ---- */
+/* ---- Live calling (Level A: real OpenAI replies + optional ElevenLabs TTS) ---- */
 function seedWave(){
   const w = document.getElementById('wave'); w.innerHTML='';
   for (let i=0;i<80;i++){
@@ -820,77 +824,175 @@ function animateWave(on){
   bars.forEach(b => { b.style.height = (8+Math.random()*46)+'px'; });
 }
 let waveTimer;
+
+const PERSONA_VOICE_ID = {
+  sarah: '21m00Tcm4TlvDq8ikWAM',  // Rachel
+  maria: 'EXAVITQu4vr4xnSDxMaL',  // Bella
+  lisa:  'pNInz6obpgDQGcFmaJgB',  // Adam (executive tone)
+  alex:  'ThT5KcBeYPX3keUQraH1'   // custom analytical voice
+};
+
+async function callApi(action, body){
+  try {
+    const r = await fetch('/.netlify/functions/voice', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ action, ...body })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    return { ok: true, ...j };
+  } catch (e) {
+    return { ok: false, error: e.message, fallback: true };
+  }
+}
+
+async function playTTS(text, voiceId){
+  const r = await callApi('tts', { text, voice_id: voiceId, model_id: 'eleven_turbo_v2_5' });
+  if (!r.ok) { toast('TTS unavailable — text shown only.', 'err'); return; }
+  const audio = new Audio('data:audio/mpeg;base64,' + r.audio_base64);
+  audio.play().catch(()=>{});
+}
+
+const S = { callHistory: [], callAudioOn: true };
+
 function transcript(who, text){
   const t = document.getElementById('transcript');
   const cls = who==='AI'?'ai':'pr';
-  t.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span>${text}</div>`);
+  t.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span> ${escapeHtml(text)}</div>`);
   t.scrollTop = t.scrollHeight;
 }
-function startCall(){
-  if (!S.warm) { toast('Warm up the voice stack first (Natural Voice Config → Warm up).', 'err'); return; }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function startCall(){
+  if (!S.warm) { toast('Run "Warm up voice stack" in Natural Voice Config first.', 'err'); return; }
+  const leadId = +document.getElementById('callLead').value;
+  const lead   = S.leads.find(l => l.id === leadId) || null;
+  S.callHistory = [];
   document.getElementById('dialBtn').classList.add('hide');
   document.getElementById('hangupBtn').classList.remove('hide');
   document.getElementById('callStatus').textContent = 'ringing…';
   document.getElementById('transcript').innerHTML = '';
+  document.getElementById('callStatus').className = 'chip warn';
   waveTimer = setInterval(()=>animateWave(true), 120);
-  setTimeout(()=>{ document.getElementById('callStatus').textContent = 'connected'; transcript(S.persona.name.split(' ')[0].toUpperCase(),' Hi, this is '+S.persona.name.split(' ')[0]+' with ProSpector — do you have 60 seconds?'); }, 900);
-  setTimeout(()=>transcript('PROSPECT',' Uh, kind of busy — what\'s this about?'), 3200);
-  setTimeout(()=>{ transcript(S.persona.name.split(' ')[0].toUpperCase(),' Quick one: are your rooftop units under contract or do you handle service ad-hoc?'); document.getElementById('assistLine').textContent = 'If ad-hoc → pivot to unplanned-downtime cost. If contract → ask about renewal date.'; }, 5200);
+
+  // ask AI for the opening line using lead context
+  await aiTurn({ user: '(call just connected — open with a friendly intro)', persona: S.persona, lead });
 }
 function hangup(){
   clearInterval(waveTimer); animateWave(false);
   document.getElementById('dialBtn').classList.remove('hide');
   document.getElementById('hangupBtn').classList.add('hide');
   document.getElementById('callStatus').textContent = 'ended';
+  document.getElementById('callStatus').className = 'chip';
+  S.callHistory = [];
 }
 
-/* ---- Script Test Center ---- */
-function runScript(){
+async function aiTurn({ user, persona, lead }){
+  document.getElementById('callStatus').textContent = 'AI thinking…';
+  document.getElementById('callStatus').className = 'chip warn';
+  const r = await callApi('chat', { action: 'chat', persona, history: S.callHistory, lead, user });
+  document.getElementById('callStatus').textContent = 'connected';
+  document.getElementById('callStatus').className = 'chip ok';
+  if (!r.ok) {
+    transcript('AI', '(API error: ' + (r.error || 'unknown') + ' — falling back)');
+    // graceful fallback: canned opener
+    const opener = `Hi, this is ${persona.name.split(' ')[0]} with ProSpector — do you have 60 seconds?`;
+    S.callHistory.push({ role:'assistant', content: opener });
+    transcript('AI', opener);
+    if (S.callAudioOn) playTTS(opener, PERSONA_VOICE_ID[S.persona.id] || PERSONA_VOICE_ID.sarah);
+    return;
+  }
+  S.callHistory.push({ role:'user',      content: user });
+  S.callHistory.push({ role:'assistant', content: r.reply });
+  transcript('AI', r.reply);
+  if (S.callAudioOn && S.callAllowTts) playTTS(r.reply, PERSONA_VOICE_ID[S.persona.id] || PERSONA_VOICE_ID.sarah);
+  document.getElementById('assistLine').textContent = offerNextLine(S.callHistory);
+}
+
+function offerNextLine(history){
+  const last = (history[history.length-1]?.content || '').toLowerCase();
+  if (last.includes('roof') || last.includes('rtu')) return 'Ask: "How many rooftops and roughly how old are they?" → unlocks renewals vs ad-hoc pivot.';
+  if (last.includes('contract')) return 'Ask about contract renewal month + unit count, then pivot to downtime cost.';
+  if (last.includes('busy')) return 'Acknowledge, offer a 6-min reschedule OR one-question qualifying pitch.';
+  return 'Try: "If I could get 12–18% lower maintenance cost ON your current units, would a 15-min walkthrough be worth it?"';
+}
+
+/* ---- Script Test Center (real AI responses from OpenAI) ---- */
+let scriptHistory = [];
+async function runScript(){
   const scenario = document.getElementById('scriptScenario').value.trim();
   const line     = document.getElementById('scriptLine').value.trim();
   const pid      = document.getElementById('scriptPersona').value;
   const p        = PERSONAS.find(x=>x.id===pid) || S.persona;
   const out      = document.getElementById('scriptOut');
   out.innerHTML = '';
-  transcriptEl(out,'You', line || '[empty line]');
-  const canned = [
-    'That makes sense — how long have you been running the current setup?',
-    'Fair. Before we go further, is your renewal window this year?',
-    'Got it. If I could show one comparable in ' + (scenario.match(/[A-Z][a-z]+/)?.[0]||'your market') + ', would 15 minutes work?'
-  ];
-  setTimeout(()=>transcriptEl(out, p.name, canned[Math.floor(Math.random()*canned.length)]), 500);
-  const score = () => Math.floor(60+Math.random()*35);
-  document.getElementById('scoreClarity').textContent = 'clarity: '+score();
-  document.getElementById('scoreObj').textContent     = 'objection handling: '+score();
-  document.getElementById('scoreCTA').textContent     = 'CTA strength: '+score();
+  transcriptEl(out,'You', line || '[open with: "Hi, this is ' + p.name.split(' ')[0] + ' — do you have 60 seconds?"]');
+
+  const lead = { company: scenario.slice(0, 60) || 'a commercial building', industry: 'commercial real estate', contact: 'the facilities lead', city: '', score: 70 };
+  const personaWithCtx = { ...p, prompt: (p.prompt + '\n\nScenario context: ' + (scenario || '(none)') + '\nKeep replies under 60 words. Address their line directly.') };
+  const r = await callApi('chat', { action:'chat', persona: personaWithCtx, lead, history:[], user: line || 'Open the call.' });
+  if (!r.ok){
+    transcriptEl(out, p.name, '(API error: ' + (r.error || 'unknown') + ') Try pasting your OpenAI key in Netlify env vars.');
+    setScriptScores('—', '—', '—'); return;
+  }
+  scriptHistory.push({ role:'user', content: line });
+  transcriptEl(out, p.name, r.reply);
+  // crude scoring based on the reply length & whether it ends with a question
+  const reply = r.reply;
+  setScriptScores(
+    reply.length < 200 ? Math.floor(75 + Math.random()*20) : Math.floor(40 + Math.random()*30),
+    /you|your/i.test(reply) ? Math.floor(70 + Math.random()*25) : Math.floor(40 + Math.random()*30),
+    /\?$/.test(reply.trim()) ? Math.floor(75 + Math.random()*20) : Math.floor(30 + Math.random()*30)
+  );
+}
+function setScriptScores(a, b, c){
+  document.getElementById('scoreClarity').textContent = 'clarity: '+a;
+  document.getElementById('scoreObj').textContent     = 'objection handling: '+b;
+  document.getElementById('scoreCTA').textContent     = 'CTA strength: '+c;
 }
 function transcriptEl(el, who, text){
   const cls = who==='You'?'pr':'ai';
-  el.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span> ${text}</div>`);
+  el.insertAdjacentHTML('beforeend', `<div class="line"><span class="who ${cls}">${who}:</span> ${escapeHtml(text)}</div>`);
   el.scrollTop = el.scrollHeight;
 }
+document.getElementById('scriptReset').onclick = () => {
+  document.getElementById('scriptLine').value = '';
+  document.getElementById('scriptOut').innerHTML = '';
+  setScriptScores('—','—','—');
+  scriptHistory = [];
+};
 
-/* ---- Voice warm-up (avoids the training-error path) ---- */
+/* ---- Voice warm-up (real pings to OpenAI + ElevenLabs via Netlify Function) ---- */
 async function warmup(){
   const chip = document.getElementById('warmChip');
   chip.className = 'chip warn'; chip.textContent = 'warming…';
   document.getElementById('netChip').className = 'chip warn'; document.getElementById('netChip').textContent = '● warming';
+  // prime AudioContext in the browser
   try {
-    await new Promise(r=>setTimeout(r, 900));
-    // simulated: primes AudioContext + fetches TTS provider ping
     if (window.AudioContext || window.webkitAudioContext){
       const ac = new (window.AudioContext||window.webkitAudioContext)();
       if (ac.state === 'suspended') await ac.resume();
-      ac.close && setTimeout(()=>ac.close(), 300);
     }
+  } catch(_){}
+  // server-side handshake (real API call)
+  const r = await callApi('warmup', {});
+  if (r.ok && r.ready){
     S.warm = true;
-    chip.className = 'chip ok'; chip.textContent = 'warmed';
+    chip.className = 'chip ok';
+    chip.textContent = `warmed (OpenAI: ${r.openai}, ElevenLabs: ${r.elevenlabs})`;
     document.getElementById('netChip').className = 'chip ok'; document.getElementById('netChip').textContent = '● online';
-    toast('Voice stack warmed. Ready to dial.', 'ok');
-  } catch (e) {
-    chip.className = 'chip err'; chip.textContent = 'failed → Smart Voice fallback';
-    toast('Warm-up failed. Dropped to Smart Voice fallback.', 'err');
-    S.warm = true; // fallback still callable
+    toast('Voice stack warmed — real AI + real voices ready.', 'ok');
+  } else if (r.ok && !r.ready){
+    S.warm = true; // allow calls even if both degraded (will use fallback)
+    chip.className = 'chip warn'; chip.textContent = 'partial (OpenAI:' + r.openai + ', ElevenLabs:' + r.elevenlabs + '). Fallbacks on.';
+    document.getElementById('netChip').className = 'chip warn'; document.getElementById('netChip').textContent = '● degraded';
+    toast('Voice stack partially up — check service status chips.', 'ok');
+  } else {
+    S.warm = true;
+    chip.className = 'chip err'; chip.textContent = 'failed — Smart Voice fallback';
+    document.getElementById('netChip').className = 'chip err'; document.getElementById('netChip').textContent = '● error';
+    toast('Warm-up failed: ' + (r.error || 'network') + '. Using simulated fallback.', 'err');
   }
 }
 
@@ -970,21 +1072,86 @@ document.getElementById('savePersona').onclick = () => {
   S.persona.prompt = document.getElementById('personaPrompt').value;
   toast('Persona saved (in-memory). Persist via Supabase in production.', 'ok');
 };
-document.getElementById('previewPersona').onclick = () => toast('Preview would stream TTS from ' + S.persona.voice, 'ok');
+document.getElementById('previewPersona').onclick = async () => {
+  const p = S.persona;
+  const r = await callApi('tts', { text: `Hi, this is ${p.name} with ProSpector — do you have 60 seconds?`, voice_id: PERSONA_VOICE_ID[p.id] || '21m00Tcm4TlvDq8ikWAM' });
+  if (!r.ok){ toast('Preview failed: ' + (r.error||'unknown') + '. Check ElevenLabs key in Netlify.', 'err'); return; }
+  new Audio('data:audio/mpeg;base64,' + r.audio_base64).play().catch(()=>{});
+};
 document.getElementById('warmupBtn').onclick  = warmup;
 document.getElementById('warmupBtn2').onclick = warmup;
-document.getElementById('dialBtn').onclick    = startCall;
+document.getElementById('dialBtn').onclick    = () => { ensureProspectReplyUI(); startCall(); };
 document.getElementById('hangupBtn').onclick  = hangup;
 document.getElementById('logMeeting').onclick = () => { toast('Meeting logged','ok'); hangup(); };
 document.getElementById('markCallback').onclick = () => { toast('Callback scheduled','ok'); };
 document.getElementById('markDNC').onclick = () => { toast('Marked DNC','ok'); };
 document.getElementById('scriptRun').onclick = runScript;
-document.getElementById('scriptReset').onclick = () => { document.getElementById('scriptLine').value=''; document.getElementById('scriptOut').innerHTML=''; };
+document.getElementById('scriptReset')?.addEventListener('click', () => { document.getElementById('scriptLine').value = ''; document.getElementById('scriptOut').innerHTML = ''; setScriptScores('—','—','—'); scriptHistory = []; });
 document.getElementById('apSample').onclick = apolloSample;
 document.getElementById('apRun').onclick = () => toast('Apollo search: wire to Netlify Function with the Apollo API key from Settings.','ok');
 document.getElementById('saveKeys').onclick = saveKeys;
 
-/* ---- Boot ---- */
+// Add a prospect-reply box directly under the live transcript after the dial starts
+function ensureProspectReplyUI(){
+  if (document.getElementById('prospectReplyBox')) return;
+  const card = document.querySelector('[data-view="calling"] .card');
+  const wrap = document.createElement('div');
+  wrap.style.marginTop = '10px';
+  wrap.id = 'prospectReplyBox';
+  wrap.innerHTML = `
+    <div class="row" style="gap:6px">
+      <input id="prospectReply" placeholder="Type what the prospect says back...">
+      <button class="btn primary sm" id="btnSendReply">Send</button>
+      <button class="btn sm" id="btnMic">Speak</button>
+    </div>
+    <div class="muted" style="font-size:11.5px;margin-top:4px">
+      Type or click 🎙 Speak to use your mic (Chrome/Safari). Replies stream real AI voice.
+    </div>
+  `;
+  card.appendChild(wrap);
+
+  document.getElementById('btnSendReply').onclick = async () => {
+    const inp = document.getElementById('prospectReply');
+    const text = (inp.value || '').trim();
+    if (!text) return;
+    transcript('PROSPECT', text);
+    inp.value = '';
+    const leadId = +document.getElementById('callLead').value;
+    const lead   = S.leads.find(l => l.id === leadId) || null;
+    await aiTurn({ user: text, persona: S.persona, lead });
+  };
+  document.getElementById('prospectReply').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btnSendReply').click();
+  });
+
+  // Speech-to-text using browser's Web Speech API
+  document.getElementById('btnMic').onclick = () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR){ toast('Speech recognition not supported in this browser — type instead.', 'err'); return; }
+    const r = new SR();
+    r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
+    r.onresult = (e) => {
+      const txt = e.results[0][0].transcript;
+      document.getElementById('prospectReply').value = txt;
+      document.getElementById('btnSendReply').click();
+    };
+    r.onerror = (e) => toast('Mic error: ' + e.error, 'err');
+    r.start();
+    toast('Listening...', 'ok');
+  };
+}
+
+// Wire TTS playback toggle
+const ttsToggleEl = document.getElementById('ttsToggle');
+if (ttsToggleEl) {
+  S.callAudioOn  = true; S.callAllowTts = true;
+  ttsToggleEl.classList.add('on');
+  ttsToggleEl.onclick = () => {
+    S.callAllowTts = !S.callAllowTts;
+    ttsToggleEl.classList.toggle('on', S.callAllowTts);
+  };
+}
+
 S.persona = PERSONAS[0];
 renderDashboard(); renderLeads(); renderPersonas(); renderPersonaDetail();
 seedWave(); renderObjections(); renderAnalytics(); loadKeys();
