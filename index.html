@@ -412,6 +412,20 @@
             <select id="voiceLatency"><option>ultra-low</option><option>balanced</option><option>quality</option></select>
           </div>
         </div>
+        <div class="grid cols-3" style="margin-top:10px">
+          <div>
+            <label class="muted" style="font-size:12px">Chat engine (AI replies)</label>
+            <select id="chatEngine">
+              <option value="claude">Claude Sonnet 5 (recommended)</option>
+              <option value="openai">OpenAI GPT-4o-mini</option>
+              <option value="auto">Auto (Claude → OpenAI)</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Chat model override</label>
+            <input id="chatModel" type="text" placeholder="claude-sonnet-5" style="padding:8px">
+          </div>
+        </div>
         <div class="row" style="margin-top:14px">
           <button class="btn primary sm" id="warmupBtn2">Warm up voice stack</button>
           <span class="chip" id="warmChip">not warmed</span>
@@ -859,6 +873,8 @@ async function playTTS(text, voiceId){
 }
 
 S.callHistory = []; S.callAudioOn = true; S.callAllowTts = true;
+S.chatEngine = 'claude'; S.chatModel = '';
+(function(){ const ce = document.getElementById('chatEngine'); if (ce){ ce.value = S.chatEngine; ce.onchange = () => { S.chatEngine = ce.value; }; } const cm = document.getElementById('chatModel'); if (cm){ cm.placeholder = 'claude-sonnet-5'; cm.onchange = () => { S.chatModel = cm.value.trim(); }; } })();
 
 function transcript(who, text){
   const t = document.getElementById('transcript');
@@ -895,7 +911,7 @@ function hangup(){
 async function aiTurn({ user, persona, lead }){
   document.getElementById('callStatus').textContent = 'AI thinking…';
   document.getElementById('callStatus').className = 'chip warn';
-  const r = await callApi('chat', { action: 'chat', persona, history: S.callHistory, lead, user });
+  const r = await callApi('chat', { action: 'chat', persona, history: S.callHistory, lead, user, provider: S.chatEngine, model: S.chatModel || undefined });
   document.getElementById('callStatus').textContent = 'connected';
   document.getElementById('callStatus').className = 'chip ok';
   if (!r.ok) {
@@ -935,9 +951,9 @@ async function runScript(){
 
   const lead = { company: scenario.slice(0, 60) || 'a commercial building', industry: 'commercial real estate', contact: 'the facilities lead', city: '', score: 70 };
   const personaWithCtx = { ...p, prompt: (p.prompt + '\n\nScenario context: ' + (scenario || '(none)') + '\nKeep replies under 60 words. Address their line directly.') };
-  const r = await callApi('chat', { action:'chat', persona: personaWithCtx, lead, history:[], user: line || 'Open the call.' });
+  const r = await callApi('chat', { action:'chat', persona: personaWithCtx, lead, history:[], user: line || 'Open the call.', provider: S.chatEngine, model: S.chatModel || undefined });
   if (!r.ok){
-    transcriptEl(out, p.name, '(API error: ' + (r.error || 'unknown') + ') Try pasting your OpenAI key in Netlify env vars.');
+    transcriptEl(out, p.name, '(API error: ' + (r.error || 'unknown') + ') Check the chat engine keys in Netlify env vars.');
     setScriptScores('—', '—', '—'); return;
   }
   scriptHistory.push({ role:'user', content: line });
@@ -984,7 +1000,8 @@ async function warmup(){
   if (r.ok && r.ready){
     S.warm = true;
     chip.className = 'chip ok';
-    chip.textContent = `warmed (OpenAI: ${r.openai}, ElevenLabs: ${r.elevenlabs})`;
+    const chatSt = r.claude === 'ok' ? 'Claude ok' : (r.openai === 'ok' ? 'OpenAI ok' : 'chat err');
+    chip.textContent = `warmed (${chatSt} · ElevenLabs: ${r.elevenlabs})`;
     document.getElementById('netChip').className = 'chip ok'; document.getElementById('netChip').textContent = '● online';
     toast('Voice stack warmed — real AI + real voices ready.', 'ok');
   } else if (r.ok && !r.ready){
