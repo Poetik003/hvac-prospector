@@ -416,14 +416,14 @@
           <div>
             <label class="muted" style="font-size:12px">Chat engine (AI replies)</label>
             <select id="chatEngine">
-              <option value="claude">Claude Sonnet 5 (recommended)</option>
+              <option value="claude">Claude Sonnet 4.6 (recommended)</option>
               <option value="openai">OpenAI GPT-4o-mini</option>
               <option value="auto">Auto (Claude → OpenAI)</option>
             </select>
           </div>
           <div>
             <label class="muted" style="font-size:12px">Chat model override</label>
-            <input id="chatModel" type="text" placeholder="claude-sonnet-5" style="padding:8px">
+            <input id="chatModel" type="text" placeholder="claude-sonnet-4-6" style="padding:8px">
           </div>
         </div>
         <div class="row" style="margin-top:14px">
@@ -874,7 +874,7 @@ async function playTTS(text, voiceId){
 
 S.callHistory = []; S.callAudioOn = true; S.callAllowTts = true;
 S.chatEngine = 'claude'; S.chatModel = '';
-(function(){ const ce = document.getElementById('chatEngine'); if (ce){ ce.value = S.chatEngine; ce.onchange = () => { S.chatEngine = ce.value; }; } const cm = document.getElementById('chatModel'); if (cm){ cm.placeholder = 'claude-sonnet-5'; cm.onchange = () => { S.chatModel = cm.value.trim(); }; } })();
+(function(){ const ce = document.getElementById('chatEngine'); if (ce){ ce.value = S.chatEngine; ce.onchange = () => { S.chatEngine = ce.value; }; } const cm = document.getElementById('chatModel'); if (cm){ cm.placeholder = 'claude-sonnet-4-6'; cm.onchange = () => { S.chatModel = cm.value.trim(); }; } })();
 
 function transcript(who, text){
   const t = document.getElementById('transcript');
