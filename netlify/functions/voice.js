@@ -72,7 +72,7 @@ async function chat(payload){
       method: 'POST',
       headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': CLAUDE_VER, 'Content-Type': 'application/json' },
       // Sonnet 5: adaptive thinking always on — do NOT pass temperature/top_p/top_k (returns 400).
-      body: JSON.stringify({ model: model || 'claude-sonnet-5', max_tokens: 200, system, messages: merged })
+      body: JSON.stringify({ model: model || 'claude-sonnet-4-6', max_tokens: 200, system, messages: merged })
     });
     if (!r.ok){
       const t = await r.text();
