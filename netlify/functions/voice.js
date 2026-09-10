@@ -8,6 +8,8 @@
 
 const OPENAI_URL    = 'https://api.openai.com/v1/chat/completions';
 const ELEVEN_URL    = 'https://api.elevenlabs.io/v1/text-to-speech';
+const CLAUDE_URL    = 'https://api.anthropic.com/v1/messages';
+const CLAUDE_VER    = '2023-06-01';
 const OPTS          = { headers: () => ({ 'Content-Type': 'application/json' }) };
 
 const CORS = {
@@ -20,11 +22,17 @@ function ok(body){      return { statusCode: 200, headers: { ...CORS, 'Content-T
 function err(code, e){  return { statusCode: code, headers: CORS, body: JSON.stringify({ error: e?.message || String(e) }) }; }
 
 async function warmup(){
-  const out = { openai: 'unknown', elevenlabs: 'unknown', ts: Date.now() };
+  const out = { openai: 'unknown', claude: 'unknown', elevenlabs: 'unknown', ts: Date.now() };
   try {
     const r = await fetch('https://api.openai.com/v1/models', { headers: { 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY } });
     out.openai = r.ok ? 'ok' : ('http_' + r.status);
   } catch (e) { out.openai = 'network_error'; }
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models', {
+      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY || '', 'anthropic-version': CLAUDE_VER }
+    });
+    out.claude = r.ok ? 'ok' : ('http_' + r.status);
+  } catch (e) { out.claude = 'network_error'; }
   try {
     const r = await fetch(ELEVEN_URL + '/21m00Tcm4TlvDq8ikWAM', {
       method: 'POST',
@@ -33,25 +41,59 @@ async function warmup(){
     });
     out.elevenlabs = r.ok ? 'ok' : ('http_' + r.status);
   } catch (e) { out.elevenlabs = 'network_error'; }
-  out.ready = out.openai === 'ok' || out.elevenlabs === 'ok';
+  out.ready = out.claude === 'ok' || out.openai === 'ok' || out.elevenlabs === 'ok';
   return ok(out);
 }
 
 async function chat(payload){
-  const { persona, history = [], lead, model = 'gpt-4o-mini' } = payload || {};
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not set in Netlify env vars');
+  const { persona, history = [], lead, model } = payload || {};
+  const provider = (payload.provider || 'auto') === 'auto'
+    ? (process.env.ANTHROPIC_API_KEY ? 'claude' : 'openai')
+    : payload.provider;
 
   const leadCtx  = lead ? `You are calling ${lead.contact || 'the prospect'} (${lead.title || ''}) at ${lead.company} in ${lead.city || ''}. They work in ${lead.industry || 'their industry'}. Lead score: ${lead.score || 'n/a'}.` : '';
-  const messages = [
-    { role: 'system', content: (persona?.prompt || 'You are a helpful outbound sales assistant. Be concise, under 50 words per turn, and ask one question at a time.') + (leadCtx ? '\n\n' + leadCtx : '') + '\n\nStay in character. Never break the fourth wall. Keep replies under 50 words. Ask one question per turn.' },
-    ...history.map(h => ({ role: h.role, content: h.content })),
-    { role: 'user',   content: payload.user || '(the prospect has not said anything yet — open the call)' }
-  ];
+  const system   = (persona?.prompt || 'You are a helpful outbound sales assistant. Be concise, under 50 words per turn, and ask one question at a time.') + (leadCtx ? '\n\n' + leadCtx : '') + '\n\nStay in character. Never break the fourth wall. Keep replies under 50 words. Ask one question per turn.';
+  const userText = payload.user || '(the prospect has not said anything yet — open the call)';
 
+  if (provider === 'claude'){
+    if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not set in Netlify env vars');
+    let msgs = history
+      .filter(h => h.role === 'user' || h.role === 'assistant')
+      .map(h => ({ role: h.role, content: String(h.content || '') }));
+    msgs.push({ role: 'user', content: userText });
+    // Anthropic requires strictly alternating user/assistant — merge adjacent duplicates.
+    const merged = [];
+    for (const m of msgs){
+      const last = merged[merged.length - 1];
+      if (last && last.role === m.role) last.content += '\n\n' + m.content;
+      else merged.push({ ...m });
+    }
+    const r = await fetch(CLAUDE_URL, {
+      method: 'POST',
+      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': CLAUDE_VER, 'Content-Type': 'application/json' },
+      // Sonnet 5: adaptive thinking always on — do NOT pass temperature/top_p/top_k (returns 400).
+      body: JSON.stringify({ model: model || 'claude-sonnet-5', max_tokens: 200, system, messages: merged })
+    });
+    if (!r.ok){
+      const t = await r.text();
+      throw new Error('Claude HTTP ' + r.status + ': ' + t.slice(0, 200));
+    }
+    const j = await r.json();
+    const reply = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+    return ok({ reply, model: j.model, usage: j.usage });
+  }
+
+  // default: OpenAI
+  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not set in Netlify env vars');
+  const messages = [
+    { role: 'system', content: system },
+    ...history.map(h => ({ role: h.role, content: h.content })),
+    { role: 'user',   content: userText }
+  ];
   const r = await fetch(OPENAI_URL, {
     method: 'POST',
     headers: { ...OPTS.headers(), 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY },
-    body: JSON.stringify({ model, messages, temperature: 0.7, max_tokens: 200 })
+    body: JSON.stringify({ model: model || 'gpt-4o-mini', messages, temperature: 0.7, max_tokens: 200 })
   });
   if (!r.ok){
     const t = await r.text();
