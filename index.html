@@ -872,11 +872,21 @@ async function callApi(action, body){
   }
 }
 
+function b64ToBlobUrl(b64, type){
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return URL.createObjectURL(new Blob([bytes], { type }));
+}
 async function playTTS(text, voiceId){
   const r = await callApi('tts', { text, voice_id: voiceId, model_id: 'eleven_turbo_v2_5' });
-  if (!r.ok) { toast('TTS unavailable — text shown only.', 'err'); return; }
-  const audio = new Audio('data:audio/mpeg;base64,' + r.audio_base64);
-  audio.play().catch(()=>{});
+  if (!r.ok) { toast('TTS unavailable: ' + (r.error||'unknown'), 'err'); return; }
+  if (!r.audio_base64){ toast('TTS returned no audio.', 'err'); return; }
+  const url = b64ToBlobUrl(r.audio_base64, 'audio/mpeg');
+  const audio = new Audio(); audio.src = url;
+  audio.onended = () => URL.revokeObjectURL(url);
+  try { await audio.play(); }
+  catch(e){ toast('Tap again to play (browser blocked autoplay): ' + e.message, 'err'); }
 }
 
 S.callHistory = []; S.callAudioOn = true; S.callAllowTts = true;
@@ -1100,11 +1110,23 @@ document.getElementById('savePersona').onclick = () => {
   S.persona.prompt = document.getElementById('personaPrompt').value;
   toast('Persona saved (in-memory). Persist via Supabase in production.', 'ok');
 };
-document.getElementById('previewPersona').onclick = async () => {
-  const p = S.persona;
-  const r = await callApi('tts', { text: `Hi, this is ${p.name} with ProSpector — do you have 60 seconds?`, voice_id: PERSONA_VOICE_ID[p.id] || '21m00Tcm4TlvDq8ikWAM' });
-  if (!r.ok){ toast('Preview failed: ' + (r.error||'unknown') + '. Check ElevenLabs key in Netlify.', 'err'); return; }
-  new Audio('data:audio/mpeg;base64,' + r.audio_base64).play().catch(()=>{});
+document.getElementById('previewPersona').onclick = async (ev) => {
+  const btn = ev.currentTarget;
+  const oldLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const p = S.persona;
+    const r = await callApi('tts', { text: `Hi, this is ${p.name} with ProSpector — do you have 60 seconds?`, voice_id: PERSONA_VOICE_ID[p.id] || '21m00Tcm4TlvDq8ikWAM', model_id: 'eleven_turbo_v2_5' });
+    if (!r.ok){ toast('Preview failed: ' + (r.error||'unknown') + '. Check ElevenLabs key in Netlify.', 'err'); return; }
+    if (!r.audio_base64){ toast('Preview returned no audio. Check ElevenLabs quota.', 'err'); return; }
+    const url = b64ToBlobUrl(r.audio_base64, 'audio/mpeg');
+    const audio = new Audio(); audio.src = url;
+    audio.onended = () => URL.revokeObjectURL(url);
+    try { await audio.play(); toast('Playing ' + p.name + '…', 'ok'); }
+    catch(e){ toast('Tap Preview again — browser blocked autoplay: ' + e.message, 'err'); }
+  } finally {
+    btn.disabled = false; btn.textContent = oldLabel;
+  }
 };
 document.getElementById('warmupBtn').onclick  = warmup;
 document.getElementById('warmupBtn2').onclick = warmup;
