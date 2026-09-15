@@ -191,6 +191,34 @@ async function extract(payload){
   throw new Error('unknown kind: ' + kind);
 }
 
+async function ocr(payload){
+  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not set — required for OCR fallback');
+  const { data_base64, filename } = payload || {};
+  if (!data_base64) throw new Error('data_base64 required');
+  // Send the PDF as an image_url data URL to OpenAI Vision (gpt-4o-mini).
+  // Works for text-image scanned pages up to ~20MB; extracts readable text.
+  const dataUrl = 'data:application/pdf;base64,' + data_base64;
+  const r = await fetch(OPENAI_URL, {
+    method: 'POST',
+    headers: { ...OPTS.headers(), 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role:'system', content:'You are an OCR engine. Return ONLY the extracted plain text from the document, preserving paragraph breaks. No commentary.' },
+        { role:'user', content: [
+            { type:'text', text: 'Extract all readable text from this document: ' + (filename||'file.pdf') },
+            { type:'image_url', image_url: { url: dataUrl } }
+          ] }
+      ],
+      max_tokens: 4000, temperature: 0
+    })
+  });
+  if (!r.ok){ const t = await r.text(); throw new Error('OCR HTTP ' + r.status + ': ' + t.slice(0, 200)); }
+  const j = await r.json();
+  const text = j.choices?.[0]?.message?.content?.trim() || '';
+  return ok({ text, chars: text.length, source:'openai_vision' });
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return err(405, 'POST only');
@@ -205,6 +233,7 @@ exports.handler = async (event) => {
       case 'tts':         return await tts(body);
       case 'voices_list': return await voicesList(body);
       case 'extract':     return await extract(body);
+      case 'ocr':         return await ocr(body);
       default:            return err(400, 'unknown action: ' + body.action);
     }
   } catch (e) {

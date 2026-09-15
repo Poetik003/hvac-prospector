@@ -1467,15 +1467,47 @@ Rules of engagement:
 - Do NOT sound like an assistant, chatbot, or narrator. Sound like a top-performing SDR who happens to know HVAC deeply.
 `.trim();
 
-/* ======= TRAINING MATERIAL LIBRARY ======= */
+/* ======= TRAINING MATERIAL LIBRARY (team-shared via Supabase, cached locally) ======= */
 const MAT_KEY = 'ps_training_materials';
 function matLoad(){ try { return JSON.parse(localStorage.getItem(MAT_KEY)||'[]'); } catch(e){ return []; } }
-function matSave(list){ localStorage.setItem(MAT_KEY, JSON.stringify(list.slice(0, 40))); }
+function matSave(list){ localStorage.setItem(MAT_KEY, JSON.stringify(list.slice(0, 60))); }
 function matActiveText(){
   const list = matLoad().filter(m => m.active);
   if (!list.length) return '';
   return '\n\nADDITIONAL TRAINING MATERIAL (authoritative, use these strategies verbatim when relevant):\n' +
     list.map(m => `--- ${m.name} ---\n${(m.text||'').slice(0, 6000)}`).join('\n\n');
+}
+async function matPullFromCloud(){
+  if (!window.supabase) return;
+  try {
+    const { data, error } = await window.supabase.from('training_materials').select('*').order('uploaded_at',{ascending:false});
+    if (error){ console.warn('materials pull:', error.message); return; }
+    if (!Array.isArray(data)) return;
+    const cloud = data.map(r => ({
+      id: r.id, name: r.name, text: r.text, uploaded_at: r.uploaded_at,
+      active: r.active !== false, deployed_at: r.deployed_at || null,
+      uploaded_by: r.uploaded_by || 'team'
+    }));
+    matSave(cloud);
+    renderMaterials();
+  } catch(e){ console.warn('materials pull failed', e); }
+}
+async function matPushOne(m){
+  if (!window.supabase) return;
+  try {
+    const { error } = await window.supabase.from('training_materials').upsert({
+      id: m.id, name: m.name, text: m.text, uploaded_at: m.uploaded_at,
+      active: m.active, deployed_at: m.deployed_at, uploaded_by: m.uploaded_by
+    });
+    if (error) console.warn('materials push:', error.message);
+  } catch(e){ console.warn('materials push failed', e); }
+}
+async function matDeleteCloud(id){
+  if (!window.supabase) return;
+  try {
+    const { error } = await window.supabase.from('training_materials').delete().eq('id', id);
+    if (error) console.warn('materials delete:', error.message);
+  } catch(e){ console.warn('materials delete failed', e); }
 }
 async function extractFileText(file){
   const name = file.name.toLowerCase();
@@ -1485,7 +1517,14 @@ async function extractFileText(file){
     const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
     const r = await callApi('extract', { kind:'pdf', filename:file.name, data_base64:b64 });
     if (!r.ok) throw new Error(r.error||'pdf extract failed');
-    return r.text || '';
+    let text = r.text || '';
+    // If text-layer extraction returned almost nothing, try OCR (scanned PDF)
+    if (!text || text.length < 80 || /Could not extract text/i.test(text)){
+      toast('Text layer empty — running OCR on ' + file.name + '…', 'ok');
+      const o = await callApi('ocr', { filename:file.name, data_base64:b64 });
+      if (o.ok && o.text) text = o.text;
+    }
+    return text;
   }
   if (name.endsWith('.docx')){
     const buf = await file.arrayBuffer();
@@ -1514,21 +1553,25 @@ function renderMaterials(){
       <button class="btn sm" data-mat-del="${m.id}">Delete</button>
     </div>
   `).join('');
-  box.querySelectorAll('[data-mat-active]').forEach(cb => cb.onchange = () => {
-    const list = matLoad(); const m = list.find(x => x.id === cb.dataset.matActive); if (m){ m.active = cb.checked; matSave(list); }
+  box.querySelectorAll('[data-mat-active]').forEach(cb => cb.onchange = async () => {
+    const list = matLoad(); const m = list.find(x => x.id === cb.dataset.matActive);
+    if (m){ m.active = cb.checked; matSave(list); await matPushOne(m); }
   });
   box.querySelectorAll('[data-mat-view]').forEach(b => b.onclick = () => {
     const m = matLoad().find(x => x.id === b.dataset.matView); if (!m) return;
     const w = window.open('', '_blank'); w.document.write('<pre style="white-space:pre-wrap;font:13px monospace;padding:20px">'+escapeHtml(m.text||'')+'</pre>');
   });
-  box.querySelectorAll('[data-mat-deploy]').forEach(b => b.onclick = () => {
+  box.querySelectorAll('[data-mat-deploy]').forEach(b => b.onclick = async () => {
     const list = matLoad(); const m = list.find(x => x.id === b.dataset.matDeploy); if (!m) return;
     m.deployed_at = new Date().toISOString(); m.active = true; matSave(list); renderMaterials();
-    toast('"' + m.name + '" deployed. Live AI personas will use it on the next call.', 'ok');
+    await matPushOne(m);
+    toast('"' + m.name + '" deployed to your team. Live AI personas will use it on the next call.', 'ok');
   });
-  box.querySelectorAll('[data-mat-del]').forEach(b => b.onclick = () => {
-    if (!confirm('Delete this document?')) return;
-    matSave(matLoad().filter(x => x.id !== b.dataset.matDel)); renderMaterials();
+  box.querySelectorAll('[data-mat-del]').forEach(b => b.onclick = async () => {
+    if (!confirm('Delete this document for the whole team?')) return;
+    const id = b.dataset.matDel;
+    matSave(matLoad().filter(x => x.id !== id)); renderMaterials();
+    await matDeleteCloud(id);
   });
 }
 function acEl(id){ return document.getElementById(id); }
@@ -1777,21 +1820,34 @@ async function acSaveSession(){
   acRenderHistory();
 }
 
-function acRenderHistory(){
+async function acRenderHistory(){
   const box = acEl('acHistory');
-  const list = JSON.parse(localStorage.getItem('ps_training_sessions') || '[]');
-  if (!list.length){ box.innerHTML = '<div class="muted" style="font-size:12.5px">No sessions yet. Start one above.</div>'; return; }
-  box.innerHTML = list.map(s => `
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem('ps_training_sessions') || '[]'); } catch(e){}
+  let cloud = [];
+  if (window.supabase){
+    try {
+      const { data, error } = await window.supabase.from('training_sessions')
+        .select('*').order('started_at',{ascending:false}).limit(50);
+      if (!error && Array.isArray(data)) cloud = data;
+    } catch(e){}
+  }
+  // Merge — cloud wins on id collision
+  const seen = new Set(); const merged = [];
+  for (const s of cloud){ seen.add(s.id); merged.push(s); }
+  for (const s of local){ if (!seen.has(s.id)) merged.push(s); }
+  if (!merged.length){ box.innerHTML = '<div class="muted" style="font-size:12.5px">No sessions yet. Start one above.</div>'; return; }
+  box.innerHTML = merged.map(s => `
     <div class="ac-history-item">
       <div>
-        <div class="who">${escapeHtml(s.voice||'Session')} · ${escapeHtml(s.mode||'')}</div>
+        <div class="who">${escapeHtml(s.voice||'Session')} · ${escapeHtml(s.mode||'')} ${cloud.find(c=>c.id===s.id)?'<span class="chip ok" style="font-size:10px">team</span>':'<span class="chip" style="font-size:10px">local</span>'}</div>
         <div class="meta">${new Date(s.started_at).toLocaleString()} · ${s.transcript?.length||0} turns · by ${escapeHtml(s.author_email||'')}</div>
       </div>
       <button class="btn sm" data-open="${s.id}">Open</button>
     </div>
   `).join('');
   box.querySelectorAll('[data-open]').forEach(b => b.onclick = () => {
-    const s = list.find(x => x.id === b.dataset.open); if (!s) return;
+    const s = merged.find(x => x.id === b.dataset.open); if (!s) return;
     acEl('acTranscript').innerHTML = '';
     AC.history = s.transcript || [];
     AC.history.forEach(h => acLog(h.role==='assistant'?'AI':'YOU', h.content));
@@ -1895,16 +1951,17 @@ document.getElementById('acMatFile')?.addEventListener('change', async e => {
     toast('Extracting ' + f.name + '…', 'ok');
     try {
       const text = await extractFileText(f);
-      const list = matLoad();
-      list.unshift({ id:'mat_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), name:f.name, text, uploaded_at:new Date().toISOString(), active:true, deployed_at:null, uploaded_by:(S.user?.email)||'unknown' });
-      matSave(list); renderMaterials();
-      toast('Added ' + f.name + ' (' + text.length.toLocaleString() + ' chars)', 'ok');
+      const rec = { id:'mat_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), name:f.name, text, uploaded_at:new Date().toISOString(), active:true, deployed_at:null, uploaded_by:(S.user?.email)||'unknown' };
+      const list = matLoad(); list.unshift(rec); matSave(list); renderMaterials();
+      await matPushOne(rec);
+      toast('Added ' + f.name + ' (' + text.length.toLocaleString() + ' chars) — shared with team', 'ok');
     } catch(err){ toast('Failed ' + f.name + ': ' + err.message, 'err'); }
   }
   e.target.value = '';
 });
-document.getElementById('acMatRefresh')?.addEventListener('click', renderMaterials);
+document.getElementById('acMatRefresh')?.addEventListener('click', async () => { await matPullFromCloud(); renderMaterials(); toast('Refreshed from team library', 'ok'); });
 renderMaterials();
+matPullFromCloud();
 
 // Recall a live persona back into Academy for retraining
 document.getElementById('acRecall').onclick = () => {
