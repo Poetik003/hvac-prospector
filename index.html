@@ -545,8 +545,10 @@
           <button class="btn sm hide" id="acEnd">■ End & save notes</button>
           <button class="btn sm" id="acMic">🎙 Speak</button>
           <button class="btn sm" id="acPreview">🔊 Test voice</button>
+          <button class="btn sm" id="acGraduate">🎓 Graduate to live persona…</button>
           <button class="btn sm" id="acClear">Reset</button>
           <div class="spacer" style="flex:1"></div>
+          <span class="chip" id="acLatency">latency: —</span>
           <span class="muted" style="font-size:11.5px" id="acHint">Pick a voice, tune the sliders, then Start.</span>
         </div>
       </div>
@@ -986,12 +988,19 @@ function animateWave(on){
 }
 let waveTimer;
 
-const PERSONA_VOICE_ID = {
-  sarah: '21m00Tcm4TlvDq8ikWAM',  // Rachel
-  maria: 'EXAVITQu4vr4xnSDxMaL',  // Bella
-  lisa:  'pNInz6obpgDQGcFmaJgB',  // Adam (executive tone)
-  alex:  'ThT5KcBeYPX3keUQraH1'   // custom analytical voice
+// Defaults use YOUR synthetic voices. Overridable per persona via Academy "Graduate to live" or Settings.
+const PERSONA_VOICE_ID_DEFAULT = {
+  sarah: 'kWMwdNE2HtriuImY8QrA',  // Sofía — warm empathetic
+  maria: 'E0Jsoxc63LAaihmLXeNQ',  // Jose — bilingual technical
+  lisa:  'U3ozbsy2lFyU5w9O8ASF',  // Mark — direct executive
+  alex:  'SNHm6pldt31SMzuccDc4'   // Jasmine — consultative analytical
 };
+function loadPersonaBindings(){ try { return JSON.parse(localStorage.getItem('ps_persona_bindings')||'{}'); } catch(e){ return {}; } }
+function savePersonaBindings(b){ localStorage.setItem('ps_persona_bindings', JSON.stringify(b)); }
+const PERSONA_VOICE_ID = new Proxy({}, {
+  get(_, pid){ const b = loadPersonaBindings(); return (b[pid] && b[pid].voice_id) || PERSONA_VOICE_ID_DEFAULT[pid] || PERSONA_VOICE_ID_DEFAULT.sarah; }
+});
+function personaSettings(pid){ const b = loadPersonaBindings(); return (b[pid] && b[pid].settings) || null; }
 
 async function callApi(action, body){
   try {
@@ -1252,7 +1261,13 @@ document.getElementById('previewPersona').onclick = async (ev) => {
   btn.disabled = true; btn.textContent = 'Loading…';
   try {
     const p = S.persona;
-    const r = await callApi('tts', { text: `Hi, this is ${p.name} with ProSpector — do you have 60 seconds?`, voice_id: PERSONA_VOICE_ID[p.id] || '21m00Tcm4TlvDq8ikWAM', model_id: 'eleven_turbo_v2_5' });
+    const trained = personaSettings(p.id) || { stability:0.42, similarity_boost:0.85, style:0.58, use_speaker_boost:true, speed:1.00 };
+    const r = await callApi('tts', {
+      text: `Hey, this is ${p.name} with ProSpector — I know I'm catching you cold. Do you have thirty seconds?`,
+      voice_id: PERSONA_VOICE_ID[p.id],
+      model_id: 'eleven_turbo_v2_5',
+      voice_settings: trained
+    });
     if (!r.ok){ toast('Preview failed: ' + (r.error||'unknown') + '. Check ElevenLabs key in Netlify.', 'err'); return; }
     if (!r.audio_base64){ toast('Preview returned no audio. Check ElevenLabs quota.', 'err'); return; }
     const url = b64ToBlobUrl(r.audio_base64, 'audio/mpeg');
@@ -1465,10 +1480,22 @@ async function acSendUser(text){
   if (!text.trim()) return;
   acLog('YOU', text);
   acEl('acStatus').textContent = 'thinking…';
+  const t0 = performance.now();
   const reply = await acAiTurn(text);
+  const think = Math.round(performance.now() - t0);
   if (reply){
     acLog('AI', reply);
-    if (acEl('acAutoPlay').checked) { acEl('acStatus').textContent = 'speaking…'; await acSpeak(reply); }
+    let tts = 0;
+    if (acEl('acAutoPlay').checked) {
+      acEl('acStatus').textContent = 'speaking…';
+      const t1 = performance.now();
+      await acSpeak(reply);
+      tts = Math.round(performance.now() - t1);
+    }
+    AC.latencies = AC.latencies || [];
+    AC.latencies.push({ think, tts, total: think + tts });
+    const last = AC.latencies[AC.latencies.length - 1];
+    acEl('acLatency').textContent = `latency: think ${last.think}ms · voice ${last.tts}ms · total ${last.total}ms`;
   }
   acEl('acStatus').textContent = AC.active ? 'live' : 'idle';
 }
@@ -1599,6 +1626,23 @@ acEl('acPreview').onclick = async () => {
   acEl('acHint').textContent = 'Testing ' + v.label + '…';
   await acSpeak('Hi, this is ' + AC.voiceLabel + " with ProSpector. I know I'm catching you cold — can I have thirty seconds?");
   acEl('acHint').textContent = 'Ready.';
+};
+acEl('acGraduate').onclick = () => {
+  const v = acSelectedVoice();
+  const settings = acVoiceSettings();
+  const options = [
+    { id:'sarah', label:'Sarah Martinez (warm empathetic closer)' },
+    { id:'maria', label:'Maria Gonzalez (bilingual technical)' },
+    { id:'lisa',  label:'Lisa Thompson (direct executive)' },
+    { id:'alex',  label:'Alex Chen (consultative analytical)' }
+  ];
+  const pid = prompt('Graduate this voice + sliders to which live persona?\n' + options.map((o,i)=>`${i+1}. ${o.label}`).join('\n') + '\n\nEnter 1-4:');
+  const idx = parseInt(pid,10) - 1;
+  if (isNaN(idx) || idx < 0 || idx > 3){ toast('Graduation cancelled.', 'err'); return; }
+  const bind = loadPersonaBindings();
+  bind[options[idx].id] = { voice_id: v.id, voice_label: v.label, settings, graduated_at: new Date().toISOString(), graduated_by: (S.user?.email)||'unknown' };
+  savePersonaBindings(bind);
+  toast(`✓ ${options[idx].label.split(' (')[0]} now uses ${v.label.split(' —')[0]} on live calls.`, 'ok');
 };
 acEl('acShare').onclick = () => {
   const text = `PROSPECTOR — Training session\nVoice: ${AC.voiceLabel}\nMode: ${acEl('acMode').value}\nFacility: ${acEl('acFacility').value}\n\n${AC.history.map(h=>`${h.role==='assistant'?'AI':'Prospect'}: ${h.content}`).join('\n')}\n\n=== NOTES ===\n${AC.notes||'(none)'}`;
