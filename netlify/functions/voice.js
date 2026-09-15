@@ -149,6 +149,48 @@ async function voicesList(payload){
   return ok({ voices, count: voices.length });
 }
 
+async function extract(payload){
+  const { kind, filename, data_base64 } = payload || {};
+  if (!data_base64) throw new Error('data_base64 required');
+  const buf = Buffer.from(data_base64, 'base64');
+  if (kind === 'pdf'){
+    // Best-effort text extraction from PDF stream operators. No external deps.
+    // Good enough for text-based sales PDFs; scanned PDFs need OCR (future).
+    const raw = buf.toString('latin1');
+    const out = [];
+    const re = /\(((?:\\.|[^\\()])*)\)\s*Tj|\[((?:\\.|[^\\\[\]])*)\]\s*TJ/g;
+    let m;
+    while ((m = re.exec(raw)) !== null){
+      const chunk = (m[1] || m[2] || '');
+      const clean = chunk
+        .replace(/\\([nrtbf])/g, (_,c)=>({n:'\n',r:'\r',t:'\t',b:' ',f:' '}[c]||' '))
+        .replace(/\\([()\\])/g, '$1')
+        .replace(/\\(\d{1,3})/g, (_,d)=>String.fromCharCode(parseInt(d,8)))
+        .replace(/[()]/g,'');
+      if (clean.trim()) out.push(clean);
+    }
+    let text = out.join(' ').replace(/\s+/g,' ').trim();
+    if (text.length < 40) text = '(Could not extract text from ' + (filename||'PDF') + '. If this is a scanned document, OCR is required — paste key sections as .txt instead.)';
+    return ok({ text: text.slice(0, 150000), chars: text.length });
+  }
+  if (kind === 'docx'){
+    // .docx is a ZIP; pull the raw XML and strip tags. Simple, no deps.
+    const raw = buf.toString('latin1');
+    const xmlStart = raw.indexOf('<w:document');
+    if (xmlStart < 0){
+      // fallback: scan any text between <w:t...> tags anywhere in the buffer
+      const matches = raw.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
+      const text = matches.map(t => t.replace(/<[^>]+>/g,'')).join(' ').replace(/\s+/g,' ').trim();
+      return ok({ text: text.slice(0, 150000), chars: text.length });
+    }
+    const xml = raw.slice(xmlStart);
+    const matches = xml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
+    const text = matches.map(t => t.replace(/<[^>]+>/g,'')).join(' ').replace(/\s+/g,' ').trim();
+    return ok({ text: text.slice(0, 150000), chars: text.length });
+  }
+  throw new Error('unknown kind: ' + kind);
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return err(405, 'POST only');
@@ -162,6 +204,7 @@ exports.handler = async (event) => {
       case 'chat':        return await chat(body);
       case 'tts':         return await tts(body);
       case 'voices_list': return await voicesList(body);
+      case 'extract':     return await extract(body);
       default:            return err(400, 'unknown action: ' + body.action);
     }
   } catch (e) {

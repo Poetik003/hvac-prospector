@@ -486,8 +486,8 @@
             <input type="hidden" id="acVoiceSel" value="" />
             <label class="muted" style="font-size:12px;margin-top:10px;display:block">Model</label>
             <select id="acModel">
+              <option value="eleven_multilingual_v2" selected>Multilingual v2 · most natural (recommended)</option>
               <option value="eleven_turbo_v2_5">Turbo v2.5 · fastest (real-time)</option>
-              <option value="eleven_multilingual_v2">Multilingual v2 · best accents</option>
               <option value="eleven_v3">v3 · most expressive</option>
             </select>
             <label class="muted" style="font-size:12px;margin-top:10px;display:block">Accent hint (spoken as native)</label>
@@ -502,14 +502,20 @@
             </select>
           </div>
           <div>
-            <label class="muted" style="font-size:12px">Stability <span id="acStabV">0.55</span></label>
-            <input id="acStab" type="range" min="0" max="1" step="0.01" value="0.55">
-            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Similarity boost <span id="acSimV">0.80</span></label>
-            <input id="acSim" type="range" min="0" max="1" step="0.01" value="0.80">
-            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Style / expressiveness <span id="acStyleV">0.55</span></label>
-            <input id="acStyle" type="range" min="0" max="1" step="0.01" value="0.55">
-            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Speed <span id="acSpeedV">1.00×</span></label>
-            <input id="acSpeed" type="range" min="0.85" max="1.15" step="0.01" value="1.00">
+            <label class="muted" style="font-size:12px">Stability <span id="acStabV">0.42</span> · lower = more emotion</label>
+            <input id="acStab" type="range" min="0" max="1" step="0.01" value="0.42">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Similarity boost <span id="acSimV">0.90</span></label>
+            <input id="acSim" type="range" min="0" max="1" step="0.01" value="0.90">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Style / expressiveness <span id="acStyleV">0.60</span></label>
+            <input id="acStyle" type="range" min="0" max="1" step="0.01" value="0.60">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Speed <span id="acSpeedV">0.96×</span></label>
+            <input id="acSpeed" type="range" min="0.85" max="1.15" step="0.01" value="0.96">
+            <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">
+              <button class="btn sm" data-preset="natural">Natural conversational</button>
+              <button class="btn sm" data-preset="warm">Warm empathetic</button>
+              <button class="btn sm" data-preset="direct">Direct executive</button>
+              <button class="btn sm" data-preset="bilingual">Bilingual EN/ES</button>
+            </div>
             <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12.5px;color:var(--ink)"><input type="checkbox" id="acSpeaker" checked> Speaker boost</label>
           </div>
           <div>
@@ -545,11 +551,28 @@
           <button class="btn sm" id="acMic">🎙 Speak</button>
           <button class="btn sm" id="acPreview">🔊 Test voice</button>
           <button class="btn sm" id="acGraduate">🎓 Graduate to live persona…</button>
+          <button class="btn sm" id="acRecall">↩ Recall from live (retrain)</button>
           <button class="btn sm" id="acClear">Reset</button>
           <div class="spacer" style="flex:1"></div>
           <span class="chip" id="acLatency">latency: —</span>
           <span class="muted" style="font-size:11.5px" id="acHint">Pick a voice, tune the sliders, then Start.</span>
         </div>
+      </div>
+
+      <!-- SALES TRAINING MATERIAL LIBRARY -->
+      <div class="card" style="margin-top:14px">
+        <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <div>
+            <h3 style="margin:0">Sales training material</h3>
+            <div class="muted" style="font-size:12.5px;margin-top:4px">Upload manuals, playbooks, scripts. Every active document is injected into the AI persona's knowledge for training and live calls.</div>
+          </div>
+          <div class="row" style="gap:6px">
+            <label class="btn primary sm" style="cursor:pointer">＋ Upload document<input type="file" id="acMatFile" accept=".txt,.md,.csv,.json,.pdf,.docx" multiple style="display:none"></label>
+            <button class="btn sm" id="acMatRefresh">Refresh</button>
+          </div>
+        </div>
+        <div id="acMatList" style="margin-top:10px"></div>
+        <div class="muted" style="font-size:11.5px;margin-top:8px">Tip: PDFs and DOCX are extracted to text on upload. Toggle documents on/off per session. Deploy to live personas anytime with Graduate.</div>
       </div>
 
       <div class="grid cols-2" style="gap:14px;margin-top:14px">
@@ -1444,6 +1467,70 @@ Rules of engagement:
 - Do NOT sound like an assistant, chatbot, or narrator. Sound like a top-performing SDR who happens to know HVAC deeply.
 `.trim();
 
+/* ======= TRAINING MATERIAL LIBRARY ======= */
+const MAT_KEY = 'ps_training_materials';
+function matLoad(){ try { return JSON.parse(localStorage.getItem(MAT_KEY)||'[]'); } catch(e){ return []; } }
+function matSave(list){ localStorage.setItem(MAT_KEY, JSON.stringify(list.slice(0, 40))); }
+function matActiveText(){
+  const list = matLoad().filter(m => m.active);
+  if (!list.length) return '';
+  return '\n\nADDITIONAL TRAINING MATERIAL (authoritative, use these strategies verbatim when relevant):\n' +
+    list.map(m => `--- ${m.name} ---\n${(m.text||'').slice(0, 6000)}`).join('\n\n');
+}
+async function extractFileText(file){
+  const name = file.name.toLowerCase();
+  if (/\.(txt|md|csv|json)$/.test(name)) return await file.text();
+  if (name.endsWith('.pdf')){
+    const buf = await file.arrayBuffer();
+    const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+    const r = await callApi('extract', { kind:'pdf', filename:file.name, data_base64:b64 });
+    if (!r.ok) throw new Error(r.error||'pdf extract failed');
+    return r.text || '';
+  }
+  if (name.endsWith('.docx')){
+    const buf = await file.arrayBuffer();
+    const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+    const r = await callApi('extract', { kind:'docx', filename:file.name, data_base64:b64 });
+    if (!r.ok) throw new Error(r.error||'docx extract failed');
+    return r.text || '';
+  }
+  return await file.text();
+}
+function renderMaterials(){
+  const box = document.getElementById('acMatList'); if (!box) return;
+  const list = matLoad();
+  if (!list.length){ box.innerHTML = '<div class="muted" style="font-size:12.5px">No documents yet. Upload PDF, DOCX, TXT, MD, CSV, or JSON.</div>'; return; }
+  box.innerHTML = list.map(m => `
+    <div class="row" style="gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0e1a32;margin-bottom:6px">
+      <label style="display:flex;gap:8px;align-items:center;flex:1;min-width:0">
+        <input type="checkbox" data-mat-active="${m.id}" ${m.active?'checked':''}>
+        <div style="min-width:0">
+          <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(m.name)}</div>
+          <div class="muted" style="font-size:11.5px">${new Date(m.uploaded_at).toLocaleString()} · ${(m.text||'').length.toLocaleString()} chars${m.deployed_at?' · <span class="chip ok" style="font-size:10px">deployed</span>':''}</div>
+        </div>
+      </label>
+      <button class="btn sm" data-mat-view="${m.id}">View</button>
+      <button class="btn sm" data-mat-deploy="${m.id}">Deploy to personas</button>
+      <button class="btn sm" data-mat-del="${m.id}">Delete</button>
+    </div>
+  `).join('');
+  box.querySelectorAll('[data-mat-active]').forEach(cb => cb.onchange = () => {
+    const list = matLoad(); const m = list.find(x => x.id === cb.dataset.matActive); if (m){ m.active = cb.checked; matSave(list); }
+  });
+  box.querySelectorAll('[data-mat-view]').forEach(b => b.onclick = () => {
+    const m = matLoad().find(x => x.id === b.dataset.matView); if (!m) return;
+    const w = window.open('', '_blank'); w.document.write('<pre style="white-space:pre-wrap;font:13px monospace;padding:20px">'+escapeHtml(m.text||'')+'</pre>');
+  });
+  box.querySelectorAll('[data-mat-deploy]').forEach(b => b.onclick = () => {
+    const list = matLoad(); const m = list.find(x => x.id === b.dataset.matDeploy); if (!m) return;
+    m.deployed_at = new Date().toISOString(); m.active = true; matSave(list); renderMaterials();
+    toast('"' + m.name + '" deployed. Live AI personas will use it on the next call.', 'ok');
+  });
+  box.querySelectorAll('[data-mat-del]').forEach(b => b.onclick = () => {
+    if (!confirm('Delete this document?')) return;
+    matSave(matLoad().filter(x => x.id !== b.dataset.matDel)); renderMaterials();
+  });
+}
 function acEl(id){ return document.getElementById(id); }
 function acLog(who, text, opts={}){
   const t = acEl('acTranscript');
@@ -1570,7 +1657,7 @@ function acSystemPrompt(){
     'freeform':       'Mode: Free-form training. Follow the prospect wherever they go, always steering toward next step.'
   }[mode];
   const accentLine = accent ? `Speak with a natural ${accent} cadence, but stay understandable to any US listener.` : '';
-  return `${HVAC_KB}\n\n${modeLine}\nThe user is role-playing as: ${prospect}. Facility type: ${facility}. ${accentLine}\nRespond with EXACTLY one turn as the AI setter. Do not narrate stage directions.`;
+  return `${HVAC_KB}${matActiveText()}\n\n${modeLine}\nThe user is role-playing as: ${prospect}. Facility type: ${facility}. ${accentLine}\nRespond with EXACTLY one turn as the AI setter. Do not narrate stage directions.`;
 }
 
 async function acAiTurn(userText){
@@ -1788,6 +1875,60 @@ document.getElementById('acGradConfirm').onclick = () => {
   document.getElementById('acGradModal').classList.add('hide');
   toast('✓ ' + pid.charAt(0).toUpperCase()+pid.slice(1) + ' now uses ' + v.label + ' on live calls.', 'ok');
 };
+// Voice tuning presets
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
+  const p = b.dataset.preset;
+  const sets = {
+    natural:  { stab:0.42, sim:0.90, style:0.60, speed:0.96 },
+    warm:     { stab:0.35, sim:0.88, style:0.75, speed:0.95 },
+    direct:   { stab:0.55, sim:0.85, style:0.35, speed:1.02 },
+    bilingual:{ stab:0.48, sim:0.92, style:0.55, speed:0.98 }
+  }[p]; if (!sets) return;
+  acEl('acStab').value = sets.stab; acEl('acSim').value = sets.sim; acEl('acStyle').value = sets.style; acEl('acSpeed').value = sets.speed;
+  acSyncSliderLabels(); toast('Preset applied: ' + p, 'ok');
+});
+
+// Training material upload
+document.getElementById('acMatFile')?.addEventListener('change', async e => {
+  const files = Array.from(e.target.files||[]);
+  for (const f of files){
+    toast('Extracting ' + f.name + '…', 'ok');
+    try {
+      const text = await extractFileText(f);
+      const list = matLoad();
+      list.unshift({ id:'mat_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), name:f.name, text, uploaded_at:new Date().toISOString(), active:true, deployed_at:null, uploaded_by:(S.user?.email)||'unknown' });
+      matSave(list); renderMaterials();
+      toast('Added ' + f.name + ' (' + text.length.toLocaleString() + ' chars)', 'ok');
+    } catch(err){ toast('Failed ' + f.name + ': ' + err.message, 'err'); }
+  }
+  e.target.value = '';
+});
+document.getElementById('acMatRefresh')?.addEventListener('click', renderMaterials);
+renderMaterials();
+
+// Recall a live persona back into Academy for retraining
+document.getElementById('acRecall').onclick = () => {
+  const bind = loadPersonaBindings();
+  const pids = Object.keys(bind);
+  if (!pids.length){ toast('No live-deployed personas yet. Graduate one first.', 'err'); return; }
+  const pick = prompt('Recall which persona? ' + pids.join(', '));
+  const b = bind[pick]; if (!b){ toast('No such persona.', 'err'); return; }
+  acEl('acVoiceSel').value = b.voice_id;
+  acEl('acPickName').textContent = b.voice_label || b.voice_id;
+  acEl('acPickMeta').textContent = 'Recalled from live persona: ' + pick;
+  AC.voiceId = b.voice_id; AC.voiceLabel = b.voice_label || b.voice_id;
+  acEl('acVoice').textContent = 'voice: ' + AC.voiceLabel;
+  if (b.settings){
+    if (b.settings.stability != null) acEl('acStab').value = b.settings.stability;
+    if (b.settings.similarity_boost != null) acEl('acSim').value = b.settings.similarity_boost;
+    if (b.settings.style != null) acEl('acStyle').value = b.settings.style;
+    if (b.settings.speed != null) acEl('acSpeed').value = b.settings.speed;
+    if (b.settings.use_speaker_boost != null) acEl('acSpeaker').checked = !!b.settings.use_speaker_boost;
+    acSyncSliderLabels();
+  }
+  toast(pick + ' recalled — retrain, adjust, then Graduate again to redeploy.', 'ok');
+};
+
 acEl('acShare').onclick = () => {
   const text = `PROSPECTOR — Training session\nVoice: ${AC.voiceLabel}\nMode: ${acEl('acMode').value}\nFacility: ${acEl('acFacility').value}\n\n${AC.history.map(h=>`${h.role==='assistant'?'AI':'Prospect'}: ${h.content}`).join('\n')}\n\n=== NOTES ===\n${AC.notes||'(none)'}`;
   navigator.clipboard?.writeText(text).then(()=>toast('Session copied to clipboard','ok'), ()=>toast('Copy failed','err'));
