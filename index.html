@@ -104,6 +104,16 @@
   .persona .a{width:44px;height:44px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-weight:700;color:#fff;flex:0 0 44px}
   .persona .n{font-weight:600}
   .persona .r{color:var(--ink-dim);font-size:12.5px}
+  .ac-line{margin:6px 0;padding:8px 10px;border-radius:10px;max-width:88%}
+  .ac-line.ai{background:linear-gradient(180deg,#152a52,#0f1f3d);border:1px solid #24457d;color:#eaf1ff}
+  .ac-line.you{background:#0e1a32;border:1px solid #223559;margin-left:auto;color:#dfe7f4}
+  .ac-line .tag{display:block;font-size:10px;letter-spacing:.08em;color:var(--ink-dim);margin-bottom:2px;text-transform:uppercase}
+  .ac-line.rec{outline:2px solid #ff6b6b;box-shadow:0 0 0 3px rgba(255,107,107,.15)}
+  #acMic.rec{background:linear-gradient(180deg,#ff6b6b,#c94848);color:#fff;border-color:#c94848}
+  .ac-history-item{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;margin-top:8px;background:#0e1a32}
+  .ac-history-item .who{font-weight:700;color:var(--ink)}
+  .ac-history-item .meta{color:var(--ink-dim);font-size:12px}
+  .ac-history-item button{margin-left:auto}
   .waveform{height:56px;background:linear-gradient(180deg,#0e1a32,#0a1426);border:1px solid var(--line);border-radius:10px;position:relative;overflow:hidden}
   .waveform .bar{position:absolute;bottom:50%;width:3px;background:var(--brand);transform:translateY(50%);border-radius:2px;opacity:.85}
   .call-panel{display:grid;grid-template-columns:1fr 380px;gap:14px}
@@ -209,6 +219,7 @@
       <button data-view="calling"><span class="dot"></span> Live Calling</button>
       <button data-view="scripts"><span class="dot"></span> Script Test Center</button>
       <button data-view="voice"><span class="dot"></span> Natural Voice Config</button>
+      <button data-view="academy"><span class="dot"></span> AI Voice Training Academy</button>
       <button data-view="apollo"><span class="dot"></span> Apollo AI</button>
       <button data-view="analytics"><span class="dot"></span> Analytics</button>
       <button data-view="settings"><span class="dot"></span> Settings</button>
@@ -439,6 +450,131 @@
           <div class="spacer"></div>
           <span class="muted" style="font-size:12px">If warm-up fails, we auto-drop to Smart Voice fallback.</span>
         </div>
+      </div>
+    </section>
+
+    <!-- AI VOICE TRAINING ACADEMY -->
+    <section data-view="academy" class="view hide">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h3 style="margin:0">AI Voice Training Academy</h3>
+            <div class="muted" style="font-size:12.5px;margin-top:4px">Real-time voice conversations with your HVAC AI personas. Every session is transcribed, summarized, and shared with the team.</div>
+          </div>
+          <div class="row" style="gap:6px">
+            <span class="chip" id="acStatus">idle</span>
+            <span class="chip ok" id="acVoice">voice: —</span>
+          </div>
+        </div>
+        <hr class="sep">
+        <div class="grid cols-3" style="gap:14px">
+          <div>
+            <label class="muted" style="font-size:12px">Persona voice</label>
+            <select id="acVoiceSel">
+              <optgroup label="Your synthetic voices">
+                <option value="kWMwdNE2HtriuImY8QrA">Sofía — Miami Latina · warm bilingual</option>
+                <option value="aG3OTJLbRERbY8RcNOGS">Diego — Miami Latino · direct</option>
+                <option value="U3ozbsy2lFyU5w9O8ASF">Mark — Miami cool/calm/curious</option>
+                <option value="SNHm6pldt31SMzuccDc4">Jasmine — Miami · warm soulful</option>
+                <option value="E0Jsoxc63LAaihmLXeNQ">Jose — Miami Cuban Spanish</option>
+                <option value="1sFK9tOhBT6dMpAqqUVB">Francisco — Miami Cuban Spanish (alt)</option>
+              </optgroup>
+              <optgroup label="ElevenLabs library">
+                <option value="21m00Tcm4TlvDq8ikWAM">Rachel · library</option>
+                <option value="EXAVITQu4vr4xnSDxMaL">Bella · library</option>
+                <option value="pNInz6obpgDQGcFmaJgB">Adam · library</option>
+              </optgroup>
+            </select>
+            <label class="muted" style="font-size:12px;margin-top:10px;display:block">Model</label>
+            <select id="acModel">
+              <option value="eleven_turbo_v2_5">Turbo v2.5 · fastest (real-time)</option>
+              <option value="eleven_multilingual_v2">Multilingual v2 · best accents</option>
+              <option value="eleven_v3">v3 · most expressive</option>
+            </select>
+            <label class="muted" style="font-size:12px;margin-top:10px;display:block">Accent hint (spoken as native)</label>
+            <select id="acAccent">
+              <option value="">Match voice default</option>
+              <option value="Miami Cuban Spanish">Miami Cuban Spanish</option>
+              <option value="Miami neutral US Latina">Miami neutral US Latina</option>
+              <option value="Miami African American English">Miami African American English</option>
+              <option value="Neutral US">Neutral US</option>
+              <option value="Southern Texas drawl">Southern Texas drawl</option>
+              <option value="New York directness">New York directness</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Stability <span id="acStabV">0.55</span></label>
+            <input id="acStab" type="range" min="0" max="1" step="0.01" value="0.55">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Similarity boost <span id="acSimV">0.80</span></label>
+            <input id="acSim" type="range" min="0" max="1" step="0.01" value="0.80">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Style / expressiveness <span id="acStyleV">0.55</span></label>
+            <input id="acStyle" type="range" min="0" max="1" step="0.01" value="0.55">
+            <label class="muted" style="font-size:12px;margin-top:8px;display:block">Speed <span id="acSpeedV">1.00×</span></label>
+            <input id="acSpeed" type="range" min="0.85" max="1.15" step="0.01" value="1.00">
+            <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12.5px;color:var(--ink)"><input type="checkbox" id="acSpeaker" checked> Speaker boost</label>
+          </div>
+          <div>
+            <label class="muted" style="font-size:12px">Conversation mode</label>
+            <select id="acMode">
+              <option value="cold-open">Cold call · discovery</option>
+              <option value="rebuttal">Rebuttal drill · objections</option>
+              <option value="qualification">Qualification · BANT/CHAMP</option>
+              <option value="closing">Booking / closing</option>
+              <option value="freeform">Free-form training</option>
+            </select>
+            <label class="muted" style="font-size:12px;margin-top:10px;display:block">Prospect role (who you role-play)</label>
+            <input id="acProspect" placeholder="e.g. Facilities Director at a hospital">
+            <label class="muted" style="font-size:12px;margin-top:10px;display:block">Facility type</label>
+            <select id="acFacility">
+              <option>Hospital / Healthcare</option>
+              <option>Data Center</option>
+              <option>Luxury Condo / HOA</option>
+              <option>Hotel / Hospitality</option>
+              <option>Manufacturing Plant</option>
+              <option>Retail Chain</option>
+              <option>School / University</option>
+              <option>Office Tower</option>
+            </select>
+            <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12.5px;color:var(--ink)"><input type="checkbox" id="acAutoPlay" checked> Auto-play AI responses</label>
+            <label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:12.5px;color:var(--ink)"><input type="checkbox" id="acAutoMic"> Auto-restart mic after AI speaks</label>
+          </div>
+        </div>
+        <hr class="sep">
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <button class="btn primary sm" id="acStart">▶ Start training session</button>
+          <button class="btn sm hide" id="acEnd">■ End & save notes</button>
+          <button class="btn sm" id="acMic">🎙 Speak</button>
+          <button class="btn sm" id="acPreview">🔊 Test voice</button>
+          <button class="btn sm" id="acClear">Reset</button>
+          <div class="spacer" style="flex:1"></div>
+          <span class="muted" style="font-size:11.5px" id="acHint">Pick a voice, tune the sliders, then Start.</span>
+        </div>
+      </div>
+
+      <div class="grid cols-2" style="gap:14px;margin-top:14px">
+        <div class="card">
+          <h3 style="margin:0 0 8px">Live transcript</h3>
+          <div id="acTranscript" style="height:340px;overflow:auto;background:#0b1220;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;line-height:1.55"></div>
+          <div class="row" style="gap:6px;margin-top:10px">
+            <input id="acInput" placeholder="Type your line as the prospect… (or tap 🎙 Speak)">
+            <button class="btn primary sm" id="acSend">Send</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Session notes (auto)</h3>
+            <button class="btn sm" id="acShare">Copy for team</button>
+          </div>
+          <div id="acNotes" class="muted" style="margin-top:8px;font-size:12.5px;height:340px;overflow:auto;background:#0b1220;border:1px solid var(--line);border-radius:10px;padding:12px;white-space:pre-wrap"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h3 style="margin:0">Past training sessions</h3>
+          <span class="muted" style="font-size:12px">Shared with your team</span>
+        </div>
+        <div id="acHistory" style="margin-top:8px"></div>
       </div>
     </section>
 
@@ -1205,6 +1341,270 @@ if (ttsToggleEl) {
 S.persona = PERSONAS[0];
 renderDashboard(); renderLeads(); renderPersonas(); renderPersonaDetail();
 seedWave(); renderObjections(); renderAnalytics(); loadKeys();
+
+/* ================= AI VOICE TRAINING ACADEMY ================= */
+const AC = {
+  active:false, history:[], notes:'', startedAt:null,
+  voiceLabel:'', voiceId:'', mediaRec:null, rec:null, sessionId:null
+};
+
+const HVAC_KB = `
+You are an elite commercial HVAC appointment-setter and sales trainer with 15 years of field and sales experience.
+
+You know deeply: chillers (air-cooled, water-cooled, absorption, magnetic bearing), rooftop units (RTUs, package units), split systems, VRF/VRV, boilers (fire-tube, condensing), cooling towers, air-handling units (AHUs), fan coils, VAV boxes, economizers, building automation (BAS/BMS — Metasys, Niagara, Tridium, Delta, Alerton, Honeywell WEBs), refrigerants (R-410A, R-32, R-454B, phase-out of R-22 and R-410A), sensors, IAQ (MERV, HEPA, UV-C, bipolar ionization, DOAS), refrigerant leak detection, preventive maintenance contracts (PM), on-demand service, retrofit vs replace economics, SEER2/EER/IEER/kW-per-ton, ASHRAE 90.1/62.1, LEED, energy rebates (utility rebates, IRA tax credits, Section 179D), unplanned downtime cost, mean time between failures, and how facility managers actually think about capex vs opex.
+
+You know the true buyer economics: cost per ton, cost per sqft maintained, replacement lead times (12–20 weeks for large chillers), typical service contract rates ($0.35–$0.80/sqft/yr commercial), retrofit ROI (18–36 months), refrigerant phase-out compliance risk, and the pain of running to failure.
+
+Discovery playbook (ask ONE question at a time, listen, then follow up):
+1) Facility type, size (sqft), and number of buildings
+2) Age and type of primary HVAC equipment
+3) Current service arrangement — in-house, contract, break/fix
+4) Biggest pain in the last 12 months (downtime, energy, comfort complaints, tenant retention)
+5) Who else touches this decision (procurement, engineering, finance, ownership)
+6) Budget cycle and fiscal year
+7) Timeframe to change vendors or add coverage
+8) Preferred next step (walkthrough, benchmark audit, proposal)
+
+Rebuttal playbook — always acknowledge, reframe, ask:
+- "We already have a vendor" → "Perfect — most clients we work with had one too. I'm not asking you to switch today, just to benchmark. Would a 20-minute walkthrough be useful if I found 12–18% in savings?"
+- "Not the right time" → "Understood. When does your fiscal year reset? I'll put a soft hold two weeks before your renewal."
+- "Just send info" → "Happy to. What's the one thing that would make it worth opening — pricing, unit-level ROI, or references in your industry?"
+- "How'd you get my number?" → "You're publicly listed as facilities lead. 60 seconds — if it's not useful I'm gone."
+- "Not interested" → "Fair. Can I ask what would have to be true for you to care in the next 90 days?"
+- "Too expensive" → "Compared to what? Break/fix on a 250-ton chiller runs 3–5× a PM contract. What's your downtime cost per hour?"
+- "Send me a proposal" → "Absolutely — I need 4 numbers first so the pricing is honest: tonnage, age, sqft, and last 12 months of service spend."
+
+Rules of engagement:
+- Sound human. Contractions. Short sentences. One question per turn. Under 45 words.
+- Never dump features. Ask, listen, mirror the last thing they said.
+- Use their industry's real vocabulary (chillers vs "AC units").
+- If they get technical, get technical back — you know your equipment.
+- If they push back, use a rebuttal from the playbook — never fold.
+- End every turn with either a question or a soft next step.
+- Do NOT sound like an assistant, chatbot, or narrator. Sound like a top-performing SDR who happens to know HVAC deeply.
+`.trim();
+
+function acEl(id){ return document.getElementById(id); }
+function acLog(who, text, opts={}){
+  const t = acEl('acTranscript');
+  const div = document.createElement('div');
+  div.className = 'ac-line ' + (who==='AI'?'ai':'you') + (opts.rec?' rec':'');
+  div.innerHTML = `<span class="tag">${who==='AI'?AC.voiceLabel||'AI':'You (prospect)'}</span>${escapeHtml(text)}`;
+  t.appendChild(div); t.scrollTop = t.scrollHeight;
+  AC.history.push({ role: who==='AI'?'assistant':'user', content: text, ts: Date.now() });
+}
+
+function acSyncSliderLabels(){
+  acEl('acStabV').textContent  = Number(acEl('acStab').value).toFixed(2);
+  acEl('acSimV').textContent   = Number(acEl('acSim').value).toFixed(2);
+  acEl('acStyleV').textContent = Number(acEl('acStyle').value).toFixed(2);
+  acEl('acSpeedV').textContent = Number(acEl('acSpeed').value).toFixed(2) + '×';
+}
+['acStab','acSim','acStyle','acSpeed'].forEach(id => acEl(id).addEventListener('input', acSyncSliderLabels));
+acSyncSliderLabels();
+
+function acVoiceSettings(){
+  return {
+    stability:        parseFloat(acEl('acStab').value),
+    similarity_boost: parseFloat(acEl('acSim').value),
+    style:            parseFloat(acEl('acStyle').value),
+    speed:            parseFloat(acEl('acSpeed').value),
+    use_speaker_boost: acEl('acSpeaker').checked
+  };
+}
+
+function acSelectedVoice(){
+  const sel = acEl('acVoiceSel');
+  return { id: sel.value, label: sel.options[sel.selectedIndex].text };
+}
+
+function acSystemPrompt(){
+  const mode = acEl('acMode').value;
+  const prospect = acEl('acProspect').value || 'the facilities lead at a mid-size commercial building';
+  const facility = acEl('acFacility').value;
+  const accent = acEl('acAccent').value;
+  const modeLine = {
+    'cold-open':      'Mode: Cold call discovery. Open natural, warm, 1 sentence. Then one discovery question.',
+    'rebuttal':       'Mode: Rebuttal drill. Expect objections. Acknowledge, reframe, ask. Never fold.',
+    'qualification':  'Mode: Qualification. Uncover budget, authority, need, timeline (BANT + CHAMP).',
+    'closing':        'Mode: Booking / closing. Push politely for a 20-minute walkthrough on a specific day.',
+    'freeform':       'Mode: Free-form training. Follow the prospect wherever they go, always steering toward next step.'
+  }[mode];
+  const accentLine = accent ? `Speak with a natural ${accent} cadence, but stay understandable to any US listener.` : '';
+  return `${HVAC_KB}\n\n${modeLine}\nThe user is role-playing as: ${prospect}. Facility type: ${facility}. ${accentLine}\nRespond with EXACTLY one turn as the AI setter. Do not narrate stage directions.`;
+}
+
+async function acAiTurn(userText){
+  const persona = { prompt: acSystemPrompt() };
+  const r = await callApi('chat', { action:'chat', persona, history: AC.history.slice(-12), user: userText, provider: S.chatEngine || 'claude' });
+  if (!r.ok){ toast('AI error: ' + (r.error||'unknown'), 'err'); return null; }
+  return r.reply || '';
+}
+
+async function acSpeak(text){
+  const v = acSelectedVoice();
+  const r = await callApi('tts', {
+    text,
+    voice_id: v.id,
+    model_id: acEl('acModel').value,
+    voice_settings: acVoiceSettings()
+  });
+  if (!r.ok){ toast('Voice error: ' + (r.error||'unknown'), 'err'); return; }
+  if (!r.audio_base64){ toast('No audio returned.', 'err'); return; }
+  const url = b64ToBlobUrl(r.audio_base64, 'audio/mpeg');
+  const audio = new Audio(); audio.src = url;
+  await new Promise((res)=>{
+    audio.onended = () => { URL.revokeObjectURL(url); res(); };
+    audio.onerror = () => { URL.revokeObjectURL(url); res(); };
+    audio.play().catch(e => { toast('Autoplay blocked — tap Speak or Test again.', 'err'); res(); });
+  });
+  if (AC.active && acEl('acAutoMic').checked) acStartMic();
+}
+
+async function acSendUser(text){
+  if (!text.trim()) return;
+  acLog('YOU', text);
+  acEl('acStatus').textContent = 'thinking…';
+  const reply = await acAiTurn(text);
+  if (reply){
+    acLog('AI', reply);
+    if (acEl('acAutoPlay').checked) { acEl('acStatus').textContent = 'speaking…'; await acSpeak(reply); }
+  }
+  acEl('acStatus').textContent = AC.active ? 'live' : 'idle';
+}
+
+function acStartMic(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR){ toast('Speech recognition needs Chrome or Safari.', 'err'); return; }
+  if (AC.rec){ try { AC.rec.stop(); } catch(e){} }
+  const r = new SR();
+  r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
+  const btn = acEl('acMic'); btn.classList.add('rec'); btn.textContent = '● Listening…';
+  r.onresult = e => {
+    const txt = e.results[0][0].transcript;
+    acEl('acInput').value = txt;
+    acSendUser(txt);
+  };
+  r.onerror = e => toast('Mic error: ' + e.error, 'err');
+  r.onend = () => { btn.classList.remove('rec'); btn.textContent = '🎙 Speak'; AC.rec = null; };
+  try { r.start(); AC.rec = r; } catch(e){ toast('Mic start failed: ' + e.message, 'err'); }
+}
+
+async function acBuildNotes(){
+  if (AC.history.length < 2){ AC.notes = ''; return; }
+  const transcript = AC.history.map(h => `${h.role==='assistant'?'AI':'Prospect'}: ${h.content}`).join('\n');
+  const prompt = `You are a sales coach. Read this HVAC cold-call training transcript and produce concise notes for the team.
+
+Include:
+1) Summary (2 lines)
+2) Prospect profile inferred (facility type, size clues, pain)
+3) Objections raised + how the AI handled each (grade A/B/C with 1-line rationale)
+4) Discovery gaps — what was NOT asked that should have been
+5) Recommended next-turn move
+6) 3 concrete coaching tips for the human trainee
+
+Transcript:
+${transcript}`;
+  const r = await callApi('chat', { action:'chat', persona: { prompt: 'You are a precise, direct sales coach. Return plain text with clear headings. No fluff.' }, history: [], user: prompt, provider: S.chatEngine || 'claude' });
+  AC.notes = r.ok ? (r.reply || '') : ('Notes generation failed: ' + (r.error||'unknown'));
+  acEl('acNotes').textContent = AC.notes;
+}
+
+async function acSaveSession(){
+  const record = {
+    id: AC.sessionId || ('sess_' + Date.now()),
+    started_at: AC.startedAt,
+    ended_at: new Date().toISOString(),
+    voice: AC.voiceLabel,
+    voice_id: AC.voiceId,
+    mode: acEl('acMode').value,
+    facility: acEl('acFacility').value,
+    prospect: acEl('acProspect').value,
+    settings: acVoiceSettings(),
+    transcript: AC.history,
+    notes: AC.notes,
+    author_email: (S.user?.email) || 'unknown'
+  };
+  // Persist to Supabase if available; always keep a local copy for team browsing.
+  try {
+    if (window.supabase){
+      const { error } = await window.supabase.from('training_sessions').insert(record);
+      if (error) console.warn('Supabase insert (create table training_sessions):', error.message);
+    }
+  } catch(e){ console.warn('supabase save skipped', e); }
+  const key = 'ps_training_sessions';
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  list.unshift(record);
+  localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+  acRenderHistory();
+}
+
+function acRenderHistory(){
+  const box = acEl('acHistory');
+  const list = JSON.parse(localStorage.getItem('ps_training_sessions') || '[]');
+  if (!list.length){ box.innerHTML = '<div class="muted" style="font-size:12.5px">No sessions yet. Start one above.</div>'; return; }
+  box.innerHTML = list.map(s => `
+    <div class="ac-history-item">
+      <div>
+        <div class="who">${escapeHtml(s.voice||'Session')} · ${escapeHtml(s.mode||'')}</div>
+        <div class="meta">${new Date(s.started_at).toLocaleString()} · ${s.transcript?.length||0} turns · by ${escapeHtml(s.author_email||'')}</div>
+      </div>
+      <button class="btn sm" data-open="${s.id}">Open</button>
+    </div>
+  `).join('');
+  box.querySelectorAll('[data-open]').forEach(b => b.onclick = () => {
+    const s = list.find(x => x.id === b.dataset.open); if (!s) return;
+    acEl('acTranscript').innerHTML = '';
+    AC.history = s.transcript || [];
+    AC.history.forEach(h => acLog(h.role==='assistant'?'AI':'YOU', h.content));
+    AC.notes = s.notes || ''; acEl('acNotes').textContent = AC.notes;
+    toast('Loaded session ' + s.id, 'ok');
+  });
+}
+
+acEl('acVoiceSel').addEventListener('change', () => {
+  const v = acSelectedVoice(); AC.voiceId = v.id; AC.voiceLabel = v.label.split('—')[0].trim();
+  acEl('acVoice').textContent = 'voice: ' + AC.voiceLabel;
+});
+acEl('acVoiceSel').dispatchEvent(new Event('change'));
+
+acEl('acStart').onclick = () => {
+  AC.active = true; AC.startedAt = new Date().toISOString(); AC.sessionId = 'sess_' + Date.now();
+  AC.history = []; AC.notes = '';
+  acEl('acTranscript').innerHTML = ''; acEl('acNotes').textContent = '';
+  acEl('acStart').classList.add('hide'); acEl('acEnd').classList.remove('hide');
+  acEl('acStatus').textContent = 'live';
+  acEl('acHint').textContent = 'Session live — talk or type as the prospect.';
+  // Kick off with an AI opener.
+  acSendUser('(Ring answered — go)');
+};
+
+acEl('acEnd').onclick = async () => {
+  AC.active = false;
+  acEl('acEnd').classList.add('hide'); acEl('acStart').classList.remove('hide');
+  acEl('acStatus').textContent = 'summarizing…';
+  await acBuildNotes();
+  await acSaveSession();
+  acEl('acStatus').textContent = 'saved';
+  acEl('acHint').textContent = 'Session saved to your team library.';
+  toast('Training session saved to team library.', 'ok');
+};
+
+acEl('acMic').onclick = () => acStartMic();
+acEl('acSend').onclick = () => { const v = acEl('acInput').value; acEl('acInput').value=''; acSendUser(v); };
+acEl('acInput').addEventListener('keydown', e => { if (e.key==='Enter') acEl('acSend').click(); });
+acEl('acClear').onclick = () => { AC.history=[]; AC.notes=''; acEl('acTranscript').innerHTML=''; acEl('acNotes').textContent=''; acEl('acStatus').textContent='idle'; };
+acEl('acPreview').onclick = async () => {
+  const v = acSelectedVoice();
+  acEl('acHint').textContent = 'Testing ' + v.label + '…';
+  await acSpeak('Hi, this is ' + AC.voiceLabel + " with ProSpector. I know I'm catching you cold — can I have thirty seconds?");
+  acEl('acHint').textContent = 'Ready.';
+};
+acEl('acShare').onclick = () => {
+  const text = `PROSPECTOR — Training session\nVoice: ${AC.voiceLabel}\nMode: ${acEl('acMode').value}\nFacility: ${acEl('acFacility').value}\n\n${AC.history.map(h=>`${h.role==='assistant'?'AI':'Prospect'}: ${h.content}`).join('\n')}\n\n=== NOTES ===\n${AC.notes||'(none)'}`;
+  navigator.clipboard?.writeText(text).then(()=>toast('Session copied to clipboard','ok'), ()=>toast('Copy failed','err'));
+};
+acRenderHistory();
 </script>
 </body>
 </html>

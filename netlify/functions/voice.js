@@ -107,15 +107,19 @@ async function tts(payload){
   if (!process.env.ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY not set in Netlify env vars');
   const { text, voice_id = '21m00Tcm4TlvDq8ikWAM', model_id = 'eleven_turbo_v2_5' } = payload || {};
   if (!text) throw new Error('text is required');
+  const vs = payload.voice_settings || {};
+  const settings = {
+    stability:        vs.stability        != null ? Number(vs.stability)        : 0.55,
+    similarity_boost: vs.similarity_boost != null ? Number(vs.similarity_boost) : 0.80,
+    style:            vs.style            != null ? Number(vs.style)            : 0.55,
+    use_speaker_boost: vs.use_speaker_boost != null ? !!vs.use_speaker_boost : true,
+    speed:            vs.speed            != null ? Number(vs.speed)            : 1.00
+  };
 
   const r = await fetch(`${ELEVEN_URL}/${voice_id}`, {
     method: 'POST',
     headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY, 'Content-Type':'application/json', 'Accept':'audio/mpeg' },
-    body: JSON.stringify({
-      text,
-      model_id,
-      voice_settings: { stability: 0.55, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true }
-    })
+    body: JSON.stringify({ text, model_id, voice_settings: settings })
   });
   if (!r.ok){
     const t = await r.text();
