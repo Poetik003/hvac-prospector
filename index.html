@@ -109,6 +109,12 @@
   .ac-line.you{background:#0e1a32;border:1px solid #223559;margin-left:auto;color:#dfe7f4}
   .ac-line .tag{display:block;font-size:10px;letter-spacing:.08em;color:var(--ink-dim);margin-bottom:2px;text-transform:uppercase}
   .ac-line.rec{outline:2px solid #ff6b6b;box-shadow:0 0 0 3px rgba(255,107,107,.15)}
+  .ac-modal{position:fixed;inset:0;background:rgba(6,10,20,.72);display:grid;place-items:center;z-index:9000;padding:16px;backdrop-filter:blur(4px)}
+  .ac-modal-card{background:#0e1a32;border:1px solid var(--line);border-radius:14px;padding:16px;width:100%;max-width:880px;max-height:88vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .ac-lib-list{margin-top:10px;max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#0b1220}
+  .voice-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #1a2842}
+  .voice-row:last-child{border-bottom:0}
+  .voice-row .chip{background:#182b52;color:#9ec1ff}
   #acMic.rec{background:linear-gradient(180deg,#ff6b6b,#c94848);color:#fff;border-color:#c94848}
   .ac-history-item{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;margin-top:8px;background:#0e1a32}
   .ac-history-item .who{font-weight:700;color:var(--ink)}
@@ -469,22 +475,15 @@
         <hr class="sep">
         <div class="grid cols-3" style="gap:14px">
           <div>
-            <label class="muted" style="font-size:12px">Persona voice</label>
-            <select id="acVoiceSel">
-              <optgroup label="Your synthetic voices">
-                <option value="kWMwdNE2HtriuImY8QrA">Sofía — Miami Latina · warm bilingual</option>
-                <option value="aG3OTJLbRERbY8RcNOGS">Diego — Miami Latino · direct</option>
-                <option value="U3ozbsy2lFyU5w9O8ASF">Mark — Miami cool/calm/curious</option>
-                <option value="SNHm6pldt31SMzuccDc4">Jasmine — Miami · warm soulful</option>
-                <option value="E0Jsoxc63LAaihmLXeNQ">Jose — Miami Cuban Spanish</option>
-                <option value="1sFK9tOhBT6dMpAqqUVB">Francisco — Miami Cuban Spanish (alt)</option>
-              </optgroup>
-              <optgroup label="ElevenLabs library">
-                <option value="21m00Tcm4TlvDq8ikWAM">Rachel · library</option>
-                <option value="EXAVITQu4vr4xnSDxMaL">Bella · library</option>
-                <option value="pNInz6obpgDQGcFmaJgB">Adam · library</option>
-              </optgroup>
-            </select>
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <label class="muted" style="font-size:12px">Voice library</label>
+              <button class="btn sm" id="acBrowseVoices">Browse voices…</button>
+            </div>
+            <div id="acVoicePick" style="margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0e1a32">
+              <div style="font-weight:600" id="acPickName">— pick a voice —</div>
+              <div class="muted" style="font-size:12px;margin-top:2px" id="acPickMeta">Tap Browse voices…</div>
+            </div>
+            <input type="hidden" id="acVoiceSel" value="" />
             <label class="muted" style="font-size:12px;margin-top:10px;display:block">Model</label>
             <select id="acModel">
               <option value="eleven_turbo_v2_5">Turbo v2.5 · fastest (real-time)</option>
@@ -577,6 +576,52 @@
           <span class="muted" style="font-size:12px">Shared with your team</span>
         </div>
         <div id="acHistory" style="margin-top:8px"></div>
+      </div>
+
+      <!-- Voice library modal -->
+      <div id="acLibModal" class="ac-modal hide" role="dialog" aria-modal="true">
+        <div class="ac-modal-card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Voice library</h3>
+            <button class="btn sm" id="acLibClose">✕</button>
+          </div>
+          <div class="grid cols-4" style="gap:8px;margin-top:10px">
+            <input id="acLibSearch" placeholder="Search name, description, tag…">
+            <select id="acLibCat">
+              <option value="">All types</option>
+              <option value="premade">Premade (library)</option>
+              <option value="cloned">Cloned</option>
+              <option value="generated">Voice Design (yours)</option>
+              <option value="professional">Professional</option>
+            </select>
+            <select id="acLibGender"><option value="">Any gender</option><option>female</option><option>male</option><option>neutral</option></select>
+            <select id="acLibUse"><option value="">Any use case</option></select>
+          </div>
+          <div class="row" style="gap:8px;margin-top:8px">
+            <select id="acLibAccent"><option value="">Any accent</option></select>
+            <span class="muted" id="acLibCount" style="font-size:12px;margin-left:auto">—</span>
+          </div>
+          <div id="acLibList" class="ac-lib-list"></div>
+        </div>
+      </div>
+
+      <!-- Graduate modal -->
+      <div id="acGradModal" class="ac-modal hide" role="dialog" aria-modal="true">
+        <div class="ac-modal-card" style="max-width:520px">
+          <h3 style="margin:0 0 6px">Graduate voice to live calling</h3>
+          <div class="muted" style="font-size:12.5px;margin-bottom:12px">This binds the current voice + sliders to a live persona. Live outbound calls will use this exact voice.</div>
+          <label class="muted" style="font-size:12px">Target persona</label>
+          <select id="acGradPersona">
+            <option value="sarah">Sarah Martinez — warm empathetic closer</option>
+            <option value="maria">Maria Gonzalez — bilingual technical</option>
+            <option value="lisa">Lisa Thompson — direct executive</option>
+            <option value="alex">Alex Chen — consultative analytical</option>
+          </select>
+          <div class="row" style="justify-content:flex-end;gap:8px;margin-top:14px">
+            <button class="btn sm" id="acGradCancel">Cancel</button>
+            <button class="btn primary sm" id="acGradConfirm">Deploy to live</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1429,8 +1474,87 @@ function acVoiceSettings(){
 }
 
 function acSelectedVoice(){
-  const sel = acEl('acVoiceSel');
-  return { id: sel.value, label: sel.options[sel.selectedIndex].text };
+  const hidden = acEl('acVoiceSel');
+  const label = acEl('acPickName')?.textContent || '';
+  return { id: hidden.value, label };
+}
+// ---- Voice library (live from ElevenLabs) ----
+const AC_LIB = { all: [], filtered: [], loaded:false };
+async function acLoadVoices(force){
+  if (AC_LIB.loaded && !force) return AC_LIB.all;
+  const r = await callApi('voices_list', {});
+  if (!r.ok){ toast('Voice list failed: ' + (r.error||'unknown'), 'err'); return []; }
+  AC_LIB.all = r.voices || []; AC_LIB.loaded = true;
+  return AC_LIB.all;
+}
+function acVoiceMeta(v){
+  const L = v.labels || {};
+  const bits = [L.gender, L.age, L.accent, L.use_case, L.descriptive].filter(Boolean);
+  return bits.join(' · ');
+}
+function acRenderVoicePicker(list){
+  const box = document.getElementById('acLibList');
+  if (!box) return;
+  if (!list.length){ box.innerHTML = '<div class="muted" style="padding:12px">No matches.</div>'; return; }
+  box.innerHTML = list.map(v => `
+    <div class="voice-row" data-id="${v.voice_id}">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600">${escapeHtml(v.name)} <span class="chip" style="font-size:10px">${escapeHtml(v.category||'')}</span></div>
+        <div class="muted" style="font-size:12px">${escapeHtml(acVoiceMeta(v) || v.description || '')}</div>
+      </div>
+      <button class="btn sm" data-play="${v.voice_id}">▶ Preview</button>
+      <button class="btn primary sm" data-pick="${v.voice_id}">Select</button>
+    </div>
+  `).join('');
+  box.querySelectorAll('[data-play]').forEach(b => b.onclick = async () => {
+    const v = AC_LIB.all.find(x => x.voice_id === b.dataset.play); if (!v) return;
+    if (v.preview_url){
+      const a = new Audio(v.preview_url); a.play().catch(()=>toast('Autoplay blocked — tap again.', 'err'));
+    } else {
+      await acSpeakWith(v.voice_id, 'Hi, this is ' + v.name + ' — testing my voice for ProSpector.');
+    }
+  });
+  box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => {
+    const v = AC_LIB.all.find(x => x.voice_id === b.dataset.pick); if (!v) return;
+    acEl('acVoiceSel').value = v.voice_id;
+    acEl('acPickName').textContent = v.name;
+    acEl('acPickMeta').textContent = acVoiceMeta(v) || v.description || v.category || '';
+    AC.voiceId = v.voice_id; AC.voiceLabel = v.name;
+    acEl('acVoice').textContent = 'voice: ' + v.name;
+    document.getElementById('acLibModal').classList.add('hide');
+    toast('Selected ' + v.name, 'ok');
+  });
+}
+function acApplyVoiceFilters(){
+  const q  = document.getElementById('acLibSearch').value.trim().toLowerCase();
+  const g  = document.getElementById('acLibGender').value;
+  const a  = document.getElementById('acLibAccent').value;
+  const u  = document.getElementById('acLibUse').value;
+  const c  = document.getElementById('acLibCat').value;
+  const list = AC_LIB.all.filter(v => {
+    const L = v.labels || {};
+    if (c && v.category !== c) return false;
+    if (g && (L.gender||'').toLowerCase() !== g.toLowerCase()) return false;
+    if (a && !(L.accent||'').toLowerCase().includes(a.toLowerCase())) return false;
+    if (u && !(L.use_case||'').toLowerCase().includes(u.toLowerCase())) return false;
+    if (q){
+      const hay = (v.name+' '+(v.description||'')+' '+Object.values(L).join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  AC_LIB.filtered = list;
+  acRenderVoicePicker(list);
+  document.getElementById('acLibCount').textContent = list.length + ' of ' + AC_LIB.all.length + ' voices';
+}
+async function acSpeakWith(voiceId, text){
+  const r = await callApi('tts', { text, voice_id: voiceId, model_id: acEl('acModel').value, voice_settings: acVoiceSettings() });
+  if (!r.ok){ toast('Voice error: ' + (r.error||'unknown'), 'err'); return; }
+  if (!r.audio_base64){ toast('No audio returned.', 'err'); return; }
+  const url = b64ToBlobUrl(r.audio_base64, 'audio/mpeg');
+  const a = new Audio(); a.src = url;
+  a.onended = () => URL.revokeObjectURL(url);
+  a.play().catch(e => toast('Autoplay blocked: ' + e.message, 'err'));
 }
 
 function acSystemPrompt(){
@@ -1589,11 +1713,31 @@ function acRenderHistory(){
   });
 }
 
-acEl('acVoiceSel').addEventListener('change', () => {
-  const v = acSelectedVoice(); AC.voiceId = v.id; AC.voiceLabel = v.label.split('—')[0].trim();
-  acEl('acVoice').textContent = 'voice: ' + AC.voiceLabel;
-});
-acEl('acVoiceSel').dispatchEvent(new Event('change'));
+// Wire the voice library modal
+(function wireVoiceLib(){
+  const btn = document.getElementById('acBrowseVoices'); if (!btn) return;
+  btn.onclick = async () => {
+    document.getElementById('acLibModal').classList.remove('hide');
+    document.getElementById('acLibList').innerHTML = '<div class="muted" style="padding:12px">Loading voices from ElevenLabs…</div>';
+    await acLoadVoices();
+    // Populate filter dropdowns from the labels present in the library
+    const accents = new Set(), uses = new Set();
+    AC_LIB.all.forEach(v => { const L=v.labels||{}; if (L.accent) accents.add(L.accent); if (L.use_case) uses.add(L.use_case); });
+    const fillSelect = (id, values) => {
+      const el = document.getElementById(id);
+      el.innerHTML = '<option value="">Any</option>' + [...values].sort().map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+    };
+    fillSelect('acLibAccent', accents);
+    fillSelect('acLibUse', uses);
+    acApplyVoiceFilters();
+  };
+  ['acLibSearch','acLibGender','acLibAccent','acLibUse','acLibCat'].forEach(id => {
+    document.getElementById(id).addEventListener('input', acApplyVoiceFilters);
+    document.getElementById(id).addEventListener('change', acApplyVoiceFilters);
+  });
+  document.getElementById('acLibClose').onclick = () => document.getElementById('acLibModal').classList.add('hide');
+  document.getElementById('acLibModal').addEventListener('click', (e) => { if (e.target.id === 'acLibModal') e.currentTarget.classList.add('hide'); });
+})();
 
 acEl('acStart').onclick = () => {
   AC.active = true; AC.startedAt = new Date().toISOString(); AC.sessionId = 'sess_' + Date.now();
@@ -1629,20 +1773,20 @@ acEl('acPreview').onclick = async () => {
 };
 acEl('acGraduate').onclick = () => {
   const v = acSelectedVoice();
+  if (!v.id){ toast('Pick a voice first.', 'err'); return; }
+  document.getElementById('acGradModal').classList.remove('hide');
+};
+document.getElementById('acGradCancel').onclick = () => document.getElementById('acGradModal').classList.add('hide');
+document.getElementById('acGradModal').addEventListener('click', (e)=>{ if (e.target.id==='acGradModal') e.currentTarget.classList.add('hide'); });
+document.getElementById('acGradConfirm').onclick = () => {
+  const v = acSelectedVoice();
   const settings = acVoiceSettings();
-  const options = [
-    { id:'sarah', label:'Sarah Martinez (warm empathetic closer)' },
-    { id:'maria', label:'Maria Gonzalez (bilingual technical)' },
-    { id:'lisa',  label:'Lisa Thompson (direct executive)' },
-    { id:'alex',  label:'Alex Chen (consultative analytical)' }
-  ];
-  const pid = prompt('Graduate this voice + sliders to which live persona?\n' + options.map((o,i)=>`${i+1}. ${o.label}`).join('\n') + '\n\nEnter 1-4:');
-  const idx = parseInt(pid,10) - 1;
-  if (isNaN(idx) || idx < 0 || idx > 3){ toast('Graduation cancelled.', 'err'); return; }
+  const pid = document.getElementById('acGradPersona').value;
   const bind = loadPersonaBindings();
-  bind[options[idx].id] = { voice_id: v.id, voice_label: v.label, settings, graduated_at: new Date().toISOString(), graduated_by: (S.user?.email)||'unknown' };
+  bind[pid] = { voice_id: v.id, voice_label: v.label, settings, graduated_at: new Date().toISOString(), graduated_by: (S.user?.email)||'unknown' };
   savePersonaBindings(bind);
-  toast(`✓ ${options[idx].label.split(' (')[0]} now uses ${v.label.split(' —')[0]} on live calls.`, 'ok');
+  document.getElementById('acGradModal').classList.add('hide');
+  toast('✓ ' + pid.charAt(0).toUpperCase()+pid.slice(1) + ' now uses ' + v.label + ' on live calls.', 'ok');
 };
 acEl('acShare').onclick = () => {
   const text = `PROSPECTOR — Training session\nVoice: ${AC.voiceLabel}\nMode: ${acEl('acMode').value}\nFacility: ${acEl('acFacility').value}\n\n${AC.history.map(h=>`${h.role==='assistant'?'AI':'Prospect'}: ${h.content}`).join('\n')}\n\n=== NOTES ===\n${AC.notes||'(none)'}`;

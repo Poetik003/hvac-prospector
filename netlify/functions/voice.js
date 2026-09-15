@@ -130,6 +130,25 @@ async function tts(payload){
   return ok({ audio_base64: b64, mime: 'audio/mpeg', size: buf.length });
 }
 
+async function voicesList(payload){
+  if (!process.env.ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY not set in Netlify env vars');
+  // v1 endpoint (works on all ElevenLabs paid plans, incl. Creator)
+  const r = await fetch('https://api.elevenlabs.io/v1/voices', {
+    headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY, 'Accept':'application/json' }
+  });
+  if (!r.ok){ const t = await r.text(); throw new Error('ElevenLabs voices HTTP ' + r.status + ': ' + t.slice(0, 200)); }
+  const j = await r.json();
+  const voices = (j.voices || []).map(v => ({
+    voice_id:  v.voice_id,
+    name:      v.name,
+    category:  v.category,                                   // premade | cloned | generated (voice design)
+    labels:    v.labels || {},                               // { accent, description, age, gender, use_case, ... }
+    preview_url: v.preview_url || '',
+    description: v.description || (v.labels && v.labels.description) || ''
+  }));
+  return ok({ voices, count: voices.length });
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return err(405, 'POST only');
@@ -139,10 +158,11 @@ exports.handler = async (event) => {
 
   try {
     switch (body.action) {
-      case 'warmup': return await warmup();
-      case 'chat':   return await chat(body);
-      case 'tts':    return await tts(body);
-      default:       return err(400, 'unknown action: ' + body.action);
+      case 'warmup':      return await warmup();
+      case 'chat':        return await chat(body);
+      case 'tts':         return await tts(body);
+      case 'voices_list': return await voicesList(body);
+      default:            return err(400, 'unknown action: ' + body.action);
     }
   } catch (e) {
     return err(500, e.message || String(e));
