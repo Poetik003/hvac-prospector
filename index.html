@@ -14,6 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- ProSpector admin bootstrap: only this email can access the admin-only Academy / OCR / material library
+     until you set app_metadata.role='admin' on that user in Supabase (see comment at bottom). -->
+<script>window.__ADMIN_EMAIL__ = 'poetik003@gmail.com';</script>
 <!-- Supabase auth (email invites, password reset, real per-user accounts) -->
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -55,6 +58,7 @@
   .btn.primary{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
   .btn.primary:hover{filter:brightness(1.06)}
   .btn.ghost{background:transparent}
+  .btn.active{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
   .btn.danger{background:#3a1414;border-color:#5c2020;color:#ffb3b3}
   .btn.sm{padding:6px 10px;font-size:12.5px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
@@ -170,6 +174,11 @@
 
     <!-- MODE: sign in -->
     <form id="loginForm" style="margin-top:18px;text-align:left" autocomplete="off">
+      <div class="row" style="gap:6px;margin-bottom:12px;justify-content:center">
+        <button type="button" class="btn sm active" id="tabAdmin" data-signin="admin">Admin</button>
+        <button type="button" class="btn sm" id="tabTeam" data-signin="team">Team member</button>
+      </div>
+      <div id="signinHint" class="muted" style="font-size:12px;margin-bottom:8px;text-align:center">Sign in with your admin account</div>
       <label class="muted" style="font-size:12.5px;display:block;margin-bottom:4px">Email</label>
       <input id="loginEmail" type="email" autocapitalize="none" autocomplete="username" placeholder="you@example.com">
       <label class="muted" style="font-size:12.5px;display:block;margin:10px 0 4px">Password</label>
@@ -750,9 +759,19 @@ let currentRole = 'team';
 let currentUser = null;
 
 function applyRoleGating(role){
+  const adminOnlyViews = new Set(['settings','academy']);
   document.querySelectorAll('#nav button').forEach(b => {
-    if (b.dataset.view === 'settings') b.style.display = (role === 'admin') ? '' : 'none';
+    if (adminOnlyViews.has(b.dataset.view)) b.style.display = (role === 'admin') ? '' : 'none';
   });
+  // Extra guard: if a non-admin session tries to route to Academy, kick to dashboard
+  if (role !== 'admin'){
+    const cur = document.querySelector('.view:not(.hide)')?.dataset.view;
+    if (adminOnlyViews.has(cur)){
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
+      document.querySelector('[data-view="dashboard"].view')?.classList.remove('hide');
+      const t = document.getElementById('viewTitle'); if (t) t.textContent = 'Dashboard';
+    }
+  }
 }
 function showApp(user, role){
   currentUser = user; currentRole = role;
@@ -773,8 +792,14 @@ function showGate(mode){
 }
 
 async function getRole(user){
-  // Role stored in user.app_metadata.role (set by admin) or user_metadata.role (fallback)
-  return user?.app_metadata?.role || user?.user_metadata?.role || 'team';
+  // 1) app_metadata.role wins (set by you via Supabase SQL/dashboard).
+  // 2) user_metadata.role fallback (set on invite).
+  // 3) If email matches ADMIN_EMAIL sentinel in the client, treat as admin (bootstrap).
+  const roleMeta = user?.app_metadata?.role || user?.user_metadata?.role;
+  if (roleMeta) return roleMeta;
+  const bootstrap = (window.__ADMIN_EMAIL__ || '').toLowerCase();
+  if (bootstrap && (user?.email||'').toLowerCase() === bootstrap) return 'admin';
+  return 'team';
 }
 
 async function boot(){
@@ -815,6 +840,19 @@ async function boot(){
 }
 
 /* Wire up forms */
+// Sign-in tabs (Admin vs Team member)
+let signinTab = 'admin';
+function setSigninTab(kind){
+  signinTab = kind;
+  document.getElementById('tabAdmin').classList.toggle('active', kind==='admin');
+  document.getElementById('tabTeam').classList.toggle('active', kind==='team');
+  document.getElementById('signinHint').textContent = kind==='admin'
+    ? 'Sign in with your admin account'
+    : 'Sign in with the team member account your admin invited';
+}
+document.getElementById('tabAdmin').onclick = () => setSigninTab('admin');
+document.getElementById('tabTeam').onclick  = () => setSigninTab('team');
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
@@ -826,8 +864,19 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   err.textContent = '';
   document.getElementById('loginPass').value = '';
   const role = await getRole(data.user);
+  // Enforce which tab you signed in from
+  if (signinTab === 'admin' && role !== 'admin'){
+    await window.supabase.auth.signOut();
+    err.textContent = 'This is not an admin account. Use the Team member tab, or ask your admin.';
+    return;
+  }
+  if (signinTab === 'team' && role === 'admin'){
+    err.textContent = 'Admins should sign in on the Admin tab.';
+    // still allow it, but nudge — clear error after a beat
+    setTimeout(()=>{ err.textContent=''; }, 2500);
+  }
   showApp(data.user, role);
-  toast('Welcome, ' + (data.user.email||''), 'ok');
+  toast('Welcome, ' + (data.user.email||'') + (role==='admin'?' (admin)':''), 'ok');
 });
 
 document.getElementById('linkForgot').onclick = (e) => { e.preventDefault(); showGate('forgot'); };
@@ -1072,9 +1121,12 @@ function personaSettings(pid){ const b = loadPersonaBindings(); return (b[pid] &
 
 async function callApi(action, body){
   try {
+    const headers = { 'Content-Type':'application/json' };
+    // Pass the current signed-in user's email so admin-only server actions can gate.
+    try { const em = (currentUser?.email || S.user?.email || ''); if (em) headers['x-user-email'] = em; } catch(e){}
     const r = await fetch('/.netlify/functions/voice', {
       method: 'POST',
-      headers: { 'Content-Type':'application/json' },
+      headers,
       body: JSON.stringify({ action, ...body })
     });
     const j = await r.json().catch(() => ({}));
@@ -1467,7 +1519,8 @@ Rules of engagement:
 - Do NOT sound like an assistant, chatbot, or narrator. Sound like a top-performing SDR who happens to know HVAC deeply.
 `.trim();
 
-/* ======= TRAINING MATERIAL LIBRARY (team-shared via Supabase, cached locally) ======= */
+/* ======= TRAINING MATERIAL LIBRARY (admin-only, private to admin account) ======= */
+function isAdmin(){ return currentRole === 'admin'; }
 const MAT_KEY = 'ps_training_materials';
 function matLoad(){ try { return JSON.parse(localStorage.getItem(MAT_KEY)||'[]'); } catch(e){ return []; } }
 function matSave(list){ localStorage.setItem(MAT_KEY, JSON.stringify(list.slice(0, 60))); }
@@ -1478,7 +1531,7 @@ function matActiveText(){
     list.map(m => `--- ${m.name} ---\n${(m.text||'').slice(0, 6000)}`).join('\n\n');
 }
 async function matPullFromCloud(){
-  if (!window.supabase) return;
+  if (!window.supabase || !isAdmin()) return;
   try {
     const { data, error } = await window.supabase.from('training_materials').select('*').order('uploaded_at',{ascending:false});
     if (error){ console.warn('materials pull:', error.message); return; }
@@ -1493,7 +1546,7 @@ async function matPullFromCloud(){
   } catch(e){ console.warn('materials pull failed', e); }
 }
 async function matPushOne(m){
-  if (!window.supabase) return;
+  if (!window.supabase || !isAdmin()) return;
   try {
     const { error } = await window.supabase.from('training_materials').upsert({
       id: m.id, name: m.name, text: m.text, uploaded_at: m.uploaded_at,
@@ -1503,7 +1556,7 @@ async function matPushOne(m){
   } catch(e){ console.warn('materials push failed', e); }
 }
 async function matDeleteCloud(id){
-  if (!window.supabase) return;
+  if (!window.supabase || !isAdmin()) return;
   try {
     const { error } = await window.supabase.from('training_materials').delete().eq('id', id);
     if (error) console.warn('materials delete:', error.message);

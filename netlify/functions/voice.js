@@ -21,6 +21,15 @@ const CORS = {
 function ok(body){      return { statusCode: 200, headers: { ...CORS, 'Content-Type':'application/json' }, body: JSON.stringify(body) }; }
 function err(code, e){  return { statusCode: code, headers: CORS, body: JSON.stringify({ error: e?.message || String(e) }) }; }
 
+// Simple admin gate: the client sends its user email in x-user-email,
+// and only the ADMIN_EMAIL (Netlify env var) may call admin-only actions.
+function isAdminReq(event){
+  const admin = (process.env.ADMIN_EMAIL || '').toLowerCase();
+  if (!admin) return false;
+  const email = (event.headers?.['x-user-email'] || event.headers?.['X-User-Email'] || '').toLowerCase();
+  return !!email && email === admin;
+}
+
 async function warmup(){
   const out = { openai: 'unknown', claude: 'unknown', elevenlabs: 'unknown', ts: Date.now() };
   try {
@@ -232,8 +241,8 @@ exports.handler = async (event) => {
       case 'chat':        return await chat(body);
       case 'tts':         return await tts(body);
       case 'voices_list': return await voicesList(body);
-      case 'extract':     return await extract(body);
-      case 'ocr':         return await ocr(body);
+      case 'extract':     if (!isAdminReq(event)) return err(403, 'admin only'); return await extract(body);
+      case 'ocr':         if (!isAdminReq(event)) return err(403, 'admin only'); return await ocr(body);
       default:            return err(400, 'unknown action: ' + body.action);
     }
   } catch (e) {
