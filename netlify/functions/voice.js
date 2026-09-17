@@ -3,7 +3,8 @@
 //   POST /.netlify/functions/voice  { action: "chat",    persona, history, lead, model }
 //   POST /.netlify/functions/voice  { action: "tts",     text, voice_id, model_id }
 //
-// Reads OPENAI_API_KEY and ELEVENLABS_API_KEY from Netlify environment variables
+// Reads ANTHROPIC_API_KEY (chat + OCR), ELEVENLABS_API_KEY (TTS) and OPENAI_API_KEY
+// (fallback chat only — account has $0 credit) from Netlify environment variables
 // (managed at https://app.netlify.com/projects/prospectorproai/configuration/env).
 
 const OPENAI_URL    = 'https://api.openai.com/v1/chat/completions';
@@ -201,31 +202,36 @@ async function extract(payload){
 }
 
 async function ocr(payload){
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not set — required for OCR fallback');
+  // OCR via Claude: Anthropic reads PDFs natively (base64 document block, up to 32MB / 100 pages).
+  // Swapped off OpenAI Vision (Sep 16) — OpenAI account has $0 credit; ANTHROPIC_API_KEY is live.
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not set — required for OCR fallback');
   const { data_base64, filename } = payload || {};
   if (!data_base64) throw new Error('data_base64 required');
-  // Send the PDF as an image_url data URL to OpenAI Vision (gpt-4o-mini).
-  // Works for text-image scanned pages up to ~20MB; extracts readable text.
-  const dataUrl = 'data:application/pdf;base64,' + data_base64;
-  const r = await fetch(OPENAI_URL, {
+  const r = await fetch(CLAUDE_URL, {
     method: 'POST',
-    headers: { ...OPTS.headers(), 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY },
+    headers: {
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': CLAUDE_VER,
+      'anthropic-beta': 'pdfs-2024-09-25',
+      'Content-Type': 'application/json'
+    },
+    // Sonnet 5: adaptive thinking always on — do NOT pass temperature/top_p/top_k (returns 400).
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4000,
+      system: 'You are an OCR engine. Return ONLY the extracted plain text from the document, preserving paragraph breaks. No commentary.',
       messages: [
-        { role:'system', content:'You are an OCR engine. Return ONLY the extracted plain text from the document, preserving paragraph breaks. No commentary.' },
         { role:'user', content: [
-            { type:'text', text: 'Extract all readable text from this document: ' + (filename||'file.pdf') },
-            { type:'image_url', image_url: { url: dataUrl } }
+            { type:'document', source: { type:'base64', media_type:'application/pdf', data: data_base64 } },
+            { type:'text', text: 'Extract all readable text from this document: ' + (filename||'file.pdf') }
           ] }
-      ],
-      max_tokens: 4000, temperature: 0
+      ]
     })
   });
-  if (!r.ok){ const t = await r.text(); throw new Error('OCR HTTP ' + r.status + ': ' + t.slice(0, 200)); }
+  if (!r.ok){ const t = await r.text(); throw new Error('OCR (Claude) HTTP ' + r.status + ': ' + t.slice(0, 200)); }
   const j = await r.json();
-  const text = j.choices?.[0]?.message?.content?.trim() || '';
-  return ok({ text, chars: text.length, source:'openai_vision' });
+  const text = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+  return ok({ text, chars: text.length, source:'claude_pdf_ocr' });
 }
 
 exports.handler = async (event) => {
